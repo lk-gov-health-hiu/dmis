@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:form>  
+            <h:outputStylesheet library="css" name="tem1.css"/>
+            <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"   styleClass="horizontalmenu">
+                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
+                <p:submenu label="Patient" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
+                    <p:menuitem ajax="false" value="Add New PCR/RAT Request" action="#{clientController.toAddNewClientForTestEnrollment()}"  />
+                    <p:menuitem ajax="false" value="Register New Case" action="#{clientController.toAddNewClientForCaseEnrollment()}"  />
+                    <p:menuitem ajax="false" value="Search Patients" action="#{clientController.toSearchClientById()}" />
+
+                    <p:menuitem ajax="false" value="Test Result Entering" action="#{clientController.toMohEnterResults()}" />
+                    <p:menuitem ajax="false" value="Test Result Entering (Old)" action="#{clientController.toEnterTestResults()}" />
+                    <p:menuitem ajax="false" value="Test Result Printing" action="#{clientController.toMohToSelectForPrinting()}" />
+                </p:submenu>
+                <p:submenu label="Samples" rendered="#{webUserController.hasPrivilege('Sample_Management')}" >
+                    <p:menuitem ajax="false" value="Dispatch Samples"
+                                action="#{clientController.toDispatchSamples()}"
+                                rendered="#{webUserController.hasPrivilege('Dispatch_Samples')}" />
+                    <p:menuitem ajax="false" value="Divert Samples" action="#{clientController.toAddNewClientForCaseEnrollment()}" 
+                                rendered="#{webUserController.hasPrivilege('Divert_Samples')}" />
+                    <p:menuitem ajax="false" value="Order Summary - To Receive at the Lab"
+                                action="#{clientController.toSummaryByOrderedInstitutionVsLabToReceive()}" />
+                    <p:menuitem ajax="false" value="Order Summary - Received at the Lab"
+                                action="#{clientController.toSummaryByOrderedInstitutionVsLabReceived()}" />
+                    <p:menuitem ajax="false" value="Order Summary - Results available"
+                                action="#{clientController.toSummaryByOrderedInstitutionVsLabConfirmed()}" />
+                </p:submenu>
+                <p:submenu label="Lab"  rendered="#{webUserController.hasPrivilege('Lab_Management')}"  >
+                    <p:menuitem ajax="false" value="Receive Samples" action="#{clientController.toLabReceiveAll()}" 
+                                rendered="#{webUserController.hasPrivilege('Receive_Samples')}"/>
+                    <p:menuitem ajax="false" value="Enter Results" action="#{clientController.toLabEnterResults()}" 
+                                rendered="#{webUserController.hasPrivilege('Enter_Results')}"/>
+                    <p:menuitem ajax="false" value="Review Results" action="#{clientController.toLabReviewResults()}" 
+                                rendered="#{webUserController.hasPrivilege('Review_Results')}"/>
+                    <p:menuitem ajax="false" value="Approve Results" action="#{clientController.toConfirmResults}" 
+                                rendered="#{webUserController.hasPrivilege('Confirm_Results')}"/>
+                    <p:menuitem ajax="false" value="Print Results" action="#{clientController.toLabToSelectForPrinting()}"
+                                rendered="#{webUserController.hasPrivilege('Print_Results')}"/>
+                    <p:menuitem ajax="false" value="Search Orders" action="#{clientController.toLabOrderByReferringInstitution()}" 
+                                rendered="#{webUserController.hasPrivilege('View_Orders')}"/>
+                    <p:menuitem ajax="false" value="Reports" action="#{clientController.toLabReports()}"  
+                                rendered="#{webUserController.hasPrivilege('Lab_Reports')}"/>
+                </p:submenu>
+                <p:submenu label="Reports"  rendered="#{webUserController.hasPrivilege('Monitoring_and_evaluation')}"  >
+                    <p:menuitem ajax="false" value="Case List" action="#{clientController.toListCases()}" />
+                    <p:menuitem ajax="false" value="Test List" action="#{clientController.toListTests()}" />
+                    <p:menuitem ajax="false" value="SMS" action="/sms/index" />
+                    <p:menuitem ajax="false" value="Analysis" 
+                                action="#{reportController.toViewReports()}" ></p:menuitem>
+                </p:submenu>
+                <p:submenu label="Institution Administration"  
+                           rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
+                    <p:menuitem value="Manage Users" 
+                                action="#{webUserController.toManageInstitutionUsers()}" ajax="false"
+                                rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Institutions" action="/insAdmin/institution_index" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Areas" action="/insAdmin/area_index" ajax="false" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Preferences"  action="#{preferenceController.toManagePreferencesInstitution()}"    ajax="false" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                </p:submenu>
+                <p:submenu label="System Administration"  rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
+                    <p:menuitem value="Manage Users" action="#{webUserController.toManageUserIndexForSystemAdmin()}"  ajax="false" />
+                    <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
+                    <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />
+                    <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />
+                    <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
+                    <p:menuitem value="Manage Preferences" action="#{preferenceController.toManagePreferences()}"    ajax="false" />
+                    <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
+                </p:submenu>
+                <p:submenu label="Settings"  rendered="#{webUserController.hasPrivilege('User')}" >
+                    <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"    ajax="false" />
+                    <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"    ajax="false" />
+                </p:submenu>
+                <p:submenu label="Help" >
+                    <p:menuitem value="User Manual" action="/wiki"   ajax="false" />
+                    <p:menuitem value="Feedback" action="/feedback"   ajax="false" />
+                    <p:menuitem value="Contact us" action="/contact"   ajax="false" />
+                    <p:menuitem value="About" action="/about_us"   ajax="false" />
+                </p:submenu>
+                <f:facet name="options">
+                    <p:inputText autocomplete="off"
+                                 value="#{clientController.searchingId}"/>
+                    <p:commandButton ajax="false" 
+                                     action="#{clientController.searchByAnyIdWithBasicData()}" 
+                                     icon="ui-icon-search" ></p:commandButton>
+                    <p:spacer height="1" width="5" ></p:spacer>
+                    <p:outputLabel value="|"></p:outputLabel>
+                    <p:spacer height="1" width="5" ></p:spacer>
+                    <p:commandButton action="#{webUserController.logOut()}" ajax="false"
+                                     rendered="#{webUserController.loggedUser ne null}" value="#{webUserController.loggedUser.name} - Logout" />
+                </f:facet>
+            </p:menubar>
+        </h:form>
+    </cc:implementation>
+</html>

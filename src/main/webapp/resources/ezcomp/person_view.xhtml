@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="person" type="lk.gov.health.phsp.entity.Person" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+
+        <h:panelGrid columns="2">
+
+            <h:outputText value="Name With Title:"/>
+            <h:outputText value="#{person.nameWithTitle}" title="NameWithTitle"/>
+
+            <h:outputText value="Age:"/>
+            <h:outputText value="#{person.age}" title="Age"/>
+
+            <h:outputText value="DateOfBirth:"/>
+            <h:outputText value="#{person.dateOfBirth}" title="DateOfBirth">
+                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+            </h:outputText>
+
+
+            <h:outputText value="Sex:"/>
+            <h:outputText value="#{person.sex.name}" title="Sex"/>
+
+            <h:outputText value="Nic:"/>
+            <h:outputText value="#{person.nic}" title="Nic"/>
+
+
+            <h:outputText value="Address:"/>
+            <h:outputText value="#{person.address}" title="Address"/>
+            <h:outputText value="Phone1:"/>
+            <h:outputText value="#{person.phone1}" title="Phone1"/>
+            <h:outputText value="Phone 2:"/>
+            <h:outputText value="#{person.phone2}" title="Phone2"/>
+
+            <h:outputText value="Citizenship:"/>
+            <h:outputText value="#{person.citizenship.name}" title="Citizenship"/>
+
+
+            <h:outputText value="Gn Area:"/>
+            <h:outputText value="#{person.gnArea.name}" title="GnArea"/>
+
+            <h:outputText value="PhiArea:"/>
+            <h:outputText value="#{person.phiArea}" title="PhiArea"/>
+
+            <h:outputText value="Work Place:"/>
+            <h:outputText value="#{person.workPlace}" title="WorkPlace"/>
+
+            <h:outputText value="Work Place Contact Person Name:"/>
+            <h:outputText value="#{person.workplaceContact}" title="Workplace Contact"/>
+
+            <h:outputText value="Work Place Contact Person Number:"/>
+            <h:outputText value="#{person.workplaceContactDetails}" title="Work place Contact Details"/>
+            
+            
+            <h:outputText value="MohArea:"/>
+            <h:outputText value="#{person.mohArea.name}" title="MohArea"/>
+
+            <h:outputText value="District:"/>
+            <h:outputText value="#{person.district.name}" title="District"/>
+
+            <h:outputText value="Person Id:"/>
+            <h:outputText value="#{person.id}" title="Id"/>
+
+            <h:outputText value="Created At:"/>
+            <h:outputText value="#{person.createdAt}" title="CreatedAt">
+                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+            </h:outputText>
+
+            <h:outputText value="Created By:"/>
+            <h:outputText value="#{person.createdBy.person.name}" title="CreatedBy"/>
+
+            <h:outputText value="Last Editer:"/>
+            <h:outputText value="#{person.editer.person.name}" title="Editer"/>
+
+            <h:outputText value="Last Edit At:"/>
+            <h:outputText value="#{person.editedAt}" title="EditedAt">
+                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+            </h:outputText>
+
+
+        </h:panelGrid>
+
+
+    </cc:implementation>
+</html>

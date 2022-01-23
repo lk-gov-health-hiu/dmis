@@ -1,0 +1,155 @@
+// Some Primefaces styles cannot be completely removed
+// Todo - Find a way to completely remove remaining styles
+
+.ui-inputfield {
+  display: block;
+  width: 100%;
+  padding: .375rem .75rem !important;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+  &:focus {
+    color: var(--bs-blue);
+    background-color: #fff;
+    border-color: #969fa8;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(44,62,80,.25);
+  }
+}
+
+.submenu {
+  a:nth-child(1) {
+    color: #fff;
+  }
+  ul {
+    background-color: #2c3d4f;
+    li {
+      &:hover {
+        background-color: lighten($color: #2c3d4f, $amount: 10%);
+      }
+    }
+  }
+}
+
+.ui-shadow {
+  box-shadow: none !important;
+}
+
+.ui-datepicker-calendar {
+  background-color: #fff;
+  tbody {
+    tr {
+      td {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.ui-datepicker-header {
+  background-color: $dark-green;
+  color: #fff;
+  font-weight: 700;
+}
+
+.ui-timepicker-div {
+  background-color: #fff;
+  padding: 8px 4px 8px 4px;
+  border: 1px solid #2c3d4f;
+
+  .ui_tpicker_time_input {
+    border-radius: 0.375rem;
+    padding: 2px 4px 2px 4px;
+    border: 1px solid #cecece;
+    &:focus {
+      box-shadow: 0 0 0 0.25rem rgb(44 62 80 / 25%);
+    }
+  }
+}
+
+.p-datepicker {
+  width: 100% !important;
+}
+
+.ui-autocomplete-panel {
+  position: absolute;
+  overflow: auto;
+  background: var(--bs-blue);
+  color: #fff;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.ui-autocomplete {
+  display: block !important;
+  .ui-autocomplete-input {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem !important;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+    &:focus {
+      color: var(--bs-blue);
+      background-color: #fff;
+      border-color: #969fa8;
+      outline: 0;
+      box-shadow: 0 0 0 .25rem rgba(44,62,80,.25);
+    }
+  }
+}
+
+.ui-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25em;
+}
+
+.ui-chkbox-box {
+  margin-right: 8px;
+  margin-left: 8px;
+}
+
+.ui-selection-column {
+  padding: 8px;
+  .ui-chkbox-box {
+    margin: 0;
+  }
+}
+
+.ui-selectonemenu-items-wrapper {
+  background-color: #fff;
+  border: 1px solid;
+}
+
+.ui-columntoggler-items {
+  background-color: #fff;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.ui-timepicker {
+  background-color: #fff;
+  border: 1px solid #000;
+}

@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+    <!-- This is my comment as lakshitha -->
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                View Request
+            </ui:define>
+            <ui:define name="content">
+                <div class="card">
+                    <h5 class="card-header">
+                        <h:form>
+                            <div class="row" >
+                                <div class="col-12 text-center mt-4 mb-2" >
+                                    <h4 class="fw-bold"><h:outputLabel  value="Patient Data For PCR Ordering" ></h:outputLabel></h4>
+                                </div>
+                            </div>
+                        </h:form>
+                    </h5>
+                    <div class="row px-3">
+                        <div class="col-md-12">
+                            <p:panelGrid columns="4"  class="w-100 border border-light">
+                                <h:outputLabel value="Test Number:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel class="form-control border-0" id="txtTestNo" value="#{commonController.request.encounterNumber}"></h:outputLabel>
+                                <h:outputLabel value="Lab:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.referalInstitution.name}" class="form-control border-0"></h:outputLabel>
+                                <h:outputLabel value="Ordering Category" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel id="orderingCat" value="#{commonController.request.pcrOrderingCategory.name}" class="form-control border-0"></h:outputLabel>
+                                <h:outputLabel value="Sampled at" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel id="test" value="#{commonController.request.sampledAt}" class="form-control border-0" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </h:outputLabel>
+                                <h:outputLabel value="Name:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.client.person.name}" title="Name" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="Citizenship:" for="citizenship" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel id="citizenship" value="#{commonController.request.client.person.citizenship.name}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="PHN No.:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel id="phn" value="#{commonController.request.client.phn}" title="Phn" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="Other Ordering Category:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.pcrOrderingCategoryOther}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="Symptomatic:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel tabindex="106" value="#{commonController.request.symptomatic?'Yes':''}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="NIC/NIC of the guardian/Passport No. :" for="nic" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel id="nic"  value="#{commonController.request.client.person.nic}" title="Nic" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="Gender:"  for="sex" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel id="sex" value="#{commonController.request.client.person.sex}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="Age:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.client.person.age}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="Current Residential Address:" for="address" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel tabindex="4" id="address" value="#{commonController.request.client.person.address}" title="Address ****" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="District:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.client.person.district.name}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="MOH Area:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.client.person.mohArea.name}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="Contact Number :" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.client.person.phone1}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="GN Area:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.client.person.gnArea.name}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="PHI Area:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.client.person.phiArea.name}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel value="Unit/Ward:" class="fw-bold"></h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.unitWard}" class="form-control border-0" ></h:outputLabel>
+                                <h:outputLabel  class="fw-bold">Test Result</h:outputLabel>
+                                <h:outputLabel value="#{commonController.request.pcrResult.name}" class="fw-bold" ></h:outputLabel>
+                            </p:panelGrid>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

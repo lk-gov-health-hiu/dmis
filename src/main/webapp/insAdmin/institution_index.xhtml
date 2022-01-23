@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:body>
+
+        <ui:composition template="/template1.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <div class="row" >
+                        <div class="col-12" >
+                            Institution Administration
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-2" >
+                            <h:commandButton value="Add Institution" >
+                            </h:commandButton>
+                            <h:commandButton value="List Institutions" >
+                            </h:commandButton>
+                            <hr/>
+                            <h:commandButton value="Add User" >
+                            </h:commandButton>
+                            <h:commandButton value="List Users" >
+                            </h:commandButton>
+                            <hr/>
+                            <h:commandButton value="Add Area" >
+                            </h:commandButton>
+                            <h:commandButton value="List Areas" >
+                            </h:commandButton>
+                            <hr/>
+                            <h:commandButton value="Preferances" >
+                            </h:commandButton>
+                        </div>
+                        <div class="col-10" >
+                            <ui:insert name="insadmin" >
+                                
+                            </ui:insert>
+                        </div>
+                    </div>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

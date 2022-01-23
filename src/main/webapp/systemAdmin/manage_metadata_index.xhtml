@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <div class="container-fluid w-100">
+                    <div class="card" >
+                        <div class="card-header" >
+                            <h4>System Administration - Manage Data</h4>
+                        </div>
+                        <div class="card-body" >
+                            <div class="row" >
+                                <div class="col-3 w-80" >
+                                    <h:form>
+                                        <h:commandButton  class="btn btn-primary w-100"  action="/designComponentFormSet/List" value="Fromset Management" ></h:commandButton>
+                                        <hr/>
+                                        <h:commandButton  class="btn btn-primary w-100 m-1"  action="#{itemController.toAddDictionaryItem()}" value="Add Dictionaty Item" ></h:commandButton>
+                                        <h:commandButton  class="btn btn-primary w-100 m-1" action="#{itemController.toManageDictionary()}" value="List Dictionaty Items" ></h:commandButton>
+                                       
+                                        <h:commandButton value="Reload Dictionary" 
+                                                         class="btn btn-primary w-100 m-1" 
+                                                          
+                                                         action="#{itemController.reloadItems()}" >
+                                        </h:commandButton>
+                                        <h:commandButton  class="btn btn-primary w-100 m-1" 
+                                                          action="/item/import" value="Import Dictionary Items" ></h:commandButton>
+                                    </h:form>
+                                </div>
+                                <div class="col-9" >
+                                    <ui:insert name="metadata" >
+                                    </ui:insert>
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <p:messages ></p:messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

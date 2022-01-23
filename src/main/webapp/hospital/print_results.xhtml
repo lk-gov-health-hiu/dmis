@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:outputStylesheet library="css" name="tem1.css"/>
+                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Test Order List" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{clientController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{clientController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+
+                            <p:outputLabel value="Ordered Institution" ></p:outputLabel>
+                            <p:autoComplete value="#{clientController.institution}"
+                                            completeMethod="#{institutionController.completeInstitutions}"
+                                            var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                            </p:autoComplete>
+
+
+                            <p:commandButton ajax="false" value="Generate Excel">
+                                <p:dataExporter target="tbl" type="xlsx" fileName="test_results" ></p:dataExporter>
+                            </p:commandButton>
+                            <p:commandButton ajax="false" value="Process" 
+                                             action="#{clientController.toMohToSelectForPrinting()}" ></p:commandButton>
+
+
+                        </p:panelGrid>
+                        
+                        <p:commandButton value="PRINT SELECTED" ajax="false" 
+                                         action="#{clientController.toMohPrintSelected()}" 
+                                          onclick="form.target='_blank'"></p:commandButton>
+
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.listedToPrint}" 
+                                     rowIndexVar="n"
+                                     var="c" paginator="true" rowKey="#{c.id}" rows="10"
+                                     selection="#{clientController.selectedToPrint}">
+                            <p:column selectionMode="multiple" width="25"></p:column>
+                            <p:column headerText="No"  sortBy="#{c.encounterNumber}">
+                                <p:outputLabel value="#{n+1}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Serial" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.nic}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Gender"  sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age"  sortBy="#{c.client.person.age}"
+                                      filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.age}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="CT"  sortBy="#{c.ctValueStr}"
+                                      filterBy="#{c.ctValueStr}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.ctValueStr}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Result"  sortBy="#{c.pcrResult.name}"
+                                      filterBy="#{c.pcrResult.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.pcrResult.name}" ></p:outputLabel>
+                            </p:column>
+                             <p:column headerText="Comments"  sortBy="#{c.resultComments}"
+                                      filterBy="#{c.resultComments}" filterMatchMode="contains">
+                                 <p:outputLabel value="#{c.resultComments}" ></p:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

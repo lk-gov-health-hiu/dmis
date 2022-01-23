@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+
+        <ui:composition template="./template1.xhtml">
+
+            <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+
+            <ui:define name="content">
+
+                <table  class="align-top w3-table-all w3-card-4 w3-margin">
+                    <tr>
+                        <th colspan="2">
+                            The National COVID-19 Health Information System. #{applicationController.versionNo}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:outputLabel value="Logged Username" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{webUserController.loggedUser.name}" ></p:outputLabel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:outputLabel value="Logged User" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{webUserController.loggedUser.person.nameWithTitle}" ></p:outputLabel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:outputLabel value="Logged Role" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{webUserController.loggedUser.webUserRole.label}" ></p:outputLabel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:outputLabel value="Logged Institution" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{webUserController.loggedUser.institution.name} - (#{webUserController.loggedUser.institution.institutionType.label})" ></p:outputLabel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:outputLabel value="PDHS" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{webUserController.loggedUser.institution.pdhsArea.name}"></p:outputLabel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:outputLabel value="RDHS" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{webUserController.loggedUser.institution.rdhsArea.name}"></p:outputLabel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:outputLabel value="Privileges" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <ui:repeat value="#{webUserController.loggedUserPrivileges}" var="p" >
+                                <p:outputLabel value="#{p.privilege}, " ></p:outputLabel>
+                            </ui:repeat>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p:outputLabel value="My Institutions" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <ui:repeat value="#{webUserController.loggableInstitutions}" var="i" >
+                                <p:outputLabel value="#{i.name}, " ></p:outputLabel>
+                            </ui:repeat>
+                        </td>
+                    </tr>
+                </table>
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <ui:composition template="./template1.xhtml">
+            <ui:define name="content">
+                <h:form>
+                    <h:panelGroup rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
+                        <div class="col-6" >
+                            <div class="card" >
+                                <div class="card-header" >
+                                    <div class="my-2 fs-5 fw-bold"> Change My Institution Details</div>
+                                </div>
+                                <div class="card-body" >
+                                    <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter bg-white border border-light w-100">
+
+                                        <f:facet name="header" >
+                                        </f:facet>
+
+
+                                        <h:outputLabel class="fs-6 fw-bold" value="Name" for="iname" />
+                                        <h:inputText class="form-control" id="iname" 
+                                                     value="#{webUserController.selected.institution.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" 
+                                                     required="true"
+                                                     requiredMessage="Need a name for the institute">
+                                        </h:inputText>
+
+
+                                        <h:outputLabel class="fs-6 fw-bold" value="Address" for="iaddress" />
+                                        <h:inputTextarea  class="form-control text-muted" id="iaddress" value="#{webUserController.selected.institution.address}" 
+                                                          title="#{bundle.EditWebUserTitle_name}" />
+
+
+                                        <h:outputLabel class="fs-6 fw-bold" value="Email" for="iemail" />
+                                        <h:inputText class="form-control" id="iemail" value="#{webUserController.selected.institution.email}" title="#{bundle.EditWebUserTitle_email}" />
+
+                                        <h:outputLabel class="fs-6 fw-bold" value="Phone" for="itelNo" />
+                                        <h:inputText class="form-control" id="itelNo" value="#{webUserController.selected.institution.phone}" title="#{bundle.EditWebUserTitle_telNo}" />
+
+                                    </p:panelGrid>
+                                </div>
+                                <div class="card-footer" >
+                                    <h:commandButton class="my-2 btn btn-success"  action="#{webUserController.updateMyDetails()}" value="Save" ></h:commandButton>
+                                </div>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid d-flex">
+                <h:graphicImage library="image" class="mx-2" name="sllogo.webp" height="60"></h:graphicImage>
+                <h:form>
+                    <h:commandLink class="navbar-brand text-wrap h4 text-uppercase" action="/index">
+                        National COVID-19 Health Information System<br/>
+                    </h:commandLink>
+                    <div class="text-wrap h6 text-secondary mt-1">
+                        <h:outputLabel value="#{webUserController.loggedUser.institution.name} - #{webUserController.loggedUser.institution.district.name}" ></h:outputLabel>
+                    </div>
+                </h:form>
+                <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <h:form class="input-group">
+                        <h:inputText class="form-control " autocomplete="off" value="#{clientController.searchingId}" ></h:inputText>
+                        <h:commandButton action="#{clientController.searchByAnyIdWithBasicData()}" class="btn btn-outline-secondary" value="Search" ></h:commandButton>
+
+                    </h:form>
+                    <div>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+                            <li class="nav-item m-2">
+                                <button type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+                                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </li>
+
+                            <li class="nav-item dropdown m-2" id="logoutDropdown">
+                                <button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    #{webUserController.loggedUser.person.nameWithTitle}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <h:form>
+                                        <h:commandButton action="#{webUserController.toChangeMyPassword()}"
+                                                         class="dropdown-item" value="Change My Password">
+                                        </h:commandButton>
+                                        <h:commandButton action="#{webUserController.toChangeMyDetails()}"
+                                                         class="dropdown-item" value="Change My Details">
+                                        </h:commandButton>
+                                        <h:commandButton action="#{webUserController.toChangeMyInstitutionDetails()}"
+                                                         rendered="#{webUserController.hasPrivilege('Institution_Administration')}"
+                                                         class="dropdown-item" value="Change My Institution Details">
+                                        </h:commandButton>
+                                        <h:commandButton action="#{webUserController.toChangeMyUsername()}"
+                                                         class="dropdown-item" value="Change My Username">
+                                        </h:commandButton>
+                                        <h:commandButton action="#{webUserController.toChangeLoggedInstitution()}"
+                                                         class="dropdown-item" value="Change Logged Institute">
+                                        </h:commandButton>
+
+                                        <div class="dropdown-divider"></div>
+                                        <h:commandButton styleClass="dropdown-item" action="#{webUserController.logOut()}"
+                                                         value="Logout">
+                                        </h:commandButton>
+                                    </h:form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </cc:implementation>
+
+</html>

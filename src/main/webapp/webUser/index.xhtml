@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+    <!-- This is my comment as lakshitha -->
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <p:panel style="height: 100%; text-align: center;" rendered="#{!webUserController.loggedUser.systemAdministrator}">
+                    <h1>You are NOT authorized</h1>
+                </p:panel>
+
+               <p:panelGrid style="width: 100%;" columns="2" >
+                      
+                    <h:form >
+                        <div class="row" >
+                            <div class="col-12 text-center mt-4 mb-2" >
+                                <h4 class="fw-bold"><h:outputLabel  value="Manage Users" ></h:outputLabel></h4>
+                            </div>
+                        </div>
+                        
+                        <div class="row justify-content-center">
+                          <div class="col col-md-auto ">
+                            <div class="d-grid gap-2 ">
+                                <h:commandButton class=" btn btn-success " 
+                                                 value="Add New User" 
+                                                 action="#{webUserController.toCreateNewUserBySysAdmin()}">
+                                </h:commandButton>
+
+                                <h:commandButton class=" btn btn-success " 
+                                                  value="View Users"  
+                                                  action="#{webUserController.toManageAllUsers()}">
+                                </h:commandButton>
+                                <h:commandButton  class=" btn btn-success " 
+                                                  value="View Transactions"  
+                                                  action="#{userTransactionController.toSearchUserTransactions()}">
+                                </h:commandButton>
+                                <h:commandButton  class=" btn btn-success " 
+                                                  value="Suspicious Login Attempts"  
+                                                  action="#{userTransactionController.toSuspiciousLoginAttempts()}">
+                                </h:commandButton>
+                                <!-- cant add icon in h:commandButton >> icon="fa fa-users" -->
+                            </div>
+                         </div>   
+                        </div>
+                              
+                            
+                        <!--</p:panelGrid>-->
+                    </h:form>
+                    <ui:insert name="webUserContents" >
+                    </ui:insert>                      
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

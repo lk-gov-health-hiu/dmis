@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                View RAT Order
+            </ui:define>
+            <ui:define name="content">
+
+
+                <div class="card">
+                    <h5 class="card-header">
+                        <h:form>
+                            <p:outputLabel value="Patient Data For RAT Ordering" ></p:outputLabel>
+                            <p:commandButton value="To Edit Details" action="#{hospitalController.toRatOrderEdit()}" ajax="false"
+                                             style="float: right;">
+                            </p:commandButton>
+                            <p:commandButton value="Add New RAT Order" ajax="false"
+                                             action="#{hospitalController.toAddNewRatOrderWithNewClient()}" style="float: right;">
+                            </p:commandButton>
+                        </h:form>
+                    </h5>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <p:outputLabel value="Test Number"></p:outputLabel>
+                                <p:outputLabel id="txtTestNo"  
+                                               value="#{hospitalController.rat.encounterNumber}" 
+                                               style="width:100%;font-weight: bolder;">
+                                </p:outputLabel>
+                            </div>
+                            <div class="col-md-3">
+                                <p:outputLabel  value="Lab"></p:outputLabel>
+                                <p:outputLabel style="margin: 0px; padding: 0px; width: 100%;font-weight: bolder;"
+                                               value="#{hospitalController.rat.referalInstitution.name}"
+                                               >
+                                </p:outputLabel>
+                            </div>
+                            <div class="col-md-3">
+                                <p:outputLabel  value="Ordering Category"></p:outputLabel>
+                                <p:outputLabel id="orderingCat"
+                                               value="#{hospitalController.rat.pcrOrderingCategory.name}" 
+                                               style="margin: 0px; padding: 0px; width: 100%;font-weight: bolder;" >
+                                </p:outputLabel>
+                            </div>
+                            <div class="col-md-3" >
+                                <p:outputLabel value="Sampled at"></p:outputLabel>
+                                <p:outputLabel id="test" value="#{hospitalController.rat.sampledAt}" 
+                                               style="margin: 0px; padding: 0px; width: 100%;font-weight: bolder;">
+                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </div>
+
+
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <p:outputLabel value="Name:" />
+                                <p:outputLabel value="#{hospitalController.rat.client.person.name}" title="Name" style="width:100%;font-weight: bolder;"/>
+                            </div>
+                            <div class="col-md-1">
+                                <p:outputLabel value="Citizenship:" for="citizenship" />
+                                <p:outputLabel id="citizenship" value="#{hospitalController.rat.client.person.citizenship.name}" style="width:100%;font-weight: bolder;">
+                                </p:outputLabel>
+                            </div>
+                            <div class="col-md-2">
+                                <p:outputLabel value="PHN No.:"  />
+                                <p:outputLabel id="phn" value="#{hospitalController.rat.client.phn}" title="Phn" 
+                                               style="width: 100%;font-weight: bolder;"></p:outputLabel>
+                            </div>
+                            <div class="col-md-2">
+                                <p:outputLabel value="Other Ordering Category:"  />
+                                <p:outputLabel value="#{hospitalController.rat.pcrOrderingCategoryOther}" style="width:100%;font-weight: bolder;"/>
+                            </div>
+                            <div class="col-md-1">
+                                <p:outputLabel value="Symptomatic:"  />
+                                <p:outputLabel tabindex="106" 
+                                               value="#{hospitalController.rat.symptomatic?'Yes':''}" style="width:100%;font-weight: bolder;" ></p:outputLabel>
+                            </div>
+
+
+
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <p:outputLabel value="NIC/NIC of the guardian/Passport No. :" for="nic" />
+                                <p:outputLabel id="nic" 
+                                               style="width: 100%;font-weight: bolder;"  value="#{hospitalController.rat.client.person.nic}" title="Nic" >
+                                </p:outputLabel>
+                            </div>
+                            <div class="col-md-3">
+                                <p:outputLabel value="Gender:"  for="sex" />
+                                <p:outputLabel
+                                    id="sex" value="#{hospitalController.rat.client.person.sex.name}" 
+                                    style="width: 100%;font-weight: bolder;">
+                                </p:outputLabel>
+                            </div>
+                            <div class="col-md-3">
+                                <p:outputLabel value="Age:" style="width: 100%;"/>
+                                <h:panelGroup>
+                                    <p:outputLabel value="#{hospitalController.rat.client.person.age}"  style="width:100%;font-weight: bolder;">
+                                    </p:outputLabel>
+                                </h:panelGroup>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <p:outputLabel value="Current Residential Address:" for="address" />
+                                <p:outputLabel tabindex="4" 
+                                               id="address"
+                                               value="#{hospitalController.rat.client.person.address}"
+                                               title="Address ****" style="width:100%;font-weight: bolder;font-weight: bolder;"/>
+
+                            </div>
+
+                            <div class="col-md-3">
+                                <p:outputLabel value="District:"  />
+                                <p:outputLabel value="#{hospitalController.rat.client.person.district.name}" style="width: 100%;font-weight: bolder;"/>
+                            </div>
+
+
+                            <div class="col-md-3">
+                                <p:outputLabel value="MOH Area:" />
+                                <p:outputLabel value="#{hospitalController.rat.client.person.mohArea.name}" style="width: 100%;font-weight: bolder;"/>
+                            </div>
+
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <p:outputLabel value="Contact Number :" />
+                                <p:outputLabel value="#{hospitalController.rat.client.person.phone1}" style="width: 100%;font-weight: bolder;"/>
+                            </div>
+                            <div class="col-md-3">
+                                <p:outputLabel value="GN Area:"  />
+                                <p:outputLabel value="#{hospitalController.rat.client.person.gnArea.name}" style="width: 100%;font-weight: bolder;"/>
+                            </div>
+
+                            <div class="col-md-3">
+                                <p:outputLabel value="PHI Area:" />
+                                <p:outputLabel value="#{hospitalController.rat.client.person.phiArea.name}" style="width: 100%;font-weight: bolder;"/>
+                            </div>
+
+                            <div class="col-md-2">
+                                <p:outputLabel value="Unit/Ward:"  />
+                                <p:outputLabel value="#{hospitalController.rat.unitWard}" style="width:100%;font-weight: bolder;"/>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h:form>
+                            <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" value="#{sessionController.ratList}" id="tbl"
+                                         var="c" paginator="true" rowKey="#{c.id}" rows="10" >
+                                <f:facet name="header">
+                                    Last Entries
+                                </f:facet>
+                                <p:column headerText="Test No" sortBy="#{c.encounterNumber}">
+                                    <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Name" sortBy="#{c.client.person.name}" >
+                                    <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Age" sortBy="#{c.client.person.ageInDays}" >
+                                    <p:outputLabel value="#{c.client.person.age}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Sex" sortBy="#{c.client.person.sex.name}">
+                                    <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="NIC" sortBy="#{c.client.person.nic}" >
+                                    <p:outputLabel value="#{c.client.person.nic}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Address" >
+                                    <p:outputLabel value="#{c.client.person.address}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Actions" >
+                                    <p:commandButton value="Edit" ajax="false" action="#{hospitalController.toRatOrderEdit()}" >
+                                        <f:setPropertyActionListener value="#{c}" target="#{hospitalController.rat}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                    <p:commandButton value="Delete" ajax="false" action="#{hospitalController.toDeleteTestFromLastRatList()}" >
+                                        <f:setPropertyActionListener value="#{c}" target="#{hospitalController.deleting}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </div>
+                </div>
+
+
+
+
+
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

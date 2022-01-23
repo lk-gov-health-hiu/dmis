@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+
+                    <p:panelGrid columns="2" style="width: 100%;">
+                        <f:facet name="header" >
+                            <p:commandButton ajax="false" action="#{preferenceController.savePreferencesInstitution()}" 
+                                             value="SAVE" style="float: left;"></p:commandButton>
+                            <p:outputLabel value="Preferences" ></p:outputLabel>
+                        </f:facet>
+
+                        <p:tabView style="width: 100%;">
+
+                            <p:tab title="Workflow" >
+                                <p:panelGrid columns="2" style="width: 100%;">
+                                    <p:outputLabel value="Lab Approval Steps" ></p:outputLabel>
+                                    <p:selectOneMenu value="#{preferenceController.labApprovalSteps}">
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Entry only"  itemValue="Entry" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Entry and Confirm" itemValue="EntryConfirm" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Entry, Review and Confirm"  itemValue="EntryReviewConfirm" ></f:selectItem>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Lab Number Generation" ></p:outputLabel>
+                                    <p:selectOneMenu value="#{preferenceController.labNumberGeneration}">
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Ordered Institution Code + Lab Code + Date + Count"  
+                                                       itemValue="InsLabDateCount" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Ordered Institution Code + Date + Count"  
+                                                       itemValue="InsDateCount" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Date + Count"  
+                                                       itemValue="DateCount" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Lab Code + Date + Count"  
+                                                       itemValue="LabDateCount" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Month + Count"  
+                                                       itemValue="MonthCount" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Year + Count"  
+                                                       itemValue="YearCount" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Count"  
+                                                       itemValue="Count" ></f:selectItem>
+                                        <f:selectItem  itemLabel="Custom count"  
+                                                       itemValue="CustomCount" ></f:selectItem>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Starting Number for count" ></p:outputLabel><!-- comment -->
+                                    <p:inputText value="#{preferenceController.startingSerialCount}" ></p:inputText>
+
+                                </p:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Terms" >
+                                <p:panelGrid columns="2" style="width: 100%;">
+                                    <p:outputLabel value="PCR Positive Term" ></p:outputLabel><!-- comment -->
+                                    <p:inputText value="#{preferenceController.pcrPositiveTerm}" ></p:inputText>
+
+                                    <p:outputLabel value="PCR Negative Term" ></p:outputLabel><!-- comment -->
+                                    <p:inputText value="#{preferenceController.pcrNegativeTerm}" ></p:inputText>
+
+                                    <p:outputLabel value="PCR Inconclusive Term" ></p:outputLabel><!-- comment -->
+                                    <p:inputText value="#{preferenceController.pcrInconclusiveTerm}" ></p:inputText>
+
+                                    <p:outputLabel value="PCR Invalid Term" ></p:outputLabel><!-- comment -->
+                                    <p:inputText value="#{preferenceController.pcrInvalidTerm}" ></p:inputText>
+                                    
+                                    <p:outputLabel value="CT1 Term" ></p:outputLabel><!-- comment -->
+                                    <p:inputText value="#{preferenceController.ct1Term}" ></p:inputText>
+                                    
+                                    <p:outputLabel value="CT2 Term" ></p:outputLabel><!-- comment -->
+                                    <p:inputText value="#{preferenceController.ct2Term}" ></p:inputText>
+
+                                </p:panelGrid>
+
+                            </p:tab>
+
+                            <p:tab title="Individual Print Report Format" >
+                                <p:panelGrid columns="2" style="width: 100%;">
+                                    <h:panelGroup >
+                                        <p:outputLabel value="Lab Report HTML" ></p:outputLabel>
+                                        {name}
+                                        {nic}
+                                        {age}
+                                        {sex}
+                                        {address}
+                                        {phone1}
+                                        {phone2}
+                                        <br/>
+                                        {unit_or_ward}
+                                        {bht}
+                                        <br/>
+                                        {lab_no}
+                                        {ref_no}
+                                        <br/>
+                                        {gn}
+                                        {phi}
+                                        {institute}
+                                        {ref_institute_name}
+                                        {ref_institute_address}
+                                        {ref_institute_phone}
+                                        {ref_institute_fax}
+                                        {ref_institute_email}
+                                        {ref_institute_email}
+                                        <br/>
+                                        {received_date}
+                                        {entered_date}
+                                        {sampled_date}
+                                        {confirmed_date}
+                                        <br/>
+                                        {created_by}
+                                        {sampled_by}
+                                        {entered_by}
+                                        {reviewed_by}
+                                        {approved_by}
+                                        <br/>
+                                        {test}
+                                        {pcr_result}
+                                        {pcr_result_string}
+                                        {pcr_ct1}
+                                        {pcr_ct2}
+                                        {pcr_comments}
+                                        {pcr_comment_string}
+                                    </h:panelGroup>
+                                    <p:textEditor height="400"
+                                                  secure="false" value="#{preferenceController.labReportHtml}" ></p:textEditor>
+
+                                </p:panelGrid>
+                            </p:tab>
+
+
+                            <p:tab title="Bulk Print Report Format" >
+                                <p:panelGrid columns="2" style="width: 100%;">
+                                    <p:outputLabel value="Number of rows per page" ></p:outputLabel>
+                                    <p:inputText value="#{preferenceController.numberOfRowsPerPage}" ></p:inputText>
+                                    
+                                    <h:panelGroup >
+                                        <p:outputLabel value="Lab Report HTML" ></p:outputLabel>
+                                        {institute}
+                                        {result_table}
+                                        {sampled_date}
+                                        {received_date}
+                                        {confirmed_date}
+                                    </h:panelGroup>
+                                    <p:textEditor height="400" secure="false"
+                                                  value="#{preferenceController.labReportBulkHtml}" >
+                                    </p:textEditor>
+
+                                    
+                                </p:panelGrid>
+                            </p:tab>
+                            
+                        </p:tabView>
+
+
+
+
+
+
+
+                    </p:panelGrid>
+
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

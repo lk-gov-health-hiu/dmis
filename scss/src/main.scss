@@ -1,0 +1,29 @@
+// CSS framework for COVID-19 HIMS
+// Copyright 2021 - Rukshan Ranatunge <arkruka@gmail.com>
+
+@import "imports.scss";
+@import "colors.scss";
+@import "overrides.scss";
+@import "utilities.scss";
+@import "tables.scss";
+@import "icons.scss";
+
+html, body, * {
+    font-family: "Noto Sans JP",sans-serif !important;
+}
+
+body {
+    background-color: $body;
+}
+
+.btn-dark-success {
+    background-color: $dark-green;
+}
+
+.btn-dark-warning {
+    background-color: $dark-yellow;
+}
+
+.btn-dark-danger {
+    background-color: $dark-red;
+}

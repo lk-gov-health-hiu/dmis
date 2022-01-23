@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:form>
+                    <p:panelGrid columns="2" style="width: 100%;" styleClass="alignTop" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="SMS Reports" ></p:outputLabel>
+                        </f:facet>
+                        <p:panelGrid columns="1" >
+                            <p:commandButton ajax="false"  styleClass="width18rem" 
+                                             action="#{smsController.listSentSms()}" 
+                                             value="Successfully Sent SMS"   ></p:commandButton>
+                        </p:panelGrid>
+                        <ui:insert name="reports" >
+                            <h1> reports </h1>
+                        </ui:insert>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

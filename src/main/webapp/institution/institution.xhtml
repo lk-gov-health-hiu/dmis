@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+
+                <h:form id="InstitutionCreateForm" style="padding-top: 1rem;">
+                               
+                    <p:messages ></p:messages>
+
+                    <h:panelGroup id="display">
+                        
+                       
+                        <p:tabView  rendered="#{institutionController.selected != null}">
+                            <p:tab title="Details">
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Type:" for="institutionType" />
+                                    <h:selectOneMenu id="institutionType"  class="form-control"
+                                                     value="#{institutionController.selected.institutionType}" title="InstitutionType" 
+                                                     >
+                                        <f:selectItems value="#{applicationController.institutionTypes}" 
+                                                       var="institutionTypes"
+                                                       itemValue="#{institutionTypes}"
+                                                       itemLabel="#{institutionTypes.label}"></f:selectItems>
+                                    </h:selectOneMenu>
+                                    
+                                    
+                                    <h:outputLabel value="Name:" for="name" />
+                                    <h:inputText id="name" 
+                                                 autocomplete="off"
+                                                 class="form-control"
+                                                 value="#{institutionController.selected.name}" title="Name" />
+
+                                   
+
+                                    <h:outputLabel value="Code:" for="code" />
+                                    <h:inputText id="code" 
+                                                 autocomplete="off"
+                                                 class="form-control"
+                                                 value="#{institutionController.selected.code}" title="Code" />
+                                                   
+                                    
+                                    
+                                    
+                                    <h:outputLabel value="Parent:" for="parent" />
+                                    
+                                    <p:autoComplete  id="parent" class="d-block" inputStyleClass="form-control" 
+                                                     value="#{institutionController.selected.parent}" 
+                                                     completeMethod="#{institutionController.completeInstitutions}"
+                                                     var="i" 
+                                                     itemLabel="#{i.name}" 
+                                                     itemValue="#{i}" 
+                                                     forceSelection="True"
+                                                     maxResults="15" 
+                                                     minQueryLength="3">
+                                    </p:autoComplete >
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="Contact Details" rendered="true" >
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Address:" for="address" />
+                                    <h:inputText id="address" class="form-control"  value="#{institutionController.selected.address}" title="Address" />
+                                    
+                                    <h:outputLabel value="Fax:" for="fax" />
+                                    <h:inputText id="fax" class="form-control" value="#{institutionController.selected.fax}" title="Fax" />
+                                    
+                                    <h:outputLabel value="Email:" for="email" />
+                                    <h:inputText id="email" class="form-control" value="#{institutionController.selected.email}" title="Email" />
+                                    
+                                    <h:outputLabel value="Phone:" for="phone" />
+                                    <h:inputText id="phone" class="form-control" value="#{institutionController.selected.phone}" title="Phone" />
+                                    
+                                    <h:outputLabel value="Mobile:" for="mobile" />
+                                    <h:inputText id="mobile" class="form-control" value="#{institutionController.selected.mobile}" title="Mobile" />
+                                   
+                                    <h:outputLabel value="Web:" for="web" />
+                                    <h:inputText id="web" class="form-control" value="#{institutionController.selected.web}" title="Web" />
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="PHN Issue" rendered="true" >
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Last Serial No of PHN:" for="lastHin" />
+                                    <h:inputText id="lastHin" class="form-control" value="#{institutionController.selected.lastHin}" title="LastHin" />
+                                    <h:outputLabel value="POI Number:" for="poiNumber" />
+                                    <h:inputText id="poiNumber" class="form-control" value="#{institutionController.selected.poiNumber}" title="PoiNumber" />
+                                    <h:outputLabel value="POI Issuing Institution:" for="poii"/>                                                                   
+                                    <p:autoComplete  id="poii" value="#{institutionController.selected.poiInstitution}" 
+                                                     class="d-block" inputStyleClass="form-control" 
+                                                     completeMethod="#{institutionController.completeInstitutions}"
+                                                     forceSelection="true" maxResults="15" minQueryLength="3"
+                                                     var="poii" itemLabel="#{poii.name}" itemValue="#{poii}">
+                                    </p:autoComplete >
+                                </h:panelGrid>                            
+                            </p:tab>
+                            <p:tab title="Location" rendered="true" >
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Province:" for="province" />
+                                    <p:autoComplete id="province" value="#{institutionController.selected.province}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completeProvinces}"
+                                                    var="province" itemLabel="#{province.name}" itemValue="#{province}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <h:outputLabel value="PDHS Area:"  for="pdhsArea" />
+                                    <p:autoComplete id="pdhsArea" value="#{institutionController.selected.pdhsArea}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completePdhsAreas}"
+                                                    var="pdhsArea" itemLabel="#{pdhsArea.name}" itemValue="#{pdhsArea}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <h:outputLabel value="District:" for="district" />
+                                    <p:autoComplete id="district" value="#{institutionController.selected.district}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completeDistricts}"
+                                                    var="district" itemLabel="#{district.name}" itemValue="#{district}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <h:outputLabel value="RDHS Area:" for="rdhsArea" />
+                                    <p:autoComplete id="rdhsArea" value="#{institutionController.selected.rdhsArea}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completeRdhsAreas}"
+                                                    var="rdhsArea" itemLabel="#{rdhsArea.name}" itemValue="#{rdhsArea}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <h:outputLabel value="DS Division:" for="dsDivision" />
+                                    <p:autoComplete id="dsDivision" value="#{institutionController.selected.dsDivision}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completeDsAreas}"
+                                                    var="dsDivision" itemLabel="#{dsDivision.name}" itemValue="#{dsDivision}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <h:outputLabel value="MOH Area:" for="moh" />
+                                    <p:autoComplete id="moh" value="#{institutionController.selected.mohArea}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completeMoh}"
+                                                    var="moh" itemLabel="#{moh.name}" itemValue="#{moh}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+
+
+                                    <h:outputLabel value="PHI Area:" for="phiArea" />
+                                    <p:autoComplete id="phiArea" value="#{institutionController.selected.phiArea}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completePhiAreas}"
+                                                    var="phiArea" itemLabel="#{phiArea.name}" itemValue="#{phiArea}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <h:outputLabel value="PHM Area:" for="phmArea" />
+                                    <p:autoComplete id="phmArea" value="#{institutionController.selected.phmArea}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completeGnAreas}"
+                                                    var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <h:outputLabel value="GN Area:" for="gnArea" />
+                                    <p:autoComplete id="gnArea" value="#{institutionController.selected.gnArea}"
+                                                    class="d-block" inputStyleClass="form-control" 
+                                                    completeMethod="#{areaController.completeGnAreas}"
+                                                    var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
+                                                    maxResults="15" forceSelection="true"
+                                                    minQueryLength="3">
+                                    </p:autoComplete>
+                                </h:panelGrid>                            
+                            </p:tab>
+                            
+                        </p:tabView>
+                        
+                        <h:commandButton style="margin-left: 1.4em" class="btn btn-success" 
+                                         actionListener="#{institutionController.saveOrUpdateInstitution()}" 
+                                         value="Save"/>
+                       
+                    </h:panelGroup>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

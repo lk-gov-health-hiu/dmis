@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<!-- This is my comment as lakshitha -->
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content"> 
+                <h:form >
+                    <div class="row" >
+                        <div class="col-12 text-center mt-4 mb-2" >
+                            <h4 class="fw-bold"><h:outputLabel  value="User List" ></h:outputLabel></h4>
+                        </div>
+                    </div> 
+                    <div class="row" >
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <h:commandButton class="btn btn-success" value="Reload" action="#{webUserApplicationController.resetWebUsers()}" />
+                            <h:commandButton class="btn btn-success" value="Download" rendered="true">
+                                <p:dataExporter target="tbl" type="xlsx" fileName="Users" ></p:dataExporter>
+                            </h:commandButton>
+                            <h:commandButton class="btn btn-success" value="Back" action="#{webUserController.toManageUserIndexForSystemAdmin()}" />
+                        </div>
+                    </div> 
+                     <h:panelGrid columns="2">
+                        <p:dataTable  id="tbl" value="#{webUserController.items}" var="item" rowKey="#{item.id}" 
+                                     selection="#{webUserController.current}" 
+                                     rows="10"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="5,10,20,50,{ShowAll|'All'}">
+
+                            <p:column width="250" sortBy="#{item.person.name}" filterBy="#{item.person.name}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Name"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.name}"/>
+                            </p:column>
+                            <p:column  width="150" sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Username"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column  width="150" sortBy="#{item.institution.name}" filterBy="#{item.institution.name}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Institution"/>
+                                </f:facet>
+                                <h:outputText value="#{item.institution.name}"/>
+                            </p:column>
+                             <p:column  width="150" sortBy="#{item.institution.parent.name}" filterBy="#{item.institution.parent.name}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Parent Institution"/>
+                                </f:facet>
+                                 <h:outputText value="#{item.institution.parent.name}"/>
+                            </p:column>
+                            <p:column  width="120"  sortBy="#{item.telNo}" filterBy="#{item.telNo}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Phone"/>
+                                </f:facet>
+                                <h:outputText value="#{item.telNo}"/>
+                            </p:column>
+                            <p:column  width="150"  sortBy="#{item.webUserRole}" filterBy="#{item.webUserRole}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Role"/>
+                                </f:facet>
+                                <h:outputText value="#{item.webUserRole.label}"/>
+                            </p:column>
+                            <p:column  width="150">
+                                <f:facet name="header">
+                                    <h:outputText value="Actions"/>
+                                </f:facet>
+                                <div class="d-grid gap-2 ">
+                                    <h:commandButton  value="Edit" class="btn btn-warning btn-sm "
+                                                  action="#{webUserController.prepareEdit()}" >
+                                    <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                    </h:commandButton>
+                                    <h:commandButton  value="Privileges" class="btn btn-warning btn-sm"
+                                                      action="#{webUserController.toManagePrivileges()}" >
+                                        <f:setPropertyActionListener value="#{item}" 
+                                                                     target="#{webUserController.current}" >
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                    <h:commandButton  value="Password" class="btn btn-warning btn-sm"
+                                                      action="#{webUserController.prepareEditPassword()}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                    </h:commandButton>
+                                    <h:commandButton  value="Delete" class="btn btn-danger btn-sm "
+                                                      action="#{webUserController.deleteUser()}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                    </h:commandButton>
+                                </div>
+                                
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:form>
+                <br/>
+                <br/>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+</html>

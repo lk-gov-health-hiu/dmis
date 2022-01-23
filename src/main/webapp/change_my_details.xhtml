@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./template1.xhtml">
+
+            <ui:define name="content">
+
+                <h:form>
+
+
+                    <div class="card" >
+                        <div class="card-header" >
+                            <div class="my-2 fs-5 fw-bold"> Change My Details</div> 
+                        </div>
+                        <div class="card-body" >
+                            <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter bg-white border border-light w-100">
+                                <h:outputLabel class="fs-6 fw-bold" value="Title" for="title" />
+                                <h:selectOneMenu class="form-control" id="title" value="#{webUserController.selected.person.title}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
+                                    <f:selectItem itemLabel="Select Title" ></f:selectItem>
+                                    <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}" itemValue="#{t}" ></f:selectItems>
+                                </h:selectOneMenu>
+
+                                <h:outputLabel class="fs-6 fw-bold" value="Name" for="webUserPerson" />
+                                <h:inputText class="form-control" id="webUserPerson" value="#{webUserController.selected.person.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
+                                </h:inputText>
+
+
+                                <h:outputLabel class="fs-6 fw-bold" value="Username" for="name" />
+                                <h:inputText  class="form-control text-muted" id="name" value="#{webUserController.selected.name}" title="#{bundle.EditWebUserTitle_name}" required="true" requiredMessage="#{bundle.EditWebUserRequiredMessage_name}"/>
+
+
+                                <h:outputLabel class="fs-6 fw-bold" value="Email" for="email" />
+                                <h:inputText class="form-control" id="email" value="#{webUserController.selected.email}" title="#{bundle.EditWebUserTitle_email}" />
+
+                                <h:outputLabel class="fs-6 fw-bold" value="Phone" for="telNo" />
+                                <h:inputText class="form-control" id="telNo" value="#{webUserController.selected.telNo}" title="#{bundle.EditWebUserTitle_telNo}" />
+
+                                <h:outputLabel class="fs-6 fw-bold" value="My API IPs" for="ips" />
+                                <p:inputTextarea class="fs-6"  id="ips" 
+                                                 value="#{webUserController.selected.loginIPs}"  
+                                                 rows="5"
+                                                 maxlength="255"
+                                                 >
+                                </p:inputTextarea>
+                                <h:outputLabel class="fs-6 fw-bold" value="Language"  />
+                                <h:selectOneMenu class="form-control" value="#{webUserController.selected.defLocale}" >
+                                    <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
+                                    <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
+                                    <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
+                                </h:selectOneMenu>
+                            </p:panelGrid>
+                        </div>
+                        <div class="card-footer" >
+                            <h:commandButton class="my-2 btn btn-success"  
+                                             action="#{webUserController.updateMyDetails()}" value="Save" ></h:commandButton>
+                        </div>
+                    </div>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

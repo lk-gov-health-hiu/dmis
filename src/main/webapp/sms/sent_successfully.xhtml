@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="reports">
+
+                <p:panelGrid columns="2" >
+                    <p:outputLabel value="From" ></p:outputLabel>
+                    <p:calendar value="#{smsController.fromDate}" pattern="dd MMMM yyyy" ></p:calendar>
+
+                    <p:outputLabel value="To" ></p:outputLabel>
+                    <p:calendar value="#{smsController.toDate}" pattern="dd MMMM yyyy" ></p:calendar>
+                    
+                    <p:outputLabel value="Institution" ></p:outputLabel>
+                    <p:selectOneMenu value="#{smsController.institution}" >
+                        <f:selectItem itemLabel="All" ></f:selectItem>
+                        <f:selectItems value="#{webUserController.loggableInstitutions}" var="i" itemLabel="#{i.name}"
+                                       itemValue="#{i}" ></f:selectItems>
+                    </p:selectOneMenu>
+
+                    <p:commandButton value="Process" ajax="false" action="#{smsController.listSentSms()}"></p:commandButton>
+                    <p:commandButton value="Download" ajax="false" >
+                        <p:dataExporter fileName="Sent SMS.xlsx" type="xlsx" target="tbl" ></p:dataExporter>
+                    </p:commandButton>
+                </p:panelGrid>
+
+                <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" value="#{smsController.smses}" rows="10" paginator="true" var="s" rowIndexVar="#{s.id}" 
+                             rowIndexVar="n">
+                    <p:column headerText="No" >
+                        <p:outputLabel value="#{n + 1}" ></p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Message" >
+                        <p:outputLabel value="#{s.sentAt}" >
+                            <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" ></f:convertDateTime>
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Type" >
+                        <p:outputLabel value="#{s.smsType}" ></p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Institution" >
+                        <p:outputLabel value="#{s.encounter.institution.name}" ></p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Patient" >
+                        <p:outputLabel value="#{s.smsType}" ></p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Phone" >
+                        <p:outputLabel value="#{s.smsType}" ></p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Message" >
+                        <p:outputLabel value="#{s.smsType}" ></p:outputLabel>
+                    </p:column>
+                </p:dataTable>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

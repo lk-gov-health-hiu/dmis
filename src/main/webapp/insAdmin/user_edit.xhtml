@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/insAdmin/user_index.xhtml">
+
+            <ui:define name="webUserContents">
+                <p:panel id="WebUserEditDlg" class="border border-light h-100">
+                    
+                    <h:form id="WebUserEditForm">
+
+                        <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" class="border border-light m-auto text-start mb-3">
+                            <f:facet name="header">
+                                <h:outputLabel class="fs-5 fw-bold my-3 text-center" value="Edit Detais" for="Edit Detais" />
+                            </f:facet>
+
+                            <h:outputLabel class="fs-6 fw-bold" value="Username" for="username" />
+                            <h:inputText class="form-control text-muted" id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
+                                          readonly="true" required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
+
+
+                            <h:outputLabel class="fs-6 fw-bold" value="Title" for="title" />
+                            <h:selectOneMenu class="form-select" id="title"  value="#{webUserController.selected.person.title}"  >
+                                <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
+                                               itemValue="#{t}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="fs-6 fw-bold" value="Name" for="name" />
+                            <h:inputText 
+                                class="form-control"
+                                autocomplete="off" 
+                                id="name" 
+                                value="#{webUserController.selected.person.name}"
+                                title="Name" />
+
+
+                            <h:outputLabel class="fs-6 fw-bold" value="Institution" for="institution" />
+                            <p:autoComplete class="fs-6" id="institution" value="#{webUserController.selected.institution}" 
+                                             completeMethod="#{institutionController.completeInstitutions}"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                             forceSelection="true" maxResults="15" minQueryLength="3">
+                            </p:autoComplete >
+
+                            <h:outputLabel class="fs-6 fw-bold" value="Area" for="area" />
+                            <h:selectOneMenu class="form-select" id="area" value="#{webUserController.selected.area}" >
+                                <f:selectItems 
+                                    value="#{webUserController.areasForMe}"
+                                    var="i" itemLabel="#{i.name}" itemValue="#{i}"></f:selectItems>
+                            </h:selectOneMenu >
+
+                            <h:outputLabel class="fs-6 fw-bold" value="Email" for="email" />
+                            <h:inputText class="form-control" id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+
+                            <h:outputLabel class="fs-6 fw-bold" value="Telephone No." for="telNo" />
+                            <h:inputText class="form-control" id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
+
+
+                            <h:outputLabel class="fs-6 fw-bold" value="Role" for="webUserRole" />
+                            <h:selectOneMenu class="form-select" id="webUserRole" value="#{webUserController.selected.webUserRole}"  required="true">
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{webUserController.webUserRolesForInsAdmin}" 
+                                               var="r" 
+                                               itemLabel="#{r.label}" 
+                                               itemValue="#{r}" >
+                                </f:selectItems>
+                            </h:selectOneMenu>
+                            
+                                <h:commandButton class="btn btn-success w-100" action="#{webUserController.update}" value="#{bundleClinical.Save}" />
+                                <h:commandButton class="btn btn-warning w-50" value="Back" action="#{webUserController.toManage}"/>
+                            
+                        </p:panelGrid>
+
+
+                    </h:form>
+                </p:panel>
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>
+

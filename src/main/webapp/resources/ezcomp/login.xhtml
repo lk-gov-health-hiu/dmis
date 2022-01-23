@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <cc:interface>
+    </cc:interface>
+    <cc:implementation>
+        <h:form>
+            <p:focus for="username"></p:focus>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col vh-100 px-4 py-3 bg-white">
+                        <div class="my-2 d-flex justify-content-center">
+                            <h:graphicImage style="height: 18em;" library="image" name="login1.png"></h:graphicImage>
+                        </div>
+                        <h3 class="fw-bold">National COVID-19 Health Information System</h3>
+                        <h4 class="text-muted">Login</h4>
+                        <div class="my-2">
+                            <p:inputText id="username" placeholder="Username" required="true" requiredMessage="Username is required." autocomplete="off"
+                                         value="#{webUserController.userName}" class="form-control">
+                            </p:inputText>
+                        </div>
+                        <div class="my-2">
+                            <p:password id="password" placeholder="Password" required="true" requiredMessage="Password is required." autocomplete="off"
+                                        value="#{webUserController.password}" class="form-control"></p:password>
+                        </div>
+                        <div class="d-grid">
+                            <h:commandButton class="btn fw-bold btn-primary" value="Login"
+                                             action="#{webUserController.loginNew()}"></h:commandButton>
+                        </div>
+                        <div class="text-muted">
+                            &copy; Ministry of Health,
+                            <h:outputText value="#{session.lastAccessedTime}">
+                                <f:convertDateTime pattern="yyyy" type="date" />
+                            </h:outputText>
+                        </div>
+                        <div class="my-2">
+                            <p:messages></p:messages>
+                        </div>
+                    </div>
+                    <div class="col px-5 py-3">
+                        <div class="list-group">
+                            <li class="list-group-item list-group-item-info fw-bold">Downloads</li>
+                            <a href="https://drive.google.com/file/d/1UVJnSX4j0IQQodTfpbsVBlsH535k4AYF/view?usp=sharing" class="list-group-item list-group-item-action" target="_blank">Download Data Collection Form for MOH</a>
+                            <a href="https://drive.google.com/file/d/1bEBr3Ip35JjMrEFnhk5ExD0P64IydSki/view?usp=sharing" class="list-group-item list-group-item-action" target="_blank">Download Data Collection Form for Hospitals</a>
+                        </div>
+                        <div class="list-group">
+                            <li class="list-group-item list-group-item-info fw-bold">News</li>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </cc:implementation>
+
+</html>

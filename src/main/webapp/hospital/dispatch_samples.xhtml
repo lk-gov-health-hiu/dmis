@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:outputStylesheet library="css" name="tem1.css"/>
+                <p:panelGrid columns="1" styleClass="alignTop w-100 border border-light bg-white" >
+                    <f:facet name="header" >
+                        <h:outputLabel class="fs-5 fw-bold my-2" value="Dispatch Samples" ></h:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <p:panelGrid columns="2" class="border border-light bg-white my-4">
+
+                            <p:panelGrid columns="2" class="border border-light bg-white">
+                                <f:facet name="header" >
+                                    <h:outputLabel class="fs-6 fw-bold my-1" value="Listing" ></h:outputLabel>
+                                </f:facet>
+                                <h:outputLabel class="fs-6 fw-bold" value="From" ></h:outputLabel>
+                                <p:calendar class="fs-6" value="#{hospitalController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+
+                                <h:outputLabel class="fs-6 fw-bold" value="To" ></h:outputLabel>
+                                <p:calendar  class="fs-6" value="#{hospitalController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+
+                                <h:outputLabel class="fs-6 fw-bold" value="Test" ></h:outputLabel>
+                                <h:selectOneMenu class="fs-6" value="#{hospitalController.testType}" >
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{mohController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </h:selectOneMenu>
+
+                                <h:commandButton class="btn btn-success w-100" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton class="btn btn-warning w-100" value="Process" 
+                                                 action="#{hospitalController.toDispatchSamples()}" >
+                                </h:commandButton>
+
+
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" class="border border-light">
+                                <f:facet name="header" >
+                                    <h:outputLabel class="fs-6 fw-bold my-1" value="Dispatching" ></h:outputLabel>
+                                </f:facet>
+
+                                <h:outputLabel class="fs-6 fw-bold" value="Lab to Dispatch" ></h:outputLabel>
+                                <p:autoComplete value="#{hospitalController.dispatchingLab}"
+                                                completeMethod="#{institutionController.completeLab}"
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                                </p:autoComplete>
+
+                                <h:commandButton class="btn btn-warning w-100" value="Dispatch" 
+                                                 action="#{hospitalController.dispatchSelectedSamples()}" >
+                                </h:commandButton>
+
+
+                            </p:panelGrid>
+
+                        </p:panelGrid>
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{hospitalController.listedToDispatch}" 
+                                     var="c" paginator="true" rowKey="#{c.id}" rows="10"
+                                     selection="#{hospitalController.selectedToDispatch}"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,25,100,1000"
+                                     >
+                            <p:column selectionMode="multiple" width="50" resizable="false"></p:column>
+                            <p:column headerText="Test No"  sortBy="#{c.encounterNumber}" 
+                                      filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                                <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                <h:outputLabel class="fs-6" value="#{c.client.person.name}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age" >
+                                <h:outputLabel class="fs-6" value="#{c.client.person.age}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Sex" >
+                                <h:outputLabel class="fs-6" value="#{c.client.person.sex.name}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}" filterBy="#{c.client.person.address}" filterMatchMode="contains">
+                                <h:outputLabel class="fs-6" value="#{c.client.person.address}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Phone"  sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                                <h:outputLabel class="fs-6" value="#{c.client.person.phone1}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" 
+                                      filterBy="#{c.pcrTestType.name}" 
+                                      filterMatchMode="contains">
+                                <h:outputLabel class="fs-6" value="#{c.pcrTestType.name}"></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Current Lab" 
+                                      sortBy="#{c.referalInstitution.name}" 
+                                      filterBy="#{c.referalInstitution.name}" 
+                                      filterMatchMode="contains">
+                                <h:outputLabel value="#{c.referalInstitution.name}" ></h:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

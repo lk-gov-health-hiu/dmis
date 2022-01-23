@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:form>
+            <p:panelGrid columns="1" class="border border-light bg-white w-100">
+                <f:facet name="header" >
+                    <p:outputLabel class="fs-6 fw-bold text-white" value="Preferences" ></p:outputLabel>
+                </f:facet>
+
+                <p:tabView style="width: 100%;">
+
+                    <p:tab title="Workflow" >
+                        <p:panelGrid columns="2" class="w-100 border border-light bg-white">
+                            <p:outputLabel value="Lab Approval Steps" class="fs-6 fw-bold" ></p:outputLabel>
+                            <p:selectOneMenu value="#{preferenceController.labApprovalSteps}" class="form-control w-100">
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItem  itemLabel="Entry only"  itemValue="Entry" ></f:selectItem>
+                                <f:selectItem  itemLabel="Entry and Confirm" itemValue="EntryConfirm" ></f:selectItem>
+                                <f:selectItem  itemLabel="Entry, Review and Confirm"  itemValue="EntryReviewConfirm" ></f:selectItem>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Lab Number Generation" class="fs-6 fw-bold" ></p:outputLabel>
+                            <p:selectOneMenu value="#{preferenceController.labNumberGeneration}" class="form-control w-100">
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItem  itemLabel="Ordered Institution Code + Lab Code + Date + Count"
+                                               itemValue="InsLabDateCount" ></f:selectItem>
+                                <f:selectItem  itemLabel="Ordered Institution Code + Date + Count"
+                                               itemValue="InsDateCount" ></f:selectItem>
+                                <f:selectItem  itemLabel="Date + Count"
+                                               itemValue="DateCount" ></f:selectItem>
+                                <f:selectItem  itemLabel="Lab Code + Date + Count"
+                                               itemValue="LabDateCount" ></f:selectItem>
+                                <f:selectItem  itemLabel="Month + Count"
+                                               itemValue="MonthCount" ></f:selectItem>
+                                <f:selectItem  itemLabel="Year + Count"
+                                               itemValue="YearCount" ></f:selectItem>
+                                <f:selectItem  itemLabel="Count"
+                                               itemValue="Count" ></f:selectItem>
+                                <f:selectItem  itemLabel="Custom count"
+                                               itemValue="CustomCount" ></f:selectItem>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Starting Number for count" class="fs-6 fw-bold" ></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.startingSerialCount}" class="form-control w-100"></p:inputText>
+
+                        </p:panelGrid>
+                    </p:tab>
+
+                    <p:tab title="Terms" >
+                        <p:panelGrid columns="2" class="w-100 border border-light bg-white" >
+                            <p:outputLabel value="PCR Positive Term" class="fs-6 fw-bold" ></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.pcrPositiveTerm}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="PCR Negative Term" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.pcrNegativeTerm}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="PCR Inconclusive Term" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.pcrInconclusiveTerm}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="PCR Invalid Term" class="fs-6 fw-bold" ></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.pcrInvalidTerm}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="PCR Positive Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.pcrPositiveComment}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="PCR Negative Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.pcrNegativeComment}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="PCR Inconclusive Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.pcrInconclusiveComment}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="PCR Invalid Comment" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.pcrInvalidComment}" class="form-control w-100"></p:inputText>
+
+
+                            <p:outputLabel value="CT1 Term" class="fs-6 fw-bold"></p:outputLabel ><!-- comment -->
+                            <p:inputText value="#{preferenceController.ct1Term}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="CT2 Term" class="fs-6 fw-bold"></p:outputLabel><!-- comment -->
+                            <p:inputText value="#{preferenceController.ct2Term}" class="form-control w-100"></p:inputText>
+
+                            <p:outputLabel value="PCT Test Term" class="fs-6 fw-bold"></p:outputLabel>
+                            <p:inputText class="form-control" value="#{preferenceController.pcrTestTerm}"></p:inputText>
+
+                            <p:outputLabel value="RAT Test Term" class="fs-6 fw-bold"></p:outputLabel>
+                            <p:inputText class="form-control" value="#{preferenceController.ratTestTerm}"></p:inputText>
+
+                        </p:panelGrid>
+
+                    </p:tab>
+
+                    <p:tab title="Individual Print Report Format" >
+                        <p:panelGrid columns="2" class="w-100 border border-light bg-white">
+                            <h:panelGroup >
+                                <p:outputLabel value="Lab Report HTML" class="fw-bold"></p:outputLabel>
+                                {name}
+                                        {nic}
+                                        {age}
+                                        {sex}
+                                        {address}
+                                        {phone1}
+                                        {phone2}
+                                        <br/>
+                                        {unit_or_ward}
+                                        {bht}
+                                        <br/>
+                                        {lab_no}
+                                        {ref_no}
+                                        <br/>
+                                        {gn}
+                                        {phi}
+                                        {institute}
+                                        {ref_institute_name}
+                                        {ref_institute_address}
+                                        {ref_institute_phone}
+                                        {ref_institute_fax}
+                                        {ref_institute_email}
+                                        {ref_institute_email}
+                                        <br/>
+                                        {received_date}
+                                        {entered_date}
+                                        {sampled_date}
+                                        {confirmed_date}
+                                        <br/>
+                                        {created_by}
+                                        {sampled_by}
+                                        {entered_by}
+                                        {reviewed_by}
+                                        {approved_by}
+                                        <br/>
+                                        {test}
+                                        {pcr_result}
+                                        {pcr_result_string}
+                                        {pcr_ct1}
+                                        {pcr_ct2}
+                                        {pcr_comments}
+                                        {pcr_comment_string}
+                            </h:panelGroup>
+                            <p:inputTextarea style="width: 100%; min-width: 800px; height: 90vh; min-height: 100px;" value="#{preferenceController.labReportHtml}" ></p:inputTextarea>
+                        </p:panelGrid>
+                    </p:tab>
+
+
+                    <p:tab title="Bulk Print Report Format" >
+                        <p:panelGrid columns="2" class="w-100 border border-light bg-white">
+                            <p:outputLabel value="Number of rows per page" class="fs-6 fw-bold"></p:outputLabel>
+                            <p:inputText value="#{preferenceController.numberOfRowsPerPage}" class="form-control w-100"></p:inputText>
+
+                            <h:panelGroup >
+                                <p:outputLabel value="Lab Report HTML" class="fs-6 fw-bold"></p:outputLabel>
+                                {institute}
+                                {result_table}
+                                {sampled_date}
+                                {received_date}
+                                {confirmed_date}
+                            </h:panelGroup>
+
+                            <p:textEditor id="editorB"
+                                          allowFormatting="true"
+                                          allowBlocks="true"
+                                          allowImages="true"
+                                          allowLinks="true"
+                                          allowStyles="true"
+                                          height="800"
+                                          secure="false"
+                                          value="#{preferenceController.labReportBulkHtml}">
+                            </p:textEditor>
+                        </p:panelGrid>
+                    </p:tab>
+                </p:tabView>
+
+                <f:facet name="footer" >
+                    <h:commandButton class="btn btn-success text-white w-25" action="#{preferenceController.savePreferencesInstitution()}"
+                                     value="SAVE" style="float: left;"></h:commandButton>
+
+                </f:facet>
+            </p:panelGrid>
+
+        </h:form>
+    </cc:implementation>
+</html>

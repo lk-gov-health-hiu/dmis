@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Test View</title>
+    </h:head>
+    <h:body>
+
+
+
+        <h:form>
+
+            <h:panelGrid columns="2">
+
+
+                <h:outputText value="EncounterDate:"/>
+                <h:outputText value="#{commonController.encounter.encounterDate}" title="EncounterDate">
+                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                </h:outputText>
+
+                <h:outputText value="Created By:"/>
+                <h:outputText value="#{commonController.encounter.createdBy.person.nameWithTitle}" title="CreatedBy"/>
+                <h:outputText value="Created At:"/>
+                <h:outputText value="#{commonController.encounter.createdAt}" title="CreatedAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+
+                <h:outputText value="Institution:"/>
+                <h:outputText value="#{commonController.encounter.institution}" title="Institution"/>
+                <h:outputText value="Lab:"/>
+                <h:outputText value="#{commonController.encounter.referalInstitution}" title="Lab"/>
+
+                <h:outputText value="EncounterNumber:"/>
+                <h:outputText value="#{commonController.encounter.encounterNumber}" title="EncounterNumber"/>
+
+                <h:outputText value="Id:"/>
+                <h:outputText value="#{commonController.encounter.id}" title="Id"/>
+
+                <h:outputText value="Area:"/>
+                <h:outputText value="#{commonController.encounter.area}" title="Area"/>
+
+
+                <h:outputText value="Completed:"/>
+                <h:outputText value="#{commonController.encounter.completed}" title="Completed"/>
+
+                <h:outputText value="Retired By:"/>
+                <h:outputText value="#{commonController.encounter.retiredBy}" title="RetiredBy"/>
+                <h:outputText value="Retired At:"/>
+                <h:outputText value="#{commonController.encounter.retiredAt}" title="RetiredAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="Retired Reversed By:"/>
+                <h:outputText value="#{commonController.encounter.retiredReversedBy}" title="RetiredReversedBy"/>
+                <h:outputText value="Retired Reversed At:"/>
+                <h:outputText value="#{commonController.encounter.retiredReversedAt}" title="RetiredReversedAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+
+                <h:outputText value="CompletedBy:"/>
+                <h:outputText value="#{commonController.encounter.completedBy}" title="CompletedBy"/>
+                <h:outputText value="CompletedAt:"/>
+                <h:outputText value="#{commonController.encounter.completedAt}" title="CompletedAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+
+                <h:outputText value="LastEditBy:"/>
+                <h:outputText value="#{commonController.encounter.lastEditBy}" title="LastEditBy"/>
+                <h:outputText value="LastEditeAt:"/>
+                <h:outputText value="#{commonController.encounter.lastEditeAt}" title="LastEditeAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="RetireComments:"/>
+                <h:outputText value="#{commonController.encounter.retireComments}" title="RetireComments"/>
+                
+                
+                <h:outputText value="Sampled:"/>
+                <h:outputText value="#{commonController.encounter.sampled}" title="Sampled"/>
+                <h:outputText value="SampledAt:"/>
+                <h:outputText value="#{commonController.encounter.sampledAt}" title="SampledAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="SentToLab:"/>
+                <h:outputText value="#{commonController.encounter.sentToLab}" title="SentToLab"/>
+                <h:outputText value="SentToLabAt:"/>
+                <h:outputText value="#{commonController.encounter.sentToLabAt}" title="SentToLabAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="ReceivedAtLab:"/>
+                <h:outputText value="#{commonController.encounter.receivedAtLab}" title="ReceivedAtLab"/>
+                <h:outputText value="ReceivedAtLabAt:"/>
+                <h:outputText value="#{commonController.encounter.receivedAtLabAt}" title="ReceivedAtLabAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="Result Entered:"/>
+                <h:outputText value="#{commonController.encounter.resultEntered}" title="ResultEntered"/>
+                <h:outputText value="Result EnteredAt:"/>
+                <h:outputText value="#{commonController.encounter.resultEnteredAt}" title="ResultEnteredAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                
+                
+                <h:outputText value="Result Confirmed:"/>
+                <h:outputText value="#{commonController.encounter.resultConfirmed}" title="ResultConfirmed"/>
+                <h:outputText value="Result Confirmed At:"/>
+                <h:outputText value="#{commonController.encounter.resultConfirmedAt}" title="ResultConfirmedAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                
+                <h:outputText value="SampledBy:"/>
+                <h:outputText value="#{commonController.encounter.sampledBy}" title="SampledBy"/>
+                <h:outputText value="SentToLabBy:"/>
+                <h:outputText value="#{commonController.encounter.sentToLabBy}" title="SentToLabBy"/>
+                <h:outputText value="ReceivedAtLabBy:"/>
+                <h:outputText value="#{commonController.encounter.receivedAtLabBy}" title="ReceivedAtLabBy"/>
+                <h:outputText value="ResultEnteredBy:"/>
+                <h:outputText value="#{commonController.encounter.resultEnteredBy}" title="ResultEnteredBy"/>
+                <h:outputText value="ResultConfirmedBy:"/>
+                <h:outputText value="#{commonController.encounter.resultConfirmedBy}" title="ResultConfirmedBy"/>
+                <h:outputText value="ResultNoted:"/>
+                <h:outputText value="#{commonController.encounter.resultNoted}" title="ResultNoted"/>
+                <h:outputText value="ResultNotedAt:"/>
+                <h:outputText value="#{commonController.encounter.resultNotedAt}" title="ResultNotedAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="ResultNotedBy:"/>
+                <h:outputText value="#{commonController.encounter.resultNotedBy}" title="ResultNotedBy"/>
+                <h:outputText value="ResultComments:"/>
+                <h:outputText value="#{commonController.encounter.resultComments}" title="ResultComments"/>
+                <h:outputText value="ResultReviewed:"/>
+                <h:outputText value="#{commonController.encounter.resultReviewed}" title="ResultReviewed"/>
+                <h:outputText value="ResultReviewedAt:"/>
+                <h:outputText value="#{commonController.encounter.resultReviewedAt}" title="ResultReviewedAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="ResultReviewedBy:"/>
+                <h:outputText value="#{commonController.encounter.resultReviewedBy}" title="ResultReviewedBy"/>
+                <h:outputText value="ResultPrinted:"/>
+                <h:outputText value="#{commonController.encounter.resultPrinted}" title="ResultPrinted"/>
+                <h:outputText value="ResultPrintedAt:"/>
+                <h:outputText value="#{commonController.encounter.resultPrintedAt}" title="ResultPrintedAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="ResultPrintedBy:"/>
+                <h:outputText value="#{commonController.encounter.resultPrintedBy}" title="ResultPrintedBy"/>
+                
+                
+                
+                <h:outputText value="Result Date:"/>
+                <h:outputText value="#{commonController.encounter.resultDate}" title="ResultDate">
+                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                </h:outputText>
+                <h:outputText value="Result Date Time:"/>
+                <h:outputText value="#{commonController.encounter.resultDateTime}" title="ResultDateTime">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="Result Marked User:"/>
+                <h:outputText value="#{commonController.encounter.resultMarkedUser}" title="ResultMarkedUser">
+                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                </h:outputText>
+                <h:outputText value="CtValue:"/>
+                <h:outputText value="#{commonController.encounter.ctValue}" title="CtValue"/>
+                <h:outputText value="PcrResult:"/>
+                <h:outputText value="#{commonController.encounter.pcrResult}" title="PcrResult"/>
+                <h:outputText value="CtValueStr:"/>
+                <h:outputText value="#{commonController.encounter.ctValueStr}" title="CtValueStr"/>
+                <h:outputText value="LabNumber:"/>
+                <h:outputText value="#{commonController.encounter.labNumber}" title="LabNumber"/>
+                <h:outputText value="UnitWard:"/>
+                <h:outputText value="#{commonController.encounter.unitWard}" title="UnitWard"/>
+                <h:outputText value="PcrResultStr:"/>
+                <h:outputText value="#{commonController.encounter.pcrResultStr}" title="PcrResultStr"/>
+                <h:outputText value="ResultPrintHtml:"/>
+                <h:outputText value="#{commonController.encounter.resultPrintHtml}" title="ResultPrintHtml"/>
+                <h:outputText value="TestType:"/>
+                <h:outputText value="#{commonController.encounter.testType}" title="TestType"/>
+                <h:outputText value="PcrTestType:"/>
+                <h:outputText value="#{commonController.encounter.pcrTestType}" title="PcrTestType"/>
+                <h:outputText value="PcrOrderingCategory:"/>
+                <h:outputText value="#{commonController.encounter.pcrOrderingCategory}" title="PcrOrderingCategory"/>
+                <h:outputText value="PcrOrderingCategoryOther:"/>
+                <h:outputText value="#{commonController.encounter.pcrOrderingCategoryOther}" title="PcrOrderingCategoryOther"/>
+                <h:outputText value="Symptomatic:"/>
+                <h:outputText value="#{commonController.encounter.symptomatic}" title="Symptomatic"/>
+                <h:outputText value="CtValue2:"/>
+                <h:outputText value="#{commonController.encounter.ctValue2}" title="CtValue2"/>
+                <h:outputText value="SampleRejectedAtLab:"/>
+                <h:outputText value="#{commonController.encounter.sampleRejectedAtLab}" title="SampleRejectedAtLab"/>
+                <h:outputText value="SampleRejectedAtLabAt:"/>
+                <h:outputText value="#{commonController.encounter.sampleRejectedAtLabAt}" title="SampleRejectedAtLabAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="SampleRejectedAtLabBy:"/>
+                <h:outputText value="#{commonController.encounter.sampleRejectedAtLabBy}" title="SampleRejectedAtLabBy"/>
+                <h:outputText value="PendingAtLab:"/>
+                <h:outputText value="#{commonController.encounter.pendingAtLab}" title="PendingAtLab"/>
+                <h:outputText value="PendingAtLabAt:"/>
+                <h:outputText value="#{commonController.encounter.pendingAtLabAt}" title="PendingAtLabAt">
+                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                </h:outputText>
+                <h:outputText value="PendingAtLabBy:"/>
+                <h:outputText value="#{commonController.encounter.pendingAtLabBy}" title="PendingAtLabBy"/>
+                <h:outputText value="ResultCssClass:"/>
+                <h:outputText value="#{commonController.encounter.resultCssClass}" title="ResultCssClass"/>
+                <h:outputText value="PlateNumber:"/>
+                <h:outputText value="#{commonController.encounter.plateNumber}" title="PlateNumber"/>
+                <h:outputText value="ReferenceTest:"/>
+                <h:outputText value="#{commonController.encounter.referenceTest}" title="ReferenceTest"/>
+                <h:outputText value="ReferenceCase:"/>
+                <h:outputText value="#{commonController.encounter.referenceCase}" title="ReferenceCase"/>
+                <h:outputText value="InstitutionUnit:"/>
+                <h:outputText value="#{commonController.encounter.institutionUnit}" title="InstitutionUnit"/>
+                <h:outputText value="CreatedInstitution:"/>
+                <h:outputText value="#{commonController.encounter.createdInstitution}" title="CreatedInstitution"/>
+                <h:outputText value="Bht:"/>
+                <h:outputText value="#{commonController.encounter.bht}" title="Bht"/>
+                <h:outputText value="Comments:"/>
+                <h:outputText value="#{commonController.encounter.comments}" title="Comments"/>
+                <h:outputText value="VaccinationStatus:"/>
+                <h:outputText value="#{commonController.encounter.vaccinationStatus}" title="VaccinationStatus"/>
+            </h:panelGrid>
+        </h:form>
+
+
+
+    </h:body>
+</html>
+

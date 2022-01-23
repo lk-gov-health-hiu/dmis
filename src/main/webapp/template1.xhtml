@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <f:view contentType="text/html" >
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+            <h:outputStylesheet library="css" name="styles.min.css"></h:outputStylesheet>
+            <link rel="shortcut icon" href="#{resource['image/favicon.ico']}" type="image/x-icon" />
+            <title >
+                <ui:insert name="title">
+                    National COVID-19 Health Information System
+                </ui:insert>
+            </title>
+        </h:head>
+
+        <h:body >
+            <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                <ez:header></ez:header>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{webUserController.loggedUser ne null}" >
+                <div class="container-fluid">
+                    <div class="row bg-primary">
+                        <div class="col-auto" >
+                            <ez:menu/>
+                        </div>
+<!--                        <div class="col-12 text-danger h1" >
+                            Server will be down for 5 minutes from 6:30 pm. Extremely sorry
+                        </div>-->
+                    </div>
+                </div>
+                <div class="container-fluid w-100" >
+                    <ui:insert name="content">
+                        Contents
+                    </ui:insert>
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{webUserController.loggedUser eq null}" >
+                <ez:login/>
+            </h:panelGroup>
+
+            <ui:insert name="timeout">
+            </ui:insert>
+
+            <ez:footer/>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js" integrity="sha512-PqRelaJGXVuQ81N6wjUrRQelCDR7z8RvKGiR9SbSxKHPIt15eJDmIVv9EJgwq0XvgylszsjzvQ0+VyI2WtIshQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <h:outputScript library="js" name="jquery.easing.min.js"></h:outputScript>
+        </h:body>
+    </f:view>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="true" src="https://www.googletagmanager.com/gtag/js?id=G-M89EXF43GH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-M89EXF43GH');
+    </script>
+</html>

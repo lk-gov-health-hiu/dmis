@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./manage_data_index.xhtml">
+
+            <ui:define name="reports">
+                <h:form >
+                    <p:inputText value="#{clientController.idFrom}" placeholder="Count of Encounters to COnvert" ></p:inputText>
+                    <p:commandButton value="Convert CECI data to Encounter Data"
+                                     ajax="false"
+                                     action="#{clientController.convertFormsetDataInToEncounterDate}"></p:commandButton>
+
+                    <p:inputTextarea value="#{clientController.errorCode}" ></p:inputTextarea>
+                </h:form>
+
+                <p:panel header="Missing PCR/RAT to PCR" >
+
+                    <p:messages ></p:messages>
+                    
+                    <p:commandButton value="List Without PCR/RAT" ajax="false" action="#{encounterController.listEncountersWithoutPctOrRat}" >
+                    </p:commandButton>
+                    
+                    <p:commandButton value="Mark as PCR" ajax="false" action="#{encounterController.markMissingEncountersAsPcr()}" >
+                    </p:commandButton>
+
+                    <p:dataTable id="tbl" value="#{encounterController.items}" class="table"
+                                 rowIndexVar="n"
+                                 var="c" rowKey="#{c.id}"
+                                 selection="#{encounterController.selectedItems}"
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                 rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                 >
+                        <p:column width="50" selectionMode="multiple" >
+
+                        </p:column>
+                        <p:column headerText="No"  sortBy="#{c.encounterNumber}" width="40">
+                            <h:outputLabel value="#{n+1}" ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="ID" sortBy="#{c.id}" 
+                                  filterBy="#{c.id}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.id}"  ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Test No" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Lab No" sortBy="#{c.labNumber}" 
+                                  filterBy="#{c.labNumber}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.labNumber}" ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.nic}" ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Gender"  sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Age"  sortBy="#{c.client.person.age}"
+                                  filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Result"  sortBy="#{c.client.person.age}">
+                            <h:outputLabel value="#{c.pcrResult.name}" ></h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Ordered"  sortBy="#{c.createdAt}">
+                            <h:outputLabel value="#{c.createdAt}"  >
+                                <f:convertDateTime pattern="dd MM yy hh:mm" ></f:convertDateTime>
+                            </h:outputLabel>
+                            <h:outputLabel value=" by "  >
+                            </h:outputLabel>
+                            <h:outputLabel value="#{c.createdBy.person.name}"  >
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Received"  sortBy="#{c.receivedAtLabAt}">
+                            <h:outputLabel value="Not yet received." rendered="#{c.receivedAtLabAt eq null}" >
+                            </h:outputLabel>
+                            <h:outputLabel value="#{c.receivedAtLabAt}"  rendered="#{c.receivedAtLabAt ne null}" >
+                                <f:convertDateTime pattern="dd MM yy hh:mm" ></f:convertDateTime>
+                            </h:outputLabel>
+                            <h:outputLabel value=" by #{c.receivedAtLabBy.person.name}"  rendered="#{c.receivedAtLabAt ne null}" ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Result Entered"  sortBy="#{c.resultEnteredAt}">
+                            <h:outputLabel value="#{c.resultEnteredAt}" >
+                                <f:convertDateTime pattern="dd MM yy hh:mm" ></f:convertDateTime>
+                            </h:outputLabel>
+                            <h:outputLabel value=" by #{c.resultEnteredBy.person.name}"  ></h:outputLabel>
+
+                        </p:column>
+                        <p:column headerText="Review"  >
+                            <h:outputLabel value="#{c.resultReviewedAt}" >
+                                <f:convertDateTime pattern="dd MM yy hh:mm" ></f:convertDateTime>
+                            </h:outputLabel>
+                            <h:outputLabel value=" by #{c.resultReviewedBy.person.name}"  ></h:outputLabel>
+
+                        </p:column>
+                        <p:column headerText="Approved"  sortBy="#{c.resultConfirmedAt}">
+                            <h:outputLabel value="#{c.resultConfirmedAt}" >
+                                <f:convertDateTime pattern="dd MM yy hh:mm" ></f:convertDateTime>
+                            </h:outputLabel>
+                            <h:outputLabel value=" by #{c.resultConfirmedBy.person.name}"  ></h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Result Viewed"  sortBy="#{c.resultNotedAt}" >
+                            <h:outputLabel value="#{c.resultNotedAt}" >
+                                <f:convertDateTime pattern="dd MM yy hh:mm" ></f:convertDateTime>
+                            </h:outputLabel>
+                        </p:column>
+
+                    </p:dataTable>
+
+
+                </p:panel>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<!-- INTERFACE -->
+<cc:interface>
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form>
+
+        <div class="container">
+            <div class="row gx-4 my-2">
+                <div class="col">
+                    <div class="d-flex bg-success px-3 py-2 align-items-center">
+                        <div class="flex-grow-1 text-white">
+                            <h4 class="fw-bold mb-4">
+                                <i class="bi mx-2 bi-info-circle-fill"></i>
+                                PCR SAMPLES
+                            </h4>
+                            <div class="d-flex">
+                                <div class="p-2 flex-grow-1">
+                                    <h5 class="fw-bold">Today</h5>
+                                </div>
+                                <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                    <h5>
+                                        <h:outputLabel value="#{dashboardController.todayPcr}"></h:outputLabel>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="p-2 flex-grow-1">
+                                    <h5 class="fw-bold">Yesterday</h5>
+                                </div>
+                                <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                    <h5>
+                                        <h:outputLabel value="#{dashboardController.yesterdayPcr}"></h:outputLabel>
+                                    </h5>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="flex-grow-1 text-white text-center">
+                               <small> Not a complete denominator<br/><br/></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <h:commandButton value="More Information"
+                            class="btn text-white btn-small btn-dark-success border-none" type="button">
+                        </h:commandButton>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex bg-success px-3 py-2 align-items-center">
+                        <div class="flex-grow-1 text-white">
+                            <h4 class="fw-bold mb-4">
+                                <i class="bi mx-2 bi-info-circle-fill"></i>
+                                RAT SAMPLES
+                            </h4>
+                            <div class="d-flex">
+                                <div class="p-2 flex-grow-1">
+                                    <h5 class="fw-bold">Today</h5>
+                                </div>
+                                <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                    <h5>
+                                        <h:outputLabel value="#{dashboardController.todayRat}"></h:outputLabel>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="p-2 flex-grow-1">
+                                    <h5 class="fw-bold">Yesterday</h5>
+                                </div>
+                                <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                    <h5>
+                                        <h:outputLabel value="#{dashboardController.yesterdayRat}"></h:outputLabel>
+                                    </h5>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="flex-grow-1 text-white text-center">
+                               <small> Not a complete denominator<br/><br/></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <h:commandButton value="More Information"
+                            class="btn text-white btn-small btn-dark-success border-none" type="button">
+                        </h:commandButton>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex bg-danger px-3 py-2 align-items-center">
+                        <div class="flex-grow-1 text-white">
+                            <h4 class="fw-bold mb-1">
+                                <i class="bi mx-2 bi-info-circle-fill"></i>
+                                PCR POSITIVES
+                            </h4>
+                             <div class="flex-grow-1 text-white text-center">
+                                 <small>Reported</small>
+                             </div>
+                            <div class="d-flex">
+                                <div class="p-2 flex-grow-1">
+                                    <h5 class="fw-bold">Today</h5>
+                                </div>
+                                <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                    <h5>
+                                        #{dashboardController.todayPositivePcr}
+                                        <small>
+                                            (#{dashboardController.todayPcrPositiveRate})
+                                        </small>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="p-2 flex-grow-1">
+                                    <h5 class="fw-bold">Yesterday</h5>
+                                </div>
+                                <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                    <h5>
+                                        #{dashboardController.yesterdayPositivePcr}
+                                        <small>
+                                            (#{dashboardController.yesterdayPcrPositiveRate})
+                                        </small>
+                                    </h5>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="flex-grow-1 text-white text-center">
+                               <small>Positives could be from samples collected on a prior date</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <h:commandLink value="More Information"
+                            class="btn text-white btn-small btn-dark-danger border-none"
+                            action="#{mohController.toPcrPositiveReportsIndexNational()}"></h:commandLink>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex bg-danger px-3 py-2 align-items-center">
+                        <div class="flex-grow-1 text-white">
+                            <h4 class="fw-bold mb-1">
+                                <i class="bi mx-2 bi-info-circle-fill"></i>
+                                RAT POSITIVES
+                            </h4>
+                            <div class="flex-grow-1 text-white text-center">
+                                 <small>Reported</small>
+                            </div>
+                            <div class="d-flex">
+                                <div class="p-2 flex-grow-1">
+                                    <h5 class="fw-bold">Today</h5>
+                                </div>
+                                <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                    <h5>
+                                        #{dashboardController.todayPositiveRat}
+                                        <small>
+                                            (#{dashboardController.todayRatPositiveRate})
+                                        </small>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="p-2 flex-grow-1">
+                                    <h5 class="fw-bold">Yesterday</h5>
+                                </div>
+                                <div class="p-2 flex-shrink-1 fw-semi-bold">
+                                    <h5>
+                                        #{dashboardController.yesterdayPositiveRat}
+                                        <small>
+                                            (#{dashboardController.yesterdayRatPositiveRate})
+                                        </small>
+                                    </h5>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="flex-grow-1 text-white text-center">
+                               <small>Positives could be from samples collected on a prior date</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <h:commandButton value="More Information"
+                            class="btn text-white btn-small btn-dark-danger border-none" type="button">
+                        </h:commandButton>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-2 gx-4">
+                <div class="col">
+                    <div class="list-group list-group-numbered">
+                        <li class="list-group-item list-group-item-action active">Additional Information</li>
+                        <h:commandLink action="#{regionalController.toListOfTestsWithoutMoh()}"
+                            class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                PCR Positives Without MOH Area
+                            </div>
+                            <span class="badge bg-primary rounded-pill">
+                                #{dashboardController.pcrPatientsWithNoMohArea}
+                            </span>
+                        </h:commandLink>
+                        <h:commandLink action="#{regionalController.toListOfTestsWithoutMoh()}"
+                            class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                RAT Positives Without MOH Areas
+                            </div>
+                            <span class="badge bg-primary rounded-pill">
+                                #{dashboardController.ratPatientsWithNoMohArea}
+                            </span>
+                        </h:commandLink>
+                        <h:commandLink class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                Samples Awaiting Dispatch
+                            </div>
+                            <span class="badge bg-primary rounded-pill">
+                                #{dashboardController.samplesAwaitingDispatch}
+                            </span>
+                        </h:commandLink>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row my-3">
+                <div class="accordion" id="accordionPanelsStayOpenExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                                aria-controls="panelsStayOpen-collapseOne">
+                                <strong>PCRs And RATs Done Today By Institutions</strong> <small class="px-3"><a href="#"
+                                        onclick="window.location.reload()">Refresh the chart</a></small> <small
+                                    class="text-danger">Beta</small>
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                            aria-labelledby="panelsStayOpen-headingOne">
+                            <div class="accordion-body">
+                                <h3 class="text-muted fw-bold" id="chartLoading">Chart is loading, please refresh</h3>
+                                <canvas id="chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </h:form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+        integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var chartData = '#{dashboardController.investigationHashmap}'
+
+        document.addEventListener('readystatechange', event => {
+            if (event.target.readyState === 'interactive') {
+                if (chartData) drawChart();
+            }
+        })
+
+        function drawChart() {
+
+            var labels = Object.keys(JSON.parse(chartData))
+            var parsed = JSON.parse(chartData)
+            var parsedLabels = []
+
+            var pcrSet = {
+                label: "PCR",
+                backgroundColor: "#90be6d",
+                data: []
+            }
+
+            var ratSet = {
+                label: "RAT",
+                backgroundColor: "#f9844a",
+                data: []
+            }
+
+            labels.forEach(element => {
+                var parseLabel = element.toUpperCase()
+                var getSet = parsed[element]
+                pcrSet.data.push(getSet[0])
+                ratSet.data.push(getSet[1])
+                parsedLabels.push(parseLabel)
+            });
+
+
+            var data = {
+                labels: parsedLabels,
+                datasets: [
+                    pcrSet, ratSet
+                ]
+            };
+
+            console.log(data)
+
+            var chart = document.querySelector('#chart').getContext('2d');
+            var myChart = new Chart(chart, {
+                type: 'bar',
+                data: data,
+                options: {
+                    barValueSpacing: 15
+                }
+            })
+
+            document.querySelector('#chartLoading').classList.add('d-none')
+        }
+    </script>
+</cc:implementation>
+
+</html>

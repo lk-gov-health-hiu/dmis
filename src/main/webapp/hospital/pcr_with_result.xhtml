@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">New PCR Request With Result</ui:define>
+            <ui:define name="content">
+                <h:form class="form">
+                    <p:focus for="result"></p:focus>
+                    <div class="row bg-white py-4">
+                        <h4 class="text-center fw-bold">NEW PCR RESULT</h4>
+                        <div class="my-2 px-4">
+                            <div class="row mb-4">
+                                <h5 class="text-muted fw-bold">Investigation Details</h5>
+                                <div class="col-md-3">
+                                    <label for="result" class="form-label fw-bold">Result</label>
+                                    <h:selectOneMenu class="form-select w-100" id="result" value="#{hospitalController.pcr.pcrResult}">
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
+                                        <f:selectItems value="#{itemApplicationController.pcrResults}" var="testResults"
+                                                       itemLabel="#{testResults.name}" itemValue="#{testResults}">
+                                        </f:selectItems>
+                                        <p:column class="#{r.name eq 'Positive'?'bg-danger':''}">
+                                            <h:outputLabel value="${r.name}"></h:outputLabel>
+                                        </p:column>
+                                    </h:selectOneMenu>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="sampledAt" class="form-label d-block fw-bold">Sampled Date</label>
+                                    <p:calendar value="#{hospitalController.pcr.sampledAt}" pattern="dd MMMM yyyy hh:mm" ></p:calendar>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="sampledAt" class="form-label d-block fw-bold">Result Issued Date</label>
+                                    <p:datePicker id="sampledAt" value="#{hospitalController.pcr.resultConfirmedAt}" class="w-100 d-block"
+                                                  pattern="dd MMMM yyyy hh:mm"></p:datePicker>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="orderingCat" class="form-label fw-bold">Ordering Category <small
+                                            class="px-2 text-muted px-2">Required</small></label>
+                                    <h:selectOneMenu id="orderingCat" required="true" requiredMessage="Please select an ordering category"
+                                                     value="#{hospitalController.pcr.pcrOrderingCategory}" class="form-select">
+                                        <f:selectItem itemLabel="Select"></f:selectItem>
+                                        <f:selectItems value="#{hospitalController.covidTestOrderingCategories}" var="catType"
+                                                       itemLabel="#{catType.name}" itemValue="#{catType}"></f:selectItems>
+                                        <f:ajax execute="orderingCat" event="blur"></f:ajax>
+                                    </h:selectOneMenu>
+                                    <h:message for="orderingCat" class="text-danger small"></h:message>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label for="txtTestNo" class="form-label fw-bold">Test Number</label>
+                                    <h:inputText id="txtTestNo" value="#{hospitalController.pcr.encounterNumber}" class="form-control">
+                                        <f:ajax execute="txtTestNo" event="blur"></f:ajax>
+                                    </h:inputText>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="lab" class="form-label fw-bold">Referring Lab</label>
+                                    <p:autoComplete id="lab" inputStyleClass="autocomplete" value="#{hospitalController.pcr.referalInstitution}"
+                                                    forceSelection="true" completeMethod="#{hospitalController.completeLab}" var="labs"
+                                                    itemLabel="#{labs.name}" itemValue="#{labs}">
+                                        <f:ajax execute="lab" event="blur"></f:ajax>
+                                    </p:autoComplete>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <h5 class="text-muted fw-bold">Regional Details</h5>
+                                <div class="col-md-3">
+                                    <label for="district" class="form-label fw-bold">District</label>
+                                    <p:autoComplete id="district" required="tue" requiredMessage="Please select a district"
+                                                    value="#{hospitalController.pcr.client.person.district}"
+                                                    completeMethod="#{hospitalController.completeDistricts}" var="districts" itemLabel="#{districts.name}"
+                                                    itemValue="#{districts}" maxResults="15" forceSelection="true" minQueryLength="3">
+                                        <f:ajax event="itemSelect" execute="district"></f:ajax>
+                                        <f:ajax event="blur" execute="district"></f:ajax>
+                                    </p:autoComplete>
+                                    <h:message for="district" class="small text-danger"></h:message>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="mohArea" class="fw-bold form-label">MOH Area</label>
+                                    <p:autoComplete id="mohArea" value="#{hospitalController.pcr.client.person.mohArea}"
+                                                    completeMethod="#{hospitalController.completeMohAreas}" var="mohs" itemLabel="#{mohs.name}"
+                                                    itemValue="#{mohs}" maxResults="15" forceSelection="true" minQueryLength="3">
+                                        <f:ajax event="itemSelect" execute="mohArea"></f:ajax>
+                                        <f:ajax event="blur" execute="mohArea"></f:ajax>
+                                    </p:autoComplete>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="gnarea" class="form-label fw-bold">GN Division</label>
+                                    <p:commandLink id="lnkLastGn" action="#{hospitalController.retrieveLastGnPcr()}" update="gnarea">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </p:commandLink>
+                                    <p:autoComplete id="gnarea" value="#{hospitalController.pcr.client.person.gnArea}"
+                                                    completeMethod="#{hospitalController.completeGnAreasForPcr}" var="gnAreas"
+                                                    itemLabel="#{gnAreas.name}" itemValue="#{gnAreas}" maxResults="20" forceSelection="true"
+                                                    minQueryLength="2"></p:autoComplete>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="phi" class="form-label fw-bold">PHI Area</label>
+                                    <p:autoComplete id="phi" value="#{hospitalController.pcr.client.person.phiArea}"
+                                                    completeMethod="#{hospitalController.completePhiAreasForPcr}" var="gn" itemLabel="#{gn.name}"
+                                                    itemValue="#{gn}" maxResults="20" forceSelection="true" minQueryLength="2">
+                                    </p:autoComplete>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <h5 class="text-muted fw-bold">Personal Details</h5>
+                                <div class="col-md-3">
+                                    <label for="name" class="form-label fw-bold">Name<small class="text-muted px-2">Required</small></label>
+                                    <h:inputText autocomplete="off" id="name" required="true"
+                                                 value="#{hospitalController.pcr.client.person.name}" title="Name" requiredMessage="Name is required"
+                                                 class="form-control"></h:inputText>
+                                    <h:message class="text-danger small" for="name"></h:message>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="nic" class="form-label fw-bold">NIC | Passport Number</label>
+                                    <h:inputText id="nic" autocomplete="off" value="#{hospitalController.pcr.client.person.nic}" title="NIC"
+                                                 validatorMessage="Please check the NIC number" class="form-control">
+                                        <f:ajax event="blur" execute="@this" render="nicExists year month sex"
+                                                listener="#{hospitalController.checkNicExistsForPcr()}"></f:ajax>
+                                    </h:inputText>
+                                    <h:message class="text-danger small" for="nic"></h:message>
+                                    <h:panelGroup id="nicExists">
+                                        <h:commandLink rendered="#{hospitalController.nicExistsForPcr}" immediate="true"
+                                                       action='#{hospitalController.toAddNewPcrWithExistingNic()}'
+                                                       value="NIC exists. Click here to load the patient" class="btn btn-secondary btn-sm"></h:commandLink>
+                                    </h:panelGroup>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="age" class="form-label fw-bold">Age (Y|M|D)<small
+                                            class="text-muted px-2">Required</small></label>
+                                    <div class="d-flex">
+                                        <p:inputText id="year" class="form-control w-50" autocomplete="false"
+                                                     requiredMessage="Year is required" placeholder="Year"
+                                                     value="#{hospitalController.pcr.client.person.ageYears}" required="true">
+                                            <f:ajax event="keyup" execute="year month day" render="calDob"></f:ajax>
+                                        </p:inputText>
+                                        <p:inputText id="month" class="form-control w-25" autocomplete="off"
+                                                     value="#{hospitalController.pcr.client.person.ageMonths}">
+                                            <f:ajax event="keyup" execute="year month day" render="calBob"></f:ajax>
+                                        </p:inputText>
+                                        <p:inputText class="form-control w-25" id="day" autocomplete="off" placeholder="Days"
+                                                     value="#{hospitalController.pcr.client.person.ageDays}">
+                                            <f:ajax event="keyup" execute="year month day" render="calDob"></f:ajax>
+                                        </p:inputText>
+                                        <h:message class="text-danger small" for="year"></h:message>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="gender" class="form-label fw-bold">Gender <small
+                                            class="text-muted px-2">Required</small></label>
+                                    <h:selectOneMenu id="sex" value="#{hospitalController.pcr.client.person.sex}" required="true"
+                                                     class="form-select" requiredMessage="Please select gender">
+                                        <f:selectItem itemLabel="Please select"></f:selectItem>
+                                        <f:selectItems value="#{hospitalController.sexes}" var="genders" itemLabel="#{gender.name}"
+                                                       itemValue="#{genders}"></f:selectItems>
+                                    </h:selectOneMenu>
+                                    <h:message class="text-danger small" for="gender"></h:message>
+                                </div>
+
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <label for="vaccineStatus" class="form-label fw-bold">Vaccination Status <small
+                                            class="text-muted px-2">Required</small></label>
+                                    <h:selectOneMenu id="vaccineStatus" value="#{hospitalController.pcr.vaccinationStatus}" class="form-select" required="false" requiredMessage="Vaccination Status is required">
+                                        <f:selectItem itemLabel="Please select"></f:selectItem>
+                                        <f:selectItems value="#{itemApplicationController.vaccinationStatuses}" var="statuses"
+                                                       itemLabel="#{statuses.name}" itemValue="#{statuses}">
+                                        </f:selectItems>
+                                    </h:selectOneMenu>
+                                    <h:message class="text-danger small" for="vaccineStatus"></h:message>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="symptomatic" class="form-label fw-bold">Symptomatic status</label>
+                                    <h:selectOneMenu id="symptomatic" value="#{hospitalController.pcr.symptomaticStatus}" class="form-select">
+                                        <f:selectItem itemLabel="Please select"></f:selectItem>
+                                        <f:selectItems value="#{itemApplicationController.symptomaticStatuses}" var="symptomaticStatus"
+                                                       itemLabel="#{symptomaticStatus.name}" itemValue="#{symptomaticStatus}"></f:selectItems>
+                                    </h:selectOneMenu>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="phn" class="form-label fw-bold">
+                                        PHN #
+                                        <small class="px-2">
+                                            <a href="#phnHelp" class="text-decoration-none text-muted fw-bold" id="phnHelp">What is a PHN?</a>
+                                        </small>
+                                    </label>
+                                    <h:inputText id="phn" value="#{hospitalController.pcr.client.phn}" class="form-control" autocomplete="off">
+                                    </h:inputText>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="citizenship" class="form-label fw-bold">Citizenship</label>
+                                    <h:selectOneMenu id="citizenship" value="#{hospitalController.pcr.client.person.citizenship}"
+                                                     class="form-select">
+                                        <f:selectItems value="#{hospitalController.citizenships}" var="citizenships"
+                                                       itemLabel="#{citizenships.name}" itemValue="#{citizenships}"></f:selectItems>
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="address" class="form-label fw-bold">Residential Address<small
+                                            class="text-muted px-2">Required</small></label>
+                                    <p:commandLink id="lnkLastAddress" action="#{hospitalController.retrieveLastAddressForPcr()}"
+                                                   process="lnkLastAddress" update="address">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </p:commandLink>
+                                    <h:inputText id="address" required="true" class="form-control" requiredMessage="Address is required"
+                                                 value="#{hospitalController.pcr.client.person.address}"></h:inputText>
+                                    <h:message class="text-danger small" for="address"></h:message>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="phone" class="form-label fw-bold">Contact Number<small
+                                            class="text-muted px-2">Required</small></label>
+                                    <p:commandLink id="lnkLastPhone" action="#{hospitalController.retrieveLastPhoneForPcr()}"
+                                                   process="lnkLastPhone" update="phone">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </p:commandLink>
+                                    <h:inputText id="phone" class="form-control" requiredMessage="Contact number is required" required="true"
+                                                 value="#{hospitalController.pcr.client.person.phone1}" autocomplete="off"></h:inputText>
+                                    <h:message class="text-danger small" for="phone"></h:message>
+                                </div>
+                            </div>
+                            <div class="mb-4 row">
+                                <h5 class="text-muted fw-bold">Workplace Details</h5>
+                                <div class="col-md-4 bg-light py-2">
+                                    <label for="workplace" class="form-label fw-bold">Workplace Name</label>
+                                    <h:inputText id="workplace" class="form-control" value="#{hospitalController.pcr.client.person.workPlace}">
+                                    </h:inputText>
+                                </div>
+                                <div class="col md-4 bg-light py-2">
+                                    <label for="workplaceContactName" class="form-label fw-bold">Workplace Contact Person's Name</label>
+                                    <h:inputText class="form-control" id="workplaceContactName"
+                                                 value="#{hospitalController.pcr.client.person.workplaceContact}"></h:inputText>
+                                </div>
+                                <div class="col md-4 bg-light py-2">
+                                    <label for="workplaceContact" class="form-label fw-bold">Workplace Contact Number</label>
+                                    <h:inputText class="form-control" id="workplaceContact"
+                                                 value="#{hospitalController.pcr.client.person.workplaceContactDetails}"></h:inputText>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <p:messages class="my-2"></p:messages>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h:commandButton class="btn btn-success mx-2 fw-bold"
+                                                     action="#{hospitalController.toSaveAndNewPcrWithResult()}" value="Save and NEW PCR With Result">
+                                    </h:commandButton>
+                                    <h:commandButton class="btn btn-success mx-2 fw-bold"
+                                                     action="#{hospitalController.savePcrAndToPcrView()}" value="Save and View PCR"></h:commandButton>
+                                    <h:commandButton class="btn btn-warning mx-2 fw-bold"
+                                                     action="#{hospitalController.savePcrAndToTestList()}" value="Save and To Test List">
+                                    </h:commandButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.1/tippy.min.css" referrerpolicy="no-referrer" />
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js" integrity="sha512-nnzkI2u2Dy6HMnzMIkh7CPd1KX445z38XIu4jG1jGw7x5tSL3VBjE44dY4ihMU1ijAQV930SPM12cCFrB18sVw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.1/tippy.umd.min.js" integrity="sha512-Ns7w8bjVjVcBVa+k3XLt0ObfsG2LQfr573HoIYtC4wh8gUKLvCx+rlggxfvsHqup6jvMAEmBtYXmhcKHL+6R5A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script>
+                    tippy('#phnHelp', {
+                        content: `
+                            <p><strong>What is PHN?</strong></p>
+                            <p>PHN is known as a Personal Health Number</p>
+                            <p>A health insitutions may issue a PHN to a citizen</p>
+                            <p>Ask whether your client has a PHN issued by a Sri Lankan health inistitution (hospital etc)</p>
+                            <p>If there is a PHN with the patient, enter it here</p>
+                            <p>A corret PHN will be 10-12 characters long</p>
+                        `,
+                        allowHTML: true
+                    });
+                </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

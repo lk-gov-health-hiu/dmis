@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:body style="width: 100%;">
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:form class="form">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class=" text-center">
+                                <p:outputLabel class="fs-4 fw-bold my-2" value="Patient Data" ></p:outputLabel>
+                            </div>   
+                            <div class="row">
+
+                                <!-- desktop screen size -->
+
+                                <div class="col-md-12 d-none d-md-block ">
+                                    <p:panelGrid columns="4"  class="w-100 border border-light">
+                                        <p:outputLabel value="Name" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel class="form-control border-0" value="#{clientController.selected.person.nameWithTitle}"></p:outputLabel>
+                                        <p:outputLabel value="PHN" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.phn}" class="form-control border-0"></p:outputLabel>
+
+                                        <p:outputLabel value="NIC/NIC of the guardian/Passport No" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.person.nic}" class="form-control border-0"></p:outputLabel>
+                                        <p:outputLabel value="Gender" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.person.sex.name}" class="form-control border-0" ></p:outputLabel>
+
+                                        <p:outputLabel value="Citizenship" class="fw-bold"></p:outputLabel> 
+                                        <p:outputLabel value="#{clientController.selected.person.citizenship.name}" class="form-control border-0" ></p:outputLabel>
+                                        <p:outputLabel value="Age" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.person.age}" class="form-control border-0" ></p:outputLabel>
+
+
+                                        <p:outputLabel value="Date of Birth" class="fw-bold"></p:outputLabel> 
+                                        <p:outputLabel value="#{clientController.selected.person.dateOfBirth}" class="form-control border-0" >
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </p:outputLabel> 
+                                        <p:outputLabel value="Primary Contact Number" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.person.phone1}" class="form-control border-0" ></p:outputLabel>
+
+                                        <p:outputLabel value="Secondary Contact Number" class="fw-bold"></p:outputLabel> 
+                                        <p:outputLabel value="#{clientController.selected.person.phone2}" class="form-control border-0" ></p:outputLabel>
+                                        <p:outputLabel value="Current Residential Address" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.person.address}" class="form-control border-0" ></p:outputLabel>
+
+
+                                        <p:outputLabel value="Date of Registration" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.createdAt}" class="form-control border-0" >
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </p:outputLabel>
+                                        <p:outputLabel value="MOH Area" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.person.mohArea.name}" class="form-control border-0" ></p:outputLabel>
+
+                                        <p:outputLabel value="District" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.person.district.name}" class="form-control border-0" ></p:outputLabel>
+                                        <p:outputLabel value="GN Area" class="fw-bold"></p:outputLabel>
+                                        <p:outputLabel value="#{clientController.selected.person.gnArea.name}" class="form-control border-0" ></p:outputLabel>
+
+                                    </p:panelGrid>
+                                </div>
+                            </div> 
+
+                            <!-- mobile screen size -->
+
+                            <div class="card d-sm-block d-md-none d-lg-none my-2">
+                                <div class="card-body">
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Name" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel class="form-control border-0" value="#{clientController.selected.person.nameWithTitle}"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="PHN" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.phn}" class="form-control border-0"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="NIC/NIC of the guardian/Passport No" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.nic}" class="form-control border-0"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Gender" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.sex.name}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Citizenship" class="fw-bold"></p:outputLabel> 
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.citizenship.name}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Age" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.age}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Date of Birth" class="fw-bold"></p:outputLabel> 
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.dateOfBirth}" class="form-control border-0" >
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </p:outputLabel> 
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Primary Contact Number" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.phone1}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Secondary Contact Number" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.phone2}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Current Residential Address" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.address}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="Date of Registration" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.createdAt}" class="form-control border-0" >
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="MOH Area" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.mohArea.name}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="District" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.district.name}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="GN Area" class="fw-bold"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p:outputLabel value="#{clientController.selected.person.gnArea.name}" class="form-control border-0" ></p:outputLabel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <p:panelGrid columns="1" class="w-100">
+                        <p:dataTable reflow="true" resizableColumns="true" resizeMode="expand" value="#{clientController.selectedClientEncounters}" 
+                                     var="c" paginator="true" rowKey="#{c.id}" rows="10" >
+                            <p:column headerText="Date / Time" >
+                                <p:outputLabel value="#{c.encounterDate}" >
+                                    <f:convertDateTime parent="dd MMMM yyyy hh:mm a" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Type" >
+                                <p:outputLabel value="#{c.encounterType}"  rendered="#{c.encounterType ne 'Test_Enrollment'}" ></p:outputLabel>
+                                <p:outputLabel value="#{c.pcrTestType.name}" rendered="#{c.encounterType eq 'Test_Enrollment'}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Number" >
+                                <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Institution" >
+                                <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Lab" >
+                                <p:outputLabel value="#{c.referalInstitution.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Result" >
+                                <p:outputLabel value="#{c.pcrResult.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Actions">
+                                <h:commandButton  class="btn btn-success mb-2 d-flex flex-column w-100  align-items-center" 
+                                                  value="View Order" action="#{menuController.toViewRequest()}" rendered="#{c.encounterType eq 'Test_Enrollment'}" >
+                                    <f:setPropertyActionListener value="#{c}" 
+                                                                 target="#{commonController.request}" >
+                                    </f:setPropertyActionListener>
+                                </h:commandButton>
+                                <h:commandButton class="btn btn-warning d-flex flex-column w-100  align-items-center" 
+                                                 value="View Results" 
+                                                 action="#{menuController.toViewResult()}" 
+                                                 rendered="#{c.encounterType eq 'Test_Enrollment'}" >
+                                    <f:setPropertyActionListener value="#{c}" 
+                                                                 target="#{commonController.result}" >
+                                    </f:setPropertyActionListener>
+                                </h:commandButton>
+
+                            </p:column>
+                        </p:dataTable>
+                    </p:panelGrid>
+                </h:form>
+
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

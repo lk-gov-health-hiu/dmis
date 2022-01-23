@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <h:outputStylesheet library="css" name="tem1.css" ></h:outputStylesheet>
+            <ui:define name="title">
+                View Result
+            </ui:define>
+            <ui:define name="content">
+
+
+                <div class="card  #{commonController.result.resultCssClass}">
+                    <h5 class="card-header">
+                        <h:form>
+                            <p:outputLabel value="View Result" ></p:outputLabel>
+                        </h:form>
+                    </h5>
+                    <div class="card-body">
+                        <h:form>
+
+                            <div class="row" >
+                                <div class="col" >
+                                    <div class="card" >
+                                        <div class="card-header">
+                                            
+                                        </div>
+                                        <div class="card-body">
+                                            <p:panelGrid columns="2" style="width: 100%;">
+                                                <h:outputText value="Patient :"/>
+                                                <h:outputText value="#{commonController.result.client.person.name}" title="Client"/>
+                                                <h:outputText value="Ordered Date:"/>
+                                                <h:outputText value="#{commonController.result.encounterDate}" title="EncounterDate">
+                                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                                </h:outputText>
+                                                <h:outputText value="Ordered User:"/>
+                                                <h:outputText value="#{commonController.result.createdBy.person.name} - #{commonController.result.createdBy.person.phone1}" title="CreatedBy"/>
+                                                <h:outputText value="Ordered Institution:"/>
+                                                <h:outputText value="#{commonController.result.institution.name}" title="Institution"/>
+                                            </p:panelGrid>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <p:panelGrid columns="2" style="width: 100%;">
+                                <h:outputText value="Id:"/>
+                                <h:outputText value="#{commonController.result.id}" title="Id"/>
+                                <h:outputText value="Client:"/>
+                                <h:outputText value="#{commonController.result.client.person.name}" title="Client"/>
+                                <h:outputText value="Ordered Date:"/>
+                                <h:outputText value="#{commonController.result.encounterDate}" title="EncounterDate">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                                <h:outputText value="Ordered By:"/>
+                                <h:outputText value="#{commonController.result.createdBy.person.name}" title="CreatedBy"/>
+                                <h:outputText value="Ordered from:"/>
+                                <h:outputText value="#{commonController.result.institution.name}" title="Institution"/>
+
+                                <h:outputText value="Lab:"/>
+                                <h:outputText value="#{commonController.result.referalInstitution.name}" title="ReferalInstitution"/>
+
+                                <h:outputText value="Test No.:"/>
+                                <h:outputText value="#{commonController.result.encounterNumber}" title="EncounterNumber"/>
+
+                                <h:outputText value="Sampled At:"/>
+                                <h:outputText value="#{commonController.result.sampledAt}" title="SampledAt">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+
+                                <h:outputText value="Sent To Lab At:"/>
+                                <h:outputText value="#{commonController.result.sentToLabAt}" title="SentToLabAt">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+
+                                <h:outputText value="Received At Lab At:"/>
+                                <h:outputText value="#{commonController.result.receivedAtLabAt}" title="ReceivedAtLabAt">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+
+                                <h:outputText value="Result Entered At:"/>
+                                <h:outputText value="#{commonController.result.resultEnteredAt}" title="ResultEnteredAt">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+
+                                <h:outputText value="Result Confirmed At:"/>
+                                <h:outputText value="#{commonController.result.resultConfirmedAt}" title="ResultConfirmedAt">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+
+                                <h:outputText value="LabNumber:"/>
+                                <h:outputText value="#{commonController.result.labNumber}" title="LabNumber"/>
+
+                                <h:outputText value="CT 1 Value:"/>
+                                <h:outputText value="#{commonController.result.ctValue}" title="CT 1 Value"/>
+
+                                <h:outputText value="CT 2 Value:"/>
+                                <h:outputText value="#{commonController.result.ctValue2}" title="CT 2 Value"/>
+
+                                <h:outputText value="Lab Result:"/>
+                                <h:outputText value="#{commonController.result.pcrResultStr}" title="PcrResult"/>
+
+                                <h:outputText value="Result:"/>
+                                <h:outputText value="#{commonController.result.pcrResult.name}" title="PcrResult"/>
+
+                            </p:panelGrid>
+                        </h:form>
+                    </div>
+                </div>
+
+
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

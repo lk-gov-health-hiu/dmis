@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template1.xhtml">
+
+            <ui:define name="title">
+                Order Tests for First Contacts
+            </ui:define>
+
+            <ui:define name="content">
+                <p:panelGrid columns="1" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="First Contacts" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+
+                        <p:panelGrid columns="2" >
+                            <p:panelGrid columns="2" >
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{hospitalController.fromDate}"
+                                        pattern="dd MMMM yyyy hh:mm a">
+                            </p:calendar><!-- comment -->
+
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{hospitalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+
+                            <p:commandButton ajax="false" value="Generate Excel">
+                                <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                            </p:commandButton>
+                            <p:commandButton ajax="false" value="Process"
+                                             action="#{hospitalController.toListOfFirstContactsForRegionalLevel()}" ></p:commandButton>
+                            </p:panelGrid>
+                        </p:panelGrid>
+
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{hospitalController.cecItems}" rendered="true"
+                                     rowIndexVar="n"
+                                     var="c"
+                                     rowKey="#{c.id}"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                                     rows="10"
+                                     selection="#{hospitalController.selectedCecis}"
+                                     >
+                            <p:column selectionMode="multiple" width="50" resizable="false"></p:column>
+                            <p:column headerText="Name"  sortBy="#{c.shortTextValue}" filterBy="#{c.shortTextValue}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.shortTextValue}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address"  sortBy="#{c.longTextValue}"
+                                      filterBy="#{c.longTextValue}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.longTextValue}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Contact Number" sortBy="#{c.shortTextValue2}"
+                                      filterBy="#{c.shortTextValue2}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.shortTextValue2}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="District"  sortBy="#{c.areaValue2.name}"
+                                      filterBy="#{c.areaValue2.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.areaValue2.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Actions" exportable="false" rendered="false" >
+                                <p:commandLink value="Order PCR" action="#{hospitalController.toViewTest()}" ajax="false" >
+                                    <f:setPropertyActionListener value="#{c}" target="#{hospitalController.test}" ></f:setPropertyActionListener>
+                                </p:commandLink>
+                                <p:outputLabel value=" | " ></p:outputLabel>
+                                <p:commandLink value="Order RAT" action="#{hospitalController.toViewResult()}" ajax="false" >
+                                    <f:setPropertyActionListener value="#{c}" target="#{hospitalController.test}" ></f:setPropertyActionListener>
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

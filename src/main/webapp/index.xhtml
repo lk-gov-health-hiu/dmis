@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head >
+        <ui:define name="title" >
+            <title >The Natinal COVID-19 Health Information System</title>
+        </ui:define>
+    </h:head>
+    <h:body>
+        <ui:composition template="./template1.xhtml">
+            <ui:define name="content" >
+                <div>
+                    <ez:dashboardLab  rendered="#{webUserController.loggedUser.labDashboard}"/>
+                    <ez:dashboardNational rendered="#{webUserController.loggedUser.nationalDashboard}"/>
+                    <ez:dashboardMoh rendered="#{webUserController.loggedUser.mohDashboard}"/>
+                    <ez:dashboardProvincial rendered="#{webUserController.loggedUser.provincialDashboard}"/>
+                    <ez:dashboardRegional rendered="#{webUserController.loggedUser.regionalDashboard}"/>
+                    <ez:dashboardHospital rendered="#{webUserController.loggedUser.hospitalDashboard}"/>
+                </div>
+
+                <h:panelGroup rendered="false" >
+                    <p:autoComplete  id="institution" value="#{institutionController.selected}" 
+                                     completeMethod="#{institutionController.completeInstitutions}"
+                                     var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                     forceSelection="true" maxResults="15" minQueryLength="3">
+                    </p:autoComplete >
+                </h:panelGroup>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:outputStylesheet library="css" name="tem1.css"/>
+                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Divert Samples" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <p:panelGrid columnClasses="2" >
+
+                            <p:panelGrid columns="2" >
+                                <f:facet name="header" >
+                                    <p:outputLabel value="Listing" ></p:outputLabel>
+                                </f:facet>
+                                <p:outputLabel value="From" ></p:outputLabel>
+                                <p:calendar value="#{clientController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+
+                                <p:outputLabel value="To" ></p:outputLabel>
+                                <p:calendar value="#{clientController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+
+                                <p:outputLabel value="Ordered Institution" ></p:outputLabel>
+                                <p:autoComplete value="#{clientController.institution}"
+                                                completeMethod="#{institutionController.completeInstitutions}"
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Destination Lab" ></p:outputLabel>
+                                <p:autoComplete value="#{clientController.referingInstitution}"
+                                                completeMethod="#{institutionController.completeLab}"
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                                </p:autoComplete>
+
+                                <p:commandButton ajax="false" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Process" 
+                                                 action="#{clientController.toDivertSamples()}" ></p:commandButton>
+
+
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" >
+                                <f:facet name="header" >
+                                    <p:outputLabel value="Diverting" ></p:outputLabel>
+                                </f:facet>
+
+                                <p:outputLabel value="Lab to Divert" ></p:outputLabel>
+                                <p:autoComplete value="#{clientController.divertingLab}"
+                                                completeMethod="#{institutionController.completeLab}"
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                                </p:autoComplete>
+
+
+                                <p:commandButton ajax="false" value="Divert" 
+                                                 action="#{clientController.divertSelectedSamples()}" ></p:commandButton>
+
+
+                            </p:panelGrid>
+
+                        </p:panelGrid>
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{clientController.listedToDivert}" 
+                                     var="c" paginator="true" rowKey="#{c.id}" rows="1000"
+                                     
+                                     
+                                     selection="#{clientController.selectedToDivert}">
+                            <p:column selectionMode="multiple" width="25"></p:column>
+                            <p:column headerText="Name" >
+                                <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" >
+                                 <p:outputLabel value="#{c.pcrTestType.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age" >
+                                <p:outputLabel value="#{c.client.person.age}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Sex" >
+                                <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address" >
+                                <p:outputLabel value="#{c.client.person.address}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Phone" >
+                                <p:outputLabel value="#{c.client.person.phone1}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Test" >
+                                <p:outputLabel value="#{c.getClientEncounterComponentItemByCode('test_type').itemValue.name}" ></p:outputLabel>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

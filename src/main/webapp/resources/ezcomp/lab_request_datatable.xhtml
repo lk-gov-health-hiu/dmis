@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute  name="form" type="lk.gov.health.phsp.entity.ClientEncounterComponentForm" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+<div>
+                            <p:commandButton id="toggler" type="button" class="btn btn-sm btn-secondary" value="Toggle Columns" icon="pi pi-align-justify"/>
+                            <p:columnToggler datasource="tbl" trigger="toggler"/>
+                        </div>
+        <p:dataTable id="tbl" value="#{labController.tests}" rendered="true"
+                     rowIndexVar="n"
+                     var="c"
+                     rowKey="#{c.id}"
+
+                     stripedRows="true"
+                     reflow="true"
+                     resizableColumns="true"
+                     resizeMode="expand"
+
+
+                     paginator="true"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                     rows="10"
+                     >
+            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column colspan="16" headerText="#{webUserController.loggedUser.institution.name} - Result Count By Institutions - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}"></p:column>
+                                </p:row>
+                                <p:row>
+            <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.encounterNumber}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Lab No." sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.labNumber}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.pcrTestType.name}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Age"  sortBy="#{c.client.person.age}" width="60"
+                      filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Gender"
+                      width="80"
+                      sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.nic}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
+                <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value=", " ></h:outputLabel>
+                <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value="#{c.client.person.phone2}" ></h:outputLabel>
+            </p:column>
+            <p:column headerText="Deleted" rendered="true" >
+                <p:selectBooleanButton offLabel="Not Deleted" onLabel="Deleted"  
+                                       value="#{c.retired}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
+
+
+            <p:column headerText="Rejected" rendered="true" >
+                <p:selectBooleanButton offLabel="Not Rejected" onLabel="Rejected"  
+                                       value="#{c.sampleRejectedAtLab}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
+            
+             <p:column headerText="Missing" rendered="true" >
+                <p:selectBooleanButton offLabel="Not Missing" onLabel="Missing"  
+                                       value="#{c.sampleMissing}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column>
+
+            <p:column headerText="Received" rendered="true" >
+                <p:selectBooleanButton offLabel="Not Received" onLabel="Received"  
+                                       value="#{c.receivedAtLab}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
+
+            <p:column headerText="Entered" rendered="true"  >
+                <p:selectBooleanButton offLabel="Not Entered" onLabel="Entered"  value="#{c.resultEntered}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
+            <p:column headerText="Reviewed" >
+                <p:selectBooleanButton offLabel="Not Reviewed" onLabel="Reviewed"  value="#{c.resultEntered}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
+            <p:column headerText="Confirmed" >
+                <p:selectBooleanButton offLabel="Not Confirmed" onLabel="Confirmed"  value="#{c.resultConfirmed}" >
+                    <f:ajax execute="@this" listener="#{clientController.saveLabNo(c)}" ></f:ajax>
+                </p:selectBooleanButton>
+            </p:column> 
+
+            <p:column headerText="Actions" exportable="false" style="width: 10rem;" >
+
+                <h:commandButton  class="btn btn-primary mb-2 d-flex flex-column w-100  align-items-center" 
+                                  value="View Patient" onclick="form.target = '_blank'"
+                                  action="#{menuController.toViewPatient()}"  >
+                    <f:setPropertyActionListener value="#{c.client}" 
+                                                 target="#{clientController.selected}" >
+                    </f:setPropertyActionListener>
+                </h:commandButton>
+                <h:commandButton  class="btn btn-secondary mb-2 d-flex flex-column w-100  align-items-center" 
+                                  value="View Request" onclick="form.target = '_blank'"
+                                  action="#{menuController.toViewRequest()}"  >
+                    <f:setPropertyActionListener value="#{c}" 
+                                                 target="#{commonController.request}" >
+                    </f:setPropertyActionListener>
+                </h:commandButton>
+                <h:commandButton class="btn btn-warning d-flex flex-column w-100  align-items-center" 
+                                 value="View Result" onclick="form.target = '_blank'"
+                                 action="#{menuController.toViewResult()}" >
+                    <f:setPropertyActionListener value="#{c}" 
+                                                 target="#{commonController.result}" >
+                    </f:setPropertyActionListener>
+                </h:commandButton>
+
+            </p:column>
+                                </p:row>
+            </p:columnGroup>
+            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="16" footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}"></p:column>
+                                </p:row>
+                                </p:columnGroup>
+        </p:dataTable>
+
+
+    </cc:implementation>
+</html>

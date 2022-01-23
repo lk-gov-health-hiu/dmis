@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <ui:define name="title">
+            Uploaded Orders
+        </ui:define>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:form >
+                    <p:messages ></p:messages>
+
+                    <p:panelGrid columns="2"  >
+                        <h:outputLabel value="Institution" ></h:outputLabel>
+                        <h:outputLabel value="#{clientController.institution.name}" ></h:outputLabel>
+                        <h:outputLabel value="Lab" ></h:outputLabel>
+                        <h:outputLabel value="#{clientController.referingInstitution.name}" ></h:outputLabel>
+                        <h:outputLabel value="District" ></h:outputLabel>
+                        <h:outputLabel value="#{clientController.district.name}" ></h:outputLabel>
+                        <h:outputLabel value="Test" ></h:outputLabel>
+                        <h:outputLabel value="#{clientController.lastTestPcrOrRat.name}" >
+                        </h:outputLabel>
+                         <h:outputLabel value="Ordering Category" ></h:outputLabel>
+                         <h:outputLabel value="#{clientController.orderingCategory.name}" >
+                        </h:outputLabel>
+                        <h:outputLabel value="Sampled Date" ></h:outputLabel>
+                        <h:outputLabel value="#{clientController.fromDate}" >
+                            <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
+                        </h:outputLabel>
+                        <h:outputLabel value="Result Date" ></h:outputLabel>
+                        <h:outputLabel value="#{clientController.toDate}" >
+                            <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
+                        </h:outputLabel>
+                        <h:outputLabel ></h:outputLabel>
+                        <h:commandButton value="Save Orders" 
+                                         action="#{clientController.saveUploadedOrders()}" ></h:commandButton>
+
+                        <h:outputLabel ></h:outputLabel>
+                        <h:commandButton value="Clear List" 
+                                         action="#{clientController.clearUploadedData()}" ></h:commandButton>
+
+                    </p:panelGrid>
+
+                    <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" 
+                                 value="#{clientController.clientImports}" var="c" 
+                                 rowIndexVar="n"
+                                 selection="#{clientController.clientImportsSelected}" 
+                                 rowKey="#{c.id}"
+                                 reflow="true"
+
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                 rowsPerPageTemplate="5,10,50,100,{ShowAll|'All'}"
+
+
+                                 >
+                        
+                        <p:column selectionMode="multiple" width="50" ></p:column>
+                        <p:column headerText="Test No"  >
+                            <p:inputText id="testNo" value="#{c.testNo}" style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Name" >
+                            <p:inputText id="name" value="#{c.name}" disabled="#{c.client ne null}"  style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Age in Years" >
+                            <p:inputText id="agey" value="#{c.ageInYears}"  disabled="#{c.client ne null}"  style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Age in Months" >
+                            <p:inputText id="agem" value="#{c.ageInMonths}"  disabled="#{c.client ne null}"  style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Age in Days" >
+                            <p:inputText id="aged" value="#{c.ageInDays}"  disabled="#{c.client ne null}"  style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Sex" >
+                            <p:selectOneMenu id="sex" value="#{c.sex}"  disabled="#{c.client ne null}"  style="width: 95%;" >
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{itemApplicationController.sexes}" var="s" itemLabel="#{s.name}" itemValue="#{s}" ></f:selectItems>
+                                <p:ajax event="blur" process="@this" ></p:ajax>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column headerText="NIC" >
+                            <p:inputText id="nic" value="#{c.nic}"  disabled="#{c.client ne null}"   style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Phone" >
+                            <p:inputText id="phone" value="#{c.phone}"  disabled="#{c.client ne null}"   style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="Address" >
+                            <p:inputText id="address" value="#{c.address}"  disabled="#{c.client ne null}"   style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="MOH" >
+                            <p:inputText id="moh" rendered="#{c.moh ne null}" value="#{c.moh.name}"  disabled="#{c.client ne null}"   style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+                        <p:column headerText="District" >
+                            <p:inputText id="dist"  rendered="#{c.district ne null}"  value="#{c.district.name}"  disabled="#{c.client ne null}"   style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+
+                        <p:column headerText="UNIT/WARD/Clinic" >
+                            <p:inputText id="ward" value="#{c.wardUnit}" style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+
+                        <p:column headerText="BHT/Clinic/OPD No." >
+                            <p:inputText id="bht" value="#{c.bhtNo}" style="width: 95%;" >
+                                <p:ajax event="keyup" process="@this" ></p:ajax>
+                            </p:inputText>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:form>
+
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+</html>

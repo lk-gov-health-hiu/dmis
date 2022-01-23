@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:form>
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper" style="margin: 20px;">
+                <!-- Main content -->
+                <section class="content">
+                    <div class="container-fluid">
+                        <!-- Small boxes (Stat box) -->
+                        <div class="row">
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-info">
+                                    <div class="card-header text-white">
+                                        <h5 class="fw-bold text-center">Samples To Receive</h5>
+                                    </div>
+                                    <div class="card-header text-white p-4">
+                                        <h3 class="text-center">#{dashboardController.samplesToReceive}</h3>
+                                        <small class="text-center">Last 7 days</small>
+                                    </div>
+                                    <div class="icon p-2 b-2">
+                                        <i class="ion ion-bag"></i>
+                                    </div>
+                                    <h:commandLink class="d-grid gap-2 text-white px-5"
+                                                   action="#{dashboardController.toReceiveLabSamples}" >
+                                        For More information <i class="fas fa-arrow-circle-right"></i>
+                                    </h:commandLink>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-6">
+                                <div class="small-box bg-success">
+                                    <div class="card-header text-white">
+                                        <h5 class="fw-bold text-center">Samples Received</h5>
+                                    </div>
+                                    <div class="card-header text-white p-4">
+                                        <h3 class="text-center">#{dashboardController.samplesReceived}</h3>
+                                        <small class="text-center">Last 7 days</small>
+                                    </div>
+                                    <div class="icon p-2 b-2">
+                                        <i class="ion ion-stats-bars"></i>
+                                    </div>
+                                    <h:commandLink class="d-grid gap-2 text-white px-5"
+                                                   action="#{dashboardController.toLabSummarySamplesReceived()}" >
+                                        For More information <i class="fas fa-arrow-circle-right"></i>
+                                    </h:commandLink>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-warning">
+                                    <div class="card-header text-white">
+                                        <h5 class="fw-bold text-center">Samples Reviewed</h5>
+                                    </div>
+                                    <div class="card-header text-white p-4">
+                                        <h3 class="text-center">#{dashboardController.samplesResultReviewed}</h3>
+                                        <small class="text-center">Last 7 days</small>
+                                    </div>
+                                    <div class="icon p-2 b-2">
+                                        <i class="ion ion-person-add"></i>
+                                    </div>
+                                    <h:commandLink class="d-grid gap-2 text-white px-5"
+                                                   action="#{dashboardController.toLabSummarySamplesReviewed()}" >
+                                        For More information <i class="fas fa-arrow-circle-right"></i>
+                                    </h:commandLink>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-danger">
+                                    <div class="card-header text-white">
+                                        <h5 class="fw-bold text-center">Samples Confirmed</h5>
+                                    </div>
+                                    <div class="card-header text-white p-4">
+                                        <h3 class="text-center">#{dashboardController.samplesResultsConfirmed}</h3>
+                                        <small class="text-center">Last 7 days</small>
+                                    </div>
+                                    <div class="icon p-2 b-2">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                    <h:commandLink class="d-grid gap-2 text-white px-5"
+                                                   action="#{dashboardController.toLabSummarySamplesConfirmed()}" >
+                                        For More information <i class="fas fa-arrow-circle-right"></i>
+                                    </h:commandLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.container-fluid -->
+                </section>
+            </div>
+        </h:form>
+    </cc:implementation>
+</html>
