@@ -9,8 +9,6 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
-import lk.gov.health.phsp.facade.ProjectInstitutionFacade;
-import lk.gov.health.phsp.facade.ProjectSourceOfFundFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
@@ -39,7 +37,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import lk.gov.health.phsp.entity.Person;
-import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
@@ -69,10 +66,6 @@ public class WebUserController implements Serializable {
     @EJB
     private UploadFacade uploadFacade;
     @EJB
-    private ProjectInstitutionFacade projectInstitutionFacade;
-    @EJB
-    private ProjectSourceOfFundFacade projectSourceOfFundFacade;
-    @EJB
     private UserPrivilegeFacade userPrivilegeFacade;
     /*
     Controllers
@@ -98,8 +91,6 @@ public class WebUserController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     WebUserApplicationController webUserApplicationController;
-    @Inject
-    RelationshipController relationshipController;
     @Inject
     DashboardApplicationController dashboardApplicationController;
     @Inject
@@ -749,23 +740,8 @@ public class WebUserController implements Serializable {
         return "/change_my_password";
     }
 
-    public void markLocationOnMap() {
-        emptyModel = new DefaultMapModel();
-        if (current == null) {
-            return;
-        }
-        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
-        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
-    }
+    
 
-    public void markLocationOnMapForBidders() {
-        emptyModel = new DefaultMapModel();
-        if (current == null) {
-            return;
-        }
-        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
-        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
-    }
 
     public String viewMedia() {
         if (currentUpload == null) {
@@ -810,13 +786,7 @@ public class WebUserController implements Serializable {
         return ins;
     }
 
-    public String addMarker() {
-        Marker marker = new Marker(new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude()), current.getName());
-        emptyModel.addOverlay(marker);
-        getInstitutionFacade().edit(getCurrent().getInstitution());
-        JsfUtil.addSuccessMessage("Location Recorded");
-        return "";
-    }
+    
 
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
@@ -924,7 +894,6 @@ public class WebUserController implements Serializable {
         toDate = c.getTime();
         c.add(Calendar.DAY_OF_MONTH, -7);
         fromDate = c.getTime();
-        dashboardController.setMyCovidData(null);
 
         if (null != loggedUser.getWebUserRoleLevel()) {
             switch (loggedUser.getWebUserRoleLevel()) {
@@ -2678,13 +2647,7 @@ public class WebUserController implements Serializable {
         this.selectedFundComments = selectedFundComments;
     }
 
-    public ProjectSourceOfFundFacade getProjectSourceOfFundFacade() {
-        return projectSourceOfFundFacade;
-    }
-
-    public ProjectInstitutionFacade getProjectInstitutionFacade() {
-        return projectInstitutionFacade;
-    }
+ 
 
     public TreeNode getAllPrivilegeRoot() {
         allPrivilegeRoot = webUserApplicationController.getAllPrivilegeRoot();
@@ -2742,24 +2705,7 @@ public class WebUserController implements Serializable {
         return loggableInstitutions;
     }
 
-    public List<Institution> getLoggableProcedureRooms() {
-        if (loggableProcedureRooms == null) {
-            Map<Long, Institution> mapPrs = new HashMap<>();
-            List<Institution> prs = new ArrayList<>();
-            for (Institution ins : getLoggableInstitutions()) {
-                List<Relationship> rs = relationshipController.findRelationships(ins, RelationshipType.Procedure_Room);
-                for (Relationship r : rs) {
-                    if (r.getToInstitution() != null) {
-                        mapPrs.put(r.getToInstitution().getId(), r.getToInstitution());
-                    }
-                }
-            }
-            prs.addAll(mapPrs.values());
-            loggableProcedureRooms = prs;
-        }
-        return loggableProcedureRooms;
-    }
-
+   
     public void setLoggableInstitutions(List<Institution> loggableInstitutions) {
         this.loggableInstitutions = loggableInstitutions;
     }

@@ -37,19 +37,13 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.entity.Phn;
-import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.facade.AreaFacade;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
-import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
-import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
-import lk.gov.health.phsp.facade.PhnFacade;
-import lk.gov.health.phsp.facade.QueryComponentFacade;
 // </editor-fold>
 
 /**
@@ -64,16 +58,8 @@ public class ApplicationController {
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
-    private QueryComponentFacade queryComponentFacade;
-    @EJB
-    private ClientFacade clientFacade;
-    @EJB
     private DocumentFacade encounterFacade;
-    @EJB
-    private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
-    @EJB
-    PhnFacade phnFacade;
-// </editor-fold>    
+    // </editor-fold>    
     @Inject
     private UserTransactionController userTransactionController;
     @Inject
@@ -83,7 +69,6 @@ public class ApplicationController {
     private boolean demoSetup = false;
     private boolean production = true;
     private String versionNo = "1.1.4";
-    private List<QueryComponent> queryComponents;
     private List<String> userTransactionTypes;
     private Long nationalTestCount;
     private Long nationalCaseCount;
@@ -181,48 +166,7 @@ public class ApplicationController {
         return phn;
     }
 
-    public String createNewPersonalHealthNumberRandomly(Institution pins) {
-        if (pins == null) {
-            return null;
-        }
-        Institution ins = getInstitutionFacade().find(pins.getId());
-        if (ins == null) {
-            return null;
-        }
-
-        String hex;
-        Double maxDbl = Math.pow(16, 7);
-        long leftLimit = 1L;
-        long rightLimit = maxDbl.longValue();
-        long generatedLong = leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
-        hex = Long.toHexString(generatedLong);
-
-        hex = "0000000" + hex;
-        hex = hex.substring(hex.length() - 7, hex.length());
-
-        String poi = ins.getPoiNumber();
-        String checkDigit = calculateCheckDigit(poi + hex);
-        String phn = poi + hex + checkDigit;
-
-        boolean creationFailed;
-        do {
-            creationFailed = !savePhn(phn, ins);
-        } while (creationFailed);
-
-        return phn;
-
-    }
-
-    private boolean savePhn(String phn, Institution poi) {
-        try {
-            Phn p = new Phn(phn, poi);
-            phnFacade.create(p);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-
-    }
+ 
 
     public boolean validateHin(String validatingHin) {
         if (validatingHin == null) {
@@ -265,36 +209,7 @@ public class ApplicationController {
         return digit.substring(digit.length() - 1);
     }
 
-    private List<QueryComponent> findQueryComponents() {
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " order by q.orderNo, q.name";
-        Map m = new HashMap();
-        return queryComponentFacade.findByJpql(j, m);
-
-    }
-
-    public void reloadQueryComponents() {
-        queryComponents = null;
-        userTransactionController.recordTransaction("Reload Query Components");
-    }
-
-    public QueryComponent findQueryComponent(String code) {
-        QueryComponent r = null;
-        if (code == null || code.trim().equals("")) {
-            return r;
-        }
-        for (QueryComponent c : getQueryComponents()) {
-            if (c.getCode() != null) {
-                if(c.getCode().equalsIgnoreCase(code)){
-                    if(r!=null){
-                    }
-                    r=c;
-                }
-            }
-        }
-        return r;
-    }
+ 
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Enums">
@@ -329,22 +244,7 @@ public class ApplicationController {
         this.versionNo = versionNo;
     }
 
-    public List<QueryComponent> getQueryComponents() {
-        if (queryComponents == null) {
-            queryComponents = findQueryComponents();
-        }
-        return queryComponents;
-    }
-
-    public QueryComponentFacade getQueryComponentFacade() {
-        return queryComponentFacade;
-    }
-
-    public void setQueryComponentFacade(QueryComponentFacade queryComponentFacade) {
-        this.queryComponentFacade = queryComponentFacade;
-    }
-
-    
+  
 
     public List<String> getUserTransactionTypes() {
         return userTransactionTypes;
@@ -362,15 +262,7 @@ public class ApplicationController {
         this.production = production;
     }
 
-    public ClientFacade getClientFacade() {
-        return clientFacade;
-    }
-
-    public void setClientFacade(ClientFacade clientFacade) {
-        this.clientFacade = clientFacade;
-    }
-
-    public DocumentFacade getEncounterFacade() {
+     public DocumentFacade getEncounterFacade() {
         return encounterFacade;
     }
 
@@ -378,14 +270,7 @@ public class ApplicationController {
         this.encounterFacade = encounterFacade;
     }
 
-    public ClientEncounterComponentItemFacade getClientEncounterComponentItemFacade() {
-        return clientEncounterComponentItemFacade;
-    }
-
-    public void setClientEncounterComponentItemFacade(ClientEncounterComponentItemFacade clientEncounterComponentItemFacade) {
-        this.clientEncounterComponentItemFacade = clientEncounterComponentItemFacade;
-    }
-
+   
     private Long getNationalCounts(EncounterType countType) {        
         String jpql = "SELECT count(e) FROM Encounter e "
                 + " WHERE e.retired=:ret "

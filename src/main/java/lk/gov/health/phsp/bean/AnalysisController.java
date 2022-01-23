@@ -36,10 +36,7 @@ import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.enums.EncounterType;
-import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
-import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.DocumentFacade;
 // </editor-fold>
 @Named
@@ -47,12 +44,10 @@ import lk.gov.health.phsp.facade.DocumentFacade;
 public class AnalysisController {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
 
-    @EJB
-    private ClientFacade clientFacade;
+   
     @EJB
     private DocumentFacade encounterFacade;
-    @EJB
-    ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+  
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
@@ -133,66 +128,11 @@ public class AnalysisController {
         return fs;
     }
 
-    public Long findRegistrationCount(Date pFrom, Date pTo, List<Institution> pIns, Item sex) {
-//        // // System.out.println("Find Registration Count");
-//        // // System.out.println("Sex = " + sex);
-//        // // System.out.println("dates start");
-        // // System.out.println("p From = " + CommonController.dateTimeToString(pFrom, "dd MMMM yyyy hh:mm"));
-        // // System.out.println("p To = " + CommonController.dateTimeToString(pTo, "dd MMMM yyyy hh:mm"));
-//        // // System.out.println("dates end");
-
-        if (pIns == null || pIns.isEmpty()) {
-            return null;
-        }
-        // // System.out.println("Pins Count = " + pIns.size());
-        Long fs;
-        Map m = new HashMap();
-        String j = "select count(c) from Client c ";
-        j += " where c.retired<>:ret ";
-        j += " and c.createdAt between :fd and :td ";
-        m.put("fd", pFrom);
-        m.put("td", pTo);
-        m.put("ret", true);
-        if (sex != null) {
-            j += " and c.person.sex.code=:s ";
-            m.put("s", sex.getCode());
-        }
-
-        j += " and c.createInstitution in :ins ";
-        m.put("ins", pIns);
-
-//        // // System.out.println("j = " + j);
-        fs = getClientFacade().findLongByJpql(j, m, TemporalType.DATE);
-
-//        // // System.out.println("fs = " + fs);
-        return fs;
-    }
-
-    public void findClientCount() {
-        String j = "select count(c) from Client c "
-                + " where c.retired<>:ret "
-                + " and c.reservedClient <> :res ";
-        Map m = new HashMap();
-        m.put("ret", true);
-        m.put("res", true);
-
-        j = j + " and c.createdAt between :fd and :td ";
-        m.put("fd", getFrom());
-        m.put("td", getTo());
-
-        clientCount = getClientFacade().findLongByJpql(j, m);
-        userTransactionController.recordTransaction("findClientCount");
-    }
+  
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
-    public ClientFacade getClientFacade() {
-        return clientFacade;
-    }
-
-    public void setClientFacade(ClientFacade clientFacade) {
-        this.clientFacade = clientFacade;
-    }
+  
 
     public DocumentFacade getEncounterFacade() {
         return encounterFacade;

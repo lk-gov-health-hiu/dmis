@@ -2,20 +2,11 @@ package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.entity.Coordinate;
 import lk.gov.health.phsp.facade.AreaFacade;
-import lk.gov.health.phsp.facade.CoordinateFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.facade.util.JsfUtil.PersistAction;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,16 +22,8 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Person;
-import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.RelationshipType;
@@ -51,10 +34,6 @@ import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Polygon;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 @Named
 @SessionScoped
@@ -62,8 +41,6 @@ public class AreaController implements Serializable {
 
     @EJB
     private AreaFacade ejbFacade;
-    @EJB
-    private CoordinateFacade coordinateFacade;
     private List<Area> items = null;
     List<Area> mohAreas = null;
     List<Area> phiAreas = null;
@@ -93,8 +70,6 @@ public class AreaController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private CommonController commonController;
-    @Inject
-    private RelationshipController relationshipController;
     @Inject
     private InstitutionController institutionController;
     @Inject
@@ -474,31 +449,7 @@ public class AreaController implements Serializable {
         return areas;
     }
 
-    public String drawArea() {
-        polygonModel = new DefaultMapModel();
-
-        //Polygon
-        Polygon polygon = new Polygon();
-
-        String j = "select c from Coordinate c where c.area=:a";
-        Map m = new HashMap();
-        m.put("a", selected);
-        List<Coordinate> cs = coordinateFacade.findByJpql(j, m);
-        for (Coordinate c : cs) {
-            LatLng coord = new LatLng(c.getLatitude(), c.getLongitude());
-            polygon.getPaths().add(coord);
-        }
-
-        polygon.setStrokeColor("#FF9900");
-        polygon.setFillColor("#FF9900");
-        polygon.setStrokeOpacity(0.7);
-        polygon.setFillOpacity(0.7);
-
-        polygonModel.addOverlay(polygon);
-
-        return "/area/area_map";
-    }
-
+   
     public UploadedFile getFile() {
         return file;
     }
@@ -1066,13 +1017,7 @@ public class AreaController implements Serializable {
         this.dsAreas = dsAreas;
     }
 
-    public CoordinateFacade getCoordinateFacade() {
-        return coordinateFacade;
-    }
-
-    public void setCoordinateFacade(CoordinateFacade coordinateFacade) {
-        this.coordinateFacade = coordinateFacade;
-    }
+   
 
     public WebUserController getWebUserController() {
         return webUserController;
@@ -1199,10 +1144,6 @@ public class AreaController implements Serializable {
 
     public CommonController getCommonController() {
         return commonController;
-    }
-
-    public RelationshipController getRelationshipController() {
-        return relationshipController;
     }
 
     public Integer getYear() {

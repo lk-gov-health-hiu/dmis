@@ -39,7 +39,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
@@ -56,21 +55,16 @@ import lk.gov.health.phsp.bean.SessionController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
 import lk.gov.health.phsp.bean.WebUserApplicationController;
 import lk.gov.health.phsp.bean.WebUserController;
-import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Area;
-import lk.gov.health.phsp.entity.Client;
-import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
+
 import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.entity.QueryComponent;
-import lk.gov.health.phsp.entity.Relationship;
+
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
-import lk.gov.health.phsp.enums.RelationshipType;
-import lk.gov.health.phsp.enums.WebUserRole;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -212,27 +206,7 @@ public class ApiResource {
                     jSONObjectOut = symptomaticStatusesList();
                     break;
                 case "submit_pcr_request":
-                    jSONObjectOut = submitPcrRequest(ipadd,
-                            username,
-                            password,
-                            test_number,
-                            referring_lab_id,
-                            client_name,
-                            client_address,
-                            client_phone_number,
-                            client_nic,
-                            client_passport_number,
-                            client_age_in_years,
-                            client_age_in_months,
-                            client_age_in_days,
-                            client_gender,
-                            client_citizenship,
-                            ordering_category_id,
-                            moh_id,
-                            district_id,
-                            gn_area_id,
-                            phi_area_id,
-                            comments);
+                    
                     break;
                 case "request_pcr_result":
                     jSONObjectOut = requestPcrResult(ipadd,
@@ -258,7 +232,7 @@ public class ApiResource {
             }
         }
 
-        String json = jSONObjectOut.toString();
+        String json = null ;
         return json;
     }
 
@@ -328,192 +302,7 @@ public class ApiResource {
 
     }
 
-    private JSONObject submitPcrRequest(String ip,
-            String username,
-            String password,
-            String test_number,
-            String referring_lab_id,
-            String client_name,
-            String client_address,
-            String client_phone_number,
-            String client_nic,
-            String client_passport_number,
-            String client_age_in_years,
-            String client_age_in_months,
-            String client_age_in_days,
-            String client_gender,
-            String client_citizenship,
-            String ordering_category_id,
-            String moh_id,
-            String district_id,
-            String gn_area_id,
-            String phi_area_id,
-            String comments) {
-
-
-        System.out.println("submitPcrRequest");
-        System.out.println("ip = " + ip);
-
-        JSONObject jSONObjectOut = new JSONObject();
-        JSONArray array = new JSONArray();
-
-        Integer intAgeInYears = 0;
-        Integer intAgeInMonths = 0;
-        Integer intAgeInDays = 0;
-        Area cDistrict;
-        Area cMoh;
-        Area cGn;
-        Area cPhi;
-
-        WebUser wu;
-
-        Item cGender = null;
-        Item cCitizenship = null;
-        Item eOrderingCategory = null;
-        Institution lab;
-
-        wu = webUserApplicationController.getWebUser(username, password);
-
-        if (wu == null) {
-            return errorMessageLogin();
-        }
-
-        if (wu.getLoginIPs() == null || wu.getLoginIPs().equals("")) {
-            return errorMessageNoIps();
-        }
-
-        if (ip != null && !wu.getLoginIPs().contains(ip)) {
-            return errorMessageNotAnAutherizedIp();
-        }
-
-        if (test_number == null || test_number.trim().equals("")) {
-            return errorMessageNoTestNumber();
-        }
-
-        lab = institutionApplicationController.findInstitutionById(CommonController.getLongValue(referring_lab_id));
-
-        if (lab == null) {
-            return errorMessageNoLab();
-        }
-
-        cDistrict = areaApplicationController.getArea(CommonController.getLongValue(district_id));
-        cMoh = areaApplicationController.getArea(CommonController.getLongValue(moh_id));
-        cGn = areaApplicationController.getArea(CommonController.getLongValue(gn_area_id));
-        cPhi = areaApplicationController.getArea(CommonController.getLongValue(phi_area_id));
-        eOrderingCategory = itemApplicationController.findItemById(CommonController.getLongValue(ordering_category_id));
-
-        if (client_name == null || client_name.trim().equals("")) {
-            return errorMessageNoClientName();
-        }
-
-        if (client_gender == null || client_gender.trim().equals("")) {
-            return errorMessageNoGender();
-        } else {
-            if (client_gender.toLowerCase().contains("f")) {
-                cGender = itemApplicationController.getFemale();
-            } else {
-                cGender = itemApplicationController.getMale();
-            }
-        }
-
-        if (client_citizenship != null) {
-            if (client_citizenship.toLowerCase().contains("f")) {
-                cCitizenship = itemApplicationController.findItemByCode("citizenship_foreign");
-            } else {
-                cCitizenship = itemApplicationController.findItemByCode("citizenship_local");
-            }
-        }
-
-        if (client_age_in_years != null || !client_name.trim().equals("")) {
-            intAgeInYears = CommonController.getIntegerValue(client_age_in_years);
-        } else if (client_age_in_months != null || !client_name.trim().equals("")) {
-            intAgeInMonths = CommonController.getIntegerValue(client_age_in_months);
-        } else if (client_age_in_days != null || !client_name.trim().equals("")) {
-            intAgeInDays = CommonController.getIntegerValue(client_age_in_days);
-        } else {
-            return errorMessageNoAge();
-        }
-        if (intAgeInYears == null || intAgeInYears < 1) {
-            if (intAgeInMonths == null || intAgeInMonths < 1) {
-                if (intAgeInDays == null || intAgeInDays < 1) {
-                    return errorMessageNoAge();
-                }
-            }
-        }
-
-        Client c = new Client();
-        c.getPerson().setName(client_name);
-        c.getPerson().setAgeYears(intAgeInYears);
-        c.getPerson().setAgeMonths(intAgeInMonths);
-        c.getPerson().setAgeDays(intAgeInDays);
-        c.getPerson().setPhone1(client_phone_number);
-        c.getPerson().setAddress(client_address);
-        c.getPerson().setDistrict(cDistrict);
-        c.getPerson().setMohArea(cMoh);
-        c.getPerson().setGnArea(cGn);
-        c.getPerson().setPhiArea(cPhi);
-        c.getPerson().setSex(cGender);
-        c.getPerson().setCitizenship(cCitizenship);
-        if (client_nic == null) {
-            client_nic = "";
-        } else {
-            client_nic = client_nic.trim().toUpperCase();
-        }
-        if (client_passport_number == null) {
-            client_passport_number = "";
-        } else {
-            client_passport_number = client_passport_number.trim().toUpperCase();
-        }
-
-        if (!client_nic.equals("") && !client_passport_number.equals("")) {
-            c.getPerson().setNic(client_nic);
-            c.getPerson().setPassportNumber(client_passport_number);
-        } else if (client_nic.equals("") && !client_passport_number.equals("")) {
-            c.getPerson().setNic(client_passport_number);
-            c.getPerson().setPassportNumber(client_passport_number);
-        } else if (!client_nic.equals("") && client_passport_number.equals("")) {
-            c.getPerson().setNic(client_nic);
-            c.getPerson().setPassportNumber(client_nic);
-        }
-
-        c.setCreateInstitution(wu.getInstitution());
-        c.setCreatedAt(new Date());
-        c.setCreatedBy(wu);
-        c.setCreatedAt(new Date());
-     
-
-        Document e = new Document();
-        e.setPcrTestType(itemApplicationController.getPcr());
-        e.setClient(c);
-        e.setComments(comments);
-        e.setCreatedAt(new Date());
-        e.setPcrOrderingCategory(eOrderingCategory);
-        e.setCreatedAt(new Date());
-        e.setCreatedBy(wu);
-        e.setCreatedInstitution(wu.getInstitution());
-        e.setInstitution(wu.getInstitution());
-        e.setPcrTestType(itemApplicationController.getPcr());
-        e.setReferalInstitution(lab);
-        e.setBht(test_number);
-        e.setEncounterNumber(test_number);
-        e.setEncounterDate(new Date());
-        e.setEncounterType(EncounterType.Test_Enrollment);
-        e.setSampled(true);
-        e.setSampledAt(new Date());
-        e.setSampledBy(wu);
-        e.setSentToLab(Boolean.TRUE);
-        e.setSentToLabAt(new Date());
-        e.setSentToLabBy(wu);
-
-        encounterApplicationController.save(e);
-
-        JSONObject ja = new JSONObject();
-        ja.put("request_id", e.getId());
-
-        jSONObjectOut.put("data", ja);
-        jSONObjectOut.put("status", successMessage());
-        return jSONObjectOut;
-    }
+   
 
     private JSONObject requestPcrResult(String ipadd,
             String username,
@@ -672,7 +461,6 @@ public class ApiResource {
             ja.put("name", a.getName());
             ja.put("hin", a.getPoiNumber());
             ja.put("latitude", a.getCoordinate().getLatitude());
-            ja.put("longitude", a.getCoordinate().getLongitude());
             ja.put("address", a.getAddress());
             ja.put("type", a.getInstitutionType());
             ja.put("type_label", a.getInstitutionType().getLabel());

@@ -24,7 +24,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
-import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.EncounterType;
 
@@ -180,28 +179,7 @@ public class DocumentController implements Serializable {
         selected = null;
     }
 
-    public boolean clinicEnrolmentExists(Institution i, Client c) {
-        String j = "select e from Encounter e "
-                + " where e.institution=:i "
-                + " and e.client=:c"
-                + " and e.completed=:com"
-                + " and e.encounterType=:et";
-        Map m = new HashMap();
-        m.put("i", i);
-        m.put("c", c);
-        m.put("com", false);
-        m.put("et", EncounterType.Death);
-        Document e = getFacade().findFirstByJpql(j, m);
-        if (e == null) {
-            return false;
-        }
-        if (e.getCompleted()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
+  
     public Document getSelected() {
         return selected;
     }
@@ -292,17 +270,7 @@ public class DocumentController implements Serializable {
     }
 
     
-    
-    public List<Document> getItems(Client client) {
-        String j = "select e "
-                + " from Encounter e "
-                + " where e.retired=false"
-                + " and e.client=:c";
-        Map m = new HashMap();
-        m.put("c", client);
-        return getFacade().findByJpql(j, m);
-    }
-
+ 
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
             setEmbeddableKeys();

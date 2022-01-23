@@ -24,10 +24,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import lk.gov.health.phsp.bean.util.JsfUtil;
-import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.DataRepresentationType;
-import lk.gov.health.phsp.facade.ComponentFacade;
 import org.primefaces.event.CaptureEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -43,8 +41,7 @@ public class ImageController implements Serializable {
     @Inject
     ItemController itemController;
    
-    @EJB
-    ComponentFacade componentFacade;
+
 
     private List<String> photos = new ArrayList<>();
 
@@ -68,12 +65,12 @@ public class ImageController implements Serializable {
 
        
 
-        ClientEncounterComponentItem ip = new ClientEncounterComponentItem();
-       
-        ip.setItem(defaultPhoto);
-        ip.setByteArrayValue(captureEvent.getData());
-        ip.setShortTextValue("image/png");
-        ip.setDataRepresentationType(DataRepresentationType.Client);
+//        ClientEncounterComponentItem ip = new ClientEncounterComponentItem();
+//       
+//        ip.setItem(defaultPhoto);
+//        ip.setByteArrayValue(captureEvent.getData());
+//        ip.setShortTextValue("image/png");
+//        ip.setDataRepresentationType(DataRepresentationType.Client);
 //        componentFacade.create(ip);
 
        

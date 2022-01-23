@@ -44,8 +44,7 @@ public class MenuController implements Serializable {
     @Inject
     WebUserApplicationController webUserApplicationController;
    
-    @Inject
-    HospitalController hospitalController;
+
     @Inject
     InstitutionController institutionController;
     @Inject

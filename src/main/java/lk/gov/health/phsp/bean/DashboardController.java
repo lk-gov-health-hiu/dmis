@@ -39,8 +39,6 @@ import javax.persistence.TemporalType;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.ejb.CovidDataHolder;
 import lk.gov.health.phsp.facade.DocumentFacade;
-import lk.gov.health.phsp.facade.NumbersFacade;
-import lk.gov.health.phsp.pojcs.CovidData;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import org.json.JSONObject;
 
@@ -52,8 +50,6 @@ import org.json.JSONObject;
 @SessionScoped
 public class DashboardController implements Serializable {
 
-    @EJB
-    private NumbersFacade numbersFacade;
     @EJB
     private DocumentFacade encounterFacade;
     @EJB
@@ -96,17 +92,6 @@ public class DashboardController implements Serializable {
     private Long firstContactsWithNoMOHArea;
 //    HashMap to generate investigation chart at MOH dashboard
     private JSONObject investigationHashmap;
-
-
-    private CovidData myCovidData;
-
-    private List<CovidData> covidDatasForMohs;
-    private List<CovidData> covidDatasForAreas;
-    private List<CovidData> covidDatasForLabs;
-    private List<CovidData> covidDatasForHospitals;
-    private List<CovidData> covidDatasForRdhs;
-    private List<CovidData> covidDatasForPdhs;
-    private List<CovidData> covidDatasForCountry;
 
     private Long samplesToReceive;
     private Long samplesReceived;
@@ -783,13 +768,6 @@ public class DashboardController implements Serializable {
         covidDataHolder.calculateNumbers(fromDate, toDate);
     }
 
-    public NumbersFacade getNumbersFacade() {
-        return numbersFacade;
-    }
-
-    public void setNumbersFacade(NumbersFacade numbersFacade) {
-        this.numbersFacade = numbersFacade;
-    }
 
     public Date getFromDate() {
         return fromDate;
@@ -831,34 +809,7 @@ public class DashboardController implements Serializable {
         this.ics = ics;
     }
 
-    public List<CovidData> getCovidDatasForMohs() {
-        covidDatasForMohs = covidDataHolder.getCovidDatasForMohs();
-        return covidDatasForMohs;
-    }
-
-    public List<CovidData> getCovidDatasForAreas() {
-        return covidDatasForAreas;
-    }
-
-    public List<CovidData> getCovidDatasForLabs() {
-        return covidDatasForLabs;
-    }
-
-    public List<CovidData> getCovidDatasForHospitals() {
-        return covidDatasForHospitals;
-    }
-
-    public List<CovidData> getCovidDatasForRdhs() {
-        return covidDatasForRdhs;
-    }
-
-    public List<CovidData> getCovidDatasForPdhs() {
-        return covidDatasForPdhs;
-    }
-
-    public List<CovidData> getCovidDatasForCountry() {
-        return covidDatasForCountry;
-    }
+   
 
     public CovidDataHolder getCovidDataHolder() {
         return covidDataHolder;
@@ -1160,20 +1111,6 @@ public class DashboardController implements Serializable {
         this.orderingCategories = orderingCategories;
     }
 
-    public CovidData getMyCovidData() {
-        if(myCovidData==null){
-            myCovidData = findMyCovidData();
-        }
-        return myCovidData;
-    }
-
-    public void setMyCovidData(CovidData myCovidData) {
-        this.myCovidData = myCovidData;
-    }
-
-    private CovidData findMyCovidData() {
-        CovidData cd  = dashboardApplicationController.findMyCovidData(webUserController.getLoggedUser());
-        return cd;
-    }
+  
 
 }

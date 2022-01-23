@@ -24,8 +24,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
-import lk.gov.health.phsp.entity.Component;
-import lk.gov.health.phsp.entity.QueryComponent;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.model.file.UploadedFile;
 
@@ -42,70 +40,10 @@ public class UploadController implements Serializable {
 
     private List<Upload> items = null;
     private Upload selected;
-    private Component selectedComponent;
+  
     private UploadedFile file;
 
-    public String toUploadComponentUploadSingle() {
-        if (selectedComponent == null) {
-            JsfUtil.addErrorMessage("No Component");
-            return "";
-        }
-        String j = "select u from Upload u "
-                + " where u.retired<>:ret "
-                + " and u.component=:com";
-        Map m = new HashMap();
-        m.put("ret", true);
-        m.put("com", selectedComponent);
-
-        selected = getFacade().findFirstByJpql(j, m);
-        if (selected == null) {
-            selected = new Upload();
-            selected.setCreatedAt(new Date());
-            selected.setCreater(webUserController.getLoggedUser());
-            selected.setComponent(selectedComponent);
-            getFacade().create(selected);
-        }
-        userTransactionController.recordTransaction("To Upload Component Upload Single");
-        return "/queryComponent/upload_query";
-    }
-
-    public Upload findUploadForComponent(Component component) {
-        if (component == null) {
-            JsfUtil.addErrorMessage("No Component");
-            return null;
-        }
-        String j = "select u from Upload u "
-                + " where u.retired<>:ret "
-                + " and u.component=:com";
-        Map m = new HashMap();
-        m.put("ret", true);
-        m.put("com", component);
-        return getFacade().findFirstByJpql(j, m);
-    }
-
-    public String toUploadExcelTemplate() {
-        if (selectedComponent == null) {
-            JsfUtil.addErrorMessage("No Component");
-            return "";
-        }
-        String j = "select u from Upload u "
-                + " where u.retired<>:ret "
-                + " and u.component=:com";
-        Map m = new HashMap();
-        m.put("ret", true);
-        m.put("com", selectedComponent);
-
-        selected = getFacade().findFirstByJpql(j, m);
-        if (selected == null) {
-            selected = new Upload();
-            selected.setCreatedAt(new Date());
-            selected.setCreater(webUserController.getLoggedUser());
-            selected.setComponent(selectedComponent);
-            getFacade().create(selected);
-        }
-        userTransactionController.recordTransaction("To Upload Excel Template");
-        return "/queryComponent/excel_upload";
-    }
+   
 
     public UploadController() {
     }
@@ -210,13 +148,7 @@ public class UploadController implements Serializable {
         return ejbFacade;
     }
 
-    public Component getSelectedComponent() {
-        return selectedComponent;
-    }
-
-    public void setSelectedComponent(Component selectedComponent) {
-        this.selectedComponent = selectedComponent;
-    }
+ 
 
     public UploadedFile getFile() {
         return file;

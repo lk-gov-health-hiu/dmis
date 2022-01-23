@@ -36,7 +36,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import lk.gov.health.phsp.entity.UserTransaction;
 import lk.gov.health.phsp.entity.WebUser;
-import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.UserTransactionFacade;
 import lk.gov.health.phsp.pojcs.UserTransactionsCount;
 // </editor-fold>
@@ -48,9 +47,7 @@ public class UserTransactionController implements Serializable {
 
     @EJB
     private UserTransactionFacade facede;
-    @EJB
-    private ClientFacade clientFacade;
-// </editor-fold>
+ // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="CDIs">
     @Inject
@@ -131,17 +128,7 @@ public class UserTransactionController implements Serializable {
         j = j + " group by c.ipAddress having count(c)>5";
         j = j + " order by c.webUser.name ";
 
-        List<Object> objs = getClientFacade().findAggregates(j, m);
-        suspiciousLogins = new ArrayList<>();
-        loginCount = 0l;
-        
-        for (Object o : objs) {
-            if (o instanceof UserTransactionsCount) {
-                UserTransactionsCount ic = (UserTransactionsCount) o;
-                suspiciousLogins.add(ic);
-                loginCount += ic.getCount();
-            }
-        }
+     
     }
 
     public void search() {
@@ -295,13 +282,7 @@ public class UserTransactionController implements Serializable {
         this.userTransactionTypes = userTransactionTypes;
     }
 
-    public ClientFacade getClientFacade() {
-        return clientFacade;
-    }
-
-    public void setClientFacade(ClientFacade clientFacade) {
-        this.clientFacade = clientFacade;
-    }
+ 
 
     public Long getLoginCount() {
         return loginCount;
