@@ -14,7 +14,7 @@
                 View File
             </ui:define>
             <ui:define name="content">
-
+                <p:growl ></p:growl>
                 <div class="card my-3">
                     <h5 class="card-header bg-success">
                         <p:outputLabel class="text-white fs-5 fw-bold my-2" value="View File" ></p:outputLabel>
@@ -41,7 +41,7 @@
                                 <p:dataTable value="#{documentController.selectedDocumentHistories}"
                                              var="h" 
                                              rowKey="#{h.id}">
-                                
+
                                     <p:column headerText="Action">
                                         <h:outputText value="#{h.historyType.label}" ></h:outputText>
                                     </p:column>
@@ -62,24 +62,45 @@
                                     <h:outputLabel class="fs-6"  value="Current Holder:"></h:outputLabel>
                                     <h:outputLabel class="fs-6 fw-bold" value="#{documentController.selected.currentOwner.name}"></h:outputLabel>
                                 </p:panelGrid>
-                                <p:panelGrid columns="2"  class="w-100 border border-light">
-                                    <f:facet name="header" >
-                                        Transfer out
-                                    </f:facet>
-                                    <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
-                                    <p:autoComplete  id="parent" class="d-block" inputStyleClass="form-control" 
-                                                     value="#{documentController.institution}" 
-                                                     completeMethod="#{institutionController.completeInstitutions}"
-                                                     var="i" 
-                                                     itemLabel="#{i.name}" 
-                                                     itemValue="#{i}" 
-                                                     forceSelection="True"
-                                                     maxResults="15" 
-                                                     minQueryLength="3">
-                                    </p:autoComplete >
-                                    <p:spacer></p:spacer>
-                                    <h:commandButton value="Trnasfer" ></h:commandButton>
-                                </p:panelGrid>
+
+                                <h:form>
+                                    <p:panelGrid columns="2"  class="w-100 border border-light">
+                                        <f:facet name="header" >
+                                            Transfer out
+                                        </f:facet>
+                                        <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
+                                        <p:autoComplete  id="parent" class="d-block" inputStyleClass="form-control" 
+                                                         value="#{documentController.institution}" 
+                                                         completeMethod="#{institutionController.completeInstitutions}"
+                                                         var="i" 
+                                                         itemLabel="#{i.name}" 
+                                                         itemValue="#{i}" 
+                                                         forceSelection="True"
+                                                         maxResults="15" 
+                                                         minQueryLength="3">
+                                        </p:autoComplete >
+                                        <p:spacer></p:spacer>
+                                        <h:commandButton value="Transfer" action="#{documentController.transferOutFile()}" ></h:commandButton>
+                                    </p:panelGrid>
+                                </h:form>
+                                
+                                <h:form>
+                                    <p:panelGrid columns="2"  class="w-100 border border-light">
+                                        <f:facet name="header" >
+                                            Transfer Ownership
+                                        </f:facet>
+                                        <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
+                                        <p:selectOneMenu value="#{documentController.webUser}" >
+                                            <f:selectItem itemLabel="Select" ></f:selectItem>
+                                            <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
+                                                           itemLabel="#{u.person.name}" itemValue="#{u}"></f:selectItems>
+                                        </p:selectOneMenu>
+                                        <p:spacer></p:spacer>
+                                        <h:commandButton value="Transfer" action="#{documentController.transferOutOwnershipFile()}" ></h:commandButton>
+                                    </p:panelGrid>
+                                </h:form>
+
+
                             </div>
                         </div>
                     </div>

@@ -81,7 +81,7 @@ public class WebUserController implements Serializable {
     private InstitutionController institutionController;
     @Inject
     private ItemController itemController;
-       @Inject
+    @Inject
     private DocumentController encounterController;
     @Inject
     ExcelReportController reportController;
@@ -705,7 +705,6 @@ public class WebUserController implements Serializable {
         selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
     }
 
-
     public String toChangeMyDetails() {
         if (loggedUser == null) {
             return "";
@@ -739,9 +738,6 @@ public class WebUserController implements Serializable {
         current = loggedUser;
         return "/change_my_password";
     }
-
-    
-
 
     public String viewMedia() {
         if (currentUpload == null) {
@@ -785,8 +781,6 @@ public class WebUserController implements Serializable {
         }
         return ins;
     }
-
-    
 
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
@@ -873,10 +867,9 @@ public class WebUserController implements Serializable {
         if (loggedUser != null) {
             loggedInstitution = loggedUser.getInstitution();
         }
-       
+        fillUsersForMyInstitute();
         executeSuccessfulLoginActions();
-        
-       
+
         return "/index";
     }
 
@@ -889,7 +882,6 @@ public class WebUserController implements Serializable {
         c.add(Calendar.DAY_OF_MONTH, -7);
         fromDate = c.getTime();
 
-        
     }
 
     private void fillAreasForMe() {
@@ -989,12 +981,13 @@ public class WebUserController implements Serializable {
     }
 
     private void fillUsersForMyInstitute() {
-        String j = "select u from WebUser u "
-                + " where u.retired=false "
-                + " and u.institution = :ins ";
-        Map m = new HashMap();
-        m.put("ins", getLoggedUser().getInstitution());
-        usersForMyInstitute = getFacade().findByJpql(j, m);
+        usersForMyInstitute = new ArrayList<>();
+        List<WebUser> tus = webUserApplicationController.getItems();
+        for (WebUser wu : tus) {
+            if(wu.getInstitution()!=null && wu.getInstitution().equals(getLoggedInstitution())){
+                usersForMyInstitute.add(wu);
+            }
+        }
     }
 
     private boolean checkLoginNew() {
@@ -2192,7 +2185,6 @@ public class WebUserController implements Serializable {
         return rs;
     }
 
-
     public WebUserRole[] getWebUserRolesForMoh() {
         List<WebUserRole> urs = new ArrayList<>();
         urs.add(WebUserRole.Moh);
@@ -2206,8 +2198,6 @@ public class WebUserController implements Serializable {
         WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
         return rs;
     }
-
-
 
     public WebUserRole[] getWebUserRolesForLabAdmin() {
         List<WebUserRole> urs = new ArrayList<>();
@@ -2615,8 +2605,6 @@ public class WebUserController implements Serializable {
         this.selectedFundComments = selectedFundComments;
     }
 
- 
-
     public TreeNode getAllPrivilegeRoot() {
         allPrivilegeRoot = webUserApplicationController.getAllPrivilegeRoot();
         return allPrivilegeRoot;
@@ -2673,7 +2661,6 @@ public class WebUserController implements Serializable {
         return loggableInstitutions;
     }
 
-   
     public void setLoggableInstitutions(List<Institution> loggableInstitutions) {
         this.loggableInstitutions = loggableInstitutions;
     }

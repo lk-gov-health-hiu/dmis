@@ -221,14 +221,14 @@ public class DocumentController implements Serializable {
         save(selected);
     }
 
-    public void transferOutFile() {
+    public String transferOutFile() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Select an institution to transfer out");
-            return;
+            return "";
         }
         if (selected == null) {
             JsfUtil.addErrorMessage("Select a file");
-            return;
+            return "";
         }
 
         DocumentHistory docHx = new DocumentHistory();
@@ -239,16 +239,17 @@ public class DocumentController implements Serializable {
         saveDocumentHx(docHx);
 
         JsfUtil.addSuccessMessage("Transferred out successfully");
+        return viewFile();
     }
 
-    public void transferOutOwnershipFile() {
-        if (institution == null) {
-            JsfUtil.addErrorMessage("Select an institution to transfer out");
-            return;
+    public String transferOutOwnershipFile() {
+        if (webUser == null) {
+            JsfUtil.addErrorMessage("Select a user to transfer ownership");
+            return "";
         }
         if (selected == null) {
             JsfUtil.addErrorMessage("Select a file");
-            return;
+            return "";
         }
 
         DocumentHistory docHx = new DocumentHistory();
@@ -259,7 +260,8 @@ public class DocumentController implements Serializable {
 
         saveDocumentHx(docHx);
 
-        JsfUtil.addSuccessMessage("Transferred out successfully");
+        JsfUtil.addSuccessMessage("Ownership change initiated successfully");
+        return viewFile();
     }
 
     public String saveAndViewFile() {
@@ -446,8 +448,6 @@ public class DocumentController implements Serializable {
     public void setSelectedDocumentHistories(List<DocumentHistory> selectedDocumentHistories) {
         this.selectedDocumentHistories = selectedDocumentHistories;
     }
-    
-    
 
     @FacesConverter(forClass = Document.class)
     public static class EncounterControllerConverter implements Converter {
