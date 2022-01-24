@@ -24,23 +24,37 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.DocumentHistory;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.DocumentType;
+import lk.gov.health.phsp.enums.HistoryType;
+import lk.gov.health.phsp.facade.DocumentHistoryFacade;
 
 @Named
 @SessionScoped
 public class DocumentController implements Serializable {
 
     @EJB
-    private DocumentFacade ejbFacade;
+    private DocumentFacade documentFacade;
+
+    @EJB
+    DocumentHistoryFacade documentHxFacade;
+
     private List<Document> items = null;
     private List<Document> selectedItems = null;
     private Document selected;
+    private DocumentHistory selectedHistory;
+    private List<DocumentHistory> selectedDocumentHistories;
     @Inject
     private WebUserController webUserController;
     @Inject
     private UserTransactionController userTransactionController;
-    @Inject ItemApplicationController itemApplicationController;
+    @Inject
+    ItemApplicationController itemApplicationController;
+
+    private Institution institution;
+    private WebUser webUser;
 
     public DocumentController() {
     }
@@ -95,7 +109,7 @@ public class DocumentController implements Serializable {
 //        SimpleDateFormat format = new SimpleDateFormat("yy");
 //        String yy = format.format(new Date());
         if (clinic.getCode() == null || clinic.getCode().trim().equals("")) {
-            if(clinic.getName()!=null){
+            if (clinic.getName() != null) {
                 clinic.setCode(clinic.getName().substring(0, 2));
             }
         }
@@ -179,7 +193,6 @@ public class DocumentController implements Serializable {
         selected = null;
     }
 
-  
     public Document getSelected() {
         return selected;
     }
@@ -195,7 +208,7 @@ public class DocumentController implements Serializable {
     }
 
     private DocumentFacade getFacade() {
-        return ejbFacade;
+        return documentFacade;
     }
 
     public Document prepareCreate() {
@@ -207,17 +220,96 @@ public class DocumentController implements Serializable {
     public void save() {
         save(selected);
     }
-    
+
+    public void transferOutFile() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Select an institution to transfer out");
+            return;
+        }
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Select a file");
+            return;
+        }
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.File_Institution_Transfer);
+        docHx.setDocument(selected);
+        docHx.setFromInstitution(selected.getCurrentInstitution());
+        docHx.setToInstitution(institution);
+        saveDocumentHx(docHx);
+
+        JsfUtil.addSuccessMessage("Transferred out successfully");
+    }
+
+    public void transferOutOwnershipFile() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Select an institution to transfer out");
+            return;
+        }
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Select a file");
+            return;
+        }
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.File_Owner_Transfer);
+        docHx.setDocument(selected);
+        docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setToUser(webUser);
+
+        saveDocumentHx(docHx);
+
+        JsfUtil.addSuccessMessage("Transferred out successfully");
+    }
+
     public String saveAndViewFile() {
+        boolean newHx = false;
+        if (selected.getId() == null) {
+            newHx = true;
+        }
         save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.File_Created);
+            }
+            selectedHistory.setToInstitution(selected.getCurrentInstitution());
+            selectedHistory.setToUser(selected.getCurrentOwner());
+            selectedHistory.setCompleted(true);
+            selectedHistory.setCompletedAt(new Date());
+            selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
         return viewFile();
     }
-    
-    public String viewFile(){
-        if(selected==null){
+
+    public void saveDocumentHx(DocumentHistory hx) {
+        if (hx == null) {
+            return;
+        }
+        if (hx.getId() == null) {
+            hx.setCreatedAt(new Date());
+            hx.setCreatedBy(webUserController.getLoggedUser());
+            documentHxFacade.create(hx);
+        } else {
+            documentHxFacade.edit(hx);
+        }
+    }
+
+    public String viewFile() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
         }
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " order by h.id";
+        Map m = new HashMap();
+        m.put("doc", selected);
+        selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
         return "/document/file_view";
     }
 
@@ -258,13 +350,7 @@ public class DocumentController implements Serializable {
     public List<Document> getItems(String jpql, Map m) {
         return getFacade().findByJpql(jpql, m);
     }
-    
-   
-    
-   
 
-    
- 
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
             setEmbeddableKeys();
@@ -309,8 +395,8 @@ public class DocumentController implements Serializable {
         return webUserController;
     }
 
-    public lk.gov.health.phsp.facade.DocumentFacade getEjbFacade() {
-        return ejbFacade;
+    public lk.gov.health.phsp.facade.DocumentFacade getDocumentFacade() {
+        return documentFacade;
     }
 
     public List<Document> getItems() {
@@ -328,6 +414,40 @@ public class DocumentController implements Serializable {
     public void setSelectedItems(List<Document> selectedItems) {
         this.selectedItems = selectedItems;
     }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public DocumentHistory getSelectedHistory() {
+        return selectedHistory;
+    }
+
+    public void setSelectedHistory(DocumentHistory selectedHistory) {
+        this.selectedHistory = selectedHistory;
+    }
+
+    public WebUser getWebUser() {
+        return webUser;
+    }
+
+    public void setWebUser(WebUser webUser) {
+        this.webUser = webUser;
+    }
+
+    public List<DocumentHistory> getSelectedDocumentHistories() {
+        return selectedDocumentHistories;
+    }
+
+    public void setSelectedDocumentHistories(List<DocumentHistory> selectedDocumentHistories) {
+        this.selectedDocumentHistories = selectedDocumentHistories;
+    }
+    
+    
 
     @FacesConverter(forClass = Document.class)
     public static class EncounterControllerConverter implements Converter {

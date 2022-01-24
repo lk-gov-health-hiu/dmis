@@ -30,8 +30,10 @@ import java.util.Date;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Document;
+import lk.gov.health.phsp.entity.DocumentHistory;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.DocumentType;
+import lk.gov.health.phsp.enums.HistoryType;
 import lk.gov.health.phsp.enums.Privilege;
 
 /**
@@ -66,7 +68,13 @@ public class MenuController implements Serializable {
         nd.setDocumentDate(new Date());
         nd.setInstitution(webUserController.getLoggedInstitution());
         nd.setInstitutionUnit(webUserController.getLoggedInstitution());
+        nd.setOwner(webUserController.getLoggedUser());
+        nd.setCurrentInstitution(webUserController.getLoggedInstitution());
+        nd.setCurrentOwner(webUserController.getLoggedUser());
         documentController.setSelected(nd);
+        
+        DocumentHistory ndh = new DocumentHistory();
+        ndh.setHistoryType(HistoryType.File_Created);
         return "/document/file";
     }
 

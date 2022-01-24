@@ -8,6 +8,8 @@ package lk.gov.health.phsp.entity;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +18,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.enums.HistoryType;
 
 /**
  *
@@ -23,8 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
-public class DocumentHistory  implements Serializable  {
-    
+public class DocumentHistory implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     public static long getSerialVersionUID() {
@@ -34,51 +37,39 @@ public class DocumentHistory  implements Serializable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
-
-    private String code;
+    @Enumerated(EnumType.STRING)
+    private HistoryType historyType;
     
-    
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Item item;
-
     @Lob
     private String descreption;
 
     private Double orderNo;
 
     @ManyToOne
-    private Institution institution;
+    private Institution fromInstitution;
 
-   
-
-    @Lob
-    private String css;
-
+    @ManyToOne
+    private Institution toInstitution;
     
+    @ManyToOne
+    private WebUser fromUser;
+    @ManyToOne
+    private WebUser toUser;
 
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
     Last Edit Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser lastEditBy;
+    @ManyToOne
+    private WebUser acceptedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date lastEditeAt;
-    /*
-    Retire Reversal Properties
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser retiredReversedBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date retiredReversedAt;
+    private Date acceptedAt;
     /*
     Retire Properties
      */
@@ -94,22 +85,17 @@ public class DocumentHistory  implements Serializable  {
     private Date completedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser completedBy;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Document encounter;
 
-  
-    
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Document document;
 
-    public Document getEncounter() {
-        return encounter;
+    public Document getDocument() {
+        return document;
     }
 
-    public void setEncounter(Document encounter) {
-        this.encounter = encounter;
+    public void setDocument(Document document) {
+        this.document = document;
     }
-
-   
 
     public Long getId() {
         return id;
@@ -119,29 +105,7 @@ public class DocumentHistory  implements Serializable  {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
+   
 
     public String getDescreption() {
         return descreption;
@@ -159,22 +123,15 @@ public class DocumentHistory  implements Serializable  {
         this.orderNo = orderNo;
     }
 
-    public Institution getInstitution() {
-        return institution;
+    public Institution getFromInstitution() {
+        return fromInstitution;
     }
 
-    public void setInstitution(Institution institution) {
-        this.institution = institution;
+    public void setFromInstitution(Institution fromInstitution) {
+        this.fromInstitution = fromInstitution;
     }
 
-  
-    public String getCss() {
-        return css;
-    }
-
-    public void setCss(String css) {
-        this.css = css;
-    }
+   
 
     public WebUser getCreatedBy() {
         return createdBy;
@@ -192,37 +149,23 @@ public class DocumentHistory  implements Serializable  {
         this.createdAt = createdAt;
     }
 
-    public WebUser getLastEditBy() {
-        return lastEditBy;
+    public WebUser getAcceptedBy() {
+        return acceptedBy;
     }
 
-    public void setLastEditBy(WebUser lastEditBy) {
-        this.lastEditBy = lastEditBy;
+    public void setAcceptedBy(WebUser acceptedBy) {
+        this.acceptedBy = acceptedBy;
     }
 
-    public Date getLastEditeAt() {
-        return lastEditeAt;
+    public Date getAcceptedAt() {
+        return acceptedAt;
     }
 
-    public void setLastEditeAt(Date lastEditeAt) {
-        this.lastEditeAt = lastEditeAt;
+    public void setAcceptedAt(Date acceptedAt) {
+        this.acceptedAt = acceptedAt;
     }
 
-    public WebUser getRetiredReversedBy() {
-        return retiredReversedBy;
-    }
-
-    public void setRetiredReversedBy(WebUser retiredReversedBy) {
-        this.retiredReversedBy = retiredReversedBy;
-    }
-
-    public Date getRetiredReversedAt() {
-        return retiredReversedAt;
-    }
-
-    public void setRetiredReversedAt(Date retiredReversedAt) {
-        this.retiredReversedAt = retiredReversedAt;
-    }
+    
 
     public boolean isRetired() {
         return retired;
@@ -279,5 +222,39 @@ public class DocumentHistory  implements Serializable  {
     public void setCompletedBy(WebUser completedBy) {
         this.completedBy = completedBy;
     }
+
+    public HistoryType getHistoryType() {
+        return historyType;
+    }
+
+    public void setHistoryType(HistoryType historyType) {
+        this.historyType = historyType;
+    }
+
+    public WebUser getFromUser() {
+        return fromUser;
+    }
+
+    public void setFromUser(WebUser fromUser) {
+        this.fromUser = fromUser;
+    }
+
+    public WebUser getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(WebUser toUser) {
+        this.toUser = toUser;
+    }
+
+    public Institution getToInstitution() {
+        return toInstitution;
+    }
+
+    public void setToInstitution(Institution toInstitution) {
+        this.toInstitution = toInstitution;
+    }
+    
+    
 
 }

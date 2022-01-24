@@ -24,7 +24,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Document;
-import lk.gov.health.phsp.enums.ComponentSetType;
+import lk.gov.health.phsp.enums.HistoryType;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataModificationStrategy;
@@ -374,8 +374,8 @@ public class CommonController implements Serializable {
         return AreaType.values();
     }
 
-    public ComponentSetType[] getComponentSetTypes() {
-        return ComponentSetType.values();
+    public HistoryType[] getComponentSetTypes() {
+        return HistoryType.values();
     }
 
     public ComponentSex[] getComponentSex() {

@@ -11,72 +11,74 @@
 
         <ui:composition template="/template1.xhtml">
             <ui:define name="title">
-                View PCR Order
+                View File
             </ui:define>
             <ui:define name="content">
 
                 <div class="card my-3">
                     <h5 class="card-header bg-success">
-                        <h:form>
-                            <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Patient Data For PCR Ordering" ></p:outputLabel>
-                        </h:form>
+                        <p:outputLabel class="text-white fs-5 fw-bold my-2" value="View File" ></p:outputLabel>
                     </h5>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12">
-                                <p:panelGrid columns="4"  class="w-100 border border-light">
-
-                                    <h:outputLabel class="fs-6" value="Test Number:"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 fw-bold" id="txtTestNo" value="#{hospitalController.pcr.encounterNumber}"></h:outputLabel>
-                                    <h:outputLabel class="fs-6"  value="Lab:"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.referalInstitution.name}"></h:outputLabel>
-
-                                    <h:outputLabel class="fs-6" value="Ordering Category:"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 fw-bold" id="orderingCat" value="#{hospitalController.pcr.pcrOrderingCategory.name}"></h:outputLabel>
-                                    <h:outputLabel class="fs-6" value="Sampled at:"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 fw-bold" id="test" value="#{hospitalController.pcr.sampledAt}">
-                                        <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
+                            <div class="col-md-6">
+                                <p:panelGrid columns="2"  class="w-100 border border-light">
+                                    <h:outputLabel class="fs-6" value="File Number:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold"  value="#{documentController.selected.documentNumber}"></h:outputLabel>
+                                    <h:outputLabel class="fs-6"  value="File Name:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold" value="#{documentController.selected.documentName}"></h:outputLabel>
+                                    <h:outputLabel class="fs-6" value="File Created on:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold" id="date" value="#{documentController.selected.documentDate}">
+                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                     </h:outputLabel>
-
-                                    <h:outputLabel class="fs-6" value="Name:" />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.client.person.name}" title="Name" />
-                                    <h:outputLabel class="fs-6" value="Citizenship:" for="citizenship" />
-                                    <h:outputLabel class="fs-6 fw-bold" id="citizenship" value="#{hospitalController.pcr.client.person.citizenship.name}" ></h:outputLabel>
-
-
-                                    <h:outputLabel class="fs-6" value="PHN No:"  />
-                                    <h:outputLabel class="fs-6 fw-bold" id="phn" value="#{hospitalController.pcr.client.phn}" title="Phn"></h:outputLabel>
-                                    <h:outputLabel class="fs-6" value="Other Ordering Category:"  />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.pcrOrderingCategoryOther}"/>
-
-                                    <h:outputLabel class="fs-6" value="Symptomatic:"  />
-                                    <h:outputLabel class="fs-6 fw-bold" tabindex="106" value="#{hospitalController.pcr.symptomatic?'Yes':''}" ></h:outputLabel>
-                                    <h:outputLabel class="fs-6" value="NIC/NIC of the guardian/Passport No. :" for="nic" />
-                                    <h:outputLabel class="fs-6 fw-bold" id="nic" value="#{hospitalController.pcr.client.person.nic}" title="Nic" ></h:outputLabel>
-
-                                    <h:outputLabel class="fs-6" value="Gender:"  for="sex" />
-                                    <h:outputLabel class="fs-6 fw-bold" id="sex" value="#{hospitalController.pcr.client.person.sex.name}"></h:outputLabel>
-                                    <h:outputLabel class="fs-6" value="Age:" />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.client.person.age}" ></h:outputLabel>
-
-                                    <h:outputLabel class="fs-6" value="Current Residential Address:" for="address" />
-                                    <h:outputLabel class="fs-6 fw-bold" tabindex="4" id="address" value="#{hospitalController.pcr.client.person.address}" title="Address ****" />
-                                    <h:outputLabel class="fs-6" value="District:"  />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.client.person.district.name}" />
-
-                                    <h:outputLabel class="fs-6" value="MOH Area:" />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.client.person.mohArea.name}" />
-                                    <h:outputLabel class="fs-6" value="Contact Number :" />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.client.person.phone1}" />
-
-                                    <h:outputLabel class="fs-6" value="GN Area:"  />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.client.person.gnArea.name}" />
-                                    <h:outputLabel class="fs-6" value="PHI Area:" />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.client.person.phiArea.name}" />
-
-                                    <h:outputLabel class="fs-6" value="Unit/Ward:"  />
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{hospitalController.pcr.unitWard}" />
-
+                                    <h:outputLabel class="fs-6" value="Comments:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold" id="orderingCat" value="#{documentController.selected.comments}"></h:outputLabel>
+                                    <h:outputLabel class="fs-6"  value="Institute/Unit:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold" value="#{documentController.selected.institution.name}"></h:outputLabel>
+                                    <h:outputLabel class="fs-6"  value="Owner:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold" value="#{documentController.selected.owner.name}"></h:outputLabel>
+                                </p:panelGrid>
+                                <p:dataTable value="#{documentController.selectedDocumentHistories}"
+                                             var="h" 
+                                             rowKey="#{h.id}">
+                                
+                                    <p:column headerText="Action">
+                                        <h:outputText value="#{h.historyType.label}" ></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="From">
+                                        <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
+                                        <h:outputText value="#{h.fromUser.name}" ></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="To">
+                                        <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
+                                        <h:outputText value="#{h.toUser.name}" ></h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                            <div class="col-md-6">
+                                <p:panelGrid columns="2"  class="w-100 border border-light">
+                                    <h:outputLabel class="fs-6" value="Current Location:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold"  value="#{documentController.selected.currentInstitution.name}"></h:outputLabel>
+                                    <h:outputLabel class="fs-6"  value="Current Holder:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold" value="#{documentController.selected.currentOwner.name}"></h:outputLabel>
+                                </p:panelGrid>
+                                <p:panelGrid columns="2"  class="w-100 border border-light">
+                                    <f:facet name="header" >
+                                        Transfer out
+                                    </f:facet>
+                                    <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
+                                    <p:autoComplete  id="parent" class="d-block" inputStyleClass="form-control" 
+                                                     value="#{documentController.institution}" 
+                                                     completeMethod="#{institutionController.completeInstitutions}"
+                                                     var="i" 
+                                                     itemLabel="#{i.name}" 
+                                                     itemValue="#{i}" 
+                                                     forceSelection="True"
+                                                     maxResults="15" 
+                                                     minQueryLength="3">
+                                    </p:autoComplete >
+                                    <p:spacer></p:spacer>
+                                    <h:commandButton value="Trnasfer" ></h:commandButton>
                                 </p:panelGrid>
                             </div>
                         </div>
@@ -95,16 +97,16 @@
 
                                 <h:panelGroup id="barcode" >
                                     <div class="container-fluid " >
-<!--                                        <div class="row w-100 text-center" >
-                                            <div class="col-2">Name</div>
-                                            <div  class="col-1">:</div>
-                                            <div class="col-9">#{hospitalController.pcr.client.person.name}</div>
-                                        </div>
-                                        <div class="row w-100 text-center" >
-                                            <div class="col-2">ID/Passport</div>
-                                            <div  class="col-1">:</div>
-                                            <div class="col-9">#{hospitalController.pcr.client.person.nic}</div>
-                                        </div>-->
+                                        <!--                                        <div class="row w-100 text-center" >
+                                                                                    <div class="col-2">Name</div>
+                                                                                    <div  class="col-1">:</div>
+                                                                                    <div class="col-9">#{hospitalController.pcr.client.person.name}</div>
+                                                                                </div>
+                                                                                <div class="row w-100 text-center" >
+                                                                                    <div class="col-2">ID/Passport</div>
+                                                                                    <div  class="col-1">:</div>
+                                                                                    <div class="col-9">#{hospitalController.pcr.client.person.nic}</div>
+                                                                                </div>-->
                                         <div class="row w-100 text-center" >
                                             <div class="col-12 w-100 text-center">
                                                 <p:barcode cache="false" hrp="none"  type="code39" height="10" width="50" value="#{hospitalController.pcr.encounterNumber}" >
@@ -149,45 +151,6 @@
                     </div>
                 </div>
 
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <h:form>
-                            <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" value="#{sessionController.pcrList}" id="tbl"
-                                         var="c" paginator="true" rowKey="#{c.id}" rows="10" >
-                                <f:facet name="header">
-                                    <h4  class="fs-4 my-3 fw-bold">Last Entries</h4>
-                                </f:facet>
-                                <p:column class="fs-6" headerText="Test No" sortBy="#{c.encounterNumber}">
-                                    <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
-                                </p:column>
-                                <p:column class="fs-6" headerText="Name" sortBy="#{c.client.person.name}" >
-                                    <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
-                                </p:column>
-                                <p:column class="fs-6" headerText="Age" sortBy="#{c.client.person.ageInDays}" >
-                                    <p:outputLabel value="#{c.client.person.age}" ></p:outputLabel>
-                                </p:column>
-                                <p:column class="fs-6" headerText="Sex" sortBy="#{c.client.person.sex.name}">
-                                    <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
-                                </p:column>
-                                <p:column class="fs-6" headerText="NIC" sortBy="#{c.client.person.nic}" >
-                                    <p:outputLabel value="#{c.client.person.nic}" ></p:outputLabel>
-                                </p:column>
-                                <p:column class="fs-6" headerText="Address" >
-                                    <p:outputLabel value="#{c.client.person.address}" ></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="Actions" >
-                                    <h:commandButton class="btn btn-warning w-100" value="Edit" action="#{hospitalController.toPcrEdit()}" >
-                                        <f:setPropertyActionListener value="#{c}" target="#{hospitalController.pcr}" ></f:setPropertyActionListener>
-                                    </h:commandButton>
-                                    <h:commandButton class="btn btn-danger w-100" value="Delete" action="#{hospitalController.toDeleteTestFromLastPcrList()}" >
-                                        <f:setPropertyActionListener value="#{c}" target="#{hospitalController.deleting}" ></f:setPropertyActionListener>
-                                    </h:commandButton>
-                                </p:column>
-                            </p:dataTable>
-                        </h:form>
-                    </div>
-                </div>
 
 
 

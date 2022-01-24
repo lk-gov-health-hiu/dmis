@@ -80,6 +80,11 @@ public class Document implements Serializable {
     private Institution institutionUnit;
     @ManyToOne
     private WebUser owner;
+    
+    @ManyToOne
+    private Institution currentInstitution;
+    @ManyToOne
+    private WebUser currentOwner; 
 
 
     @ManyToOne
@@ -347,6 +352,22 @@ public class Document implements Serializable {
 
     public void setCompletedAt(Date completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public Institution getCurrentInstitution() {
+        return currentInstitution;
+    }
+
+    public void setCurrentInstitution(Institution currentInstitution) {
+        this.currentInstitution = currentInstitution;
+    }
+
+    public WebUser getCurrentOwner() {
+        return currentOwner;
+    }
+
+    public void setCurrentOwner(WebUser currentOwner) {
+        this.currentOwner = currentOwner;
     }
 
     

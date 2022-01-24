@@ -28,17 +28,17 @@ package lk.gov.health.phsp.enums;
  *
  * @author User
  */
-public enum ComponentSetType {
-    Patient_Pages("Patient Pages"),
-    Encounter_Pages("Encounter Pages"),
-    Encounters_Arranged_Horizontally("Encounters Arranged Horizontally"),
-    Encounters_Arranged_Vertically("Encounters Arranged Vertically"),
-    Encounters_Annual_Summery_page("Encounters Annual Summery Page"),
-    Encounters_Annual_summery_Arranged_Horizontally("Encounters Annual Summery Arranged Horizontally"),
-    Encounters_Annual_summery_Arranged_Vertically("Encounters Annual Summery Arranged Vertically");
+public enum HistoryType {
+    File_Created("File Created"),
+    File_Institution_Transfer("File Transfer"),
+    File_Owner_Transfer("File Owner Change"),
+    Letter_Created("Letter Created"),
+    Letter_Received("Letter Received"),
+    Letter_Sent("Letter Send"),
+    Letter_Action_Taken("Letter Action Taken");
     
     private final String label;    
-    private ComponentSetType(String label){
+    private HistoryType(String label){
         this.label = label;
     }
     
