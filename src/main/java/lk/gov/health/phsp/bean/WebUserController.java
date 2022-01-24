@@ -873,13 +873,10 @@ public class WebUserController implements Serializable {
         if (loggedUser != null) {
             loggedInstitution = loggedUser.getInstitution();
         }
-        System.out.println("loged Institution completed - " + new Date());
+       
         executeSuccessfulLoginActions();
-        System.out.println("Executed Successful Login Actions - " + new Date());
-        fillUsersForMyInstitute();
-        System.out.println("Filled Users for my institutions - " + new Date());
-        fillAreasForMe();
-        System.out.println("Filled Areas for Me - " + new Date());
+        
+       
         return "/index";
     }
 
@@ -887,41 +884,12 @@ public class WebUserController implements Serializable {
 
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
-        if (!dashboardApplicationController.getDashboardPrepared()) {
-            JsfUtil.addErrorMessage("Dashboard NOT ready");
-        }
         Calendar c = Calendar.getInstance();
         toDate = c.getTime();
         c.add(Calendar.DAY_OF_MONTH, -7);
         fromDate = c.getTime();
 
-        if (null != loggedUser.getWebUserRoleLevel()) {
-            switch (loggedUser.getWebUserRoleLevel()) {
-                case Lab:
-                    dashboardController.setFromDate(fromDate);
-                    dashboardController.setToDate(toDate);
-                    dashboardController.prepareLabDashboard();
-                    break;
-                case National:
-                case National_Lab:
-                    dashboardApplicationController.updateDashboard();
-                    break;
-                case Moh:
-                    dashboardController.prepareMohDashboard();
-                    break;
-                case Regional:
-                    dashboardController.prepareRegionalDashboard();
-                    break;
-                case Provincial:
-                    dashboardController.prepareProvincialDashboard();
-                    break;
-                case Hospital:
-                    dashboardController.prepareHospitalDashboard();
-                    break;
-                default:
-                    break;
-            }
-        }
+        
     }
 
     private void fillAreasForMe() {

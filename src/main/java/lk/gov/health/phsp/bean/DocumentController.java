@@ -207,6 +207,19 @@ public class DocumentController implements Serializable {
     public void save() {
         save(selected);
     }
+    
+    public String saveAndViewFile() {
+        save(selected);
+        return viewFile();
+    }
+    
+    public String viewFile(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        return "/document/file_view";
+    }
 
     public void save(Document e) {
         if (e == null) {

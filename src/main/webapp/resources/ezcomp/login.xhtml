@@ -8,14 +8,13 @@
     <cc:implementation>
         <h:form>
             <p:focus for="username"></p:focus>
-            <div class="container-fluid">
+            <div class="container-fluid w-50 ">
                 <div class="row">
-                    <div class="col vh-100 px-4 py-3 bg-white">
+                    <div class="col px-4 py-3 bg-white text-center">
                         <div class="my-2 d-flex justify-content-center">
-                            <h:graphicImage style="height: 18em;" library="image" name="login1.png"></h:graphicImage>
+                            <h:graphicImage style="height: 18em;" library="image" name="login.png"></h:graphicImage>
                         </div>
-                        <h3 class="fw-bold">National COVID-19 Health Information System</h3>
-                        <h4 class="text-muted">Login</h4>
+                        <h4 class="fw-bold">Document Management Information System</h4>
                         <div class="my-2">
                             <p:inputText id="username" placeholder="Username" required="true" requiredMessage="Username is required." autocomplete="off"
                                          value="#{webUserController.userName}" class="form-control">
@@ -37,16 +36,6 @@
                         </div>
                         <div class="my-2">
                             <p:messages></p:messages>
-                        </div>
-                    </div>
-                    <div class="col px-5 py-3">
-                        <div class="list-group">
-                            <li class="list-group-item list-group-item-info fw-bold">Downloads</li>
-                            <a href="https://drive.google.com/file/d/1UVJnSX4j0IQQodTfpbsVBlsH535k4AYF/view?usp=sharing" class="list-group-item list-group-item-action" target="_blank">Download Data Collection Form for MOH</a>
-                            <a href="https://drive.google.com/file/d/1bEBr3Ip35JjMrEFnhk5ExD0P64IydSki/view?usp=sharing" class="list-group-item list-group-item-action" target="_blank">Download Data Collection Form for Hospitals</a>
-                        </div>
-                        <div class="list-group">
-                            <li class="list-group-item list-group-item-info fw-bold">News</li>
                         </div>
                     </div>
                 </div>
