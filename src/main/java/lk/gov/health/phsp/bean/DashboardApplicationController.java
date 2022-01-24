@@ -36,14 +36,13 @@ import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.TemporalType;
-import lk.gov.health.phsp.ejb.CovidDataHolder;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.WebUserRoleLevel;
-import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
@@ -68,9 +67,7 @@ public class DashboardApplicationController {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     AreaApplicationController areaApplicationController;
-    @Inject
-    CovidDataHolder covidDataHolder;
-
+   
 //    AreaController
     @Inject
     private AreaController areaController;
@@ -283,7 +280,7 @@ public class DashboardApplicationController {
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
 
         if (ins != null) {
             j += " and c.institution=:ins ";
@@ -378,7 +375,7 @@ public class DashboardApplicationController {
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
 
         if (ins != null) {
             j += " and c.institution=:ins ";
@@ -468,7 +465,7 @@ public Long samplesAwaitingDispatch(
     jpql += " and (c.sentToLab is null or c.sentToLab = :sl) ";
 
     hashMap.put("ret", false);
-    hashMap.put("type", EncounterType.Test_Enrollment);
+    hashMap.put("type", DocumentType.Letter);
     hashMap.put("fd", fromDate);
     hashMap.put("sl", false);
     hashMap.put("td", toDate);
@@ -530,7 +527,7 @@ public Map<String, String> getSeriesOfCases(
 
         jpql += " and c.encounterType=:etype ";
 
-        hashMap.put("etype", EncounterType.Test_Enrollment);
+        hashMap.put("etype", DocumentType.Letter);
 
         if (area != null) {
             if (area.getType() == AreaType.RdhsAra) {
@@ -581,7 +578,7 @@ public Map<String, String> getSeriesOfCases(
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
 
         if (area != null) {
             if (area.getType() == AreaType.RdhsAra) {
@@ -636,7 +633,7 @@ public Map<String, String> getSeriesOfCases(
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
 
         if (pdArea != null) {
             if (pdArea.getType() == AreaType.RdhsAra) {
@@ -684,7 +681,7 @@ public Map<String, String> getSeriesOfCases(
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
 
         if (ins != null) {
             j += " and c.institution=:ins ";
@@ -727,7 +724,7 @@ public Map<String, String> getSeriesOfCases(
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
 
         if (area != null && area.getType() != null) {
             if (null != area.getType()) {
@@ -786,7 +783,7 @@ public Map<String, String> getSeriesOfCases(
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
 
         if (area != null) {
             if (area.getType() == AreaType.RdhsAra) {
@@ -1073,7 +1070,7 @@ public Map<String, String> getSeriesOfCases(
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
 
         j += " and (c.client.person.mohArea=:moh) ";
         m.put("moh",moh);
@@ -1131,7 +1128,7 @@ public Map<String, String> getSeriesOfCases(
                 + " where (c.retired is null or c.retired=:ret) ";
         m.put("ret", false);
         j += " and c.encounterType=:etype ";
-        m.put("etype", EncounterType.Test_Enrollment);
+        m.put("etype", DocumentType.Letter);
         j += " and c.resultConfirmedAt between :fd and :td ";
         m.put("fd", from);
         m.put("td", to);

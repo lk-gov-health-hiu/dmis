@@ -25,9 +25,9 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.DocumentType;
 
-@Named("encounterController")
+@Named
 @SessionScoped
 public class DocumentController implements Serializable {
 
@@ -50,7 +50,7 @@ public class DocumentController implements Serializable {
                 + " where e.encounterDate is null";
         List<Document> es = getFacade().findByJpql(j);
         for (Document e : es) {
-            e.setEncounterDate(e.getCreatedAt());
+            e.setDocumentDate(e.getCreatedAt());
             getFacade().edit(e);
         }
     }
@@ -63,7 +63,7 @@ public class DocumentController implements Serializable {
 //        j = "select count(e) from Document e ";
         Map m = new HashMap();
         m.put("d", CommonController.startOfTheYear());
-        m.put("ec", EncounterType.Death);
+        m.put("ec", DocumentType.Register);
         m.put("ins", clinic);
         Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
@@ -84,7 +84,7 @@ public class DocumentController implements Serializable {
 //        j = "select count(e) from Document e ";
         Map m = new HashMap();
         m.put("d", CommonController.startOfTheYear());
-        m.put("ec", EncounterType.Test_Enrollment);
+        m.put("ec", DocumentType.Letter);
         m.put("ins", clinic);
         Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
@@ -110,7 +110,7 @@ public class DocumentController implements Serializable {
 //        j = "select count(e) from Document e ";
         Map m = new HashMap();
         m.put("d", CommonController.startOfTheYear());
-        m.put("ec", EncounterType.Case_Enrollment);
+        m.put("ec", DocumentType.File);
         m.put("ins", clinic);
         Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
@@ -123,7 +123,7 @@ public class DocumentController implements Serializable {
         return clinic.getCode() + "/" + String.format("%03d", c);
     }
 
-    public Long countOfEncounters(List<Institution> clinics, EncounterType ec) {
+    public Long countOfEncounters(List<Institution> clinics, DocumentType ec) {
         String j = "select count(e) from Encounter e "
                 + " where e.retired=:ret "
                 + " and e.encounterType=:ec "
@@ -140,7 +140,7 @@ public class DocumentController implements Serializable {
         return c;
     }
 
-    public Document getInstitutionTypeEncounter(Institution institution, EncounterType ec, Date d) {
+    public Document getInstitutionTypeEncounter(Institution institution, DocumentType ec, Date d) {
         String j = "select e from Encounter e "
                 + " where e.encounterType=:ec "
                 + " and e.institution=:ins "
@@ -152,8 +152,8 @@ public class DocumentController implements Serializable {
         Document e = getFacade().findFirstByJpql(j, m);
         if (e == null) {
             e = new Document();
-            e.setEncounterDate(d);
-            e.setEncounterType(ec);
+            e.setDocumentDate(d);
+            e.setDocumentType(ec);
             e.setInstitution(institution);
             e.setCreatedInstitution(institution);
             e.setCreatedAt(new Date());
@@ -246,28 +246,9 @@ public class DocumentController implements Serializable {
         return getFacade().findByJpql(jpql, m);
     }
     
-    public void listEncountersWithoutPctOrRat(){
-        String j = "select e "
-                + " from Encounter e "
-                + " where e.encounterType=:et "
-                + " and e.pcrTestType is null";
-        Map m = new HashMap();
-        m.put("et", EncounterType.Test_Enrollment);
-        items = ejbFacade.findByJpql(j, m);
-        selectedItems = null;
-    }
+   
     
-    public void markMissingEncountersAsPcr(){
-        int c=0;
-        for(Document e:selectedItems){
-            if(e.getPcrTestType()==null){
-                e.setPcrTestType(itemApplicationController.getPcr());
-                ejbFacade.edit(e);
-                c++;
-            }
-        }
-        JsfUtil.addErrorMessage("Record Count Updated = " +c);
-    }
+   
 
     
  

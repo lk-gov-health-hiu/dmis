@@ -34,11 +34,9 @@ import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.InstitutionFacade;
-import lk.gov.health.phsp.facade.RelationshipFacade;
 import org.apache.commons.codec.digest.DigestUtils;
 // </editor-fold>
 
@@ -53,8 +51,6 @@ public class InstitutionApplicationController {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private InstitutionFacade institutionFacade;
-    @EJB
-    RelationshipFacade relationshipFacade;
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
@@ -224,42 +220,11 @@ public class InstitutionApplicationController {
 
         // // System.out.println("m = " + m);
         // // System.out.println("j = " + j);
-        Relationship tr = relationshipFacade.findFirstByJpql(j, m);
-        if (tr == null) {
-            return 0l;
-        }
-        return tr.getLongValue1();
+       
+        return null;
     }
 
-    public List<Relationship> findInstitutionPopulationData(Institution tins, Integer ty) {
-
-        if (ty == null) {
-            // // System.out.println("No Year");
-            return null;
-        }
-        if (tins == null) {
-            // // System.out.println("No Institution");
-            return null;
-        }
-
-        String j = "select r from Relationship r "
-                + " where r.retired<>:ret "
-                + " and r.yearInt=:y";
-
-        Map m = new HashMap();
-
-        j += " and r.institution=:ins  ";
-
-        m.put("ins", tins);
-        m.put("y", ty);
-        m.put("ret", true);
-
-        // // System.out.println("m = " + m);
-        // // System.out.println("j = " + j);
-        List<Relationship> tr = relationshipFacade.findByJpql(j, m);
-        return tr;
-    }
-
+    
     public List<InstitutionType> getHospitalTypes() {
         if (hospitalTypes == null || hospitalTypes.isEmpty()) {
             hospitalTypes = new ArrayList<>();

@@ -25,7 +25,6 @@ package lk.gov.health.phsp.pojcs;
 
 import java.util.ArrayList;
 import java.util.List;
-import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Document;
 
 /**
@@ -34,7 +33,6 @@ import lk.gov.health.phsp.entity.Document;
  */
 public class EncounterWithComponents {
     private Long encounterId;
-    private List<ClientEncounterComponentItem> components;
     private Long countOfEncounterDates;
     
     
@@ -47,16 +45,7 @@ public class EncounterWithComponents {
         this.encounterId = encounterId;
     }
 
-    public List<ClientEncounterComponentItem> getComponents() {
-        if(components==null){
-            components = new ArrayList<>();
-        }
-        return components;
-    }
 
-    public void setComponents(List<ClientEncounterComponentItem> components) {
-        this.components = components;
-    }
 
     public Long getCountOfEncounterDates() {
         return countOfEncounterDates;

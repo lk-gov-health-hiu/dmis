@@ -23,12 +23,6 @@
  */
 package lk.gov.health.phsp.bean;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -38,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -48,25 +41,12 @@ import javax.inject.Inject;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.entity.Upload;
-import lk.gov.health.phsp.enums.EncounterType;
-import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
-import lk.gov.health.phsp.enums.QueryLevel;
+import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
-import lk.gov.health.phsp.pojcs.EncounterWithBasicComponents;
 import lk.gov.health.phsp.pojcs.EncounterWithComponents;
-import lk.gov.health.phsp.pojcs.QueryWithCriteria;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 
 /**
  *
@@ -78,8 +58,7 @@ public class ExcelReportController implements Serializable {
 
     private final boolean logActivity = true;
     private List<EncounterWithComponents> encountersWithComponents;
-    private List<QueryWithCriteria> queriesWithCriteria;
-
+  
     String checkingString = "dsfsdfsdfds";
     boolean needCheckLogin = false;
 
@@ -90,8 +69,6 @@ public class ExcelReportController implements Serializable {
     private DocumentFacade encounterFacade;
    
 
-    @Inject
-    StoredQueryResultController storedQueryResultController;
     @Inject
     ApplicationController applicationController;
 
@@ -144,7 +121,7 @@ public class ExcelReportController implements Serializable {
                 + " order by e.id";
         Map m = new HashMap();
         m.put("i", institution);
-        m.put("t", EncounterType.Test_Enrollment);
+        m.put("t", DocumentType.Letter);
         m.put("er", true);
         m.put("fr", true);
         m.put("fc", true);
@@ -169,7 +146,7 @@ public class ExcelReportController implements Serializable {
                 + " group by e.encounterDate";
         Map m = new HashMap();
         m.put("i", institution);
-        m.put("t", EncounterType.Test_Enrollment);
+        m.put("t", DocumentType.Letter);
         m.put("er", true);
         m.put("fr", true);
         m.put("fc", true);
@@ -217,9 +194,7 @@ public class ExcelReportController implements Serializable {
         return encountersWithComponents;
     }
 
-    public List<QueryWithCriteria> getQueriesWithCriteria() {
-        return queriesWithCriteria;
-    }
+  
 
    
     public UploadFacade getUploadFacade() {

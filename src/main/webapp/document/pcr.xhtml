@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title" >
+                File
+            </ui:define>
+            <ui:define name="content">
+                <h:form class="form">
+                    <p:focus for="txtTestNo"></p:focus>
+                    <div class="row bg-white py-4">
+                        <h4 class="text-center fw-bold">File</h4>
+                        <div class="my-2 px-4">
+                            <div class="row mb-4">
+                                <div class="col md-3">
+                                    <h:outputLabel for="name"  class="form-label fw-bold">Ward | Unit | Clinic 
+                                        <small class="px-2 text-muted">Required</small></label>
+                                    <h:inputText id="name"  value="#{documentController.selected.documentName}" class="form-control"
+                                                 required="true" requiredMessage="Need a Name">
+                                    </h:inputText>
+                                    <h:message class="text-danger small" for="name"></h:message>
+                                </div>
+                            </div> 
+                            <div class="row mb-4">
+                                <div class="col md-3">
+                                    <h:outputLabel for="number"  class="form-label fw-bold">Ward | Unit | Clinic 
+                                        <small class="px-2 text-muted">Required</small></label>
+                                    <h:inputText id="number"  value="#{documentController.selected.documentNumber}" class="form-control"
+                                                 required="true" requiredMessage="Need a Number">
+                                    </h:inputText>
+                                    <h:message class="text-danger small" for="number"></h:message>
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <p:messages class="my-2 col"></p:messages>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h:commandButton tabindex="10" class="btn btn-success fw-bold"
+                                                     action="#{documentController.save()}" value="Save and NEW PCR">
+                                    </h:commandButton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

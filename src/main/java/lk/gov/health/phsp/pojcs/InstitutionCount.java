@@ -27,7 +27,7 @@ import java.util.Date;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.DocumentType;
 
 /**
  *
@@ -40,13 +40,13 @@ public class InstitutionCount {
     private Area area;
     private Long count;
     private Date date;
-    private EncounterType encounerType;
+    private DocumentType encounerType;
     private Item item;
     private Item itemValue;
     private Long id;
     private String positiveRate;
 
-    public InstitutionCount(Long count, Institution institution, Date date, EncounterType encounerType) {
+    public InstitutionCount(Long count, Institution institution, Date date, DocumentType encounerType) {
         this.institution = institution;
         this.count = count;
         this.date = date;
@@ -67,7 +67,7 @@ public class InstitutionCount {
         this.area = area;
     }
 
-    public InstitutionCount(Long count, Institution institution, Date date, EncounterType encounerType, Item item, Item itemValue) {
+    public InstitutionCount(Long count, Institution institution, Date date, DocumentType encounerType, Item item, Item itemValue) {
         this.institution = institution;
         this.count = count;
         this.date = date;
@@ -76,7 +76,7 @@ public class InstitutionCount {
         this.itemValue = itemValue;
     }
 
-    public InstitutionCount(Long count, Area area, Date date, EncounterType encounerType) {
+    public InstitutionCount(Long count, Area area, Date date, DocumentType encounerType) {
         this.area = area;
         this.count = count;
         this.date = date;
@@ -149,11 +149,11 @@ public class InstitutionCount {
         this.date = date;
     }
 
-    public EncounterType getEncounerType() {
+    public DocumentType getEncounerType() {
         return encounerType;
     }
 
-    public void setEncounerType(EncounterType encounerType) {
+    public void setEncounerType(DocumentType encounerType) {
         this.encounerType = encounerType;
     }
 

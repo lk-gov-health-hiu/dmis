@@ -52,7 +52,7 @@ import lk.gov.health.phsp.bean.EncounterApplicationController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
 import lk.gov.health.phsp.bean.SessionController;
-import lk.gov.health.phsp.bean.StoredQueryResultController;
+
 import lk.gov.health.phsp.bean.WebUserApplicationController;
 import lk.gov.health.phsp.bean.WebUserController;
 import lk.gov.health.phsp.entity.Area;
@@ -63,7 +63,7 @@ import lk.gov.health.phsp.entity.Item;
 
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.InstitutionType;
 
 import org.json.JSONArray;
@@ -97,8 +97,7 @@ public class ApiResource {
     ItemApplicationController itemApplicationController;
     @Inject
     ApplicationController applicationController;
-    @Inject
-    StoredQueryResultController storedQueryResultController;
+   
     @Inject
     WebUserController webUserController;
    
@@ -342,11 +341,7 @@ public class ApiResource {
         if (e == null) {
             return errorMessageNoSuchPcrRequestId();
         }
-        if (!e.getEncounterType().equals(EncounterType.Test_Enrollment) ||
-                !e.getPcrTestType().equals(itemApplicationController.getPcr())) {
-            System.out.println("Type wrong");
-            return errorMessageNoSuchPcrRequestId();
-        }
+        
 
 
         if (!e.getInstitution().equals(wu.getInstitution())) {
@@ -356,60 +351,7 @@ public class ApiResource {
 
         JSONObject ja = new JSONObject();
 
-        if (e.getSampleMissing()!=null && e.getSampleMissing()== true) {
-            ja.put("pcr_result_status", "Sample is Missing");
-            jSONObjectOut.put("data", ja);
-            jSONObjectOut.put("status", successMessage());
-            return jSONObjectOut;
-        }
-        if (e.getSampleRejectedAtLab()!=null && e.getSampleRejectedAtLab() == true) {
-            ja.put("pcr_result_status", "Sample Rejected.");
-            jSONObjectOut.put("data", ja);
-            jSONObjectOut.put("status", successMessage());
-            return jSONObjectOut;
-        }
-
-        if (e.getReceivedAtLab() == null || e.getReceivedAtLab() == false) {
-            ja.put("pcr_result_status", "Sample is awaiting to be received at the lab.");
-            jSONObjectOut.put("data", ja);
-            jSONObjectOut.put("status", successMessage());
-            return jSONObjectOut;
-        } else {
-            if (e.getResultEntered() == null || e.getResultEntered() == false) {
-                ja.put("pcr_result_status", "Sample is Processing");
-                jSONObjectOut.put("data", ja);
-                jSONObjectOut.put("status", successMessage());
-                return jSONObjectOut;
-            } else {
-                if (e.getResultReviewed() == null || e.getResultReviewed() == false) {
-                    ja.put("pcr_result_status", "Awaiting reviewing results.");
-                    jSONObjectOut.put("data", ja);
-                    jSONObjectOut.put("status", successMessage());
-                    return jSONObjectOut;
-                } else {
-                    if (e.getResultConfirmed() == null || e.getResultConfirmed() == false) {
-                        ja.put("pcr_result_status", "Awaiting confirming results.");
-                        jSONObjectOut.put("data", ja);
-                        jSONObjectOut.put("status", successMessage());
-                        return jSONObjectOut;
-                    } else {
-                        if (e.getResultConfirmed() == true) {
-                            ja.put("pcr_result_status", "Results available.");
-                            ja.put("result", e.getPcrResult().getName());
-                            ja.put("result_display", e.getPcrResultStr());
-                            ja.put("ct1_value", e.getCtValue().toString());
-                            ja.put("ct2_value", e.getCtValue2().toString());
-                            ja.put("comments", e.getResultComments());
-                            ja.put("report", e.getResultPrintHtml());
-                            jSONObjectOut.put("data", ja);
-                            jSONObjectOut.put("status", successMessage());
-                            return jSONObjectOut;
-                        }
-                    }
-
-                }
-            }
-        }
+       
 
         jSONObjectOut.put("data", array);
         jSONObjectOut.put("status", successMessage());
@@ -460,8 +402,7 @@ public class ApiResource {
             ja.put("institute_code", a.getCode());
             ja.put("name", a.getName());
             ja.put("hin", a.getPoiNumber());
-            ja.put("latitude", a.getCoordinate().getLatitude());
-            ja.put("address", a.getAddress());
+           ja.put("address", a.getAddress());
             ja.put("type", a.getInstitutionType());
             ja.put("type_label", a.getInstitutionType().getLabel());
             if (a.getEditedAt() != null) {

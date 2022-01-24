@@ -36,7 +36,7 @@ import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.facade.DocumentFacade;
 // </editor-fold>
 @Named
@@ -87,7 +87,7 @@ public class AnalysisController {
         j += " and s.encounterDate between :fd and :td ";
         m.put("fd", getFrom());
         m.put("td", getTo());
-        m.put("t", EncounterType.Test_Enrollment);
+        m.put("t", DocumentType.Letter);
         m.put("ret", true);
 
         fs = getEncounterFacade().findLongByJpql(j, m);
@@ -96,9 +96,9 @@ public class AnalysisController {
         userTransactionController.recordTransaction("Find Encounter Count");
     }
 
-    public Long findEncounterCount(Date pFrom, Date pTo, List<Institution> pIns, EncounterType ec, Item sex) {
+    public Long findEncounterCount(Date pFrom, Date pTo, List<Institution> pIns, DocumentType ec, Item sex) {
         if (ec == null) {
-            ec = EncounterType.Test_Enrollment;
+            ec = DocumentType.Letter;
         }
         if (pIns == null || pIns.isEmpty()) {
             return null;

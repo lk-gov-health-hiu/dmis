@@ -37,7 +37,7 @@ import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.bean.util.JsfUtil;
-import lk.gov.health.phsp.ejb.CovidDataHolder;
+
 import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import org.json.JSONObject;
@@ -52,9 +52,7 @@ public class DashboardController implements Serializable {
 
     @EJB
     private DocumentFacade encounterFacade;
-    @EJB
-    private CovidDataHolder covidDataHolder;
-
+  
     @Inject
     private DocumentController encounterController;
        @Inject
@@ -764,9 +762,7 @@ public class DashboardController implements Serializable {
     //    Generates a hashmap that will give PCR and RAT investigations of each MOH under a given RDHS area
 
 
-    public void calculateNumbers() {
-        covidDataHolder.calculateNumbers(fromDate, toDate);
-    }
+  
 
 
     public Date getFromDate() {
@@ -809,15 +805,7 @@ public class DashboardController implements Serializable {
         this.ics = ics;
     }
 
-   
-
-    public CovidDataHolder getCovidDataHolder() {
-        return covidDataHolder;
-    }
-
-    public void setCovidDataHolder(CovidDataHolder covidDataHolder) {
-        this.covidDataHolder = covidDataHolder;
-    }
+ 
 
     public ItemController getItemController() {
         return itemController;

@@ -51,9 +51,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Area implements Serializable {
 
-    @OneToMany(mappedBy = "area")
-    private List<Coordinate> coordinates;
-
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -287,17 +285,7 @@ public class Area implements Serializable {
         this.retiredReversedAt = retiredReversedAt;
     }
 
-    @XmlTransient
-    public List<Coordinate> getCoordinates() {
-        if (coordinates == null) {
-            coordinates = new ArrayList<>();
-        }
-        return coordinates;
-    }
-
-    public void setCoordinates(List<Coordinate> coordinates) {
-        this.coordinates = coordinates;
-    }
+   
 
     public Date getCreatedAt() {
         return createdAt;

@@ -28,19 +28,14 @@ package lk.gov.health.phsp.enums;
  *
  * @author User
  */
-public enum EncounterType {
-    Case_Enrollment("Case Enrollment"),
-    Test_Enrollment("Test Enrollment"),
-    Death("Death"),
-    @Deprecated
-    No_Covid("Deprecated No_Covid"),
-    @Deprecated
-    No_test("Deprecated No_test"),
-    @Deprecated
-    Rat("Deprecated RAT");
+public enum DocumentType {
+    File("File"),
+    Letter("Letter"),
+    Register("Register"),
+    Other("Other");
     
     private final String label;    
-    private EncounterType(String label){
+    private DocumentType(String label){
         this.label = label;
     }
     
@@ -48,14 +43,5 @@ public enum EncounterType {
         return label;
     }
     
-    public String getCode(){
-        switch(this){
-            case Case_Enrollment:
-                return "C";
-            case Test_Enrollment:
-                return "T";
-            default:
-                return "E";
-        }
-    }
+   
 }

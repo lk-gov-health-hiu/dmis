@@ -26,9 +26,12 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.Date;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.entity.UserPrivilege;
+import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.Privilege;
 
 /**
@@ -43,7 +46,8 @@ public class MenuController implements Serializable {
     private WebUserController webUserController;
     @Inject
     WebUserApplicationController webUserApplicationController;
-   
+    @Inject
+    DocumentController documentController;
 
     @Inject
     InstitutionController institutionController;
@@ -54,6 +58,30 @@ public class MenuController implements Serializable {
      * Creates a new instance of MenuController
      */
     public MenuController() {
+    }
+
+    public String toFileAddNew() {
+        Document nd = new Document();
+        nd.setDocumentType(DocumentType.File);
+        nd.setDocumentDate(new Date());
+        nd.setInstitution(webUserController.getLoggedInstitution());
+        nd.setInstitutionUnit(webUserController.getLoggedInstitution());
+        documentController.setSelected(nd);
+        return "/document/file";
+    }
+
+    public String toFileSearch() {
+        documentController.setSelected(null);
+        return "/document/file_search";
+    }
+
+    public String toFileLedger() {
+        documentController.setItems(null);
+        return "/document/file_ledger";
+    }
+
+    public String toReceiveFile() {
+        return "/document/file_receive";
     }
 
     public String toViewRequest() {
@@ -68,7 +96,6 @@ public class MenuController implements Serializable {
         return "/common/result_view";
     }
 
-   
     public String toReportsIndex() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Regional:

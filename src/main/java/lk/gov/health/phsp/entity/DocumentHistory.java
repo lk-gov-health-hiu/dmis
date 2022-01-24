@@ -51,11 +51,7 @@ public class DocumentHistory  implements Serializable  {
     @ManyToOne
     private Institution institution;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Component parentComponent;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Component referenceComponent;
+   
 
     @Lob
     private String css;
@@ -102,9 +98,7 @@ public class DocumentHistory  implements Serializable  {
     @ManyToOne(fetch = FetchType.LAZY)
     private Document encounter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Client client;
-    
+  
     
 
     public Document getEncounter() {
@@ -115,13 +109,7 @@ public class DocumentHistory  implements Serializable  {
         this.encounter = encounter;
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
+   
 
     public Long getId() {
         return id;
@@ -179,22 +167,7 @@ public class DocumentHistory  implements Serializable  {
         this.institution = institution;
     }
 
-    public Component getParentComponent() {
-        return parentComponent;
-    }
-
-    public void setParentComponent(Component parentComponent) {
-        this.parentComponent = parentComponent;
-    }
-
-    public Component getReferenceComponent() {
-        return referenceComponent;
-    }
-
-    public void setReferenceComponent(Component referenceComponent) {
-        this.referenceComponent = referenceComponent;
-    }
-
+  
     public String getCss() {
         return css;
     }

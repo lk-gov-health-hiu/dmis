@@ -37,7 +37,7 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.DocumentType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +48,6 @@ import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.pojcs.AreaCount;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
-import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.primefaces.model.StreamedContent;
 // </editor-fold>   
@@ -367,7 +366,7 @@ public class ReportController implements Serializable {
 
         Map m = new HashMap();
         m.put("i", institution);
-        m.put("t", EncounterType.Test_Enrollment);
+        m.put("t", DocumentType.Letter);
         m.put("er", true);
         m.put("fr", true);
         m.put("fc", true);
@@ -395,7 +394,7 @@ public class ReportController implements Serializable {
             return l;
         }
 
-        List<Replaceable> ss = new ArrayList<>();
+    
 
         String patternStart = "#{";
         String patternEnd = "}";
@@ -759,7 +758,7 @@ public class ReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        m.put("type", EncounterType.Death);
+        m.put("type", DocumentType.Register);
         if (institution != null) {
             j += " and c.institution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
@@ -789,7 +788,7 @@ public class ReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        m.put("type", EncounterType.Test_Enrollment);
+        m.put("type", DocumentType.Letter);
         if (institution != null) {
             j += " and c.institution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
@@ -809,7 +808,7 @@ public class ReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        m.put("type", EncounterType.Death);
+        m.put("type", DocumentType.Register);
         if (institution != null) {
             j += " and c.institution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
@@ -831,7 +830,7 @@ public class ReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        m.put("type", EncounterType.Test_Enrollment);
+        m.put("type", DocumentType.Letter);
         if (institution != null) {
             j += " and c.institution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
@@ -853,7 +852,7 @@ public class ReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        m.put("type", EncounterType.Death);
+        m.put("type", DocumentType.Register);
         if (institution != null) {
             j += " and c.institution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);

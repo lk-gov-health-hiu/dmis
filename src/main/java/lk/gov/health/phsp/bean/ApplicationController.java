@@ -39,7 +39,7 @@ import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.facade.AreaFacade;
-import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.DocumentFacade;
@@ -85,7 +85,7 @@ public class ApplicationController {
     
     public Long getNationalTestCount() {
         if (nationalTestCount == null){
-            nationalTestCount = getNationalCounts(EncounterType.Test_Enrollment);
+            nationalTestCount = getNationalCounts(DocumentType.Letter);
         }
         return nationalTestCount;
     }
@@ -96,7 +96,7 @@ public class ApplicationController {
     
     public Long getNationalCaseCount() {
         if(nationalCaseCount == null){            
-            nationalCaseCount = getNationalCounts(EncounterType.Case_Enrollment);
+            nationalCaseCount = getNationalCounts(DocumentType.File);
         }
         return nationalCaseCount;
     }
@@ -271,7 +271,7 @@ public class ApplicationController {
     }
 
    
-    private Long getNationalCounts(EncounterType countType) {        
+    private Long getNationalCounts(DocumentType countType) {        
         String jpql = "SELECT count(e) FROM Encounter e "
                 + " WHERE e.retired=:ret "
                 + " AND e.encounterType=:encounterType ";

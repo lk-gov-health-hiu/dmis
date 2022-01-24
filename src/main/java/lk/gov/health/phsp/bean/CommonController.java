@@ -23,7 +23,6 @@ import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lk.gov.health.phsp.bean.util.JsfUtil;
-import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
@@ -63,7 +62,6 @@ import org.joda.time.PeriodType;
 @SessionScoped
 public class CommonController implements Serializable {
 
-    private Client client;
     private Document encounter;
     private Document request;
     private Document result;
@@ -108,10 +106,6 @@ public class CommonController implements Serializable {
     }
 
     public String toViewClient() {
-        if (client == null) {
-            JsfUtil.addErrorMessage("No Client Selected");
-            return "";
-        }
         return "/common/client_view";
     }
 
@@ -120,15 +114,15 @@ public class CommonController implements Serializable {
             JsfUtil.addErrorMessage("No Encounter Selected");
             return "";
         }
-        if (encounter.getEncounterType() == null) {
+        if (encounter.getDocumentType() == null) {
             return "";
         }
-        switch (encounter.getEncounterType()) {
-            case Case_Enrollment:
+        switch (encounter.getDocumentType()) {
+            case File:
                 return toViewCaseIx();
-            case Test_Enrollment:
+            case Letter:
                 return toViewTest();
-            case Death:
+            case Register:
                 return "";
         }
         return "";
@@ -1219,13 +1213,6 @@ public class CommonController implements Serializable {
         return after.toLowerCase();
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
 
     public Document getEncounter() {
         return encounter;

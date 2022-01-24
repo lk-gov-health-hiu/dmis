@@ -55,9 +55,7 @@ public class Upload implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     //Main Properties
     Long id;
-    
-    @ManyToOne
-    private Component component;
+   
     
     @ManyToOne
     Institution institution;
@@ -80,8 +78,6 @@ public class Upload implements Serializable {
     String fileType;
     @Lob
     String comments;
-    @ManyToOne
-    private Client project;
     @Enumerated(EnumType.STRING)
     private UploadType uploadType;
 
@@ -212,13 +208,7 @@ public class Upload implements Serializable {
         this.comments = comments;
     }
 
-    public Client getProject() {
-        return project;
-    }
 
-    public void setProject(Client project) {
-        this.project = project;
-    }
 
     public UploadType getUploadType() {
         return uploadType;
@@ -228,12 +218,6 @@ public class Upload implements Serializable {
         this.uploadType = uploadType;
     }
 
-    public Component getComponent() {
-        return component;
-    }
 
-    public void setComponent(Component component) {
-        this.component = component;
-    }
 
 }

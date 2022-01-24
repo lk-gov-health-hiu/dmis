@@ -53,8 +53,7 @@ public class ApiRequest implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Document encounter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ClientEncounterComponentItem requestCeci;
+ 
 
     @Lob
     private String requestMessage;
@@ -81,8 +80,7 @@ public class ApiRequest implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date responseReceivedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ClientEncounterComponentItem responseCeci;
+  
 
     /*
     Create Properties
@@ -150,13 +148,7 @@ public class ApiRequest implements Serializable {
         this.encounter = encounter;
     }
 
-    public ClientEncounterComponentItem getRequestCeci() {
-        return requestCeci;
-    }
-
-    public void setRequestCeci(ClientEncounterComponentItem requestCeci) {
-        this.requestCeci = requestCeci;
-    }
+  
 
     public String getRequestMessage() {
         return requestMessage;
@@ -270,13 +262,7 @@ public class ApiRequest implements Serializable {
         this.responseReceivedAt = responseReceivedAt;
     }
 
-    public ClientEncounterComponentItem getResponseCeci() {
-        return responseCeci;
-    }
-
-    public void setResponseCeci(ClientEncounterComponentItem responseCeci) {
-        this.responseCeci = responseCeci;
-    }
+  
 
     public WebUser getRetiredBy() {
         return retiredBy;
