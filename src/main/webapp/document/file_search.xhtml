@@ -45,7 +45,7 @@
                                             <h:outputText value="#{h.currentInstitution.name}" ></h:outputText>
                                         </p:column>
                                         <p:column headerText="Actions">
-                                            <h:commandButton value="View" action="#{documentController.viewFile()}" >
+                                            <h:commandButton value="View" action="#{documentController.toFileView()}" >
                                                 <f:setPropertyActionListener value="#{h}" target="#{documentController.selected}" ></f:setPropertyActionListener>
                                             </h:commandButton>
                                         </p:column>

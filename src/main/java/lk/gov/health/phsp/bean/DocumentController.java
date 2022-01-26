@@ -160,7 +160,7 @@ public class DocumentController implements Serializable {
         saveDocumentHx(docHx);
 
         JsfUtil.addSuccessMessage("Transferred out successfully");
-        return viewFile();
+        return toFileView();
     }
 
     public String transferOutOwnershipFile() {
@@ -182,7 +182,7 @@ public class DocumentController implements Serializable {
         saveDocumentHx(docHx);
 
         JsfUtil.addSuccessMessage("Ownership change initiated successfully");
-        return viewFile();
+        return toFileView();
     }
 
     public String saveAndViewFile() {
@@ -204,7 +204,7 @@ public class DocumentController implements Serializable {
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
-        return viewFile();
+        return toFileView();
     }
 
     public void saveDocumentHx(DocumentHistory hx) {
@@ -219,8 +219,16 @@ public class DocumentController implements Serializable {
             documentHxFacade.edit(hx);
         }
     }
+    
+    public String toFileEdit() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        return "/document/file";
+    }
 
-    public String viewFile() {
+    public String toFileView() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
