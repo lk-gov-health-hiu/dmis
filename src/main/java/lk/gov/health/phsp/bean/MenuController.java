@@ -72,13 +72,15 @@ public class MenuController implements Serializable {
         nd.setCurrentInstitution(webUserController.getLoggedInstitution());
         nd.setCurrentOwner(webUserController.getLoggedUser());
         documentController.setSelected(nd);
-        
+
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.File_Created);
         return "/document/file";
     }
 
     public String toFileSearch() {
+        documentController.setItems(null);
+        documentController.setSearchTerm("");
         documentController.setSelected(null);
         return "/document/file_search";
     }

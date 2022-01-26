@@ -15,9 +15,9 @@
                 <p:menuitem class="text-white" ajax="false" value="Home" icon="ui-icon-home" action="/index" />
                 <p:submenu class="submenu" label="Files" >
                     <p:menuitem class="submenu-item" ajax="false" value="New File" action="#{menuController.toFileAddNew()}"  />
-                    <p:menuitem class="submenu-item" ajax="false" value="Search File" action="#{mohController.toAddNewPcrWithNewClient()}" />
-                    <p:menuitem class="submenu-item" ajax="false" value="File Ledger" action="#{mohController.toAddNewRatWithNewClient()}" />
-                    <p:menuitem class="submenu-item" ajax="false" value="Receive Files" action="#{mohController.toTestList()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Search File" action="#{menuController.toFileSearch()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="File Ledger" action="#{menuController.toFileSearch()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Receive Files" action="#{menuController.toFileSearch()}" />
                 </p:submenu>
                 <p:menuitem class="text-white" ajax="false" value="Reports" action="#{menuController.toReportsIndex()}" />
                 <p:menuitem class="text-white" ajax="false" value="Administration" action="#{menuController.toAdministrationIndex()}" />

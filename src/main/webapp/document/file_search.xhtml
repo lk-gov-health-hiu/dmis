@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
-    <body>
+    <h:body>
 
         <ui:composition template="/template1.xhtml">
             <ui:define name="title">
@@ -15,46 +15,49 @@
             </ui:define>
             <ui:define name="content">
                 <p:growl ></p:growl>
-                <div class="card my-3">
-                    <h5 class="card-header bg-success">
-                        <p:outputLabel class="text-white fs-5 fw-bold my-2" value="File Search" ></p:outputLabel>
-                    </h5>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p:panelGrid columns="2"  class="w-100 border border-light">
-                                    <h:outputLabel class="fs-6" value="Search Term:"></h:outputLabel>
-                                    <h:inputText class="fs-6 fw-bold"  
-                                                 value="#{documentController.searchTerm}">
-                                    </h:inputText>
-                                    <p:spacer ></p:spacer>
-                                    <h:commandButton value="Search" action="#{documentController.searchFile}"></h:commandButton>
-                                </p:panelGrid>
-                                <p:dataTable value="#{documentController.items}"
-                                             var="h" 
-                                             rowKey="#{h.id}">
+                <h:form >
+                    <div class="card my-3">
+                        <h5 class="card-header bg-success">
+                            <p:outputLabel class="text-white fs-5 fw-bold my-2" value="File Search" ></p:outputLabel>
+                        </h5>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p:panelGrid columns="2"  class="w-100 border border-light">
+                                        <h:outputLabel class="fs-6" value="Search Term:"></h:outputLabel>
+                                        <h:inputText class="fs-6 fw-bold"  
+                                                     value="#{documentController.searchTerm}">
+                                        </h:inputText>
+                                        <p:spacer ></p:spacer>
+                                        <h:commandButton value="Search" action="#{documentController.searchFile}"></h:commandButton>
+                                    </p:panelGrid>
+                                    <p:dataTable value="#{documentController.items}"
+                                                 var="h" 
+                                                 rowKey="#{h.id}">
 
-                                    <p:column headerText="Number">
-                                        <h:outputText value="#{h.documentNumber}" ></h:outputText>
-                                    </p:column>
-                                    <p:column headerText="Title">
-                                        <h:outputText value="#{h.documentName}" ></h:outputText>
-                                    </p:column>
-                                     <p:column headerText="Current Location">
-                                         <h:outputText value="#{h.currentInstitution.name}" ></h:outputText>
-                                    </p:column>
-                                    <p:column headerText="Actions">
-                                        <h:commandButton value="View" action="#{documentController.viewFile()}" >
-                                            <f:setPropertyActionListener value="#{h}" target="#{documentController.selected}" ></f:setPropertyActionListener>
-                                        </h:commandButton>
-                                    </p:column>
-                                </p:dataTable>
+                                        <p:column headerText="Number">
+                                            <h:outputText value="#{h.documentNumber}" ></h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Title">
+                                            <h:outputText value="#{h.documentName}" ></h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Current Location">
+                                            <h:outputText value="#{h.currentInstitution.name}" ></h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Actions">
+                                            <h:commandButton value="View" action="#{documentController.viewFile()}" >
+                                                <f:setPropertyActionListener value="#{h}" target="#{documentController.selected}" ></f:setPropertyActionListener>
+                                            </h:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </h:form>
+
 
             </ui:define>
         </ui:composition>
-    </body>
+    </h:body>
 </html>
