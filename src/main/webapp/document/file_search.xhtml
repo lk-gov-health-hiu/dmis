@@ -25,149 +25,34 @@
                                 <p:panelGrid columns="2"  class="w-100 border border-light">
                                     <h:outputLabel class="fs-6" value="Search Term:"></h:outputLabel>
                                     <h:inputText class="fs-6 fw-bold"  
-                                                 value="#{documentController.selected.documentNumber}">
+                                                 value="#{documentController.searchTerm}">
                                     </h:inputText>
                                     <p:spacer ></p:spacer>
                                     <h:commandButton value="Search" action="#{documentController.searchFile}"></h:commandButton>
                                 </p:panelGrid>
-                                <p:dataTable value="#{documentController.selectedDocumentHistories}"
+                                <p:dataTable value="#{documentController.items}"
                                              var="h" 
                                              rowKey="#{h.id}">
 
-                                    <p:column headerText="Action">
-                                        <h:outputText value="#{h.historyType.label}" ></h:outputText>
+                                    <p:column headerText="Number">
+                                        <h:outputText value="#{h.documentNumber}" ></h:outputText>
                                     </p:column>
-                                    <p:column headerText="From">
-                                        <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
-                                        <h:outputText value="#{h.fromUser.name}" ></h:outputText>
+                                    <p:column headerText="Title">
+                                        <h:outputText value="#{h.documentName}" ></h:outputText>
                                     </p:column>
-                                    <p:column headerText="To">
-                                        <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
-                                        <h:outputText value="#{h.toUser.name}" ></h:outputText>
+                                     <p:column headerText="Current Location">
+                                         <h:outputText value="#{h.currentInstitution.name}" ></h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Actions">
+                                        <h:commandButton value="View" action="#{documentController.viewFile()}" >
+                                            <f:setPropertyActionListener value="#{h}" target="#{documentController.selected}" ></f:setPropertyActionListener>
+                                        </h:commandButton>
                                     </p:column>
                                 </p:dataTable>
                             </div>
-                            <div class="col-md-6">
-                                <p:panelGrid columns="2"  class="w-100 border border-light">
-                                    <h:outputLabel class="fs-6" value="Current Location:"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 fw-bold"  value="#{documentController.selected.currentInstitution.name}"></h:outputLabel>
-                                    <h:outputLabel class="fs-6"  value="Current Holder:"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{documentController.selected.currentOwner.name}"></h:outputLabel>
-                                </p:panelGrid>
-
-                                <h:form>
-                                    <p:panelGrid columns="2"  class="w-100 border border-light">
-                                        <f:facet name="header" >
-                                            Transfer out
-                                        </f:facet>
-                                        <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
-                                        <p:autoComplete  id="parent" class="d-block" inputStyleClass="form-control" 
-                                                         value="#{documentController.institution}" 
-                                                         completeMethod="#{institutionController.completeInstitutions}"
-                                                         var="i" 
-                                                         itemLabel="#{i.name}" 
-                                                         itemValue="#{i}" 
-                                                         forceSelection="True"
-                                                         maxResults="15" 
-                                                         minQueryLength="3">
-                                        </p:autoComplete >
-                                        <p:spacer></p:spacer>
-                                        <h:commandButton value="Transfer" action="#{documentController.transferOutFile()}" ></h:commandButton>
-                                    </p:panelGrid>
-                                </h:form>
-                                
-                                <h:form>
-                                    <p:panelGrid columns="2"  class="w-100 border border-light">
-                                        <f:facet name="header" >
-                                            Transfer Ownership
-                                        </f:facet>
-                                        <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
-                                        <p:selectOneMenu value="#{documentController.webUser}" >
-                                            <f:selectItem itemLabel="Select" ></f:selectItem>
-                                            <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
-                                                           itemLabel="#{u.person.name}" itemValue="#{u}"></f:selectItems>
-                                        </p:selectOneMenu>
-                                        <p:spacer></p:spacer>
-                                        <h:commandButton value="Transfer" action="#{documentController.transferOutOwnershipFile()}" ></h:commandButton>
-                                    </p:panelGrid>
-                                </h:form>
-
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-white">
-                        <div class="col-md-6">
-                            <h:form>
-                                <h:commandButton class="my-2 btn btn-warning w-25 me-2" value="To Edit Details" action="#{hospitalController.toPcrEdit()}" ></h:commandButton>
-                                <h:commandButton class="my-2 btn btn-success w-25" value="Add New PCR Order" action="#{hospitalController.toAddNewPcrWithNewClient()}">
-                                </h:commandButton>
-
-                                <h:commandButton class="my-2 btn btn-warning w-25 me-2" value="Print Barcode"
-                                                 >
-                                    <p:printer target="barcode" ></p:printer>
-                                </h:commandButton>
-
-                                <h:panelGroup id="barcode" >
-                                    <div class="container-fluid " >
-                                        <!--                                        <div class="row w-100 text-center" >
-                                                                                    <div class="col-2">Name</div>
-                                                                                    <div  class="col-1">:</div>
-                                                                                    <div class="col-9">#{hospitalController.pcr.client.person.name}</div>
-                                                                                </div>
-                                                                                <div class="row w-100 text-center" >
-                                                                                    <div class="col-2">ID/Passport</div>
-                                                                                    <div  class="col-1">:</div>
-                                                                                    <div class="col-9">#{hospitalController.pcr.client.person.nic}</div>
-                                                                                </div>-->
-                                        <div class="row w-100 text-center" >
-                                            <div class="col-12 w-100 text-center">
-                                                <p:barcode cache="false" hrp="none"  type="code39" height="10" width="50" value="#{hospitalController.pcr.encounterNumber}" >
-                                                </p:barcode>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <h:panelGroup rendered="false" >
-
-                                        <div class="container-fluid" >
-                                            <div class="row" >
-                                                <div class="col-2">Name</div>
-                                                <div  class="col-1">:</div>
-                                                <div class="col-9">#{hospitalController.pcr.client.person.name}</div>
-                                            </div>
-                                            <div class="row" >
-                                                <div class="col-2">ID/Passport</div>
-                                                <div  class="col-1">:</div>
-                                                <div class="col-9">#{hospitalController.pcr.client.person.nic}</div>
-                                            </div>
-                                            <div class="row" >
-
-                                            </div>
-                                            <div class="row" >
-                                                <div class="col-12">
-                                                    <p:barcode cache="false"  type="code39" height="30" width="300" value="#{hospitalController.pcr.id}" >
-                                                    </p:barcode>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </h:panelGroup>
-
-
-                                </h:panelGroup>
-
-
-                            </h:form>
                         </div>
                     </div>
                 </div>
-
-
-
-
-
 
             </ui:define>
         </ui:composition>
