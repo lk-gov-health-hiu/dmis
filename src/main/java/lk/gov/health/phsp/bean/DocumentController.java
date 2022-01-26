@@ -55,6 +55,7 @@ public class DocumentController implements Serializable {
 
     private Institution institution;
     private WebUser webUser;
+    String searchTerm;
 
     public DocumentController() {
     }

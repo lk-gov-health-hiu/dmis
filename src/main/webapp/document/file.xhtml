@@ -11,7 +11,7 @@
                     <p:focus for="name"></p:focus>
                     <div class="row bg-white py-4">
                         <h4 class="text-center fw-bold">File</h4>
-                        <div class="my-2 px-4">
+                        <div class="my-1 px-4">
                             <div class="row mb-4">
                                 <div class="col md-3">
                                     <h:outputLabel for="name"  class="form-label fw-bold">File Number 
@@ -36,25 +36,25 @@
                                 <div class="col md-3">
                                     <h:outputLabel for="date"  class="form-label fw-bold">File Title 
                                         <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                        <p:datePicker id="date"  value="#{documentController.selected.documentDate}" class="form-control"
-                                                 required="true" requiredMessage="Need a Number"
-                                                 pattern="dd/MM/yyyy"
-                                                 >
+                                    <p:datePicker id="date"  value="#{documentController.selected.documentDate}" class="form-control"
+                                                  required="true" requiredMessage="Need a Number"
+                                                  pattern="dd/MM/yyyy"
+                                                  >
                                     </p:datePicker>
                                     <h:message class="text-danger small" for="date"></h:message>
                                 </div>
                             </div> 
-                             <div class="row mb-4">
+                            <div class="row mb-4">
                                 <div class="col md-3">
-                                    <h:outputLabel for="comments"  class="form-label fw-bold">File Title 
-                                        <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                        <h:inputTextarea id="comments"  value="#{documentController.selected.comments}" class="form-control"
-                                                 >
+                                    <h:outputLabel for="comments"  class="form-label fw-bold">File Details 
+                                    </h:outputLabel>
+                                    <h:inputTextarea id="comments"  value="#{documentController.selected.comments}" class="form-control"
+                                                     >
                                     </h:inputTextarea>
                                 </div>
                             </div> 
                             <div class="row">
-                                <p:messages class="my-2 col"></p:messages>
+                                <p:messages class="my-1 col"></p:messages>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
