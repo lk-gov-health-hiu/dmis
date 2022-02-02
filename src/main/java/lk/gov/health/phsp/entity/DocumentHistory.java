@@ -55,6 +55,9 @@ public class DocumentHistory implements Serializable {
     private WebUser fromUser;
     @ManyToOne
     private WebUser toUser;
+    
+    @Lob
+    private String comments;
 
     /*
     Create Properties
@@ -89,6 +92,8 @@ public class DocumentHistory implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Document document;
 
+    
+    
     public Document getDocument() {
         return document;
     }
@@ -253,6 +258,14 @@ public class DocumentHistory implements Serializable {
 
     public void setToInstitution(Institution toInstitution) {
         this.toInstitution = toInstitution;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
     
     

@@ -4,107 +4,99 @@
     <h:body>
         <ui:composition template="/template1.xhtml">
             <ui:define name="title" >
-                File
+                Letter
             </ui:define>
             <ui:define name="content">
-                <h:form class="form">
-                    <p:focus for="letterDate"></p:focus>
-                    <div class="row bg-white py-4">
+                <h:form >
+
+                    <div class="text-center fw-bold w-100" >
+
+
+
+                        <!--<p:focus for="letterDate"></p:focus>-->
+
                         <h4 class="text-center fw-bold">Letter</h4>
-                        <div class="my-1 px-4">
-                            <div class="row mb-4">
-                                <div class="col md-3">
-                                    <h:outputLabel for="letterDate"  class="form-label fw-bold">Letter Date 
-                                        <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                    <p:datePicker id="letterDate"  value="#{letterController.selected.documentDate}" class="form-control"
-                                                  required="true" pattern="dd/MM/yyyy" requiredMessage="Need a Letter Date">
-                                    </p:datePicker>
-                                    <h:message class="text-danger small" for="letterDate"></h:message>
-                                </div>
-                            </div> 
-                            <div class="row mb-4">
-                                <div class="col md-3">
-                                    <h:outputLabel for="receivedDate"  class="form-label fw-bold">Received Date 
-                                        <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                    <p:datePicker id="receivedDate"  value="#{letterController.selected.documentDate}" class="form-control"
-                                                  required="true" pattern="dd/MM/yyyy" requiredMessage="Need a Received Date">
-                                    </p:datePicker>
-                                    <h:message class="text-danger small" for="receivedDate"></h:message>
-                                </div>
-                            </div> 
-                            <div class="row mb-4">
-                                <div class="col md-3">
-                                    <h:outputLabel for="number"  class="form-label fw-bold">File Title 
-                                        <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                    <h:inputText id="number"  value="#{letterController.selected.documentNumber}" class="form-control"
-                                                 required="true" requiredMessage="Need a Number">
-                                    </h:inputText>
-                                    <h:message class="text-danger small" for="number"></h:message>
-                                </div>
-                            </div> 
-                            <div class="row mb-4">
-                                <div class="col md-3">
-                                    <h:outputLabel for="method"  class="form-label fw-bold">Received method 
-                                        <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                    <h:selectOneMenu id="number"  value="#{letterController.selected.receivedAs}" class="form-control"
-                                                     required="method" requiredMessage="Need a Number">
-                                        <f:selectItem itemLabel="Select" ></f:selectItem>
-                                        <f:selectItems value="#{itemApplicationController.letterReceiveCategories}"
-                                                       var="i"
-                                                       itemLabel="#{i.name}"
-                                                       itemValue="#{i}" ></f:selectItems>
-                                    </h:selectOneMenu>
-                                    <h:message class="text-danger small" for="method"></h:message>
-                                </div>
-                            </div> 
-                            <div class="row mb-4">
-                                <div class="col md-3">
-                                    <h:outputLabel for="topic"  class="form-label fw-bold">Topic 
-                                        <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                    <h:inputText id="topic"  value="#{letterController.selected.documentName}" class="form-control"
-                                                 required="true" requiredMessage="Need a Topic">
-                                    </h:inputText>
-                                    <h:message class="text-danger small" for="topic"></h:message>
-                                </div>
-                            </div> 
-                            <div class="row mb-4">
-                                <div class="col md-3">
-                                    <h:outputLabel for="from"  class="form-label fw-bold">Sent from 
-                                    </h:outputLabel>
-                                    <p:autoComplete id="from"  value="#{letterController.selected.fromInstitution}" 
-                                                    class="form-control"
-                                                    completeMethod="#{institutionController.completeInstitutions}"
-                                                    var="insf"
-                                                    itemLabel="#{insf.name}"
-                                                    itemValue="#{insf}"
-                                                    >
-                                    </p:autoComplete>
-                                </div>
-                            </div> 
-                            <div class="row mb-4">
-                                <div class="col md-3">
-                                    <h:outputLabel for="comments"  class="form-label fw-bold">File Details 
-                                    </h:outputLabel>
-                                    <h:inputTextarea id="comments"  value="#{letterController.selected.comments}" class="form-control"
-                                                     >
-                                    </h:inputTextarea>
-                                </div>
-                            </div> 
-                            <div class="row">
+
+                        <h:panelGrid columns="3"  class="text-center fw-bold">
+                            <h:outputLabel for="letterDate"  >Letter Date 
+                                <small class="px-2 text-muted">Required</small>
+                            </h:outputLabel>
+                            <p:datePicker id="letterDate"  value="#{letterController.selected.documentDate}" 
+                                          required="true" pattern="dd/MM/yyyy" requiredMessage="Need a Letter Date">
+                            </p:datePicker>
+                            <h:message class="text-danger small" for="letterDate"></h:message>
+
+                            <h:outputLabel for="receivedDate"  >Received Date 
+                                <small class="px-2 text-muted">Required</small></h:outputLabel>
+                            <p:datePicker id="receivedDate"  value="#{letterController.selected.documentDate}" 
+                                          required="true" pattern="dd/MM/yyyy" requiredMessage="Need a Received Date">
+                            </p:datePicker>
+                            <h:message class="text-danger small" for="receivedDate"></h:message>
+
+
+
+                            <h:outputLabel for="method"  >Received method 
+                                <small class="px-2 text-muted">Required</small></h:outputLabel>
+                            <h:selectOneMenu id="number"  value="#{letterController.selected.receivedAs}" class="form-control"
+                                             required="method" requiredMessage="Need a Number">
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{itemApplicationController.letterReceiveCategories}"
+                                               var="i"
+                                               itemLabel="#{i.name}"
+                                               itemValue="#{i}" ></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:message class="text-danger small" for="method"></h:message>
+
+
+                            <h:outputLabel for="title"  >Letter Number 
+                                <small class="px-2 text-muted">Required</small></h:outputLabel>
+                            <h:inputText id="title"  value="#{letterController.selected.documentNumber}" class="form-control"
+                                         required="true" requiredMessage="Need a Title">
+                            </h:inputText>
+                            <h:message class="text-danger small" for="title"></h:message>
+
+                            <h:outputLabel for="topic"  >Letter Title 
+                                <small class="px-2 text-muted">Required</small></h:outputLabel>
+                            <h:inputText id="topic"  value="#{letterController.selected.documentName}" class="form-control"
+                                         required="true" requiredMessage="Need a Topic">
+                            </h:inputText>
+                            <h:message class="text-danger small" for="topic"></h:message>
+
+                            <h:outputLabel for="from"  >Sent from 
+                            </h:outputLabel>
+                            <p:autoComplete id="from"  value="#{letterController.selected.fromInstitution}" 
+                                            class="form-control"
+                                            completeMethod="#{institutionController.completeInstitutions}"
+                                            var="insf"
+                                            itemLabel="#{insf.name}"
+                                            itemValue="#{insf}"
+                                            >
+                            </p:autoComplete>
+                            <p:spacer></p:spacer>
+
+                            <h:outputLabel for="comments"  >Letter Details 
+                            </h:outputLabel>
+                            <h:inputTextarea id="comments"  value="#{letterController.selected.comments}" class="form-control"
+                                             >
+                            </h:inputTextarea>
+
+                            <f:facet name="footer" class="m-2 p-2" >
+                                <h:commandButton tabindex="10" class="btn btn-success fw-bold"
+                                                 action="#{letterController.saveAndNew()}" value="SAVE &amp; New">
+                                </h:commandButton>
+                                <h:commandButton tabindex="10" class="btn btn-success fw-bold"
+                                                 action="#{letterController.saveAndView()}" value="SAVE &amp; View">
+                                </h:commandButton>
                                 <p:messages class="my-1 col"></p:messages>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h:commandButton tabindex="10" class="btn btn-success fw-bold"
-                                                     action="#{letterController.saveAndView()}" value="SAVE">
-                                    </h:commandButton>
-                                    <h:commandButton tabindex="10" class="btn btn-success fw-bold"
-                                                     action="#{letterController.saveAndView()}" value="SAVE">
-                                    </h:commandButton>
-                                </div>
-                            </div>
-                        </div>
+                            </f:facet>
+
+                        </h:panelGrid>
+
+
+
                     </div>
+
+
                 </h:form>
             </ui:define>
         </ui:composition>

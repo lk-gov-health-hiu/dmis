@@ -56,6 +56,7 @@ public class LetterController implements Serializable {
     private Institution institution;
     private WebUser webUser;
     private String searchTerm;
+    private String comments;
 
     public LetterController() {
     }
@@ -163,7 +164,7 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
-    public String transferOutOwnershipFile() {
+    public String assignTo() {
         if (webUser == null) {
             JsfUtil.addErrorMessage("Select a user to transfer ownership");
             return "";
@@ -174,14 +175,39 @@ public class LetterController implements Serializable {
         }
 
         DocumentHistory docHx = new DocumentHistory();
-        docHx.setHistoryType(HistoryType.File_Owner_Transfer);
+        docHx.setHistoryType(HistoryType.Letter_Assigned);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
         docHx.setToUser(webUser);
 
         saveDocumentHx(docHx);
 
-        JsfUtil.addSuccessMessage("Ownership change initiated successfully");
+        selected.setCurrentOwner(webUser);
+        documentFacade.edit(selected);
+
+        JsfUtil.addSuccessMessage("Letter assigned successfully");
+        return toLetterView();
+    }
+
+    public String recordActionTaken() {
+        if (comments == null || comments.trim().equals("")) {
+            JsfUtil.addErrorMessage("Enter details of the action.");
+            return "";
+        }
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Select a file");
+            return "";
+        }
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Action_Taken);
+        docHx.setDocument(selected);
+        docHx.setComments(comments);
+        saveDocumentHx(docHx);
+
+        comments = "";
+        
+        JsfUtil.addSuccessMessage("Action Recorded");
         return toLetterView();
     }
 
@@ -205,7 +231,7 @@ public class LetterController implements Serializable {
         }
         return toLetterView();
     }
-    
+
     public String saveAndNew() {
         boolean newHx = false;
         if (selected.getId() == null) {
@@ -227,7 +253,6 @@ public class LetterController implements Serializable {
         return menuController.toLetterAddNew();
     }
 
-
     public void saveDocumentHx(DocumentHistory hx) {
         if (hx == null) {
             return;
@@ -240,8 +265,8 @@ public class LetterController implements Serializable {
             documentHxFacade.edit(hx);
         }
     }
-    
-    public String toFileEdit() {
+
+    public String toLetterEdit() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
@@ -405,6 +430,14 @@ public class LetterController implements Serializable {
 
     public void setSearchTerm(String searchTerm) {
         this.searchTerm = searchTerm;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     @FacesConverter(forClass = Document.class)
