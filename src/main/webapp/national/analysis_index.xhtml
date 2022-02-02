@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <ui:define name="title">
+            Analysis Index
+        </ui:define>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 p-2">
+                            <p:messages></p:messages>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h:outputLabel value="Analysis"></h:outputLabel>
+                                </div>
+                                <div class="card-body container-fluid">
+                                    <div class="row">
+                                        <div class="col-12 p-2">
+                                            <h:form>
+                                                <h:commandLink value="Daily Counts" action="#{nationalController.toDailyCounts()}"
+                                                               class="btn btn-outline-primary w-100 btn-block">
+                                                </h:commandLink>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 p-2">
+                                            <h:form>
+                                                <h:commandLink value="Weekely Counts"
+                                                               action="#{nationalController.toWeekelyCounts()}"
+                                                               class="btn btn-outline-primary w-100 btn-block">
+                                                </h:commandLink>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 p-2">
+                                            <h:form>
+                                                <h:commandLink value="Monthly Counts"
+                                                               action="#{nationalController.toMonthlyCounts()}"
+                                                               class="btn btn-outline-primary w-100 btn-block">
+                                                </h:commandLink>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 p-2">
+                                            <h:form>
+                                                <h:commandLink value="Sex Distribution"
+                                                               action="#{nationalController.toCountOfTestsByOrderedInstitution()}"
+                                                               class="btn btn-outline-primary w-100 btn-block">
+                                                </h:commandLink>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                    <h:panelGroup rendered="true" >
+                                        <div class="row">
+                                            <div class="col p-2">
+                                                <h:form>
+                                                    <h:commandLink class="btn btn-outline-primary w-100" 
+                                                                   value="Ordering Categories"
+                                                                   action="#{nationalController.toCountofTestsByWards()}"></h:commandLink>
+                                                </h:form>
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
+                                    <div class="row">
+                                        <div class="col-12 p-2">
+                                            <h:form>
+                                                <h:commandLink value="Age Categories"
+                                                               action="#{nationalController.toCountOfResultsByMohArea()}"
+                                                               class="btn btn-outline-primary w-100 btn-block">
+                                                </h:commandLink>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 p-2">
+                                            <h:form>
+                                                <h:commandLink value="Symptomatic Status" action="#{nationalController.toCountOfResultsByLab()}"
+                                                               class="btn btn-outline-primary w-100 btn-block">
+                                                </h:commandLink>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 p-2">
+                                            <h:form>
+                                                <h:commandLink value="Vaccination Status" action="#{nationalController.toDailyCounts()}"
+                                                               class="btn btn-outline-primary w-100 btn-block">
+                                                </h:commandLink>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-9">
+                            <ui:insert name="reports">
+                            </ui:insert>
+                        </div>
+                      
+                    </div>
+                </div>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+
+</html>

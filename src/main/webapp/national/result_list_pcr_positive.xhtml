@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:outputStylesheet library="css" name="tem1.css"/>
+                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="List of Positive PCRs" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{mohController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{mohController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+
+                            <f:facet name="footer">
+                                <p:commandButton ajax="false" value="Generate Excel" rendered="false">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="result_list" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Generate PDF" rendered="false">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="result_list" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:spacer ></p:spacer>
+                                <p:commandButton ajax="false" value="Process"
+                                                 action="#{mohController.toPcrPositiveCasesList}" ></p:commandButton>
+
+                            </f:facet>
+                        </p:panelGrid>
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{mohController.tests}"
+                                     rowIndexVar="n"
+                                     var="c" paginator="true"
+
+                                     rowKey="#{c.id}" rows="10">
+                            <p:column headerText="Test No" sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Lab No" sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.labNumber}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Ordered MOH / Hospital"  sortBy="#{c.institution.name}"
+                                      filterBy="#{c.institution.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Lab"  sortBy="#{c.referalInstitution.name}"
+                                      filterBy="#{c.referalInstitution.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.referalInstitution.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age"  sortBy="#{c.client.person.age}" width="60"
+                                      filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.age}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Gender"
+                                      width="80"
+                                      sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.nic}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.phone1}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}"
+                                      filterBy="#{c.client.person.address}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.address}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="District"  sortBy="#{c.client.person.district.name}"
+                                      filterBy="#{c.client.person.district.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.district.name}" ></p:outputLabel>
+                            </p:column>
+                             <p:column headerText="Confirmed at"  sortBy="#{c.resultConfirmedAt}"
+                                       filterBy="#{c.resultConfirmedAt}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.resultConfirmedAt}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Confirmed By"  sortBy="#{c.resultConfirmedBy.name}"
+                                      filterBy="#{c.resultConfirmedBy.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.resultConfirmedBy.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Result"  sortBy="#{c.pcrResult.name}"
+                                      filterBy="#{c.pcrResult.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.pcrResult.name}" rendered="#{c.resultConfirmed}"></p:outputLabel>
+                                <p:outputLabel value="Not Available" rendered="#{not c.resultConfirmed}"></p:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+
+</html>

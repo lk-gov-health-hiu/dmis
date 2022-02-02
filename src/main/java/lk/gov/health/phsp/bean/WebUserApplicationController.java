@@ -93,33 +93,32 @@ public class WebUserApplicationController {
     private void createAllPrivilege() {
         allPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
-        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", allPrivilegeRoot, Privilege.Client_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", allPrivilegeRoot, Privilege.Sample_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot, Privilege.Lab_Management);
+        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", allPrivilegeRoot, Privilege.File_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", allPrivilegeRoot, Privilege.Inventory_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot, Privilege.Finance_Management);
         TreeNode user = new PrivilegeTreeNode("User", allPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", allPrivilegeRoot, Privilege.Monitoring_and_evaluation);
         TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot, Privilege.System_Administration);
 
         //Client Management
-        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_Client);
-        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Add_Tests);
-        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Enter_Results);
-        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_any_Client_by_IDs);
-        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Search_any_Client_by_Details);
+        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_File);
+        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Edit_File);
+        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Receive_Letter);
+        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_File);
+        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Retire_File);
 
         //Lab Management
-        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Receive_Samples);
-        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Enter_Results);
-        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Review_Results);
-        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Confirm_Results);
-        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Print_Results);
-        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.View_Orders);
-        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Lab_Reports);
+        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Transfer_Letter);
+        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Receive_Letter);
+        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Retire_Letter);
+        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Search_Letter);
+        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Add_Actions_To_Letter);
+        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.Assign_Letter);
+        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Remove_Actions_To_Letter);
 
         //Institution Administration
         TreeNode manage_Institution_Users = new PrivilegeTreeNode("Manage Institution Users", institutionAdministration, Privilege.Manage_Institution_Users);
-        TreeNode manage_Institution_Metadata = new PrivilegeTreeNode("Manage Institution Metadata", institutionAdministration, Privilege.Manage_Institution_Metadata);
         TreeNode manage_Authorised_Areas = new PrivilegeTreeNode("Manage Authorised Areas", institutionAdministration, Privilege.Manage_Authorised_Areas);
         TreeNode manage_Authorised_Institutions = new PrivilegeTreeNode("Manage Authorised Institutions", institutionAdministration, Privilege.Manage_Authorised_Institutions);
 
@@ -134,40 +133,39 @@ public class WebUserApplicationController {
         TreeNode me_Users = new PrivilegeTreeNode("View Reports", me, Privilege.Monitoring_and_evaluation_reports);
 
         //Sample Management
-        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Dispatch_Samples);
-        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Divert_Samples);
+        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Add_Letter);
+        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Edit_Letter);
 
     }
 
     private void createProvincialPrivilege() {
         provincialPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
-        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", provincialPrivilegeRoot, Privilege.Client_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", provincialPrivilegeRoot, Privilege.Sample_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", provincialPrivilegeRoot, Privilege.Lab_Management);
+        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", provincialPrivilegeRoot, Privilege.File_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", provincialPrivilegeRoot, Privilege.Inventory_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", provincialPrivilegeRoot, Privilege.Finance_Management);
         TreeNode user = new PrivilegeTreeNode("User", provincialPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("System Administration", provincialPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", provincialPrivilegeRoot, Privilege.Monitoring_and_evaluation);
 
         //Client Management
-        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_Client);
-        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Add_Tests);
-        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Enter_Results);
-        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_any_Client_by_IDs);
-        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Search_any_Client_by_Details);
+        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_File);
+        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Edit_File);
+        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Receive_Letter);
+        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_File);
+        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Retire_File);
 
         //Lab Management
-        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Receive_Samples);
-        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Enter_Results);
-        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Review_Results);
-        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Confirm_Results);
-        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Print_Results);
-        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.View_Orders);
-        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Lab_Reports);
+        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Transfer_Letter);
+        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Receive_Letter);
+        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Retire_Letter);
+        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Search_Letter);
+        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Add_Actions_To_Letter);
+        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.Assign_Letter);
+        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Remove_Actions_To_Letter);
 
         //Institution Administration
         TreeNode manage_Institution_Users = new PrivilegeTreeNode("Manage Institution Users", institutionAdministration, Privilege.Manage_Institution_Users);
-        TreeNode manage_Institution_Metadata = new PrivilegeTreeNode("Manage Institution Metadata", institutionAdministration, Privilege.Manage_Institution_Metadata);
         TreeNode manage_Authorised_Areas = new PrivilegeTreeNode("Manage Authorised Areas", institutionAdministration, Privilege.Manage_Authorised_Areas);
         TreeNode manage_Authorised_Institutions = new PrivilegeTreeNode("Manage Authorised Institutions", institutionAdministration, Privilege.Manage_Authorised_Institutions);
 
@@ -175,40 +173,39 @@ public class WebUserApplicationController {
         TreeNode me_Users = new PrivilegeTreeNode("View Reports", me, Privilege.Monitoring_and_evaluation_reports);
 
         //Sample Management
-        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Dispatch_Samples);
-        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Divert_Samples);
+        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Add_Letter);
+        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Edit_Letter);
 
     }
 
     private void createRegionalPrivilege() {
         regionalPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
-        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", regionalPrivilegeRoot, Privilege.Client_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", regionalPrivilegeRoot, Privilege.Sample_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", regionalPrivilegeRoot, Privilege.Lab_Management);
+        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", regionalPrivilegeRoot, Privilege.File_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", regionalPrivilegeRoot, Privilege.Inventory_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", regionalPrivilegeRoot, Privilege.Finance_Management);
         TreeNode user = new PrivilegeTreeNode("User", regionalPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("System Administration", regionalPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", regionalPrivilegeRoot, Privilege.Monitoring_and_evaluation);
 
         //Client Management
-        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_Client);
-        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Add_Tests);
-        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Enter_Results);
-        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_any_Client_by_IDs);
-        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Search_any_Client_by_Details);
+        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_File);
+        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Edit_File);
+        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Receive_Letter);
+        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_File);
+        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Retire_File);
 
         //Lab Management
-        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Receive_Samples);
-        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Enter_Results);
-        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Review_Results);
-        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Confirm_Results);
-        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Print_Results);
-        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.View_Orders);
-        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Lab_Reports);
+        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Transfer_Letter);
+        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Receive_Letter);
+        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Retire_Letter);
+        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Search_Letter);
+        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Add_Actions_To_Letter);
+        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.Assign_Letter);
+        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Remove_Actions_To_Letter);
 
         //Institution Administration
         TreeNode manage_Institution_Users = new PrivilegeTreeNode("Manage Institution Users", institutionAdministration, Privilege.Manage_Institution_Users);
-        TreeNode manage_Institution_Metadata = new PrivilegeTreeNode("Manage Institution Metadata", institutionAdministration, Privilege.Manage_Institution_Metadata);
         TreeNode manage_Authorised_Areas = new PrivilegeTreeNode("Manage Authorised Areas", institutionAdministration, Privilege.Manage_Authorised_Areas);
         TreeNode manage_Authorised_Institutions = new PrivilegeTreeNode("Manage Authorised Institutions", institutionAdministration, Privilege.Manage_Authorised_Institutions);
 
@@ -216,36 +213,36 @@ public class WebUserApplicationController {
         TreeNode me_Users = new PrivilegeTreeNode("View Reports", me, Privilege.Monitoring_and_evaluation_reports);
 
         //Sample Management
-        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Dispatch_Samples);
-        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Divert_Samples);
+        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Add_Letter);
+        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Edit_Letter);
 
     }
 
     private void createHospitalPrivilege() {
         hospitalPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
-        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", hospitalPrivilegeRoot, Privilege.Client_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", hospitalPrivilegeRoot, Privilege.Sample_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", hospitalPrivilegeRoot, Privilege.Lab_Management);
+        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", hospitalPrivilegeRoot, Privilege.File_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", hospitalPrivilegeRoot, Privilege.Inventory_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", hospitalPrivilegeRoot, Privilege.Finance_Management);
         TreeNode user = new PrivilegeTreeNode("User", hospitalPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("System Administration", hospitalPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", hospitalPrivilegeRoot, Privilege.Monitoring_and_evaluation);
 
         //Client Management
-        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_Client);
-        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Add_Tests);
-        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Enter_Results);
-        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_any_Client_by_IDs);
-        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Search_any_Client_by_Details);
+        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_File);
+        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Edit_File);
+        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Receive_Letter);
+        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_File);
+        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Retire_File);
 
         //Lab Management
-        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Receive_Samples);
-        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Enter_Results);
-        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Review_Results);
-        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Confirm_Results);
-        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Print_Results);
-        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.View_Orders);
-        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Lab_Reports);
+        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Transfer_Letter);
+        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Receive_Letter);
+        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Retire_Letter);
+        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Search_Letter);
+        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Add_Actions_To_Letter);
+        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.Assign_Letter);
+        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Remove_Actions_To_Letter);
 
         //Institution Administration
         TreeNode manage_Institution_Users = new PrivilegeTreeNode("Manage Users", institutionAdministration, Privilege.Manage_Institution_Users);
@@ -255,40 +252,39 @@ public class WebUserApplicationController {
         TreeNode me_Users = new PrivilegeTreeNode("View Reports", me, Privilege.Monitoring_and_evaluation_reports);
 
         //Sample Management
-        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Dispatch_Samples);
-        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Divert_Samples);
+        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Add_Letter);
+        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Edit_Letter);
 
     }
 
     private void createLabPrivilege() {
         labPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
-        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", labPrivilegeRoot, Privilege.Client_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", labPrivilegeRoot, Privilege.Sample_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", labPrivilegeRoot, Privilege.Lab_Management);
+        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", labPrivilegeRoot, Privilege.File_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", labPrivilegeRoot, Privilege.Inventory_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", labPrivilegeRoot, Privilege.Finance_Management);
         TreeNode user = new PrivilegeTreeNode("User", labPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", labPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", labPrivilegeRoot, Privilege.Monitoring_and_evaluation);
 
         //Client Management
-        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_Client);
-        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Add_Tests);
-        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Enter_Results);
-        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_any_Client_by_IDs);
-        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Search_any_Client_by_Details);
+        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_File);
+        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Edit_File);
+        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Receive_Letter);
+        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_File);
+        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Retire_File);
 
         //Lab Management
-        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Receive_Samples);
-        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Enter_Results);
-        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Review_Results);
-        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Confirm_Results);
-        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Print_Results);
-        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.View_Orders);
-        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Lab_Reports);
+        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Transfer_Letter);
+        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Receive_Letter);
+        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Retire_Letter);
+        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Search_Letter);
+        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Add_Actions_To_Letter);
+        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.Assign_Letter);
+        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Remove_Actions_To_Letter);
 
         //Institution Administration
         TreeNode manage_Institution_Users = new PrivilegeTreeNode("Manage Institution Users", institutionAdministration, Privilege.Manage_Institution_Users);
-        TreeNode manage_Institution_Metadata = new PrivilegeTreeNode("Manage Institution Metadata", institutionAdministration, Privilege.Manage_Institution_Metadata);
         TreeNode manage_Authorised_Areas = new PrivilegeTreeNode("Manage Authorised Areas", institutionAdministration, Privilege.Manage_Authorised_Areas);
         TreeNode manage_Authorised_Institutions = new PrivilegeTreeNode("Manage Authorised Institutions", institutionAdministration, Privilege.Manage_Authorised_Institutions);
 
@@ -296,40 +292,39 @@ public class WebUserApplicationController {
         TreeNode me_Users = new PrivilegeTreeNode("View Reports", me, Privilege.Monitoring_and_evaluation_reports);
 
         //Sample Management
-        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Dispatch_Samples);
-        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Divert_Samples);
+        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Add_Letter);
+        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Edit_Letter);
 
     }
 
     private void createMohPrivilege() {
         mohPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
-        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", mohPrivilegeRoot, Privilege.Client_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", mohPrivilegeRoot, Privilege.Sample_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", mohPrivilegeRoot, Privilege.Lab_Management);
+        TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", mohPrivilegeRoot, Privilege.File_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", mohPrivilegeRoot, Privilege.Inventory_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", mohPrivilegeRoot, Privilege.Finance_Management);
         TreeNode user = new PrivilegeTreeNode("User", mohPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", mohPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", mohPrivilegeRoot, Privilege.Monitoring_and_evaluation);
 
         //Client Management
-        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_Client);
-        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Add_Tests);
-        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Enter_Results);
-        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_any_Client_by_IDs);
-        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Search_any_Client_by_Details);
+        TreeNode add_Client = new PrivilegeTreeNode("Add Cases", clientManagement, Privilege.Add_File);
+        TreeNode add_Tests = new PrivilegeTreeNode("Add Tests", clientManagement, Privilege.Edit_File);
+        TreeNode enter_Results = new PrivilegeTreeNode("Enter Results", clientManagement, Privilege.Receive_Letter);
+        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_File);
+        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Retire_File);
 
         //Lab Management
-        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Receive_Samples);
-        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Enter_Results);
-        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Review_Results);
-        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Confirm_Results);
-        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Print_Results);
-        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.View_Orders);
-        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Lab_Reports);
+        TreeNode receive_samples = new PrivilegeTreeNode("Receive Samples", labManagement, Privilege.Transfer_Letter);
+        TreeNode enter_results_lab = new PrivilegeTreeNode("Enter Results", labManagement, Privilege.Receive_Letter);
+        TreeNode review_Results = new PrivilegeTreeNode("Review Results", labManagement, Privilege.Retire_Letter);
+        TreeNode confirm_results = new PrivilegeTreeNode("Confirm Results", labManagement, Privilege.Search_Letter);
+        TreeNode print_results = new PrivilegeTreeNode("Print Results", labManagement, Privilege.Add_Actions_To_Letter);
+        TreeNode view_orders = new PrivilegeTreeNode("View Orders", labManagement, Privilege.Assign_Letter);
+        TreeNode manage_Lab_Reports = new PrivilegeTreeNode("Lab Reports", labManagement, Privilege.Remove_Actions_To_Letter);
 
         //Institution Administration
         TreeNode manage_Institution_Users = new PrivilegeTreeNode("Manage Institution Users", institutionAdministration, Privilege.Manage_Institution_Users);
-        TreeNode manage_Institution_Metadata = new PrivilegeTreeNode("Manage Institution Metadata", institutionAdministration, Privilege.Manage_Institution_Metadata);
         TreeNode manage_Authorised_Areas = new PrivilegeTreeNode("Manage Authorised Areas", institutionAdministration, Privilege.Manage_Authorised_Areas);
         TreeNode manage_Authorised_Institutions = new PrivilegeTreeNode("Manage Authorised Institutions", institutionAdministration, Privilege.Manage_Authorised_Institutions);
 
@@ -337,8 +332,8 @@ public class WebUserApplicationController {
         TreeNode me_Users = new PrivilegeTreeNode("View Reports", me, Privilege.Monitoring_and_evaluation_reports);
 
         //Sample Management
-        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Dispatch_Samples);
-        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Divert_Samples);
+        TreeNode dispatch_samples = new PrivilegeTreeNode("Dispatch Samples", sampleManagement, Privilege.Add_Letter);
+        TreeNode divert_samples = new PrivilegeTreeNode("Divert Samples", sampleManagement, Privilege.Edit_Letter);
 
     }
 

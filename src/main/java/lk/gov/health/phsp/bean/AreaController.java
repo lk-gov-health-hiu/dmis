@@ -206,71 +206,7 @@ public class AreaController implements Serializable {
         return "/area/search";
     }
 
-    public String importMohAreas() {
-        if (bulkText == null || bulkText.trim().equals("")) {
-            JsfUtil.addErrorMessage("Text ?");
-            return "";
-        }
-        if (district == null || province == null || pdhs == null || rdhs == null || rdhsInstitution==null) {
-            JsfUtil.addErrorMessage("Details ?");
-            return "";
-        }
-
-        String lines[] = bulkText.split("\\r?\\n");
-
-        for (String line : lines) {
-            if (line == null || line.trim().equals("")) {
-                continue;
-            }
-            line = line.trim();
-            Area moh;
-
-            Institution insMoh = new Institution();
-            insMoh.setName("MOH Office " + line);
-            insMoh.setInstitutionType(InstitutionType.MOH_Office);
-            insMoh.setParent(rdhsInstitution);
-            institutionController.save(insMoh);
-
-            Area newMoh = new Area();
-            newMoh.setDistrict(district);
-            newMoh.setProvince(province);
-            newMoh.setPdhsArea(pdhs);
-            newMoh.setRdhsArea(rdhs);
-            newMoh.setName(line);
-            newMoh.setType(AreaType.MOH);
-            newMoh.setCode("moh_area_" + line);
-            newMoh.setPmci(rdhsInstitution.getParent());
-            getFacade().create(newMoh);
-
-            insMoh.setMohArea(newMoh);
-            insMoh.setDistrict(district);
-            insMoh.setProvince(province);
-            insMoh.setPdhsArea(pdhs);
-            insMoh.setRdhsArea(rdhs);
-            institutionController.save(insMoh);
-
-            Person mohPerson = new Person();
-            mohPerson.setName("MOH " + line);
-            personController.save(mohPerson);
-
-            WebUser mohUser = new WebUser();
-            mohUser.setName("moh" + line);
-            mohUser.setPerson(mohPerson);
-            mohUser.setInstitution(insMoh);
-            mohUser.setArea(newMoh);
-            mohUser.setWebUserRole(WebUserRole.Moh);
-            mohUser.setWebUserPassword(commonController.hash("abcd1234"));
-            mohUser.setCreatedAt(new Date());
-            mohUser.setCreater(webUserController.getLoggedUser());
-            webUserController.save(mohUser);
-            webUserController.addWebUserPrivileges(mohUser, webUserController.getInitialPrivileges(mohUser.getWebUserRole()));
-            webUserController.save(mohUser);
-        }
-
-        bulkText = "";
-        return "";
-    }
-
+  
 
     public List<Area> getMohAreas() {
         if (mohAreas == null) {

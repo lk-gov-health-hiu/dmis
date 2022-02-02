@@ -54,7 +54,7 @@ public class DashboardController implements Serializable {
     private DocumentFacade encounterFacade;
   
     @Inject
-    private DocumentController encounterController;
+    private FileController encounterController;
        @Inject
     private ItemController itemController;
     @Inject
@@ -789,11 +789,11 @@ public class DashboardController implements Serializable {
         this.encounterFacade = encounterFacade;
     }
 
-    public DocumentController getEncounterController() {
+    public FileController getEncounterController() {
         return encounterController;
     }
 
-    public void setEncounterController(DocumentController encounterController) {
+    public void setEncounterController(FileController encounterController) {
         this.encounterController = encounterController;
     }
 

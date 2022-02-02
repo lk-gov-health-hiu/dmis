@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="/national/analysis_index.xhtml">
+            <ui:define name="reports">
+
+                <h:panelGrid columns="1" styleClass="alignTop">
+                    <f:facet name="header">
+                        <p:outputLabel value="National Weekely Counts"></p:outputLabel>
+                    </f:facet>
+
+                    <h:form>
+                        <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center">
+                            <h:panelGrid class="shadow-lg p-3 mb-5 bg-white rounded" columns="2">
+
+                                <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
+                                <p:datePicker value="#{nationalController.fromDate}" pattern="dd MMMM yyyy">
+                                </p:datePicker><!-- comment -->
+
+                                <h:outputLabel class="h6 fw-bold" value="To"></h:outputLabel>
+                                <p:datePicker value="#{nationalController.toDate}" pattern="dd MMMM yyyy">
+                                </p:datePicker>
+
+                                <h:outputLabel class="h6 fw-bold" value="Ordering Category"></h:outputLabel>
+                                <h:selectOneMenu value="#{nationalController.orderingCategory}" class="form-select">
+                                    <f:selectItem itemLabel="All"></f:selectItem>
+                                    <f:selectItems value="#{nationalController.covidTestOrderingCategories}" var="c"
+                                                   itemLabel="#{c.name}" itemValue="#{c}"></f:selectItems>
+                                </h:selectOneMenu>
+
+                                <f:facet name="footer">
+                                    <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                        <p:dataExporter target="tbl" type="xlsx"
+                                                        fileName="national_daily_counts"></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                        <p:dataExporter type="pdf" target="tbl"
+                                                        fileName="National Weekely Counts" />
+                                    </h:commandButton>
+                                    <h:commandButton value="Process" class="btn btn-warning w-25"
+                                                     action="#{nationalController.processWeekelyCounts()}">
+                                    </h:commandButton>
+                                </f:facet>
+
+                            </h:panelGrid>
+                        </div>
+                        <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
+                            <p:dataTable id="tbl" value="#{nationalController.dailyTestCounts}" rendered="true"
+                                         rowIndexVar="n" var="c" paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
+                               
+                                    
+                                <p:column headerText="Start of the week" sortBy="#{c.date}">
+                                    <h:outputText value="#{c.date}" >
+                                        <f:convertDateTime parent="dd MMMM yyyy" ></f:convertDateTime>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="RAT Positives" sortBy="#{c.positiveRat}">
+                                    <h:outputText value="#{c.positiveRat}" >
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Total RAT" sortBy="#{c.totalRat}">
+                                    <h:outputText value="#{c.totalRat}" >
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="PCR Positives" sortBy="#{c.positivePcr}">
+                                    <h:outputText value="#{c.positivePcr}" >
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Total PCRs" sortBy="#{c.totalPcr}">
+                                    <h:outputText value="#{c.totalPcr}" >
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Total Positives" sortBy="#{c.totalPositives}">
+                                    <h:outputText value="#{c.totalPositives}" >
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Total Performed" sortBy="#{c.totalTests}">
+                                    <h:outputText value="#{c.totalTests}" >
+                                    </h:outputText>
+                                </p:column>
+                               
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+                </h:panelGrid>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+
+</html>

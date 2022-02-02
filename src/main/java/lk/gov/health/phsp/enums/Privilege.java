@@ -10,36 +10,34 @@ package lk.gov.health.phsp.enums;
  */
 public enum Privilege {
     //Main Menu Privileges
-    Client_Management("Patient Management"),
-    Encounter_Management("Order Management"),
-    @Deprecated
-    Appointment_Management("Appointment Management"),
-    Sample_Management("Sample Management"),
-    Lab_Management("Lab Management"),
-    @Deprecated
-    Pharmacy_Management("Pharmacy Management"),
+    File_Management("File Management"),
+    Letter_Management("Letter Management"),
+    HR_Management("HR Management"),
+    Inventory_Management("Inventory Management"),
+    Finance_Management("Finance Management"),
+    Audit_Management("Audit Management"),
     User("User"),
     Institution_Administration("Institution Administration"),
     System_Administration("System Administration"),
-    //Client Management
-    Add_Client("Add Cases"),
-    Add_Tests("Add Tests"),
-    Mark_Tests("Mark Tests"),
-    Submit_Returns("Submit Returns"),
-    Search_any_Client_by_IDs("Search any Client by IDs"),
-    Search_any_Client_by_Details("Search any Client by Details"),
-    @Deprecated
-    Search_any_client_by_ID_of_Authorised_Areas("Search any client by ID of Authorised Areas"),
-    @Deprecated
-    Search_any_client_by_Details_of_Authorised_Areas("Search any client by Details of Authorised Areas"),
-    @Deprecated
-    Search_any_client_by_ID_of_Authorised_Institutions("Search any client by ID of Authorised Institutions"),
-    @Deprecated
-    Search_any_client_by_Details_of_Authorised_Institutions("Search any client by Details of Authorised Institutions"),
+    //File Management
+    Add_File("Add File"),
+    Edit_File("Edit File"),
+    Transfer_File("Transfer File"),
+    Receive_File("Receive File"),
+    Search_File("Search File"),
+    Retire_File("Retire File"),
+    //Letter Management
+    Add_Letter("Add Letter"),
+    Edit_Letter("Edit Letter"),
+    Assign_Letter("Assign Letter"),
+    Transfer_Letter("Transfer Letter"),
+    Receive_Letter("Receive Letter"),
+    Retire_Letter("Retire Letter"),
+    Search_Letter("Search Letter"),
+    Add_Actions_To_Letter("Add Actions"),
+    Remove_Actions_To_Letter("Remove Actions"),
     //Institution Administration
     Manage_Institution_Users("Manage Institution Users"),
-    @Deprecated
-    Manage_Institution_Metadata("Manage Institution Metadata"),
     Manage_Authorised_Areas("Manage Authorised Areas"),
     Manage_Authorised_Institutions("Manage Authorised Institutions"),
     //System Administration
@@ -54,16 +52,7 @@ public enum Privilege {
     View_individual_data("View Individual Data"),
     View_aggragate_date("View Aggregate Data"),
     //Sample Management
-    Dispatch_Samples("Dispatch Samples"),
-    Divert_Samples("Divert Samples"),
-    //Lab Management
-    View_Orders("View Orders"),
-    Receive_Samples("Receive Samples"),
-    Enter_Results("Enter Results"),
-    Review_Results("Review Results"),
-    Confirm_Results("Approve Results"),
-    Print_Results("Approve Results"),
-    Lab_Reports("Lab Reports"),;
+    ;
 
     public final String label;
 

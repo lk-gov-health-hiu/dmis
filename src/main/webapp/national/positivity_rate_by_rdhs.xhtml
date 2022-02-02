@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+       <ui:composition template="/national/reports_index.xhtml">
+
+               <ui:define name="reports">
+
+                <h:panelGrid columns="1" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Test Counts by Regional Departments" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
+                        <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded" >
+                            <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
+                            <p:calendar value="#{nationalController.fromDate}"
+                                        pattern="dd MMMM yyyy hh:mm a">
+                            </p:calendar>
+
+                            <h:outputLabel class="h6 fw-bold" value="Ordered To" ></h:outputLabel>
+                            <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+
+                            <h:outputLabel class="h6 fw-bold" value="Ordering Category" ></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.orderingCategory}" class="form-select" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{nationalController.covidTestOrderingCategories}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="Lab"></h:outputLabel>
+                            <p:autoComplete
+                                            inputStyleClass="autocomplete"
+                                            value="#{nationalController.lab}"
+                                            forceSelection="true" tabindex="100"
+                                            completeMethod="#{nationalController.completeLab}"
+                                            var="l" itemLabel="#{l.name}" itemValue="#{l}">
+                            </p:autoComplete>
+
+                            <h:outputLabel class="h6 fw-bold" value="Test" ></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.testType}" class="form-select" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="PDHS"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.pdhs}" class="form-select" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{areaApplicationController.allPdhsAreas}"
+                                               var="p" itemLabel="#{p.name}"
+                                               itemValue="#{p}" ></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success ">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="counts by rdhs" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger ">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="counts by rdhs" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning "
+                                                 action="#{nationalController.toTestPositiveRateByRdhs()}" ></h:commandButton>
+
+                            </f:facet>
+
+
+                        </h:panelGrid>
+                        </div>
+                        <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
+                        <p:dataTable id="tbl" value="#{nationalController.institutionCounts}" rendered="true"
+                                     rowIndexVar="n"
+                                     var="c"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                                     rows="10"
+                                     >
+                            <p:column headerText="RDHS" sortBy="#{c.area.name}"
+                                      filterBy="#{c.area.name}" filterMatchMode="contains">
+                                <h:commandLink value="#{c.area.name}" ajax="false" action="#{nationalController.toCountOfTestsFromRdhsToMoh()}">
+                                    <f:setPropertyActionListener value="#{c.area}" target="#{nationalController.rdhs}" ></f:setPropertyActionListener>
+                                </h:commandLink>
+                            </p:column>
+                            <p:column headerText="Tests" sortBy="#{c.count}">
+                              <h:outputLabel value="#{c.count}"></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Positivity Rate"  sortBy="#{c.positiveRate}">
+                                <h:outputLabel value="#{c.positiveRate}"></h:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+                </h:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

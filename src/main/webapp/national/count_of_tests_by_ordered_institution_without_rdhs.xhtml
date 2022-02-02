@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:body>
+    <ui:composition template="/national/reports_index.xhtml">
+        <ui:define name="reports">
+
+            <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop">
+                <f:facet name="header">
+                    <p:outputLabel value="Test Counts by Ordered Institution"></p:outputLabel>
+                </f:facet>
+
+                <h:form>
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Ordered From"></p:outputLabel>
+                        <p:calendar value="#{nationalController.fromDate}" pattern="dd MMMM yyyy hh:mm a">
+                        </p:calendar><!-- comment -->
+
+                        <p:outputLabel value="Ordered To"></p:outputLabel>
+                        <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+
+                        <p:outputLabel value="Ordering Category"></p:outputLabel>
+                        <p:selectOneMenu value="#{nationalController.orderingCategory}">
+                            <f:selectItem itemLabel="All"></f:selectItem>
+                            <f:selectItems value="#{nationalController.covidTestOrderingCategories}" var="c"
+                                itemLabel="#{c.name}" itemValue="#{c}"></f:selectItems>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Lab"></p:outputLabel>
+                        <p:autoComplete style="width: 100%;" inputStyleClass="autocomplete"
+                            value="#{nationalController.lab}" forceSelection="true" tabindex="100"
+                            completeMethod="#{nationalController.completeLab}" var="l" itemLabel="#{l.name}"
+                            itemValue="#{l}">
+                        </p:autoComplete>
+
+                        <p:outputLabel value="Test"></p:outputLabel>
+                        <p:selectOneMenu value="#{nationalController.testType}">
+                            <f:selectItem itemLabel="All"></f:selectItem>
+                            <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                itemValue="#{c}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <f:facet name="footer">
+                            <p:commandButton ajax="false" value="Generate Excel" class="btn btn-success">
+                                <p:dataExporter target="tbl" type="xlsx" fileName="tests"></p:dataExporter>
+                            </p:commandButton>
+                            <p:commandButton ajax="false" value="Generate PDF" class="btn btn-warning">
+                                <p:dataExporter target="tbl" type="pdf" fileName="tests"></p:dataExporter>
+                            </p:commandButton>
+                            <p:commandButton ajax="false" value="Process" class="btn btn-warning"
+                                action="#{nationalController.toCountOfTestsByOrderedInstitution()}"></p:commandButton>
+
+                        </f:facet>
+                    </p:panelGrid>
+                    <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl"
+                        value="#{nationalController.institutionCounts}" rendered="true" rowIndexVar="n" var="c"
+                        paginator="true"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                        rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column colspan="5" headerText="#{webUserController.loggedUser.institution.name} - Test Counts Without RDHS Area - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}"></p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column headerText="Province" sortBy="#{c.institution.province.name}"
+                                filterBy="#{c.institution.province.name}" filterMatchMode="contains"></p:column>
+                                <p:column headerText="District" sortBy="#{c.institution.district.name}"
+                                filterBy="#{c.institution.district.name}" filterMatchMode="contains"></p:column>
+                                <p:column headerText="Institution" sortBy="#{c.institution.name}"
+                                filterBy="#{c.institution.name}" filterMatchMode="contains"></p:column>
+                                <p:column headerText="Institution Type" sortBy="#{c.institution.institutionType.label}"
+                                filterBy="#{c.institution.institutionType.label}" filterMatchMode="contains"></p:column>
+                                <p:column headerText="Count" sortBy="#{c.count}"></p:column>
+                            </p:row>
+                        </p:columnGroup>
+                        <p:column>
+                            <h:outputText value="#{c.institution.province.name}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{c.institution.district.name}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{c.institution.name}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{c.institution.institutionType.label}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{c.count}"></h:outputText>
+                        </p:column>
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column colspan="5" footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}"></p:column>
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </h:form>
+            </p:panelGrid>
+        </ui:define>
+
+    </ui:composition>
+
+</h:body>
+
+</html>

@@ -32,40 +32,10 @@ public enum WebUserRole {
     System_Administrator("System Administrator"),
     Super_User("Super User"),
     User("User"),
-    ChiefEpidemiologist("Chief Epidemiologist"),
-    Epidemiologist("Epidemiologist"),
-    Lab_National("Lab National"),
-    //PD Level
-    Pdhs("PDHS"),
-    Provincial_Admin("Provincial System Administrator"),
-    Pdhs_Staff("PDHS Staff"),
-    //RD Level
-    Rdhs("RDHS"),
-    Regional_Admin("Regional System Administrator"),
-    Re("Regional Epidemiologist"),
-    Rdhs_Staff("RDHS Staff"),
-    //MOH Level
-    Moh("MOH"),
-    Amoh("AMOH"),
-    Sphi("SPHI"),
-    Phns("PHNS"),
-    Sphm("SPHM"),
-    Phi("PHI"),
-    Phm("PHM"),
-    MohStaff("MOH Staff"),
-    //Hospital Staff
-    Hospital_Admin("Hospital System Administrator"),
-    Hospital_User("Hospital User"),
-    Doctor("Hospital Doctor"),
-    Nurse("Nurse"),
-    //Lab staff
-    Lab_Admin("Lab System Administrator"),
-    Lab_Consultant("Lab Consultant"),
-    Lab_Mo("Lab Medical Officer"),
-    Lab_Mlt("MLT"),
-    Lab_User("Lab Assistant"),
-    //Client
-    Client("Client");
+    //Institutional Level
+    Institutional_Administrator("PDHS"),
+    Institutional_Super_User("Provincial System Administrator"),
+    Institutional_User("PDHS Staff");
    
     private final String label;
 

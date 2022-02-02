@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <p:panel id="WebUserEditDlg" class="main-panel" style="height: 100%;" rendered="#{webUserController.loggedUser.systemAdministrator}">
+                    <h:form id="AreaEditForm">
+                        <div class="card fs-4 my-2 fw-bold">
+                            <div class="card-header bg-success text-white">
+                                <h:outputLabel value="Add New Area" ></h:outputLabel>
+
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <h:outputLabel  value="#{bundleClinical.EditAreaLabel_type}" class="col-md-2 fs-6 fw-bol" for="type" />
+                                    <div class="col-md-4 my-2">
+                                        <h:selectOneMenu id="type" class="form-select"
+                                                         value="#{areaController.selected.type}" 
+                                                         title="#{bundleClinical.CreateAreaTitle_type} " style="width: 100%;"   >
+                                            <f:selectItem itemLabel="Please Select" ></f:selectItem>
+                                            <f:selectItems value="#{commonController.areaTypes}" ></f:selectItems>
+                                        </h:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="#{bundleClinical.EditAreaLabel_name}" class="col-md-2" for="name" />
+                                    <div class="col-md-4">
+                                        <h:inputText id="name" class="form-control my-2" value="#{areaController.selected.name}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_name}" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="#{bundleClinical.EditAreaLabel_code}" class="col-md-2" for="code" />
+                                    <div class="col-md-4">
+                                        <h:inputText id="code" class="form-control my-2" value="#{areaController.selected.code}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_code}" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="Area ID:" class="col-md-2" for="id" />
+                                    <div class="col-md-4">
+                                        <h:inputText id="id" class="form-control my-2" value="#{areaController.selected.areauid}" autocomplete="off" title="Area ID" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="#{bundleClinical.EditAreaLabel_parentArea}" class="col-md-2" for="parentArea" />
+                                    <div class="col-md-4">
+                                        <p:autoComplete id="parentArea" class=" my-2" value="#{areaController.selected.parentArea}"
+                                                        completeMethod="#{areaController.completeAreas}"
+                                                        var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                                        itemValue="#{parentAreaItem}"></p:autoComplete>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="PHI:" class="col-md-2" />
+                                    <div class="col-md-4">
+                                        <p:autoComplete class=" my-2" value="#{areaController.selected.phi}"
+                                                        completeMethod="#{areaController.completePhiAreas}"
+                                                        var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                                        itemValue="#{parentAreaItem}"></p:autoComplete>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="MOH:" class="col-md-2" />
+                                    <div class="col-md-4">
+                                        <p:autoComplete class="my-2" value="#{areaController.selected.moh}"
+                                                        completeMethod="#{areaController.completeMoh}"
+                                                        var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                                        itemValue="#{parentAreaItem}"></p:autoComplete>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="RDHS:" class="col-md-2"/>
+                                    <div class="col-md-4">
+                                        <p:autoComplete class=" my-2" value="#{areaController.selected.rdhsArea}"
+                                                        completeMethod="#{areaController.completeRdhsAreas}"
+                                                        var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                                        itemValue="#{parentAreaItem}"></p:autoComplete> 
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="District:" class="col-md-2"/>
+                                    <div class="col-md-4">
+                                        <p:autoComplete class=" my-2" value="#{areaController.selected.district}"
+                                                        completeMethod="#{areaController.completeDistricts}"
+                                                        var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                                        itemValue="#{parentAreaItem}"></p:autoComplete>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="PDHS:" class="col-md-2"/>
+                                    <div class="col-md-4">
+                                        <p:autoComplete class=" my-2" value="#{areaController.selected.pdhsArea}"
+                                                        completeMethod="#{areaController.completePdhsAreas}"
+                                                        var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                                        itemValue="#{parentAreaItem}"></p:autoComplete>  
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="Province:" class="col-md-2"/>
+                                    <div class="col-md-4">
+                                        <p:autoComplete class=" my-2" value="#{areaController.selected.province}"
+                                                        completeMethod="#{areaController.completeProvinces}"
+                                                        var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                                        itemValue="#{parentAreaItem}"></p:autoComplete>   
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="#{bundleClinical.EditAreaLabel_centreLongitude}" class="col-md-2"/>
+                                    <div class="col-md-4">
+                                        <h:inputText id="centreLongitude" class="form-control my-2" value="#{areaController.selected.centreLongitude}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_centreLongitude}" />  
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="#{bundleClinical.EditAreaLabel_centreLatitude}" class="col-md-2"/>
+                                    <div class="col-md-4 my-2">
+                                        <h:inputText id="centreLatitude" value="#{areaController.selected.centreLatitude}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_centreLatitude}" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <h:outputLabel value="#{bundleClinical.EditAreaLabel_zoomLavel}" class="col-md-2"/>
+                                    <div class="col-md-4 my-2">
+                                        <h:inputText id="zoomLavel" value="#{areaController.selected.zoomLavel}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_zoomLavel}" />
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <h:commandButton class="btn btn-success px-5 my-3" action="#{areaController.saveOrUpdateAreaForSystemAdmin()}" value="#{bundleClinical.Save}"/>
+                                </div>
+                            </div> 
+                        </div>       
+                    </h:form>
+                </p:panel>
+            </ui:define>
+            
+        </ui:composition>
+        
+    </body>
+    
+</html>

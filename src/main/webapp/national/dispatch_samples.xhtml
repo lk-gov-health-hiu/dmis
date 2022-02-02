@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                National Dispatch Samples
+            </ui:define>
+            <ui:define name="content">
+                    <h4 class="fw-bold">Dispatch Samples</h4>
+                    <h:form >
+
+                        <h:panelGrid columns="2" rendered="true" styleClass="border border-light bg-white" >
+
+                            <h:panelGrid columns="2" >
+                                <f:facet name="header" >
+                                    <p:outputLabel class="h6 fw-bold" value="Listing" ></p:outputLabel>
+                                </f:facet>
+                                <h:outputLabel class="h6 fw-bold" value="From" ></h:outputLabel>
+                                <p:calendar value="#{nationalController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+
+                                <h:outputLabel class="h6 fw-bold" value="To" ></h:outputLabel>
+                                <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+
+                                <h:outputLabel class="h6 fw-bold" value="Ordered Institution" ></h:outputLabel>
+                                <p:autoComplete value="#{nationalController.institution}"
+                                                completeMethod="#{institutionController.completeInstitutions}"
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                                </p:autoComplete>
+
+                                <f:facet name="footer">
+                                    <h:commandButton value="Generate Excel"
+                                                     class="btn btn-success">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Generate PDF"
+                                                     class="btn btn-danger">
+                                        <p:dataExporter target="tbl" type="pdf" fileName="test_to_mark_results" ></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="Process"
+                                                     action="#{nationalController.toDispatchSamples()}"
+                                                     class="btn btn-warning">
+                                    </h:commandButton>
+
+                                </f:facet>
+
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" >
+                                <f:facet name="header" >
+                                    <h:outputLabel class="h6 fw-bold"  value="Dispatching" ></h:outputLabel>
+                                </f:facet>
+
+                                <h:outputLabel class="h6 fw-bold" value="Lab to Dispatch" ></h:outputLabel>
+                                <p:autoComplete value="#{nationalController.dispatchingLab}"
+                                                completeMethod="#{institutionController.completeLab}"
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                                </p:autoComplete>
+
+                                <h:commandButton value="Generate Excel"
+                                                 class="btn btn-success">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Dispatch"
+                                                 class="btn btn-warning w-100"
+                                                 action="#{nationalController.dispatchSelectedSamples()}" >
+                                </h:commandButton>
+
+
+                            </h:panelGrid>
+
+                        </h:panelGrid>
+
+                        <div>
+                            <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button"
+                                value="Columns" />
+                            <p:columnToggler datasource="tbl" trigger="toggler" />
+                        </div>
+
+                        <p:dataTable resizableColumns="true" multiViewState="true"
+                                     resizeMode="expand"
+                                     id="tbl"
+                                     value="#{nationalController.listedToDispatch}"
+                                     var="c" rowKey="#{c.id}"
+                                     rowIndexVar="n"
+
+                                     selection="#{nationalController.selectedToDispatch}"
+                                     rows="10"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                     >
+                            <p:column selectionMode="multiple" width="50" resizable="false"></p:column>
+
+
+                            <p:column headerText="No" width="50">
+                                <h:outputLabel value="#{n+1}" ></h:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Test No"  sortBy="#{c.encounterNumber}"
+                                      filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                                <p:inputText id="txtTubeNo" value="#{c.encounterNumber}" style="width: 95%;" >
+                                    <p:ajax event="blur" process="txtTubeNo"
+                                            listener="#{clientController.saveLabNo(c)}" >
+                                    </p:ajax>
+                                </p:inputText>
+                            </p:column>
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age" >
+                                <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Sex" >
+                                <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}" filterBy="#{c.client.person.address}" filterMatchMode="contains">
+                                <h:outputLabel value="#{c.client.person.address}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Phone"  sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                                <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}"
+                                      filterBy="#{c.pcrTestType.name}"
+                                      filterMatchMode="contains">
+                                <h:outputLabel value="#{c.pcrTestType.name}"></h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Entered at" sortBy="#{c.createdAt}"
+                                      filterMatchMode="contains">
+                                <h:outputLabel value="#{c.createdAt}">
+                                </h:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Current Lab"
+                                      sortBy="#{c.referalInstitution.name}"
+                                      filterBy="#{c.referalInstitution.name}"
+                                      filterMatchMode="contains">
+                                <h:outputLabel value="#{c.referalInstitution.name}" ></h:outputLabel>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

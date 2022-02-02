@@ -589,7 +589,7 @@ public class InstitutionController implements Serializable {
             items = null;
         }
         if (webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.National
-                || webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.National_Lab) {
+                || webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.Institutional) {
             items = institutionApplicationController.getInstitutions();
         }else{
             items = webUserController.findAutherizedInstitutions();

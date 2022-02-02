@@ -567,7 +567,7 @@ public class ApiResource {
     private JSONObject orderingCategoryList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
-        List<Item> ds = itemApplicationController.getCovidTestOrderingCategories();
+        List<Item> ds = itemApplicationController.getLetterReceiveCategories();
         for (Item a : ds) {
             JSONObject ja = new JSONObject();
             ja.put("ordering_category_id", a.getId());

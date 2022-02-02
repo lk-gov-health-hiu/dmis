@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:body>
+    <ui:composition template="/national/reports_index.xhtml">
+        <ui:define name="reports">
+
+            <h:panelGrid columns="1" styleClass="alignTop">
+                <f:facet name="header">
+                    <p:outputLabel value="Test Counts by Institution Types"></p:outputLabel>
+                </f:facet>
+
+                <h:form>
+                    <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center">
+                        <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
+                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.filter}" class="form-select">
+                                <f:selectItems value="#{nationalController.investigationFilters}" var="c"
+                                    itemLabel="#{c.name}" itemValue="#{c.code}"></f:selectItems>
+                            </h:selectOneMenu>
+                            <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
+                            <p:calendar value="#{nationalController.fromDate}" pattern="dd MMMM yyyy hh:mm a">
+                            </p:calendar>
+
+                            <h:outputLabel value="To" class="h6 fw-bold"></h:outputLabel>
+                            <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a">
+                            </p:calendar>
+
+                            <h:outputLabel value="Ordering Category" class="h6 fw-bold"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.orderingCategory}" class="form-select">
+                                <f:selectItem itemLabel="All"></f:selectItem>
+                                <f:selectItems value="#{nationalController.covidTestOrderingCategories}" var="c"
+                                    itemLabel="#{c.name}" itemValue="#{c}"></f:selectItems>
+                            </h:selectOneMenu>
+
+
+
+                            <h:outputLabel class="h6 fw-bold" value="Test"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.testType}" class="form-select">
+                                <f:selectItem itemLabel="All"></f:selectItem>
+                                <f:selectItems value="#{nationalController.covidTestTypes}" var="c"
+                                    itemLabel="#{c.name}" itemValue="#{c}"></f:selectItems>
+                            </h:selectOneMenu>
+
+                            <h:outputLabel class="h6 fw-bold" value="Result"></h:outputLabel>
+                            <h:selectOneMenu value="#{nationalController.result}" class="form-select">
+                                <f:selectItem itemLabel="All"></f:selectItem>
+                                <f:selectItems value="#{nationalController.resultTypes}" var="c" itemLabel="#{c.name}"
+                                    itemValue="#{c}"></f:selectItems>
+                            </h:selectOneMenu>
+
+
+                            <f:facet name="footer">
+                                <h:commandButton value="Generate Excel" class="btn btn-success w-25">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests"></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2">
+                                    <p:dataExporter type="pdf" target="tbl" fileName="tests" />
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning w-25"
+                                    action="#{nationalController.toCountOfTestsByInstitutionType()}">
+                                </h:commandButton>
+                            </f:facet>
+
+
+                        </h:panelGrid>
+                    </div>
+                    <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
+                        <p:dataTable reflow="true" id="tbl" value="#{nationalController.institutionTypeCounts}"
+                            rendered="true" rowIndexVar="n" var="c" paginator="true"
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                            rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column colspan="2"
+                                        headerText="#{webUserController.loggedUser.institution.name} - Test Counts By Institution Type - #{webUserController.parseDate(nationalController.fromDate)} to #{webUserController.parseDate(nationalController.toDate)}">
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column headerText="Institution Type" sortBy="#{c.type.label}" filterBy="#{c.type.label}"
+                                    filterMatchMode="contains"></p:column>
+                                    <p:column headerText="Count" sortBy="#{c.count}"></p:column>
+                                </p:row>
+                            </p:columnGroup>
+                            <p:column>
+                                <h:commandLink value="#{c.type.label}"
+                                    action="#{nationalController.toCountOfTestsByOrderedInstitution()}">
+                                    <f:setPropertyActionListener value="#{c.type}"
+                                        target="#{nationalController.institutionType}">
+                                    </f:setPropertyActionListener>
+                                </h:commandLink>
+                            </p:column>
+                            <p:column>
+                                <h:commandLink value="#{c.count}"
+                                    action="#{nationalController.toCountOfTestsByOrderedInstitution()}">
+                                    <f:setPropertyActionListener value="#{c.type}"
+                                        target="#{nationalController.institutionType}">
+                                    </f:setPropertyActionListener>
+                                </h:commandLink>
+                            </p:column>
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column colspan="2"
+                                        footerText="Report generated by #{webUserController.loggedUser.person.nameWithTitle} at #{webUserController.loggedUser.institution.name}">
+                                    </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:form>
+            </h:panelGrid>
+        </ui:define>
+
+    </ui:composition>
+
+</h:body>
+
+</html>

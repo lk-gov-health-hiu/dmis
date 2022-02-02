@@ -82,7 +82,7 @@ public class WebUserController implements Serializable {
     @Inject
     private ItemController itemController;
     @Inject
-    private DocumentController encounterController;
+    private FileController encounterController;
     @Inject
     ExcelReportController reportController;
     @Inject
@@ -462,59 +462,16 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("No Role for logged user");
         }
         String url = "";
-        switch (loggedUser.getWebUserRole()) {
-            case Pdhs:
+        switch (loggedUser.getWebUserRoleLevel()) {
+            case Institutional:
                 url = "/provincial/administration/index";
                 break;
-            case Rdhs:
-            case Re:
+            case National:
                 url = "/regional/administration/index";
                 break;
             default:
         }
         return url;
-    }
-
-    public void toProcedureRoom() {
-        String insList = null;
-        String baseUrl = "http://localhost:8080/ProcedureRoomService/resources/redirect";
-        String urlVals = "?API_KEY=EF16A5D4EF8AA6AA0580AF1390CF0600";
-        urlVals += "&UserId=" + loggedUser.getId();
-        urlVals += "&UserName=" + loggedUser.getName();
-        urlVals += "&UserRole=" + loggedUser.getWebUserRole();
-
-        for (Institution ins_ : institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution(), InstitutionType.Procedure_Room)) {
-            if (ins_.getId() != null) {
-                if (insList == null) {
-                    insList = ins_.getId().toString();
-                } else {
-                    insList += "A" + ins_.getId().toString();
-                }
-            }
-        }
-        urlVals += "&insList=" + insList;
-        urlVals += "&userInstitution=" + loggedUser.getInstitution().getId();
-
-        Client client = Client.create();
-        WebResource webResource1 = client.resource(baseUrl + urlVals);
-        com.sun.jersey.api.client.ClientResponse cr = webResource1.accept("text/plain").get(com.sun.jersey.api.client.ClientResponse.class);
-        String outpt = cr.getEntity(String.class);
-
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        try {
-            externalContext.redirect(outpt);
-        } catch (IOException ex) {
-            Logger.getLogger(WebUserController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public String toManageAllUsers() {
-        items = webUserApplicationController.getItems();
-        return "/webUser/manage_users";
-    }
-
-    public String toManageUserIndexForSystemAdmin() {
-        return "/webUser/index";
     }
 
     public void preparePrivileges(TreeNode allPrevs) {
@@ -787,7 +744,7 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Passwords are not matching. Please retry.");
             return "";
         }
-        current.setWebUserRole(WebUserRole.Pdhs);
+        current.setWebUserRole(WebUserRole.Institutional_Administrator);
         try {
             getFacade().create(current);
         } catch (Exception e) {
@@ -884,93 +841,6 @@ public class WebUserController implements Serializable {
 
     }
 
-    private void fillAreasForMe() {
-        if (loggedUser == null) {
-            return;
-        }
-        if (loggedUser.getInstitution() == null) {
-            return;
-        }
-        if (loggedUser.getWebUserRole() == null) {
-            return;
-        }
-        if (loggedUser.getArea() == null) {
-            switch (loggedUser.getWebUserRole()) {
-                case ChiefEpidemiologist:
-                case Epidemiologist:
-                case Super_User:
-                case System_Administrator:
-                case User:
-                case Lab_National:
-                    loggedUser.setArea(areaController.getNationalArea());
-                    break;
-                case Moh:
-                case Amoh:
-                case Phi:
-                case Phm:
-                    loggedUser.setArea(loggedUser.getInstitution().getMohArea());
-                    break;
-                case Rdhs:
-                case Re:
-                    loggedUser.setArea(loggedUser.getInstitution().getRdhsArea());
-                    break;
-                case Pdhs:
-                    loggedUser.setArea(loggedUser.getInstitution().getPdhsArea());
-                    break;
-                case Client:
-                case Hospital_Admin:
-                case Hospital_User:
-                case Lab_Consultant:
-                case Lab_Mlt:
-                case Lab_Mo:
-                case Lab_User:
-                case Nurse:
-                default:
-            }
-            getFacade().edit(loggedUser);
-        }
-        switch (loggedUser.getWebUserRole()) {
-            case ChiefEpidemiologist:
-            case Epidemiologist:
-            case Super_User:
-            case System_Administrator:
-            case User:
-            case Lab_National:
-                areasForMe = areaApplicationController.getAllAreas();
-                break;
-            case Moh:
-            case Amoh:
-            case Phi:
-            case Phm:
-            case MohStaff:
-                areasForMe = areaApplicationController.getAllChildren(loggedUser.getInstitution().getMohArea());
-                break;
-            case Rdhs:
-            case Re:
-            case Rdhs_Staff:
-            case Regional_Admin:
-                areasForMe = areaApplicationController.getAllChildren(loggedUser.getInstitution().getRdhsArea());
-                loggableMohAreas = areaApplicationController.getMohAreasOfAnRdhs(loggedUser.getInstitution().getRdhsArea());
-                break;
-            case Pdhs:
-            case Provincial_Admin:
-            case Pdhs_Staff:
-                areasForMe = areaApplicationController.getAllChildren(loggedUser.getInstitution().getPdhsArea());
-                break;
-            case Client:
-            case Hospital_Admin:
-            case Hospital_User:
-            case Lab_Consultant:
-            case Lab_Mlt:
-            case Lab_Mo:
-            case Lab_User:
-            case Nurse:
-            case Lab_Admin:
-
-            default:
-        }
-    }
-
     public String toChangeLoggedInstitution() {
         return "/webUser/change_logged_institute";
     }
@@ -984,7 +854,7 @@ public class WebUserController implements Serializable {
         usersForMyInstitute = new ArrayList<>();
         List<WebUser> tus = webUserApplicationController.getItems();
         for (WebUser wu : tus) {
-            if(wu.getInstitution()!=null && wu.getInstitution().equals(getLoggedInstitution())){
+            if (wu.getInstitution() != null && wu.getInstitution().equals(getLoggedInstitution())) {
                 usersForMyInstitute.add(wu);
             }
         }
@@ -1084,380 +954,66 @@ public class WebUserController implements Serializable {
             return wups;
         }
         switch (role) {
-            case Client:
-                break;
-            case ChiefEpidemiologist:
+            case Institutional_Administrator:
+                wups.add(Privilege.Manage_Institution_Users);
+                wups.add(Privilege.Manage_Authorised_Institutions);
+            case Institutional_Super_User:
+
+            case Institutional_User:
                 //Menu
-                wups.add(Privilege.Client_Management);
-                wups.add(Privilege.Encounter_Management);
-                wups.add(Privilege.Lab_Management);
+                wups.add(Privilege.File_Management);
+                wups.add(Privilege.Letter_Management);
+                wups.add(Privilege.Finance_Management);
                 wups.add(Privilege.User);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
+                wups.add(Privilege.Search_File);
+                wups.add(Privilege.Retire_File);
 //                Motinoring & Evaluation
                 wups.add(Privilege.Monitoring_and_evaluation);
                 wups.add(Privilege.Monitoring_and_evaluation_reports);
                 wups.add(Privilege.View_individual_data);
                 wups.add(Privilege.View_aggragate_date);
 
+                /**
+                 *
+                 *
+                 * File_Management Letter_Management HR_Management
+                 * Inventory_Management Finance_Management Audit_Management User
+                 *
+                 * //File Management Add_File Edit_File Transfer_File
+                 * Receive_File Search_File Retire_File
+                 *
+                 * //Letter Management Add_Letter("Add Letter"),
+                 * Edit_Letter("Edit Letter"), Assign_Letter("Assign Letter"),
+                 * Transfer_Letter("Transfer Letter"), Receive_Letter("Receive
+                 * Letter"), Retire_Letter("Retire Letter"),
+                 * Search_Letter("Search Letter"), Add_Actions_To_Letter("Add
+                 * Actions"), Remove_Actions_To_Letter("Remove Actions"),
+                 *
+                 *
+                 */
                 break;
-            case Nurse:
+            case System_Administrator:
                 //Menu
-                wups.add(Privilege.Client_Management);
-                wups.add(Privilege.Encounter_Management);
-                wups.add(Privilege.Lab_Management);
-                wups.add(Privilege.User);
-                wups.add(Privilege.Add_Client);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Areas);
-                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Areas);
-                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Institutions);
-                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Institutions);
+                wups.add(Privilege.Manage_Users);
+                
                 break;
-            case Epidemiologist:
-                //Menu
-                wups.add(Privilege.Client_Management);
-                wups.add(Privilege.Encounter_Management);
-                wups.add(Privilege.Appointment_Management);
-                wups.add(Privilege.Lab_Management);
-                wups.add(Privilege.Pharmacy_Management);
-                wups.add(Privilege.User);
-                //Client Management
-                wups.add(Privilege.Add_Client);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Areas);
-                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Areas);
-                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Institutions);
-                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Institutions);
-                //M&E
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
+            case Super_User:
+
                 break;
             case User:
 
                 wups.add(Privilege.Monitoring_and_evaluation);
                 wups.add(Privilege.Monitoring_and_evaluation_reports);
                 wups.add(Privilege.View_aggragate_date);
-
-            case Re:
-
-                //Menu
+                wups.add(Privilege.File_Management);
+                wups.add(Privilege.Letter_Management);
+                wups.add(Privilege.Finance_Management);
                 wups.add(Privilege.User);
-                wups.add(Privilege.Institution_Administration);
-                //Institution Administration
-                wups.add(Privilege.Manage_Institution_Users);
-                wups.add(Privilege.Manage_Institution_Metadata);
-                wups.add(Privilege.Manage_Authorised_Areas);
-                wups.add(Privilege.Manage_Authorised_Institutions);
-                //Monitoring & Evaluation
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-
-                break;
-
-            case Rdhs:
-                //Menu
-                wups.add(Privilege.User);
-                wups.add(Privilege.Institution_Administration);
-                //Institution Administration
-                wups.add(Privilege.Manage_Authorised_Areas);
-                wups.add(Privilege.Manage_Authorised_Institutions);
-                //Monitoring & Evaluation
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                break;
-            case Pdhs:
-                //Menu
-                wups.add(Privilege.Client_Management);
-                wups.add(Privilege.Encounter_Management);
-                wups.add(Privilege.User);
-                //Institution Administration
-                wups.add(Privilege.Manage_Authorised_Areas);
-                wups.add(Privilege.Manage_Authorised_Institutions);
-                //Client Management
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                //Monitoring & Evaluation
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                break;
-            case Phm:
-                wups.add(Privilege.User);
-                //Monitoring & Evaluation
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                break;
-            case Phi:
-                wups.add(Privilege.User);
-                //Monitoring & Evaluation
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                break;
-            case Moh:
-            case Amoh:
-                wups.add(Privilege.Client_Management);
-                wups.add(Privilege.Add_Client);
-                wups.add(Privilege.Add_Tests);
-                wups.add(Privilege.Mark_Tests);
-                wups.add(Privilege.Submit_Returns);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.User);
-                //Monitoring & Evaluation
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-
-                break;
-            case Lab_National:
-            case Super_User:
-                wups.add(Privilege.User);
-                wups.add(Privilege.System_Administration);
-                //System Administration
-                wups.add(Privilege.Manage_Metadata);
-                wups.add(Privilege.Manage_Area);
-                wups.add(Privilege.Manage_Institutions);
-                wups.add(Privilege.Manage_Forms);
-                //Monitoring & Evaluation
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                break;
-            case System_Administrator:
-                //Menu
-                wups.add(Privilege.Client_Management);
-                wups.add(Privilege.Encounter_Management);
-                wups.add(Privilege.Lab_Management);
-                wups.add(Privilege.User);
-                wups.add(Privilege.Institution_Administration);
-                wups.add(Privilege.System_Administration);
-                //Client Management
-                wups.add(Privilege.Add_Client);
-                wups.add(Privilege.Add_Tests);
-                wups.add(Privilege.Mark_Tests);
-                wups.add(Privilege.Submit_Returns);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                //Institution Administration
-                wups.add(Privilege.Manage_Institution_Users);
-                wups.add(Privilege.Manage_Authorised_Areas);
-                wups.add(Privilege.Manage_Authorised_Institutions);
-                //System Administration
-                wups.add(Privilege.Manage_Users);
-                wups.add(Privilege.Manage_Metadata);
-                wups.add(Privilege.Manage_Area);
-                wups.add(Privilege.Manage_Institutions);
-                wups.add(Privilege.Manage_Forms);
-                //Monitoring & Evaluation
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                break;
-            case Lab_Admin:
-            case Lab_Consultant:
-            case Lab_Mo:
-                wups.add(Privilege.Manage_Users);
-            case Lab_Mlt:
-                wups.add(Privilege.Lab_Reports);
-                wups.add(Privilege.Confirm_Results);
-            case Lab_User:
-                wups.add(Privilege.Lab_Management);
-                wups.add(Privilege.View_Orders);
-                wups.add(Privilege.Enter_Results);
-                wups.add(Privilege.Receive_Samples);
-                wups.add(Privilege.Review_Results);
-                wups.add(Privilege.Print_Results);
-                break;
-            case Hospital_Admin:
-                wups.add(Privilege.Add_Client);
-                wups.add(Privilege.Add_Tests);
-                wups.add(Privilege.Mark_Tests);
-                wups.add(Privilege.Manage_Users);
-                wups.add(Privilege.Lab_Reports);
-                wups.add(Privilege.Confirm_Results);
-                wups.add(Privilege.Lab_Management);
-                wups.add(Privilege.View_Orders);
-                wups.add(Privilege.Enter_Results);
-                wups.add(Privilege.Receive_Samples);
-                wups.add(Privilege.Review_Results);
-                wups.add(Privilege.Print_Results);
-
-                wups.add(Privilege.Client_Management);
-                wups.add(Privilege.Encounter_Management);
-                wups.add(Privilege.Sample_Management);
-                wups.add(Privilege.Lab_Management);
-                wups.add(Privilege.Institution_Administration);
-                wups.add(Privilege.Add_Client);
-                wups.add(Privilege.Add_Tests);
-                wups.add(Privilege.Mark_Tests);
-                wups.add(Privilege.Submit_Returns);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.Manage_Institution_Users);
-                wups.add(Privilege.Manage_Users);
-                wups.add(Privilege.Manage_Metadata);
-                wups.add(Privilege.Manage_Area);
-                wups.add(Privilege.Manage_Institutions);
-                wups.add(Privilege.Manage_Forms);
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                wups.add(Privilege.Dispatch_Samples);
-                wups.add(Privilege.Divert_Samples);
-                wups.add(Privilege.View_Orders);
-                wups.add(Privilege.Receive_Samples);
-                wups.add(Privilege.Enter_Results);
-                wups.add(Privilege.Review_Results);
-                wups.add(Privilege.Confirm_Results);
-                wups.add(Privilege.Print_Results);
-                wups.add(Privilege.Lab_Reports);
-
-                break;
-            case Hospital_User:
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                break;
-            case MohStaff:
-                wups.add(Privilege.Client_Management);
-                wups.add(Privilege.Sample_Management);
-                wups.add(Privilege.Add_Client);
-                wups.add(Privilege.Add_Tests);
-                wups.add(Privilege.Mark_Tests);
-                wups.add(Privilege.Submit_Returns);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                wups.add(Privilege.Dispatch_Samples);
-                wups.add(Privilege.Divert_Samples);
-                break;
-            case Pdhs_Staff:
-                wups.add(Privilege.Sample_Management);
-                wups.add(Privilege.User);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                wups.add(Privilege.Dispatch_Samples);
-                wups.add(Privilege.Divert_Samples);
-                break;
-            case Provincial_Admin:
-                wups.add(Privilege.Sample_Management);
-                wups.add(Privilege.User);
-                wups.add(Privilege.Institution_Administration);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.Manage_Institution_Users);
-                wups.add(Privilege.Manage_Authorised_Areas);
-                wups.add(Privilege.Manage_Authorised_Institutions);
-                wups.add(Privilege.Manage_Users);
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                wups.add(Privilege.Dispatch_Samples);
-                wups.add(Privilege.Divert_Samples);
-                break;
-            case Rdhs_Staff:
-                wups.add(Privilege.Sample_Management);
-                wups.add(Privilege.User);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                wups.add(Privilege.Dispatch_Samples);
-                wups.add(Privilege.Divert_Samples);
-                break;
-            case Regional_Admin:
-                wups.add(Privilege.Sample_Management);
-                wups.add(Privilege.User);
-                wups.add(Privilege.Institution_Administration);
-                wups.add(Privilege.Search_any_Client_by_IDs);
-                wups.add(Privilege.Search_any_Client_by_Details);
-                wups.add(Privilege.Manage_Institution_Users);
-                wups.add(Privilege.Manage_Authorised_Areas);
-                wups.add(Privilege.Manage_Authorised_Institutions);
-                wups.add(Privilege.Manage_Users);
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_individual_data);
-                wups.add(Privilege.View_aggragate_date);
-                wups.add(Privilege.Dispatch_Samples);
-                wups.add(Privilege.Divert_Samples);
-                break;
+                wups.add(Privilege.Add_File);
+                wups.add(Privilege.Search_File);
+                wups.add(Privilege.Retire_File);
+                
         }
-
-//         wups.add(Privilege.Lab_Management);
-//        wups.add(Privilege.Client_Management);
-//        wups.add(Privilege.Encounter_Management);
-//        wups.add(Privilege.Appointment_Management);
-//        wups.add(Privilege.Sample_Management);
-//        wups.add(Privilege.Lab_Management);
-//
-//        wups.add(Privilege.Pharmacy_Management);
-//        wups.add(Privilege.User);
-//        wups.add(Privilege.Institution_Administration);
-//        wups.add(Privilege.System_Administration);
-//
-//        wups.add(Privilege.Add_Client);
-//        wups.add(Privilege.Add_Tests);
-//        wups.add(Privilege.Mark_Tests);
-//        wups.add(Privilege.Submit_Returns);
-//        wups.add(Privilege.Search_any_Client_by_IDs);
-//        wups.add(Privilege.Search_any_Client_by_Details);
-//
-//        wups.add(Privilege.Manage_Institution_Users);
-//        wups.add(Privilege.Manage_Authorised_Areas);
-//        wups.add(Privilege.Manage_Authorised_Institutions);
-//
-//        wups.add(Privilege.Manage_Users);
-//        wups.add(Privilege.Manage_Metadata);
-//        wups.add(Privilege.Manage_Area);
-//        wups.add(Privilege.Manage_Institutions);
-//        wups.add(Privilege.Manage_Forms);
-//
-//        wups.add(Privilege.Monitoring_and_evaluation);
-//        wups.add(Privilege.Monitoring_and_evaluation_reports);
-//
-//        wups.add(Privilege.View_individual_data);
-//        wups.add(Privilege.View_aggragate_date);
-//
-//        wups.add(Privilege.Dispatch_Samples);
-//        wups.add(Privilege.Divert_Samples);
-//
-//        wups.add(Privilege.View_Orders);
-//        wups.add(Privilege.Receive_Samples);
-//        wups.add(Privilege.Enter_Results);
-//        wups.add(Privilege.Review_Results);
-//        wups.add(Privilege.Confirm_Results);
-//        wups.add(Privilege.Print_Results);
-//        wups.add(Privilege.Lab_Reports);
         return wups;
     }
 
@@ -2113,104 +1669,16 @@ public class WebUserController implements Serializable {
         return rs;
     }
 
-    public WebUserRole[] getWebUserRolesForHospitalAdmin() {
+    public WebUserRole[] getWebUserRolesForInstitutionAdmin() {
         List<WebUserRole> urs = new ArrayList<>();
-        urs.add(WebUserRole.Hospital_Admin);
-        urs.add(WebUserRole.Hospital_User);
-        urs.add(WebUserRole.Lab_Consultant);
-        urs.add(WebUserRole.Lab_Admin);
-        urs.add(WebUserRole.Lab_Mlt);
-        urs.add(WebUserRole.Lab_Mo);
-        urs.add(WebUserRole.Nurse);
+        urs.add(WebUserRole.Institutional_Administrator);
+        urs.add(WebUserRole.Institutional_Super_User);
+        urs.add(WebUserRole.Institutional_User);
         WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
         return rs;
     }
 
-    public WebUserRole[] getWebUserRolesForPd() {
-        List<WebUserRole> urs = new ArrayList<>();
-        urs.add(WebUserRole.Hospital_Admin);
-        urs.add(WebUserRole.Pdhs);
-        urs.add(WebUserRole.Provincial_Admin);
-        urs.add(WebUserRole.Pdhs_Staff);
-        urs.add(WebUserRole.Rdhs);
-        urs.add(WebUserRole.Regional_Admin);
-        urs.add(WebUserRole.Re);
-        urs.add(WebUserRole.Rdhs_Staff);
-        urs.add(WebUserRole.Moh);
-        urs.add(WebUserRole.Amoh);
-        urs.add(WebUserRole.Sphi);
-        urs.add(WebUserRole.Phns);
-        urs.add(WebUserRole.Sphm);
-        urs.add(WebUserRole.Phi);
-        urs.add(WebUserRole.Phm);
-        urs.add(WebUserRole.MohStaff);
-        urs.add(WebUserRole.Hospital_Admin);
-        urs.add(WebUserRole.Hospital_User);
-        urs.add(WebUserRole.Doctor);
-        urs.add(WebUserRole.Nurse);
-        urs.add(WebUserRole.Lab_Admin);
-        urs.add(WebUserRole.Lab_Consultant);
-        urs.add(WebUserRole.Lab_Mo);
-        urs.add(WebUserRole.Lab_Mlt);
-        urs.add(WebUserRole.Lab_User);
-        WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
-        return rs;
-    }
-
-    public WebUserRole[] getWebUserRolesForRd() {
-        List<WebUserRole> urs = new ArrayList<>();
-        urs.add(WebUserRole.Hospital_Admin);
-        urs.add(WebUserRole.Rdhs);
-        urs.add(WebUserRole.Regional_Admin);
-        urs.add(WebUserRole.Re);
-        urs.add(WebUserRole.Rdhs_Staff);
-        urs.add(WebUserRole.Moh);
-        urs.add(WebUserRole.Amoh);
-        urs.add(WebUserRole.Sphi);
-        urs.add(WebUserRole.Phns);
-        urs.add(WebUserRole.Sphm);
-        urs.add(WebUserRole.Phi);
-        urs.add(WebUserRole.Phm);
-        urs.add(WebUserRole.MohStaff);
-        urs.add(WebUserRole.Hospital_Admin);
-        urs.add(WebUserRole.Hospital_User);
-        urs.add(WebUserRole.Doctor);
-        urs.add(WebUserRole.Nurse);
-        urs.add(WebUserRole.Lab_Admin);
-        urs.add(WebUserRole.Lab_Consultant);
-        urs.add(WebUserRole.Lab_Mo);
-        urs.add(WebUserRole.Lab_Mlt);
-        urs.add(WebUserRole.Lab_User);
-        WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
-        return rs;
-    }
-
-    public WebUserRole[] getWebUserRolesForMoh() {
-        List<WebUserRole> urs = new ArrayList<>();
-        urs.add(WebUserRole.Moh);
-        urs.add(WebUserRole.Amoh);
-        urs.add(WebUserRole.Sphi);
-        urs.add(WebUserRole.Phns);
-        urs.add(WebUserRole.Sphm);
-        urs.add(WebUserRole.Phi);
-        urs.add(WebUserRole.Phm);
-        urs.add(WebUserRole.MohStaff);
-        WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
-        return rs;
-    }
-
-    public WebUserRole[] getWebUserRolesForLabAdmin() {
-        List<WebUserRole> urs = new ArrayList<>();
-        urs.add(WebUserRole.Hospital_Admin);
-        urs.add(WebUserRole.Hospital_Admin);
-        urs.add(WebUserRole.Hospital_User);
-        urs.add(WebUserRole.Lab_Consultant);
-        urs.add(WebUserRole.Lab_Mlt);
-        urs.add(WebUserRole.Lab_Mo);
-        urs.add(WebUserRole.Nurse);
-        WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
-        return rs;
-    }
+   
 
     private List<WebUserRole> findManagableRoles(WebUserRole ur) {
         List<WebUserRole> urs = new ArrayList<>();
@@ -2222,73 +1690,18 @@ public class WebUserController implements Serializable {
                 urs.addAll(Arrays.asList(WebUserRole.values()));
                 urs.remove(WebUserRole.System_Administrator);
                 break;
-            case ChiefEpidemiologist:
-                urs.add(WebUserRole.ChiefEpidemiologist);
-                urs.add(WebUserRole.Epidemiologist);
+            case Institutional_Administrator:
+                urs.add(WebUserRole.Institutional_Administrator);
+                urs.add(WebUserRole.Institutional_Super_User);
+                urs.add(WebUserRole.Institutional_User);
                 break;
-            case Epidemiologist:
-                urs.add(WebUserRole.Epidemiologist);
+            case Institutional_Super_User:
+                urs.add(WebUserRole.Institutional_Super_User);
+                urs.add(WebUserRole.Institutional_User);
                 break;
-            case Hospital_Admin:
-                urs.add(WebUserRole.Hospital_Admin);
-                urs.add(WebUserRole.Hospital_User);
+            case Institutional_User:
+                urs.add(WebUserRole.Institutional_User);
                 break;
-            case Hospital_User:
-                urs.add(WebUserRole.Hospital_User);
-                break;
-            case Moh:
-            case Amoh:
-                urs.add(WebUserRole.Moh);
-                urs.add(WebUserRole.Amoh);
-                urs.add(WebUserRole.Phi);
-                urs.add(WebUserRole.Phm);
-                break;
-            case Pdhs:
-                urs.add(WebUserRole.Pdhs);
-                urs.add(WebUserRole.Re);
-                urs.add(WebUserRole.Rdhs);
-                urs.add(WebUserRole.Moh);
-                urs.add(WebUserRole.Amoh);
-                urs.add(WebUserRole.Phi);
-                urs.add(WebUserRole.Phm);
-                break;
-            case Rdhs:
-                urs.add(WebUserRole.Pdhs);
-                urs.add(WebUserRole.Rdhs);
-                urs.add(WebUserRole.Re);
-                urs.add(WebUserRole.Moh);
-                urs.add(WebUserRole.Amoh);
-                urs.add(WebUserRole.Phi);
-                urs.add(WebUserRole.Phm);
-                break;
-            case Re:
-                urs.add(WebUserRole.Re);
-                urs.add(WebUserRole.Moh);
-                urs.add(WebUserRole.Amoh);
-                urs.add(WebUserRole.Phi);
-                urs.add(WebUserRole.Phm);
-                break;
-            case Lab_Consultant:
-                urs.add(WebUserRole.Lab_Consultant);
-                urs.add(WebUserRole.Lab_Mo);
-                urs.add(WebUserRole.Lab_Mlt);
-                urs.add(WebUserRole.Lab_User);
-                break;
-            case Lab_Mo:
-                urs.add(WebUserRole.Lab_Mo);
-                urs.add(WebUserRole.Lab_Mlt);
-                urs.add(WebUserRole.Lab_User);
-                break;
-
-            case Lab_Mlt:
-                urs.add(WebUserRole.Lab_Mlt);
-                urs.add(WebUserRole.Lab_User);
-                break;
-            case Lab_User:
-            case Phi:
-            case Phm:
-            case Client:
-            case Nurse:
             case User:
                 urs.add(ur);
         }
@@ -2707,7 +2120,7 @@ public class WebUserController implements Serializable {
         this.reportTabIndex = reportTabIndex;
     }
 
-    public DocumentController getEncounterController() {
+    public FileController getEncounterController() {
         return encounterController;
     }
 

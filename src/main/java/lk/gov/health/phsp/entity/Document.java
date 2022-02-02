@@ -61,6 +61,9 @@ public class Document implements Serializable {
 
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date documentDate;
+    
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date receivedDate;
 
     @Enumerated(EnumType.STRING)
     private DocumentType documentType;
@@ -78,10 +81,15 @@ public class Document implements Serializable {
     private WebUser owner;
     
     @ManyToOne
+    private Item receivedAs;
+    
+    @ManyToOne
+    private Institution fromInstitution;
+
+    @ManyToOne
     private Institution currentInstitution;
     @ManyToOne
-    private WebUser currentOwner; 
-
+    private WebUser currentOwner;
 
     @ManyToOne
     private WebUser createdBy;
@@ -116,6 +124,13 @@ public class Document implements Serializable {
     private WebUser completedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
+
+    public String getIdString() {
+        if (id == null) {
+            return "";
+        }
+        return id + "";
+    }
 
     public Long getId() {
         return id;
@@ -366,6 +381,30 @@ public class Document implements Serializable {
         this.currentOwner = currentOwner;
     }
 
+    public Institution getFromInstitution() {
+        return fromInstitution;
+    }
+
+    public void setFromInstitution(Institution fromInstitution) {
+        this.fromInstitution = fromInstitution;
+    }
+
+    public Date getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(Date receivedDate) {
+        this.receivedDate = receivedDate;
+    }
+
+    public Item getReceivedAs() {
+        return receivedAs;
+    }
+
+    public void setReceivedAs(Item receivedAs) {
+        this.receivedAs = receivedAs;
+    }
     
     
+
 }

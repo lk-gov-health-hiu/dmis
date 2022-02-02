@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="/national/reports_index.xhtml">
+            <ui:define name="reports">
+
+                <p:panelGrid columns="1" styleClass="alignTop bg-white w-100 border border-light" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Institution-vice Peformance Report" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form id="form" >
+                        <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
+                            <p:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded border border-light">
+                                <p:outputLabel class="h6 fw-bold" value="From" ></p:outputLabel>
+                                <p:datePicker value="#{nationalController.fromDate}" 
+                                              pattern="dd MMMM yyyy hh:mm">
+                                </p:datePicker>
+                                <p:outputLabel class="h6 fw-bold" value="To" ></p:outputLabel>
+                                <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm"></p:calendar>
+
+                                <p:outputLabel class="h6 fw-bold" value="Ordering Category" ></p:outputLabel>
+                                <p:selectOneMenu class="form-control" value="#{nationalController.orderingCategory}" >
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{nationalController.covidTestOrderingCategories}" 
+                                                   var="c" itemLabel="#{c.name}"
+                                                   itemValue="#{c}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel class="h6 fw-bold" value="RDHS" ></p:outputLabel>
+                                <p:selectOneMenu class="form-control w-100" value="#{nationalController.rdhs}" filterMatchMode="contains">
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{areaApplicationController.allRdhsAreas}"
+                                                   var="i" itemLabel="#{i.name}" itemValue="#{i}" >
+                                    </f:selectItems>
+                                </p:selectOneMenu>
+
+                                <f:facet name="footer">
+                                <h:commandButton class="btn btn-success w-25" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="institution vice peformance report" ></p:dataExporter>
+                                </h:commandButton>
+                                    <h:commandButton value="Generate PDF" class="btn btn-danger w-25 mx-2 w-25">
+                                        <p:dataExporter type="pdf" target="tbl" fileName="institution vice peformance report"/>
+                                    </h:commandButton>
+                                <h:commandButton class="btn btn-warning w-25" value="Process" 
+                                                 action="#{nationalController.processInstitutionVicePeformanceReport()}" >
+                                </h:commandButton>
+</f:facet>
+
+                            </p:panelGrid>
+                        </div>
+                        <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
+                            <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button" value="Columns" />
+                            <p:columnToggler datasource="tbl" trigger="toggler"/>
+                            <p:dataTable reflow="true" resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" 
+                                         value="#{nationalController.institutionPeformances}" rendered="true"
+
+                                         filteredValue="#{nationalController.institutionPeformancesFiltered}"
+
+                                         rowIndexVar="n"
+                                         var="c" 
+                                         paginator="true" 
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                                         rows="10"
+                                         >
+                                <p:ajax event="filter" process="tbl" update=":form:tbl:sumR :form:tbl:sumP :form:tbl:sumRp :form:tbl:sumPp" 
+                                        listener="#{nationalController.generateFilteredInstitutionPeformanceSummery}" />
+                                <p:column headerText="Institution" sortBy="#{c.institution.name}"
+                                          filterBy="#{c.institution.name}" filterMatchMode="contains">
+                                    <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Institution Type" sortBy="#{c.institution.institutionType.label}"
+                                          filterBy="#{c.institution.institutionType.label}" filterMatchMode="contains">
+                                    <p:outputLabel value="#{c.institution.institutionType.label}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="PCR Orders"  sortBy="#{c.pcrs}">
+                                    <p:outputLabel value="#{c.pcrs}" ></p:outputLabel>
+                                    <f:facet name="footer" >
+                                        <h:outputText id="sumP"
+                                                      styleClass="footerToUpdate"
+                                                      value="#{nationalController.institutionPeformancesSummery.pcrs}" />
+                                    </f:facet>
+                                </p:column>
+                                <p:column headerText="RAT Orders"  sortBy="#{c.pcrs}">
+                                    <p:outputLabel value="#{c.rats}" ></p:outputLabel>
+                                    <f:facet name="footer" >
+                                        <h:outputText id="sumR" styleClass="footerToUpdate" value="#{nationalController.institutionPeformancesSummery.rats}" />
+                                    </f:facet>
+                                </p:column>
+                                <p:column headerText="PCR Positives"  sortBy="#{c.pcrs}">
+                                    <p:outputLabel value="#{c.pcrPositives}" ></p:outputLabel>
+                                    <f:facet name="footer" >
+                                        <h:outputText id="sumPp" styleClass="footerToUpdate" value="#{nationalController.institutionPeformancesSummery.pcrPositives}" />
+                                    </f:facet>
+                                </p:column>
+                                <p:column headerText="RAT Positives"  sortBy="#{c.pcrs}">
+                                    <p:outputLabel value="#{c.ratPositives}" ></p:outputLabel>
+                                    <f:facet name="footer" >
+                                        <h:outputText id="sumRp" styleClass="footerToUpdate" value="#{nationalController.institutionPeformancesSummery.ratPositives}" />
+                                    </f:facet>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

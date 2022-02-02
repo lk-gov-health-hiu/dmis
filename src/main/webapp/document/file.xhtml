@@ -16,7 +16,7 @@
                                 <div class="col md-3">
                                     <h:outputLabel for="name"  class="form-label fw-bold">File Number 
                                         <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                    <h:inputText id="name"  value="#{documentController.selected.documentName}" class="form-control"
+                                    <h:inputText id="name"  value="#{fileController.selected.documentName}" class="form-control"
                                                  required="true" requiredMessage="Need a Name">
                                     </h:inputText>
                                     <h:message class="text-danger small" for="name"></h:message>
@@ -26,7 +26,7 @@
                                 <div class="col md-3">
                                     <h:outputLabel for="number"  class="form-label fw-bold">File Title 
                                         <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                    <h:inputText id="number"  value="#{documentController.selected.documentNumber}" class="form-control"
+                                    <h:inputText id="number"  value="#{fileController.selected.documentNumber}" class="form-control"
                                                  required="true" requiredMessage="Need a Number">
                                     </h:inputText>
                                     <h:message class="text-danger small" for="number"></h:message>
@@ -36,7 +36,7 @@
                                 <div class="col md-3">
                                     <h:outputLabel for="date"  class="form-label fw-bold">File Title 
                                         <small class="px-2 text-muted">Required</small></h:outputLabel>
-                                    <p:datePicker id="date"  value="#{documentController.selected.documentDate}" class="form-control"
+                                    <p:datePicker id="date"  value="#{fileController.selected.documentDate}" class="form-control"
                                                   required="true" requiredMessage="Need a Number"
                                                   pattern="dd/MM/yyyy"
                                                   >
@@ -48,7 +48,7 @@
                                 <div class="col md-3">
                                     <h:outputLabel for="comments"  class="form-label fw-bold">File Details 
                                     </h:outputLabel>
-                                    <h:inputTextarea id="comments"  value="#{documentController.selected.comments}" class="form-control"
+                                    <h:inputTextarea id="comments"  value="#{fileController.selected.comments}" class="form-control"
                                                      >
                                     </h:inputTextarea>
                                 </div>
@@ -59,7 +59,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h:commandButton tabindex="10" class="btn btn-success fw-bold"
-                                                     action="#{documentController.saveAndViewFile()}" value="SAVE">
+                                                     action="#{fileController.saveAndViewFile()}" value="SAVE">
                                     </h:commandButton>
                                 </div>
                             </div>

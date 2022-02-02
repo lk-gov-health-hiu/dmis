@@ -353,77 +353,6 @@ public class WebUser implements Serializable {
         this.code = code;
     }
 
-    public boolean isMohDashboard() {
-        if (getWebUserRoleLevel() == null) {
-            return false;
-        }
-        switch (getWebUserRoleLevel()) {
-            case Moh:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public boolean isRegionalDashboard() {
-        if (getWebUserRoleLevel() == null) {
-            return false;
-        }
-        switch (getWebUserRoleLevel()) {
-            case Regional:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public boolean isProvincialDashboard() {
-        if (getWebUserRoleLevel() == null) {
-            return false;
-        }
-        switch (getWebUserRoleLevel()) {
-            case Provincial:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public boolean isNationalDashboard() {
-        if (getWebUserRoleLevel() == null) {
-            return false;
-        }
-        switch (getWebUserRoleLevel()) {
-            case National:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public boolean isHospitalDashboard() {
-        if (getWebUserRoleLevel() == null) {
-            return false;
-        }
-        switch (getWebUserRoleLevel()) {
-            case Hospital:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public boolean isLabDashboard() {
-        if (getWebUserRoleLevel() == null) {
-            return false;
-        }
-        switch (getWebUserRoleLevel()) {
-            case Lab:
-                return true;
-            default:
-                return false;
-        }
-    }
 
     public boolean isSystemAdministrator() {
         systemAdministrator = getWebUserRole() == WebUserRole.System_Administrator;
@@ -441,24 +370,21 @@ public class WebUser implements Serializable {
     }
 
     public boolean isInstitutionUser() {
-        institutionUser = getWebUserRole() == WebUserRole.Pdhs;
+        institutionUser = getWebUserRole() == WebUserRole.Institutional_Administrator;
         return institutionUser;
     }
 
     public boolean isInstitutionAdministrator() {
-        institutionAdministrator = getWebUserRole() == WebUserRole.Re;
+        institutionAdministrator = getWebUserRole() == WebUserRole.Institutional_Administrator;
         return institutionAdministrator;
     }
 
     public boolean isAuthorityUser() {
-        authorityUser = getWebUserRole() == WebUserRole.Moh;
+        authorityUser = getWebUserRole() == WebUserRole.User;
         return authorityUser;
     }
 
-    public boolean isMeAdministrator() {
-        meAdministrator = getWebUserRole() == WebUserRole.Phm;
-        return meAdministrator;
-    }
+  
 
     public Area getArea() {
         if (assumedArea != null) {
@@ -472,7 +398,7 @@ public class WebUser implements Serializable {
     }
 
     public boolean isInstitutionSuperUser() {
-        if (getWebUserRole() == WebUserRole.Rdhs) {
+        if (getWebUserRole() == WebUserRole.Institutional_Super_User) {
             institutionSuperUser = true;
         } else {
             institutionSuperUser = false;
@@ -480,35 +406,7 @@ public class WebUser implements Serializable {
         return institutionSuperUser;
     }
 
-    public boolean isMeSuperUser() {
-        meSuperUser = getWebUserRole() == WebUserRole.Phi;
-        return meSuperUser;
-    }
-
-    public boolean isMeUser() {
-        meUser = getWebUserRole() == WebUserRole.Moh;
-        return meUser;
-    }
-
-    public boolean isDoctor() {
-        doctor = getWebUserRole() == WebUserRole.Epidemiologist;
-        return doctor;
-    }
-
-    public boolean isNurse() {
-        nurse = getWebUserRole() == WebUserRole.Nurse;
-        return nurse;
-    }
-
-    public boolean isClient() {
-        client = getWebUserRole() == WebUserRole.Client;
-        return client;
-    }
-
-    public boolean isMidwife() {
-        midwife = getWebUserRole() == WebUserRole.ChiefEpidemiologist;
-        return midwife;
-    }
+    
 
     public WebUser getLastEditBy() {
         return lastEditBy;
@@ -562,9 +460,7 @@ public class WebUser implements Serializable {
             return restrictedToInstitution;
         }
         switch (ur) {
-            case Phm:
-            case Phi:
-            case Pdhs:
+            case Institutional_Administrator:
             case System_Administrator:
             case Super_User:
                 restrictedToInstitution = false;
@@ -588,50 +484,15 @@ public class WebUser implements Serializable {
             return webUserRoleLevel = null;
         } else {
             switch (webUserRole) {
-                case Amoh:
-                case Moh:
-                case MohStaff:
-                case Phi:
-                case Phm:
-                case Phns:
-                case Sphi:
-                case Sphm:
-                    webUserRoleLevel = WebUserRoleLevel.Moh;
-                    break;
-                case ChiefEpidemiologist:
-                case Client:
-                case Epidemiologist:
                 case System_Administrator:
                 case Super_User:
                 case User:
                     webUserRoleLevel = WebUserRoleLevel.National;
                     break;
-                case Lab_National:
-                    webUserRoleLevel = WebUserRoleLevel.National_Lab;
-                    break;
-                case Hospital_Admin:
-                case Hospital_User:
-                case Doctor:
-                case Nurse:
-                    webUserRoleLevel = WebUserRoleLevel.Hospital;
-                    break;
-                case Lab_Admin:
-                case Lab_Consultant:
-                case Lab_Mlt:
-                case Lab_Mo:
-                case Lab_User:
-                    webUserRoleLevel = WebUserRoleLevel.Lab;
-                    break;
-                case Provincial_Admin:
-                case Pdhs:
-                case Pdhs_Staff:
-                    webUserRoleLevel = WebUserRoleLevel.Provincial;
-                    break;
-                case Regional_Admin:
-                case Rdhs:
-                case Re:
-                case Rdhs_Staff:
-                    webUserRoleLevel = WebUserRoleLevel.Regional;
+                case Institutional_Administrator:
+                case Institutional_Super_User:
+                case Institutional_User:
+                    webUserRoleLevel = WebUserRoleLevel.Institutional;
                     break;
             }
         }

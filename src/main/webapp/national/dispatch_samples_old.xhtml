@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Dispatch Samples" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <p:panelGrid columns="2" >
+
+                            <p:panelGrid columns="2" >
+                                <f:facet name="header" >
+                                    <p:outputLabel value="Listing" ></p:outputLabel>
+                                </f:facet>
+                                <p:outputLabel value="From" ></p:outputLabel>
+                                <p:calendar value="#{mohController.fromDate}" pattern="dd MMMM yyyy"></p:calendar><!-- comment -->
+
+                                <p:outputLabel value="To" ></p:outputLabel>
+                                <p:calendar value="#{mohController.toDate}" pattern="dd MMMM yyyy"></p:calendar>
+
+                                <f:facet name="footer">
+                                    <p:commandButton ajax="false" class="btn btn-success" value="Generate Excel">
+                                        <p:dataExporter target="tbl" type="xlsx" fileName="test_to_mark_results" ></p:dataExporter>
+                                    </p:commandButton>
+                                    <p:commandButton ajax="false" value="Generate PDF" class="btn btn-danger">
+                                        <p:dataExporter target="tbl" type="pdf" fileName="test_to_mark_results" ></p:dataExporter>
+                                    </p:commandButton>
+                                    <p:commandButton ajax="false" value="Process"
+                                                     class="btn btn-warning" action="#{mohController.toDispatchSamples()}" ></p:commandButton>
+                                </f:facet>
+
+
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" >
+                                <f:facet name="header" >
+                                    <p:outputLabel value="Dispatching" ></p:outputLabel>
+                                </f:facet>
+
+                                <p:outputLabel value="Lab to Dispatch" ></p:outputLabel>
+                                <p:autoComplete value="#{mohController.dispatchingLab}"
+                                                completeMethod="#{institutionController.completeLab}"
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}" >
+                                </p:autoComplete>
+
+                                <p:commandButton ajax="false" value="Dispatch"
+                                                 action="#{mohController.dispatchSelectedSamples()}" ></p:commandButton>
+
+
+                            </p:panelGrid>
+
+                        </p:panelGrid>
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{mohController.listedToDispatch}"
+                                     var="c" paginator="true" rowKey="#{c.id}" rows="10"
+                                     selection="#{mohController.selectedToDispatch}"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,25,100,1000"
+                                     >
+                            <p:column selectionMode="multiple" width="50" resizable="false"></p:column>
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age" >
+                                <p:outputLabel value="#{c.client.person.age}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Sex" >
+                                <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}" filterBy="#{c.client.person.address}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.address}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Phone"  sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.phone1}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}"
+                                      filterBy="#{c.pcrTestType.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.pcrTestType.name}"></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Current Lab"
+                                      sortBy="#{c.referalInstitution.name}"
+                                      filterBy="#{c.referalInstitution.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.referalInstitution.name}" ></p:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

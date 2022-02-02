@@ -29,12 +29,7 @@ package lk.gov.health.phsp.enums;
  */
 public enum WebUserRoleLevel {
     National("National"),
-    National_Lab("Lab"),
-    Provincial("Provincial"),
-    Regional("Regional"),
-    Moh("MOH"),
-    Lab("Lab"),
-    Hospital("Hospital");
+    Institutional("Lab");
     private final String label;
 
     private WebUserRoleLevel(String label) {

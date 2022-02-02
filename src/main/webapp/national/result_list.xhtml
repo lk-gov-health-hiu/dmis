@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template1.xhtml">
+
+            <ui:define name="title">
+                List of Tests
+            </ui:define>
+
+            <ui:define name="content">
+                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Test List" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="Ordered From" ></p:outputLabel>
+                            <p:calendar value="#{nationalController.fromDate}"
+                                        pattern="dd MMMM yyyy hh:mm a">
+                            </p:calendar><!-- comment -->
+
+                            <p:outputLabel value="Ordered To" ></p:outputLabel>
+                            <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+
+                            <p:outputLabel value="Ordering Category" ></p:outputLabel>
+                            <p:selectOneMenu value="#{nationalController.orderingCategory}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{nationalController.covidTestOrderingCategories}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Test" ></p:outputLabel>
+                            <p:selectOneMenu value="#{nationalController.testType}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{nationalController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Result" ></p:outputLabel>
+                            <p:selectOneMenu value="#{nationalController.result}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{nationalController.resultTypes}" var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel  value="Lab"></p:outputLabel>
+                            <p:autoComplete style="width: 100%;"
+                                            inputStyleClass="autocomplete"
+                                            value="#{nationalController.lab}"
+                                            forceSelection="true" tabindex="100"
+                                            completeMethod="#{nationalController.completeLab}"
+                                            var="l" itemLabel="#{l.name}" itemValue="#{l}">
+                            </p:autoComplete>
+
+                            <f:facet name="footer">
+                                <p:commandButton ajax="false" class="btn btn-success" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton class="btn btn-danger" ajax="false" value="Generate PDF">
+                                    <p:dataExporter target="tbl" type="pdf" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Process" class="btn btn-warning"
+                                                 action="#{nationalController.toListResults()}" ></p:commandButton>
+
+                            </f:facet>
+
+
+                        </p:panelGrid>
+
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{nationalController.tests}" rendered="true"
+                                     rowIndexVar="n"
+                                     var="c"
+                                     rowKey="#{c.id}"
+                                     rowStyleClass="#{c.resultCssClass}"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                                     rows="10"
+                                     >
+                            <p:column headerText="Sampelled On" sortBy="#{c.sampledAt}">
+                                <p:outputLabel value="#{c.sampledAt}" >
+                                    <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Ordered On" sortBy="#{c.createdAt}">
+                                <p:outputLabel value="#{c.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Result On" sortBy="#{c.resultConfirmedAt}">
+                                <p:outputLabel value="#{c.resultConfirmedAt}" >
+                                    <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Ordered from"  sortBy="#{c.institution.name}"
+                                      filterBy="#{c.institution.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Result Confirmed" sortBy="#{c.resultConfirmedAt}">
+                                <p:outputLabel value="#{c.resultConfirmedAt}" >
+                                    <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Lab"  sortBy="#{c.referalInstitution.name}"
+                                      filterBy="#{c.referalInstitution.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.referalInstitution.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Test No." sortBy="#{c.encounterNumber}" filterBy="#{c.encounterNumber}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.encounterNumber}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Lab No." sortBy="#{c.labNumber}" filterBy="#{c.labNumber}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.labNumber}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.pcrTestType.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age"  sortBy="#{c.client.person.age}" width="60"
+                                      filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.age}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Gender"
+                                      width="80"
+                                      sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.nic}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.phone1}" ></p:outputLabel>
+                                <p:outputLabel rendered="#{c.client.person.phone2 ne null}" value=", " ></p:outputLabel>
+                                <p:outputLabel rendered="#{c.client.person.phone2 ne null}" value="#{c.client.person.phone2}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}"
+                                      filterBy="#{c.client.person.address}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.address}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Ordering Category"  sortBy="#{c.pcrOrderingCategory.name}"
+                                      filterBy="#{c.pcrOrderingCategory.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.pcrOrderingCategory.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Result"  sortBy="#{c.pcrResult.name}"
+                                      filterBy="#{c.pcrResult.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.pcrResult.name}" rendered="#{c.resultConfirmed}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="CT Value 1"  sortBy="#{c.ctValue2}"
+                                      filterBy="#{c.ctValue2}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.ctValue}"  ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="CT Value 2"  sortBy="#{c.ctValue2}"
+                                      filterBy="#{c.ctValue2}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.ctValue2}"  ></p:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

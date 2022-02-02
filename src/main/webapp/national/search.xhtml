@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <div class="row">
+                    <div class="container my-4">
+                        <div class="d-flex justify-content-center">
+                            <h:form>
+                                <div class="text-center fw-bold fs-5">Search by Name</div>
+                                <p:panelGrid columns="2" class="bg-white border border-light">
+                                    <p:outputLabel  class="fs-6 fw-bold" value="Name" 
+                                                    for="txtSearchName"></p:outputLabel>
+                                    <p:inputText  class="form-control fs-6" id="txtSearchName"
+                                                  required="true" 
+                                                  requiredMessage="Please enter a name to search"
+                                                  value="#{nationalController.searchingName}" >
+                                    </p:inputText>
+
+                                    <p:outputLabel class="fs-6 fw-bold" value="District" 
+                                                    for="mnuDistrict"></p:outputLabel>
+                                    <p:selectOneMenu  class="form-control form-control-sm w-100 fs-6" id="mnuDistrict" value ="#{nationalController.district}" >
+                                        <f:selectItem itemLabel="Any District" ></f:selectItem>
+                                        <f:selectItems value="#{areaApplicationController.allDistricts}"
+                                                       var="d"
+                                                       itemLabel="#{d.name}"
+                                                       itemValue="#{d}" ></f:selectItems>
+                                    </p:selectOneMenu>
+                                    <div></div>
+                                    <h:commandButton class="btn btn-success w-100 my-2" value="Search" 
+                                                     disabled="false"
+                                                     action="#{nationalController.searchByName()}" >
+                                    </h:commandButton>
+                                </p:panelGrid>
+                                <p:messages ></p:messages>
+
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+
+</html>

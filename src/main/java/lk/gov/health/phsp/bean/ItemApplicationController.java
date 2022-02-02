@@ -70,7 +70,7 @@ public class ItemApplicationController {
     private List<Item> vaccinationStatuses;
     private List<Item> symptomaticStatuses;
 
-    private List<Item> covidTestOrderingCategories;
+    private List<Item> letterReceiveCategories;
     private List<Item> covidTestTypes;
     private Item pcr;
     private Item rat;
@@ -556,15 +556,15 @@ public class ItemApplicationController {
         this.investigationFilters = investigationFilters;
     }
 
-    public List<Item> getCovidTestOrderingCategories() {
-        if (covidTestOrderingCategories == null) {
-            covidTestOrderingCategories = findChildDictionaryItems("patients_covid_19_test_ordering_context_category");
+    public List<Item> getLetterReceiveCategories() {
+        if (letterReceiveCategories == null) {
+            letterReceiveCategories = findChildDictionaryItems("letter_receive_category");
         }
-        return covidTestOrderingCategories;
+        return letterReceiveCategories;
     }
 
-    public void setCovidTestOrderingCategories(List<Item> covidTestOrderingCategories) {
-        this.covidTestOrderingCategories = covidTestOrderingCategories;
+    public void setLetterReceiveCategories(List<Item> letterReceiveCategories) {
+        this.letterReceiveCategories = letterReceiveCategories;
     }
 
     public List<Item> getCovidTestTypes() {

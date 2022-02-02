@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
+
+
+<h:body>
+
+  <ui:composition template="/template1.xhtml">
+
+    <ui:define name="content">
+
+      <div class="container-fluid ">
+        <div class="row">
+          <div class="col-12 p-2">
+            <p:messages></p:messages>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-md-3">
+            <h:form>
+              <div class="list-group mt-3">
+                <li class="list-group-item active fw-bold">
+                  System Administation
+                </li>
+                <h:commandLink value="Preferences" action="#{menuController.toPreferences()}"
+                  class="list-group-item list-group-item-action">
+                </h:commandLink>
+                <h:commandLink value="Add New User" action="#{menuController.toAddNewUser()}"
+                  class="list-group-item list-group-item-action">
+                </h:commandLink>
+                <h:commandLink value="View Users" action="#{menuController.toListUsers()}"
+                  class="list-group-item list-group-item-action">
+                </h:commandLink>
+                <h:commandLink disabled="true" value="Add Institution" action="#{menuController.toAddNewInstitution()}"
+                  class="list-group-item list-group-item-action">
+                </h:commandLink>
+                <h:commandLink value="View Institutions" action="#{menuController.toListInstitutions()}"
+                  class="list-group-item list-group-item-action">
+                </h:commandLink>
+              </div>
+            </h:form>
+          </div>
+          <div class="col-sm-12 col-md-8">
+            <ui:insert name="admin">
+            </ui:insert>
+          </div>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</h:body>
+
+</html>

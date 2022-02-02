@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template1.xhtml">
+
+            <ui:define name="title">
+                List of Tests
+            </ui:define>
+
+            <ui:define name="content">
+                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Test List" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="Ordered From" ></p:outputLabel>
+                            <p:calendar value="#{mohController.fromDate}"
+                                        pattern="dd MMMM yyyy hh:mm a">
+                            </p:calendar><!-- comment -->
+
+                            <p:outputLabel value="Ordered To" ></p:outputLabel>
+                            <p:calendar value="#{mohController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+
+                            <p:outputLabel value="Ordering Category" ></p:outputLabel>
+                            <p:selectOneMenu value="#{mohController.orderingCategory}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{mohController.covidTestOrderingCategories}"
+                                               var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Test" ></p:outputLabel>
+                            <p:selectOneMenu value="#{mohController.testType}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{mohController.covidTestTypes}" var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Result" ></p:outputLabel>
+                            <p:selectOneMenu value="#{mohController.result}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{mohController.resultTypes}" var="c" itemLabel="#{c.name}"
+                                               itemValue="#{c}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel  value="Lab"></p:outputLabel>
+                            <p:autoComplete style="width: 100%;"
+                                            inputStyleClass="autocomplete"
+                                            value="#{mohController.lab}"
+                                            forceSelection="true" tabindex="100"
+                                            completeMethod="#{mohController.completeLab}"
+                                            var="l" itemLabel="#{l.name}" itemValue="#{l}">
+                            </p:autoComplete>
+
+                            <f:facet name="footer">
+                                <p:commandButton ajax="false" class="btn btn-success" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Generate PDF">
+                                    <p:dataExporter target="tbl" type="pdf" class="btn btn-danger" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Process" class="btn btn-warning"
+                                                 action="#{mohController.toDistrictViceTestListForOrderingCategories}" ></p:commandButton>
+
+                            </f:facet>
+
+
+                        </p:panelGrid>
+
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{mohController.institutionCounts}"
+                                     rowIndexVar="n"
+                                     var="c"
+                                     >
+                            <p:column headerText="District" sortBy="#{c.area.name}" filterBy="#{c.area.name}" filterMatchMode="contains">
+                                <p:commandLink ajax="false" action="#{mohController.toMohViceTestListForOrderingCategories()}"
+                                                 value="#{c.area.name}" >
+                                    <f:setPropertyActionListener value="#{c.area}" target="#{mohController.district}" ></f:setPropertyActionListener>
+                                </p:commandLink>
+                            </p:column>
+                            <p:column headerText="Category" rendered="#{mohController.orderingCategory eq null}"
+                                      sortBy="#{c.itemValue.name}" filterBy="#{c.itemValue.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.itemValue.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Count" sortBy="#{c.count}">
+                                <p:outputLabel value="#{c.count}" ></p:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

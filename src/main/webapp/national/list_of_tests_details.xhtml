@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+
+        <ui:composition template="/national/reports_index.xhtml">
+            <ui:define name="reports">
+
+                <h:panelGrid columns="1" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Test List" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+                        <div class="container bg-none mt-4 mb-4 w-100 d-flex justify-content-center align-items-center" >
+                            <h:panelGrid columns="2" class="shadow-lg p-3 mb-5 bg-white rounded">
+                                <h:outputLabel class="h6 fw-bold" value="Ordered From" ></h:outputLabel>
+                                <p:calendar value="#{nationalController.fromDate}"
+                                            pattern="dd MMMM yyyy hh:mm a">
+                                </p:calendar><!-- comment -->
+
+                                <h:outputLabel class="h6 fw-bold" value="Ordered To" ></h:outputLabel>
+                                <p:calendar value="#{nationalController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+
+                                <h:commandButton value="Generate Excel" class="btn btn-success w-100">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </h:commandButton>
+                                <h:commandButton value="Process" class="btn btn-warning w-100"
+                                                 action="#{nationalController.toListOfTests()}" ></h:commandButton>
+                            </h:panelGrid>
+                        </div>
+                        <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded" >
+                            <p:commandButton icon="pi pi-align-justify" class="btn btn-sm btn-secondary" id="toggler" type="button" value="Columns" />
+                            <p:columnToggler datasource="tbl" trigger="toggler"/>
+                            <p:dataTable reflow="true" id="tbl" value="#{nationalController.tests}" rendered="true"
+                                         lazy="true"
+                                         rowIndexVar="n"
+                                         var="c"
+                                         rowKey="#{c.id}"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                                         rows="10"
+                                         >
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                <p:column headerText="Institution" sortBy="#{c.institution.name}"
+                                          filterBy="#{c.institution.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.institution.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Ordered By" sortBy="#{c.institution.name}" filterBy="#{c.institution.name}" filterMatchMode="contains" >
+                                    <h:outputLabel value="#{c.institution.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Institution Type" sortBy="#{c.institution.institutionType.label}"
+                                          filterBy="#{c.institution.institutionType.label}" filterMatchMode="contains" >
+                                    <h:outputLabel value="#{c.institution.institutionType.label}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="RDHS"  sortBy="#{c.referalInstitution.rdhsArea.name}"
+                                          filterBy="#{c.institution.rdhsArea.name}" filterMatchMode="contains" >
+                                    <h:outputLabel value="#{c.referalInstitution.rdhsArea.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="PDHS"  sortBy="#{c.institution.pdhsArea.name}"
+                                          filterBy="#{c.institution.pdhsArea.name}" filterMatchMode="contains" >
+                                    <h:outputLabel value="#{c.institution.pdhsArea.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Province"  sortBy="#{c.referalInstitution.name}" filterBy="#{c.referalInstitution.name}" filterMatchMode="contains" >
+                                    <h:outputLabel value="#{c.referalInstitution.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Ordered At" sortBy="#{c.createdAt}"  >
+                                    <h:outputLabel value="#{c.createdAt}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Institution District" sortBy="#{c.institution.district.name}"
+                                          filterBy="#{c.institution.district.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.institution.district.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Institution Province" sortBy="#{c.institution.district.name}"
+                                          filterBy="#{c.institution.district.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.institution.district.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Ordering Category"  sortBy="#{c.pcrOrderingCategory.name}"
+                                          filterBy="#{c.pcrOrderingCategory.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.pcrOrderingCategory.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Test" sortBy="#{c.pcrTestType.name}" filterBy="#{c.pcrTestType.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.pcrTestType.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.client.person.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Age"  sortBy="#{c.client.person.age}" width="60"
+                                          filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.client.person.age}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Gender"
+                                          width="80"
+                                          sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.client.person.sex.name}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="NIC"  sortBy="#{c.client.person.nic}" filterBy="#{c.client.person.nic}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.client.person.nic}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.client.person.phone1}" ></h:outputLabel>
+                                    <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value=", " ></h:outputLabel>
+                                    <h:outputLabel rendered="#{c.client.person.phone2 ne null}" value="#{c.client.person.phone2}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Address"  sortBy="#{c.client.person.address}"
+                                          filterBy="#{c.client.person.address}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.client.person.address}" ></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Resident Province"  sortBy="#{c.client.person.address}"
+                                          filterBy="#{c.client.person.district.province}" filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.client.person.district.province}" ></h:outputLabel>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+
+
+
+                </h:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

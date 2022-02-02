@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template1.xhtml">
+
+            <ui:define name="title">
+                List of Contacts By Management Plan
+            </ui:define>
+
+            <ui:define name="content">
+                <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="List of Contacts By Management Plan" ></p:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+
+                        <p:panelGrid columns="2" >
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="From" ></p:outputLabel>
+                                <p:calendar value="#{mohController.fromDate}" 
+                                            pattern="dd MMMM yyyy hh:mm a">
+                                </p:calendar><!-- comment -->
+
+                                <p:outputLabel value="To" ></p:outputLabel>
+                                <p:calendar value="#{mohController.toDate}" pattern="dd MMMM yyyy hh:mm a"></p:calendar>
+
+                                <p:outputLabel value="Plan of Management" ></p:outputLabel>
+                                <p:selectOneMenu value="#{mohController.managementType}" >
+                                    <f:selectItem itemLabel="Any" ></f:selectItem>
+                                    <f:selectItems value="#{mohController.managementTypes}" var="m" itemLabel="#{m.name}"
+                                                   itemValue="#{m}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:commandButton ajax="false" value="Generate Excel">
+                                    <p:dataExporter target="tbl" type="xlsx" fileName="tests" ></p:dataExporter>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Process" 
+                                                 action="#{mohController.toListCasesByManagementForNationalLevel()}" ></p:commandButton>
+                            </p:panelGrid>
+                        </p:panelGrid>
+
+
+                        <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="tbl" value="#{mohController.tests}" rendered="true"
+                                     rowIndexVar="n"
+                                     var="c" 
+                                     rowKey="#{c.id}" 
+                                     paginator="true" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}"
+                                     rows="10"
+                                     selection="#{mohController.selectedCecis}"
+                                     >
+                            <p:column headerText="District"  sortBy="#{c.client.person.district.name}"
+                                      filterBy="#{c.client.person.district.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.district.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="MOH Office"  sortBy="#{c.institution.name}" 
+                                      filterBy="#{c.institution.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Name"  sortBy="#{c.client.person.name}" filterBy="#{c.client.person.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age"  sortBy="#{c.client.person.age}" width="60"
+                                      filterBy="#{c.client.person.age}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.age}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Gender"
+                                      width="80"
+                                      sortBy="#{c.encounterNumber}" filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Phone" sortBy="#{c.client.person.phone1}" filterBy="#{c.client.person.phone1}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.phone1}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Address"  sortBy="#{c.client.person.address}"
+                                      filterBy="#{c.client.person.address}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.client.person.address}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Management Planned"  >
+                                <p:outputLabel value="#{c.getClientEncounterComponentItemByCode('placement_of_diagnosed_patient').itemValue.name}" ></p:outputLabel>
+                            </p:column>
+                            
+                            
+                        </p:dataTable>
+                    </h:form>
+
+
+
+                </p:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
