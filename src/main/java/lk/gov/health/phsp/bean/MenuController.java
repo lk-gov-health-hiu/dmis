@@ -51,7 +51,7 @@ public class MenuController implements Serializable {
     @Inject
     FileController documentController;
     @Inject
-    FileController letterController;
+    LetterController letterController;
 
     @Inject
     InstitutionController institutionController;

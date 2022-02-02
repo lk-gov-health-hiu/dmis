@@ -8,7 +8,7 @@
             </ui:define>
             <ui:define name="content">
                 <h:form class="form">
-                    <p:focus for="name"></p:focus>
+                    <p:focus for="letterDate"></p:focus>
                     <div class="row bg-white py-4">
                         <h4 class="text-center fw-bold">Letter</h4>
                         <div class="my-1 px-4">
@@ -54,7 +54,7 @@
                                                        itemLabel="#{i.name}"
                                                        itemValue="#{i}" ></f:selectItems>
                                     </h:selectOneMenu>
-                                    <h:message class="text-danger small" for="number"></h:message>
+                                    <h:message class="text-danger small" for="method"></h:message>
                                 </div>
                             </div> 
                             <div class="row mb-4">
@@ -70,14 +70,15 @@
                             <div class="row mb-4">
                                 <div class="col md-3">
                                     <h:outputLabel for="from"  class="form-label fw-bold">Sent from 
-                                        <p:autoComplete id="from"  value="#{letterController.selected.fromInstitution}" 
-                                                        class="form-control"
-                                                        completeMethod="#{institutionController.completeInstitutions}"
-                                                        var="insf"
-                                                        itemLabel="#{insf.name}"
-                                                        itemValue="#{insf}"
-                                                        >
-                                        </p:autoComplete>
+                                    </h:outputLabel>
+                                    <p:autoComplete id="from"  value="#{letterController.selected.fromInstitution}" 
+                                                    class="form-control"
+                                                    completeMethod="#{institutionController.completeInstitutions}"
+                                                    var="insf"
+                                                    itemLabel="#{insf.name}"
+                                                    itemValue="#{insf}"
+                                                    >
+                                    </p:autoComplete>
                                 </div>
                             </div> 
                             <div class="row mb-4">
