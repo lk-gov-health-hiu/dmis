@@ -46,7 +46,7 @@
                             
                             <h:outputLabel for="lang"  >Language </h:outputLabel>
                             <h:selectOneMenu id="lang"  
-                                             value="#{letterController.selected.receivedAs}" 
+                                             value="#{letterController.selected.documentLanguage}" 
                                              class="form-control"
                                              >
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
@@ -71,7 +71,7 @@
                             </h:inputText>
                             <h:message class="text-danger small" for="topic"></h:message>
 
-                            <h:outputLabel for="from"  >Sent from 
+                            <h:outputLabel for="from"  >Letter Sent from 
                             </h:outputLabel>
                             <p:autoComplete id="from"  value="#{letterController.selected.fromInstitution}" 
                                             class="form-control"

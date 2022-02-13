@@ -197,20 +197,22 @@ public class LetterController implements Serializable {
 
     public String assignTo() {
         if (selected == null) {
-            JsfUtil.addErrorMessage("Select a file");
+            JsfUtil.addErrorMessage("Select a letter");
             return "";
         }
 
         DocumentHistory docHx = new DocumentHistory();
-        docHx.setHistoryType(HistoryType.Letter_Assigned);
+        docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
-        docHx.setToUser(webUser);
-
+        docHx.setToUser(webUserCopy);
+        docHx.setItem(minute);
+        
         saveDocumentHx(docHx);
 
-        selected.setCurrentOwner(webUser);
+        selected.setCurrentOwner(webUserCopy);
         documentFacade.edit(selected);
+        
 
         JsfUtil.addSuccessMessage("Letter assigned successfully");
         return toLetterView();
@@ -233,15 +235,15 @@ public class LetterController implements Serializable {
         docHx.setToUser(webUserCopy);
         docHx.setComments(comments);
         docHx.setItem(minute);
-        
-        
 
         saveDocumentHx(docHx);
 
-        selected.setCurrentOwner(webUser);
         documentFacade.edit(selected);
 
-        JsfUtil.addSuccessMessage("Letter assigned successfully");
+        minute=null;
+        webUserCopy=null;
+        
+        JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
         return toLetterView();
     }
 

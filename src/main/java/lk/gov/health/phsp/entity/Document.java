@@ -72,6 +72,8 @@ public class Document implements Serializable {
     private Document referenceDocument;
     @ManyToOne
     private Document parentDocument;
+    @ManyToOne
+    private Item documentLanguage;
 
     @ManyToOne
     private Institution institution;
@@ -404,6 +406,15 @@ public class Document implements Serializable {
     public void setReceivedAs(Item receivedAs) {
         this.receivedAs = receivedAs;
     }
+
+    public Item getDocumentLanguage() {
+        return documentLanguage;
+    }
+
+    public void setDocumentLanguage(Item documentLanguage) {
+        this.documentLanguage = documentLanguage;
+    }
+    
     
     
 
