@@ -185,13 +185,15 @@ public class LetterController implements Serializable {
         }
 
         DocumentHistory docHx = new DocumentHistory();
-        docHx.setHistoryType(HistoryType.File_Institution_Transfer);
+        docHx.setHistoryType(HistoryType.Letter_Sent);
         docHx.setDocument(selected);
         docHx.setFromInstitution(selected.getCurrentInstitution());
         docHx.setToInstitution(institution);
         saveDocumentHx(docHx);
 
-        JsfUtil.addSuccessMessage("Transferred out successfully");
+        institution=null;
+        
+        JsfUtil.addSuccessMessage("Letter Sent successfully");
         return toLetterView();
     }
 
@@ -202,7 +204,7 @@ public class LetterController implements Serializable {
         }
 
         DocumentHistory docHx = new DocumentHistory();
-        docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
+        docHx.setHistoryType(HistoryType.Letter_Assigned);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
         docHx.setToUser(webUserCopy);

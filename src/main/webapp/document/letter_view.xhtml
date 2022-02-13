@@ -110,6 +110,20 @@
                                             </h:panelGroup>
                                         </h:panelGroup>
                                         
+                                        <h:panelGroup rendered="#{h.historyType eq 'Letter_Action_Taken'}" >
+                                            <h:outputLabel class="fs-6 " value="Action takeb by&nbsp;"></h:outputLabel>
+                                            <h:outputText value="#{h.createdBy.person.name}" ></h:outputText>
+                                            <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                        </h:panelGroup>
+                                        
                                         <h:panelGroup rendered="#{h.historyType eq 'Letter_Copy_or_Forward'}" >
                                             <h:outputLabel class="fs-6 " value="Copied/Forwarded to&nbsp;"></h:outputLabel>
                                             <h:panelGroup rendered="#{h.item ne null}" >
@@ -143,11 +157,36 @@
                                                 <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
                                             </h:panelGroup>
                                         </h:panelGroup>
-
-                                        <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
-                                        <h:outputText value="#{h.fromUser.name}" ></h:outputText>
-                                        <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
-                                        <h:outputText value="#{h.toUser.name}" ></h:outputText>
+                                        
+                                        <h:panelGroup rendered="#{h.historyType eq 'Letter_Sent'}" >
+                                            <h:outputLabel class="fs-6 " value="Letter sent from&nbsp;"></h:outputLabel>
+                                            <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
+                                            <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
+                                            <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
+                                            <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                            <h:panelGroup rendered="#{h.completed}" >
+                                                <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                    <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                                </h:outputLabel>
+                                                <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                                </h:outputLabel>
+                                                <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{!h.completed}" >
+                                                <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
                                     </p:column>
                                     <p:column headerText="Comments">
                                         <h:outputText value="#{h.comments}" ></h:outputText>
@@ -243,7 +282,9 @@
                                                          minQueryLength="3">
                                         </p:autoComplete >
                                         <p:spacer></p:spacer>
-                                        <h:commandButton value="Transfer" class="form-control btn btn-primary" action="#{letterController.transferOutFile()}" ></h:commandButton>
+                                        <h:commandButton value="Transfer" 
+                                                         class="form-control btn btn-primary" 
+                                                         action="#{letterController.transferOutFile()}" ></h:commandButton>
                                     </p:panelGrid>
                                 </h:form>
 
