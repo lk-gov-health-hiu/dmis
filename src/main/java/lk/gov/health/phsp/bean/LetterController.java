@@ -244,6 +244,7 @@ public class LetterController implements Serializable {
 
         minute=null;
         webUserCopy=null;
+        comments = "";
         
         JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
         return toLetterView();
