@@ -574,6 +574,45 @@ public class InstitutionController implements Serializable {
         return resIns;
     }
 
+    public List<Institution> completeInstitutionsByWords(String nameQry) {
+        List<Institution> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
+        }
+        if (nameQry.trim().equals("")) {
+            return resIns;
+        }
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        nameQry = nameQry.trim();
+        String words[] = nameQry.split("\\s+");
+
+        for (Institution i : allIns) {
+             boolean allWordsMatch = true;
+
+            for (String word : words) {
+                boolean thisWordMatch;
+                word = word.trim().toLowerCase();
+                if (i.getName() != null  && i.getName().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else if (i.getSname() != null  && i.getSname().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else if (i.getTname() != null  && i.getTname().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else{
+                    thisWordMatch=false;
+                }
+                if(thisWordMatch==false){
+                    allWordsMatch=false;
+                }
+            }
+
+            if (allWordsMatch) {
+                resIns.add(i);
+            }
+        }
+        return resIns;
+    }
+
     public Institution prepareCreate() {
         selected = new Institution();
         initializeEmbeddableKey();
@@ -585,13 +624,13 @@ public class InstitutionController implements Serializable {
     }
 
     public void prepareToListInstitution() {
-        if(webUserController.getLoggedUser()==null){
+        if (webUserController.getLoggedUser() == null) {
             items = null;
         }
         if (webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.National
                 || webUserController.getLoggedUser().getWebUserRoleLevel() == WebUserRoleLevel.Institutional) {
             items = institutionApplicationController.getInstitutions();
-        }else{
+        } else {
             items = webUserController.findAutherizedInstitutions();
         }
     }
@@ -601,6 +640,19 @@ public class InstitutionController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to select");
             return;
         }
+        if (selected.getName() == null || selected.getName().trim().equals("")) {
+            JsfUtil.addErrorMessage("Name is required");
+            return;
+        }
+
+        if (selected.getTname() == null || selected.getTname().trim().equals("")) {
+            selected.setTname(selected.getName());
+        }
+
+        if (selected.getSname() == null || selected.getSname().trim().equals("")) {
+            selected.setSname(selected.getName());
+        }
+
         if (selected.getId() == null) {
             selected.setCreatedAt(new Date());
             selected.setCreater(webUserController.getLoggedUser());

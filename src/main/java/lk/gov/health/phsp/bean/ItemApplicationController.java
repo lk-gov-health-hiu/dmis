@@ -34,7 +34,7 @@ import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.InstitutionType;
-import lk.gov.health.phsp.enums.InvestigationFilterType;
+import lk.gov.health.phsp.enums.SearchFilterType;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.facade.ItemFacade;
 
@@ -67,11 +67,11 @@ public class ItemApplicationController {
 
     private List<Item> sexes;
 
-    private List<Item> vaccinationStatuses;
+    private List<Item> minutes;
     private List<Item> symptomaticStatuses;
 
     private List<Item> letterReceiveCategories;
-    private List<Item> covidTestTypes;
+    private List<Item> documentLanguages;
     private Item pcr;
     private Item rat;
 
@@ -540,7 +540,7 @@ public class ItemApplicationController {
 
     public List<Item> getInvestigationFilters() {
        List<Item> output = new ArrayList<>();
-       for (InvestigationFilterType filter: InvestigationFilterType.values()) {
+       for (SearchFilterType filter: SearchFilterType.values()) {
             String code = filter.getCode();
             String label = filter.getLabel();
             Item item = new Item();
@@ -567,15 +567,15 @@ public class ItemApplicationController {
         this.letterReceiveCategories = letterReceiveCategories;
     }
 
-    public List<Item> getCovidTestTypes() {
-        if (covidTestTypes == null) {
-            covidTestTypes = findChildDictionaryItems("test_types");
+    public List<Item> getDocumentLanguages() {
+        if (documentLanguages == null) {
+            documentLanguages = findChildDictionaryItems("document_language");
         }
-        return covidTestTypes;
+        return documentLanguages;
     }
 
-    public void setCovidTestTypes(List<Item> covidTestTypes) {
-        this.covidTestTypes = covidTestTypes;
+    public void setDocumentLanguages(List<Item> documentLanguages) {
+        this.documentLanguages = documentLanguages;
     }
 
     public List<Item> getCitizenships() {
@@ -592,15 +592,15 @@ public class ItemApplicationController {
         return sexes;
     }
 
-    public List<Item> getVaccinationStatuses() {
-        if (vaccinationStatuses == null) {
-            vaccinationStatuses = findChildDictionaryItems("vaccinations_statuses");
+    public List<Item> getMinutes() {
+        if (minutes == null) {
+            minutes = findChildDictionaryItems("letter_minute");
         }
-        return vaccinationStatuses;
+        return minutes;
     }
 
-    public void setVaccinationStatuses(List<Item> vaccinationStatuses) {
-        this.vaccinationStatuses = vaccinationStatuses;
+    public void setMinutes(List<Item> minutes) {
+        this.minutes = minutes;
     }
 
     public List<Item> getSymptomaticStatuses() {

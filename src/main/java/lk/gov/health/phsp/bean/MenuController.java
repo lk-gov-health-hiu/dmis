@@ -49,7 +49,7 @@ public class MenuController implements Serializable {
     @Inject
     WebUserApplicationController webUserApplicationController;
     @Inject
-    FileController documentController;
+    FileController fileController;
     @Inject
     LetterController letterController;
 
@@ -73,7 +73,7 @@ public class MenuController implements Serializable {
         nd.setOwner(webUserController.getLoggedUser());
         nd.setCurrentInstitution(webUserController.getLoggedInstitution());
         nd.setCurrentOwner(webUserController.getLoggedUser());
-        documentController.setSelected(nd);
+        fileController.setSelected(nd);
 
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.File_Created);
@@ -98,14 +98,21 @@ public class MenuController implements Serializable {
     }
 
     public String toFileSearch() {
-        documentController.setItems(null);
-        documentController.setSearchTerm("");
-        documentController.setSelected(null);
+        fileController.setItems(null);
+        fileController.setSearchTerm("");
+        fileController.setSelected(null);
         return "/document/file_search";
+    }
+    
+    public String toLetterSearch() {
+        letterController.setItems(null);
+        letterController.setSearchTerm("");
+        letterController.setSelected(null);
+        return "/document/letter_search";
     }
 
     public String toFileLedger() {
-        documentController.setItems(null);
+        fileController.setItems(null);
         return "/document/file_ledger";
     }
 

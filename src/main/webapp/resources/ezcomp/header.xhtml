@@ -23,11 +23,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <h:form class="input-group">
-                        <h:inputText class="form-control " autocomplete="off" value="#{clientController.searchingId}" ></h:inputText>
-                        <h:commandButton action="#{clientController.searchByAnyIdWithBasicData()}" class="btn btn-outline-secondary" value="Search" ></h:commandButton>
-
-                    </h:form>
+                    <div class="input-group"></div>
                     <div>
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
                             <li class="nav-item m-2">
@@ -40,7 +36,7 @@
                                 </button>
                             </li>
 
-                            <li class="nav-item dropdown m-2" id="logoutDropdown">
+                            <li class="nav-item dropdown m-2 mx-5" id="logoutDropdown">
                                 <button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                     #{webUserController.loggedUser.person.nameWithTitle}
                                 </button>

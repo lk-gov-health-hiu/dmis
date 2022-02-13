@@ -916,6 +916,48 @@ public class WebUserController implements Serializable {
         m.put("ret", false);
         return getFacade().findByJpql(temSQL, m);
     }
+    
+    
+    
+    public List<WebUser> completeUsersByWord(String nameQry) {
+        List<WebUser> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
+        }
+        if (nameQry.trim().equals("")) {
+            return resIns;
+        }
+        List<WebUser> allIns = webUserApplicationController.getItems();
+        nameQry = nameQry.trim();
+        String words[] = nameQry.split("\\s+");
+
+        for (WebUser i : allIns) {
+             boolean allWordsMatch = true;
+
+            for (String word : words) {
+                boolean thisWordMatch;
+                word = word.trim().toLowerCase();
+                if (i.getName() != null  && i.getName().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else if (i.getCode()!= null  && i.getCode().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else if (i.getPerson()!= null && i.getPerson().getName() !=null  && i.getPerson().getName().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else{
+                    thisWordMatch=false;
+                }
+                if(thisWordMatch==false){
+                    allWordsMatch=false;
+                }
+            }
+
+            if (allWordsMatch) {
+                resIns.add(i);
+            }
+        }
+        return resIns;
+    }
+    
 
     private boolean checkLogin(boolean withoutPassword) {
         if (loggedUser != null && withoutPassword) {
@@ -1380,6 +1422,8 @@ public class WebUserController implements Serializable {
             if (newIns == null) {
                 newIns = new Institution();
                 newIns.setName(line);
+                newIns.setSname(line);
+                newIns.setTname(line);
                 newIns.setCode(CommonController.prepareAsCode(line));
                 newIns.setParent(institution);
                 newIns.setDistrict(institution.getDistrict());
@@ -1397,7 +1441,11 @@ public class WebUserController implements Serializable {
                 personController.save(newPerson);
 
                 WebUser newUser = new WebUser();
-                newUser.setName("sa_" + CommonController.prepareAsCode(line).toLowerCase());
+                String un = "sa_" + CommonController.prepareAsCode(line).toLowerCase();
+                if(un.length()>50){
+                    un = un.substring(0, 49);
+                }
+                newUser.setName(un);
                 newUser.setPerson(newPerson);
                 newUser.setInstitution(newIns);
                 newUser.setArea(institution.getRdhsArea());

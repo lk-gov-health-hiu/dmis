@@ -33,9 +33,9 @@ public enum WebUserRole {
     Super_User("Super User"),
     User("User"),
     //Institutional Level
-    Institutional_Administrator("PDHS"),
-    Institutional_Super_User("Provincial System Administrator"),
-    Institutional_User("PDHS Staff");
+    Institutional_Administrator("Institution Administrator"),
+    Institutional_Super_User("Institution Super User"),
+    Institutional_User("Institution User");
    
     private final String label;
 

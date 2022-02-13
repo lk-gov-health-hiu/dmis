@@ -44,6 +44,9 @@ public class DocumentHistory implements Serializable {
     private String descreption;
 
     private Double orderNo;
+    
+    @ManyToOne
+    private Item item;
 
     @ManyToOne
     private Institution fromInstitution;
@@ -266,6 +269,14 @@ public class DocumentHistory implements Serializable {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
     
     

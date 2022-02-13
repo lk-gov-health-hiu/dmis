@@ -34,6 +34,7 @@ public enum HistoryType {
     File_Owner_Transfer("File Owner Change"),
     Letter_Created("Letter Created"),
     Letter_Assigned("Letter Assigned"),
+    Letter_Copy_or_Forward("Letter Copy or Forward"),
     Letter_Assigning_Accepted("Letter Assigning Accepted"),
     Letter_Received("Letter Received"),
     Letter_Sent("Letter Send"),

@@ -67,6 +67,8 @@ public class Person implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Item title;
     private String name;
+    
+    private String code;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Item sex;
@@ -728,6 +730,8 @@ public class Person implements Serializable {
     public void setWorkplaceContact(String workplaceContact) {
         this.workplaceContact = workplaceContact;
     }
+    
+    
 
     public String getWorkplaceContactDetails() {
         return workplaceContactDetails;
@@ -735,6 +739,14 @@ public class Person implements Serializable {
 
     public void setWorkplaceContactDetails(String workplaceContactDetails) {
         this.workplaceContactDetails = workplaceContactDetails;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
 }

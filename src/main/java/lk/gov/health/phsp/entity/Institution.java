@@ -58,6 +58,8 @@ public class Institution implements Serializable {
     private InstitutionType institutionType;
 
     private String name;
+    private String tname;
+    private String sname;
     private String code;
     private String address;
     private String fax;
@@ -443,4 +445,22 @@ public class Institution implements Serializable {
         this.mohArea = mohArea;
     }
 
+    public String getTname() {
+        return tname;
+    }
+
+    public void setTname(String tname) {
+        this.tname = tname;
+    }
+
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
+
+    
+    
 }

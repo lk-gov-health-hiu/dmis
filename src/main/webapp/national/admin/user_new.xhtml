@@ -31,6 +31,17 @@
                                 <h:message class="small text-danger" for="name"></h:message>
                             </div>
                         </div>
+                        
+                        <div class="row mb-3">
+                            <label for="code" class="col-md-4 col-form-label fw-bold">
+                                Code <small>(Required)</small>
+                            </label>
+                            <div class="col-md-8">
+                                <h:inputText autocomplete="off" class="form-control" id="code" required="false" requiredMessage="Code is required" value="#{webUserController.selected.person.code}" title="Name" />
+                                <h:message class="small text-danger" for="code"></h:message>
+                            </div>
+                        </div>
+                        
                         <div class="row mb-3">
                             <label for="username" class="col-form-label fw-bold col-md-4">Username <small>(Required)</small></label>
                             <div class="col-md-8">

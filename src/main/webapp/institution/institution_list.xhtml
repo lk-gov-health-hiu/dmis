@@ -12,7 +12,15 @@
 
             <ui:define name="insadmin">
                 <h:form >
-                    <p:dataTable resizableColumns="true" multiViewState="true" resizeMode="expand" id="datalist" value="#{webUserController.loggableInstitutions}" var="item"
+                    
+                    <h:commandButton value="Excel" >
+                        <p:dataExporter fileName="Institution List" target="tbl" type="xlsx" ></p:dataExporter>
+                    </h:commandButton>
+                                     
+                    
+                    <p:dataTable
+                        id="tbl"
+                        resizableColumns="true" multiViewState="true" resizeMode="expand" id="datalist" value="#{webUserController.loggableInstitutions}" var="item"
                                  selectionMode="single" 
                                  selection="#{institutionController.selected}"
                                  rowKey="#{item.id}"

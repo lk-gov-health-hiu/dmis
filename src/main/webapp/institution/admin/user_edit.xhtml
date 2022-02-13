@@ -10,19 +10,19 @@
 
         <ui:composition template="/hospital/admin/index.xhtml">
             <ui:define name="admin">
-                
-                    <h:form id="WebUserEditForm">
-                        <p:panel id="WebUserEditDlg">
-                            
 
-                            <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" class="m-auto border border-light bg-white">
-                             <f:facet name="header" >
-                                 <h3 class="fs-6 text-white fw-bold m-0">Edit User Details</h3>
+                <h:form id="WebUserEditForm">
+                    <p:panel id="WebUserEditDlg">
+
+
+                        <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" class="m-auto border border-light bg-white">
+                            <f:facet name="header" >
+                                <h3 class="fs-6 text-white fw-bold m-0">Edit User Details</h3>
                             </f:facet>
 
                             <p:outputLabel value="Username" for="username" class="fs-6 fw-bold" />
                             <p:inputText class="form-control w-100 text-muted"  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
-                                          readonly="true" required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
+                                         readonly="true" required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
 
 
                             <p:outputLabel value="Title" for="title" class="fs-6 fw-bold"/>
@@ -33,15 +33,22 @@
 
                             <p:outputLabel value="Name" for="name" class="fs-6 fw-bold"/>
                             <p:inputText class="form-control w-100"
-                                autocomplete="off" 
-                                id="name" 
-                                value="#{webUserController.selected.person.name}"
-                                title="Name" />
+                                         autocomplete="off" 
+                                         id="name" 
+                                         value="#{webUserController.selected.person.name}"
+                                         title="Name" />
+
+                            <p:outputLabel value="Code" for="code" class="fs-6 fw-bold"/>
+                            <p:inputText class="form-control w-100"
+                                         autocomplete="off" 
+                                         id="code" 
+                                         value="#{webUserController.selected.person.code}"
+                                         title="Code" />
 
 
                             <p:outputLabel value="Institution" for="institution" class="fs-6 fw-bold"/>
                             <p:selectOneMenu class="form-control form-control-sm w-100"
-                                id="institution" style="width: 100%;" value="#{webUserController.selected.institution}" required="true">
+                                             id="institution" style="width: 100%;" value="#{webUserController.selected.institution}" required="true">
                                 <f:selectItem itemLabel="Please Select" ></f:selectItem>
                                 <f:selectItems value="#{webUserController.loggableInstitutions}"
                                                var="ins" 
@@ -72,9 +79,9 @@
 
                         </p:panelGrid>
 
-</p:panel>
-                    </h:form>
-                
+                    </p:panel>
+                </h:form>
+
 
             </ui:define>
         </ui:composition>

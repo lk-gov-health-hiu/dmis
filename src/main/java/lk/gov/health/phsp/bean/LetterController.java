@@ -22,11 +22,14 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
 import lk.gov.health.phsp.entity.DocumentHistory;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.HistoryType;
+import lk.gov.health.phsp.enums.SearchFilterType;
 import lk.gov.health.phsp.facade.DocumentHistoryFacade;
 
 @Named
@@ -55,13 +58,18 @@ public class LetterController implements Serializable {
 
     private Institution institution;
     private WebUser webUser;
+    private WebUser webUserCopy;
+    private Item minute;
     private String searchTerm;
     private String comments;
+    private Date fromDate;
+    private Date toDate;
+    private SearchFilterType searchFilterType;
 
     public LetterController() {
     }
 
-    public void searchFile() {
+    public void searchLetter() {
         if (searchTerm == null || searchTerm.trim().equals("")) {
             JsfUtil.addErrorMessage("No Search Term");
             return;
@@ -73,7 +81,7 @@ public class LetterController implements Serializable {
                 + " and d.documentNumber=:dn"
                 + " order by d.documentDate desc";
         Map m = new HashMap();
-        m.put("dt", DocumentType.File);
+        m.put("dt", DocumentType.Letter);
         m.put("dn", searchTerm.trim());
         items = documentFacade.findByJpql(j, m);
 
@@ -91,7 +99,7 @@ public class LetterController implements Serializable {
                 + " order by d.documentDate desc";
 
         m = new HashMap();
-        m.put("dt", DocumentType.File);
+        m.put("dt", DocumentType.Letter);
         m.put("dn", "%" + searchTerm.trim() + "%");
 
         items = documentFacade.findByJpql(j, m);
@@ -100,6 +108,29 @@ public class LetterController implements Serializable {
          * private String documentName; private String documentNumber; private
          * String documentCode;
          */
+    }
+
+    public String toListLetters() {
+        return "/document/letter_list";
+    }
+    
+    public void listLetters() {
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.SYSTEM_DATE;
+        }
+        String j = "select d "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt "
+                + " and d.institution=:ins ";
+        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
+        j += " order by d." + searchFilterType.getCode();
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        items = documentFacade.findByJpql(j, m,TemporalType.TIMESTAMP);
     }
 
     public void retireSelectedEncounter() {
@@ -165,10 +196,6 @@ public class LetterController implements Serializable {
     }
 
     public String assignTo() {
-        if (webUser == null) {
-            JsfUtil.addErrorMessage("Select a user to transfer ownership");
-            return "";
-        }
         if (selected == null) {
             JsfUtil.addErrorMessage("Select a file");
             return "";
@@ -179,6 +206,35 @@ public class LetterController implements Serializable {
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
         docHx.setToUser(webUser);
+
+        saveDocumentHx(docHx);
+
+        selected.setCurrentOwner(webUser);
+        documentFacade.edit(selected);
+
+        JsfUtil.addSuccessMessage("Letter assigned successfully");
+        return toLetterView();
+    }
+    
+    public String forwardOrCopyTo() {
+        if (webUserCopy == null) {
+            JsfUtil.addErrorMessage("Select a user to transfer ownership");
+            return "";
+        }
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Select a file");
+            return "";
+        }
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
+        docHx.setDocument(selected);
+        docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setToUser(webUserCopy);
+        docHx.setComments(comments);
+        docHx.setItem(minute);
+        
+        
 
         saveDocumentHx(docHx);
 
@@ -206,7 +262,7 @@ public class LetterController implements Serializable {
         saveDocumentHx(docHx);
 
         comments = "";
-        
+
         JsfUtil.addSuccessMessage("Action Recorded");
         return toLetterView();
     }
@@ -439,6 +495,55 @@ public class LetterController implements Serializable {
     public void setComments(String comments) {
         this.comments = comments;
     }
+
+    public Date getFromDate() {
+        if (fromDate == null) {
+            fromDate = CommonController.startOfTheDate();
+        }
+        return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        if (toDate == null) {
+            toDate = CommonController.endOfTheDate();
+        }
+        return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public SearchFilterType getSearchFilterType() {
+        return searchFilterType;
+    }
+
+    public void setSearchFilterType(SearchFilterType searchFilterType) {
+        this.searchFilterType = searchFilterType;
+    }
+
+    public WebUser getWebUserCopy() {
+        return webUserCopy;
+    }
+
+    public void setWebUserCopy(WebUser webUserCopy) {
+        this.webUserCopy = webUserCopy;
+    }
+
+    public Item getMinute() {
+        return minute;
+    }
+
+    public void setMinute(Item minute) {
+        this.minute = minute;
+    }
+    
+    
+    
 
     @FacesConverter(forClass = Document.class)
     public static class EncounterControllerConverter implements Converter {

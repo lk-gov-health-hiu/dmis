@@ -442,7 +442,7 @@ public class ApiResource {
     private JSONObject vaccinationStatusesList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
-        List<Item> ds = itemApplicationController.getVaccinationStatuses();
+        List<Item> ds = itemApplicationController.getMinutes();
         for (Item a : ds) {
             JSONObject ja = new JSONObject();
             ja.put("vaccination_status_id", a.getId());

@@ -28,7 +28,7 @@
                                         <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                     </h:outputLabel>
 
-                                    <h:outputLabel class="fs-6" value="Received Date:"></h:outputLabel>
+                                    <h:outputLabel class="fs-6" value="Stamp Date:"></h:outputLabel>
                                     <h:outputLabel class="fs-6 fw-bold" id="rdate" value="#{letterController.selected.receivedDate}">
                                         <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                     </h:outputLabel>
@@ -72,6 +72,9 @@
                                         <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
                                         <h:outputText value="#{h.toUser.name}" ></h:outputText>
                                     </p:column>
+                                    <p:column headerText="Details">
+                                        <h:outputText value="#{h.comments}" ></h:outputText>
+                                    </p:column>
                                 </p:dataTable>
                             </div>
                             <div class="col-md-6">
@@ -97,6 +100,41 @@
                                         </p:selectOneMenu>
                                         <p:spacer></p:spacer>
                                         <h:commandButton value="Assign" action="#{letterController.assignTo()}" ></h:commandButton>
+                                    </p:panelGrid>
+                                </h:form>
+
+                                <h:form>
+                                    <p:panelGrid columns="2"  class="w-100 border border-light">
+                                        <f:facet name="header" >
+                                            Forward / Copy to
+                                        </f:facet>
+                                        <h:outputLabel class="fs-6" value="Minutes / Forward / Copy To:"></h:outputLabel>
+                                        <p:autoComplete value="#{letterController.webUserCopy}" 
+                                                        completeMethod="#{webUserController.completeUsersByWord}"
+                                                        class="form-control"
+                                                        var="insf"
+                                                        itemLabel="#{insf.name}"
+                                                        itemValue="#{insf}"
+                                                        >
+                                        </p:autoComplete>
+
+                                        <h:outputLabel class="fs-6" value="Minute:"></h:outputLabel>
+                                        <h:selectOneMenu id="lang"  
+                                                         value="#{letterController.minute}" 
+                                                         class="form-control"
+                                                         >
+                                            <f:selectItem itemLabel="Select" ></f:selectItem>
+                                            <f:selectItems value="#{itemApplicationController.minutes}"
+                                                           var="d"
+                                                           itemLabel="#{d.name}"
+                                                           itemValue="#{d}" ></f:selectItems>
+                                        </h:selectOneMenu>
+                                        
+                                        <h:outputLabel class="fs-6" value="Comment:"></h:outputLabel>
+                                        <h:inputTextarea value="#{letterController.comments}" ></h:inputTextarea>
+
+                                        <p:spacer></p:spacer>
+                                        <h:commandButton value="Send" action="#{letterController.assignTo()}" ></h:commandButton>
                                     </p:panelGrid>
                                 </h:form>
 

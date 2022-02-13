@@ -11,8 +11,8 @@
 <!-- IMPLEMENTATION -->
 <cc:implementation>
     <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
-        <footer class="d-flex justify-content-center p-4 text-muted">
-            &copy; Ministry of Health,
+        <footer class="d-flex justify-content-center p-4 text-muted fixed-bottom">
+            &copy; HIU, Ministry of Health,
             <h:outputText value="#{session.lastAccessedTime}">
                 <f:convertDateTime pattern="yyyy" type="date" />
             </h:outputText>

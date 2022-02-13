@@ -29,6 +29,7 @@ import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataModificationStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.SearchFilterType;
 import lk.gov.health.phsp.enums.ItemArrangementStrategy;
 import lk.gov.health.phsp.enums.Month;
 import lk.gov.health.phsp.enums.PanelType;
@@ -105,6 +106,11 @@ public class CommonController implements Serializable {
         return cs;
     }
 
+    
+    public SearchFilterType[] getSearchFilterTypes(){
+       return  SearchFilterType.values();
+    }
+    
     public String toViewClient() {
         return "/common/client_view";
     }
