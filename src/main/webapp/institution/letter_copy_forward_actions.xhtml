@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="/institution/reports_index.xhtml">
+            <ui:define name="title">
+                Copy / Forward Actions Report
+            </ui:define>
+            <ui:define name="reports">
+                <h:panelGrid columns="1" styleClass="alignTop">
+                    <f:facet name="header">
+                        <p:outputLabel value="Copy / Forward Actions Report"></p:outputLabel>
+                    </f:facet>
+
+                    <h:form>
+                        <div class="container align-items-center">
+
+                            <h:panelGrid columns="2" >
+                                <h:panelGrid columns="2" >
+
+                                    <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
+                                    <p:datePicker value="#{letterController.fromDate}" pattern="dd MMMM yyyy hh:mm" showTime="true">
+                                    </p:datePicker><!-- comment -->
+
+                                    <h:outputLabel class="h6 fw-bold" value="To"></h:outputLabel>
+                                    <p:datePicker value="#{letterController.toDate}" pattern="dd MMMM yyyy hh:mm" showTime="true"></p:datePicker>
+
+                                    <h:outputLabel class="h6 fw-bold" value="Sent To"></h:outputLabel>
+                                    <p:autoComplete value="#{letterController.webUserCopy}" 
+                                                    completeMethod="#{webUserController.completeUsersByWord}"
+                                                    class="form-control"
+                                                    var="insf"
+                                                    itemLabel="#{insf.name}"
+                                                    itemValue="#{insf}"
+                                                    >
+                                    </p:autoComplete>
+                                </h:panelGrid>
+                                <h:panelGrid columns="1" >
+                                    <h:commandButton value="Process" class="btn btn-danger form-control"
+                                                     action="#{letterController.fillForwardCopyActions}">
+                                    </h:commandButton>
+                                    <h:commandButton value="Print" class="btn btn-warning form-control"
+                                                     >
+                                        <p:printer target="tbl" ></p:printer>
+                                    </h:commandButton>
+
+                                    <h:commandButton value="Excel" class="btn btn-success form-control">
+                                        <p:dataExporter target="tbl" type="xlsx"
+                                                        fileName="forward copy action list"></p:dataExporter>
+                                    </h:commandButton>
+                                    <h:commandButton value="PDF" class="btn btn-success form-control">
+                                        <p:dataExporter type="pdf" target="tbl"
+                                                        fileName="forward copy action list" />
+                                    </h:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+
+                        </div>
+                        <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
+                            <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
+                                         rendered="true" rowIndexVar="n" var="c" paginator="false"
+                                         rowKey="#{c.id}"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
+                                <p:columnGroup type="header">
+                                    <p:row>
+                                        <p:column colspan="8" rendered="#{letterController.webUserCopy ne null}"
+                                                  headerText="#{webUserController.loggedUser.institution.name}">
+                                        </p:column>
+                                        <p:column colspan="9" rendered="#{letterController.webUserCopy eq null}"
+                                                  headerText="#{webUserController.loggedUser.institution.name}">
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="8" rendered="#{letterController.webUserCopy ne null}"
+                                                  headerText="#{webUserController.loggedUser.institution.address}">
+                                        </p:column>
+                                        <p:column colspan="9" rendered="#{letterController.webUserCopy eq null}"
+                                                  headerText="#{webUserController.loggedUser.institution.address}">
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="8" rendered="#{letterController.webUserCopy ne null}"
+                                                  headerText="#{webUserController.loggedUser.institution.phone}">
+                                        </p:column>
+                                        <p:column colspan="9" rendered="#{letterController.webUserCopy eq null}"
+                                                  headerText="#{webUserController.loggedUser.institution.phone}">
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+
+                                        <p:column headerText="ID" sortBy="#{c.document.id}" filterBy="#{c.document.id}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        <p:column headerText="Stamp Date" sortBy="#{c.document.receivedDate}" 
+                                                  filterBy="#{c.document.receivedDate}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        <p:column headerText="From"
+                                                  sortBy="#{c.document.fromInstitution.name}" 
+                                                  filterBy="#{c.document.fromInstitution.name}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
+                                                  filterBy="#{c.document.documentNumber}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        <p:column headerText="Topic" sortBy="#{c.document.documentName}" 
+                                                  filterBy="#{c.document.documentName}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        <p:column headerText="Copied/Forwarded To"
+                                                  rendered="#{letterController.webUserCopy eq null}"
+                                                  sortBy="#{c.toUser.person.name}" 
+                                                  filterBy="#{c.toUser.person.name}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        <p:column headerText="Minute" sortBy="#{c.item.name}" 
+                                                  filterBy="#{c.item.name}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        <p:column headerText="Comments" sortBy="#{c.comments}" 
+                                                  filterBy="#{c.comments}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                    </p:row>
+                                </p:columnGroup>
+                               
+                                <p:column >
+                                    <h:outputLabel value="#{c.document.id}"></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.document.documentDate}">
+                                        <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Stamp Date" sortBy="#{c.document.receivedDate}" 
+                                          filterBy="#{c.document.receivedDate}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.document.receivedDate}">
+                                        <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                </p:column>
+                                 <p:column >
+                                     <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
+                                          filterBy="#{c.document.documentNumber}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.document.documentNumber }"></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Topic" sortBy="#{c.document.documentName}" 
+                                          filterBy="#{c.document.documentName}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Copied/Forwarded To"
+                                          rendered="#{letterController.webUserCopy eq null}"
+                                          sortBy="#{c.toUser.person.name}" 
+                                          filterBy="#{c.toUser.person.name}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.toUser.person.name}"></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Minute" sortBy="#{c.item.name}" 
+                                          filterBy="#{c.item.name}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.item.name}"></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Comments" sortBy="#{c.comments}" 
+                                          filterBy="#{c.comments}"
+                                          filterMatchMode="contains">
+                                    <h:outputLabel value="#{c.comments}"></h:outputLabel>
+                                </p:column>
+                                <p:columnGroup type="footer">
+                                    <p:row>
+                                        <p:column 
+                                            colspan="8" rendered="#{letterController.webUserCopy ne null}"
+                                            >
+                                            <h:outputText value="Report generated by #{webUserController.loggedUser.person.nameWithTitle} of #{webUserController.loggedUser.institution.name}" ></h:outputText>
+                                            <h:outputText value="#{session.lastAccessedTime}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm a"  />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column 
+                                            colspan="9" rendered="#{letterController.webUserCopy eq null}"
+                                            >
+                                            <h:outputText value="Report generated by #{webUserController.loggedUser.person.nameWithTitle} of #{webUserController.loggedUser.institution.name}" ></h:outputText>
+                                            <h:outputText value="#{session.lastAccessedTime}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm a"  />
+                                            </h:outputText>
+
+                                        </p:column>
+
+                                    </p:row>
+                                </p:columnGroup>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+                </h:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>

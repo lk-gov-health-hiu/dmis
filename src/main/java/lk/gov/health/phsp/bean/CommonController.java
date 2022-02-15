@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -106,11 +108,10 @@ public class CommonController implements Serializable {
         return cs;
     }
 
-    
-    public SearchFilterType[] getSearchFilterTypes(){
-       return  SearchFilterType.values();
+    public SearchFilterType[] getSearchFilterTypes() {
+        return SearchFilterType.values();
     }
-    
+
     public String toViewClient() {
         return "/common/client_view";
     }
@@ -803,13 +804,17 @@ public class CommonController implements Serializable {
     }
 
     public static Date endOfTheDate(Date d) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(d);
-        c.set(Calendar.HOUR_OF_DAY, c.getActualMaximum(Calendar.HOUR_OF_DAY));
-        c.set(Calendar.MINUTE, c.getActualMaximum(Calendar.MINUTE));
-        c.set(Calendar.SECOND, c.getActualMaximum(Calendar.SECOND));
-        c.set(Calendar.MILLISECOND, c.getActualMaximum(Calendar.MILLISECOND));
-        return c.getTime();
+        LocalDateTime localDateTime = dateToLocalDateTime(d);
+        LocalDateTime endOfDay = localDateTime.with(LocalTime.MAX);
+        return localDateTimeToDate(endOfDay);
+    }
+
+    private static LocalDateTime dateToLocalDateTime(Date date) {
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+    }
+
+    private static Date localDateTimeToDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public static Date startOfTheYear(Date d) {
@@ -1218,7 +1223,6 @@ public class CommonController implements Serializable {
         String after = str.trim().replaceAll(" +", "_");
         return after.toLowerCase();
     }
-
 
     public Document getEncounter() {
         return encounter;

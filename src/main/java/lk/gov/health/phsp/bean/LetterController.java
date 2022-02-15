@@ -6,6 +6,8 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.DocumentFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +49,7 @@ public class LetterController implements Serializable {
     private Document selected;
     private DocumentHistory selectedHistory;
     private List<DocumentHistory> selectedDocumentHistories;
+    private List<DocumentHistory> documentHistories;
     @Inject
     private WebUserController webUserController;
     @Inject
@@ -113,7 +116,7 @@ public class LetterController implements Serializable {
     public String toListLetters() {
         return "/document/letter_list";
     }
-    
+
     public void listLetters() {
         if (searchFilterType == null) {
             searchFilterType = SearchFilterType.SYSTEM_DATE;
@@ -130,7 +133,7 @@ public class LetterController implements Serializable {
         m.put("ins", webUserController.getLoggedInstitution());
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        items = documentFacade.findByJpql(j, m,TemporalType.TIMESTAMP);
+        items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
     public void retireSelectedEncounter() {
@@ -191,8 +194,8 @@ public class LetterController implements Serializable {
         docHx.setToInstitution(institution);
         saveDocumentHx(docHx);
 
-        institution=null;
-        
+        institution = null;
+
         JsfUtil.addSuccessMessage("Letter Sent successfully");
         return toLetterView();
     }
@@ -209,17 +212,16 @@ public class LetterController implements Serializable {
         docHx.setFromUser(selected.getCurrentOwner());
         docHx.setToUser(webUserCopy);
         docHx.setItem(minute);
-        
+
         saveDocumentHx(docHx);
 
         selected.setCurrentOwner(webUserCopy);
         documentFacade.edit(selected);
-        
 
         JsfUtil.addSuccessMessage("Letter assigned successfully");
         return toLetterView();
     }
-    
+
     public String forwardOrCopyTo() {
         if (webUserCopy == null) {
             JsfUtil.addErrorMessage("Select a user to transfer ownership");
@@ -242,10 +244,10 @@ public class LetterController implements Serializable {
 
         documentFacade.edit(selected);
 
-        minute=null;
-        webUserCopy=null;
+        minute = null;
+        webUserCopy = null;
         comments = "";
-        
+
         JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
         return toLetterView();
     }
@@ -333,6 +335,47 @@ public class LetterController implements Serializable {
             return "";
         }
         return "/document/letter";
+    }
+
+    public String toReportsLetterCopyForwardActions() {
+        documentHistories = null;
+        return "/institution/letter_copy_forward_actions";
+    }
+
+    public void fillForwardCopyActions() {
+        documentHistories = findDocumentHistories(fromDate, toDate, HistoryType.Letter_Copy_or_Forward, webUserController.getLoggedInstitution(), webUserCopy);
+    }
+
+    public List<DocumentHistory> findDocumentHistories(Date fd, Date td, HistoryType ht, Institution i, WebUser u) {
+        List<HistoryType> hts = new ArrayList<>();
+        if (ht != null) {
+            hts.add(ht);
+        } else {
+            Collections.addAll(hts, HistoryType.values());
+        }
+        return findDocumentHistories(fd, td, hts, i, u);
+    }
+
+    public List<DocumentHistory> findDocumentHistories(Date fd, Date td, List<HistoryType> hts, Institution i, WebUser u) {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType in :hts "
+                + " and h.document.institution=:i ";
+        if (u != null) {
+            j += " and h.toUser=:u ";
+            m.put("u", u);
+        }
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+
+        m.put("i", i);
+        m.put("hts", hts);
+        m.put("fd", fd);
+        m.put("td", td);
+
+        return documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
     public String toLetterView() {
@@ -546,9 +589,14 @@ public class LetterController implements Serializable {
     public void setMinute(Item minute) {
         this.minute = minute;
     }
-    
-    
-    
+
+    public List<DocumentHistory> getDocumentHistories() {
+        return documentHistories;
+    }
+
+    public void setDocumentHistories(List<DocumentHistory> documentHistories) {
+        this.documentHistories = documentHistories;
+    }
 
     @FacesConverter(forClass = Document.class)
     public static class EncounterControllerConverter implements Converter {

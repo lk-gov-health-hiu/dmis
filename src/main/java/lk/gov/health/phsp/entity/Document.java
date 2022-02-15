@@ -38,6 +38,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.DocumentType;
+import lk.gov.health.phsp.pojcs.Nameable;
 
 /**
  *
@@ -61,7 +62,7 @@ public class Document implements Serializable {
 
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date documentDate;
-    
+
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date receivedDate;
 
@@ -81,12 +82,14 @@ public class Document implements Serializable {
     private Institution institutionUnit;
     @ManyToOne
     private WebUser owner;
-    
+
     @ManyToOne
     private Item receivedAs;
-    
+
     @ManyToOne
     private Institution fromInstitution;
+
+
 
     @ManyToOne
     private Institution currentInstitution;
@@ -414,8 +417,5 @@ public class Document implements Serializable {
     public void setDocumentLanguage(Item documentLanguage) {
         this.documentLanguage = documentLanguage;
     }
-    
-    
-    
 
 }

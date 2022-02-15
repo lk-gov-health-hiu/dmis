@@ -39,6 +39,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.pojcs.Nameable;
 
 /**
  *
@@ -47,7 +48,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @Table
-public class Institution implements Serializable {
+public class Institution implements Serializable, Nameable {
 
     private static final long serialVersionUID = 1L;
     @Id

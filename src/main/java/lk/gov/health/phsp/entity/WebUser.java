@@ -25,6 +25,7 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.WebUserRoleLevel;
+import lk.gov.health.phsp.pojcs.Nameable;
 
 /**
  *
@@ -34,7 +35,7 @@ import lk.gov.health.phsp.enums.WebUserRoleLevel;
 @Entity
 @XmlRootElement
 @Table
-public class WebUser implements Serializable {
+public class WebUser implements Serializable, Nameable {
 
     private static final long serialVersionUID = 1L;
 
@@ -85,7 +86,7 @@ public class WebUser implements Serializable {
     private Area area;
 
     private String loginIPs;
-    
+
     String code;
 
     /*
@@ -149,8 +150,6 @@ public class WebUser implements Serializable {
         this.institution = institution;
     }
 
-    
-    
     public String getEmail() {
         return email;
     }
@@ -353,7 +352,6 @@ public class WebUser implements Serializable {
         this.code = code;
     }
 
-
     public boolean isSystemAdministrator() {
         systemAdministrator = getWebUserRole() == WebUserRole.System_Administrator;
         return systemAdministrator;
@@ -384,8 +382,6 @@ public class WebUser implements Serializable {
         return authorityUser;
     }
 
-  
-
     public Area getArea() {
         if (assumedArea != null) {
             return assumedArea;
@@ -405,8 +401,6 @@ public class WebUser implements Serializable {
         }
         return institutionSuperUser;
     }
-
-    
 
     public WebUser getLastEditBy() {
         return lastEditBy;
@@ -505,6 +499,102 @@ public class WebUser implements Serializable {
 
     public void setLoginIPs(String loginIPs) {
         this.loginIPs = loginIPs;
+    }
+
+    @Override
+    public String getAddress() {
+        if (person != null) {
+            return person.getAddress();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setAddress(String address) {
+        if (person != null) {
+            person.setAddress(address);
+        }
+    }
+
+    @Override
+    public String getFax() {
+        if (person != null) {
+            return person.getFax();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setFax(String fax) {
+        if (person != null) {
+            person.setFax(fax);
+        }
+    }
+
+    @Override
+    public String getPhone() {
+        if (person != null) {
+            return person.getPhone2();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setPhone(String phone) {
+        if (person != null) {
+            person.setPhone2(phone);
+        }
+    }
+
+    @Override
+    public String getMobile() {
+        if (person != null) {
+            return person.getPhone1();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setMobile(String mobile) {
+        if (person != null) {
+            person.setPhone1(mobile);
+        }
+    }
+
+    @Override
+    public String getTname() {
+        if (person != null) {
+            return person.getTname();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setTname(String tname) {
+        if (person != null) {
+            person.setTname(tname);
+        }
+    }
+
+    @Override
+    public String getSname() {
+        if (person != null) {
+            return person.getSname();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setSname(String sname) {
+        if (person != null) {
+            person.setSname(sname);
+        }
     }
 
 }

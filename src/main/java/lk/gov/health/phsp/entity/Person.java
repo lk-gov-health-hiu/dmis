@@ -69,6 +69,8 @@ public class Person implements Serializable {
     private String name;
     
     private String code;
+    private String tname;
+    private String sname;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Item sex;
@@ -106,6 +108,8 @@ public class Person implements Serializable {
     private String phone1;
     private String phone2;
     private String email;
+    private String fax;
+    
 
     private String nic;
 
@@ -749,4 +753,30 @@ public class Person implements Serializable {
         this.code = code;
     }
 
+    public String getTname() {
+        return tname;
+    }
+
+    public void setTname(String tname) {
+        this.tname = tname;
+    }
+
+    public String getSname() {
+        return sname;
+    }
+
+    public void setSname(String sname) {
+        this.sname = sname;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    
+    
 }
