@@ -180,6 +180,7 @@ public class LetterController implements Serializable {
                 + " from Document d "
                 + " where d.retired=false "
                 + " and d.documentType=:dt "
+                + " and d.institution=:ins "
                 + " and (d.documentNumber like :dn "
                 + " or d.documentName like :dn "
                 + " or d.documentCode like :dn )"
@@ -187,6 +188,8 @@ public class LetterController implements Serializable {
 
         m = new HashMap();
         m.put("dt", DocumentType.Letter);
+        m.put("ins", webUserController.getLoggedInstitution());
+        
         m.put("dn", "%" + searchTerm.trim() + "%");
 
         items = documentFacade.findByJpql(j, m);
@@ -278,6 +281,9 @@ public class LetterController implements Serializable {
         docHx.setToInstitution(institution);
         saveDocumentHx(docHx);
 
+        selected.setCompleted(false);
+        save(selected);
+        
         institution = null;
 
         JsfUtil.addSuccessMessage("Letter Sent successfully");
@@ -300,6 +306,7 @@ public class LetterController implements Serializable {
         saveDocumentHx(docHx);
 
         selected.setCurrentOwner(webUser);
+        selected.setCompleted(false);
         documentFacade.edit(selected);
 
         JsfUtil.addSuccessMessage("Letter assigned successfully");
@@ -326,6 +333,7 @@ public class LetterController implements Serializable {
 
         saveDocumentHx(docHx);
 
+        selected.setCompleted(false);
         documentFacade.edit(selected);
 
         minute = null;
@@ -352,6 +360,7 @@ public class LetterController implements Serializable {
         docHx.setComments(comments);
         saveDocumentHx(docHx);
 
+        
         comments = "";
 
         JsfUtil.addSuccessMessage("Action Recorded");
@@ -501,11 +510,15 @@ public class LetterController implements Serializable {
             dh.setCompletedBy(webUserController.getLoggedUser());
             saveDocumentHx(dh);
             JsfUtil.addSuccessMessage("Letter Accepted.");
+            selected.setCompleted(true);
+            selected.setCompletedAt(new Date());
+            selected.setCompletedBy(webUserController.getLoggedUser());
+            save(selected);
         } else {
             JsfUtil.addErrorMessage("Error.");
         }
     }
-    
+
     public void toReverseAcceptMyLetter() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
@@ -523,6 +536,8 @@ public class LetterController implements Serializable {
         m.put("ht", HistoryType.Letter_Assigned);
         m.put("tu", webUserController.getLoggedUser());
         DocumentHistory dh = documentHxFacade.findFirstByJpql(j, m);
+        selected.setCompleted(false);
+        save(selected);
         if (dh != null) {
             dh.setCompleted(false);
             saveDocumentHx(dh);

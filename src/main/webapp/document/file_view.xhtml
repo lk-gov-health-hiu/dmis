@@ -25,7 +25,7 @@
                                 <p:panelGrid columns="2"  class="w-100 border border-light">
                                     <h:outputLabel class="fs-6" value="File ID:"></h:outputLabel>
                                     <h:outputLabel class="fs-6 fw-bold"  value="#{fileController.selected.id}"></h:outputLabel>
-                                    
+
                                     <h:outputLabel class="fs-6" value="File Number:"></h:outputLabel>
                                     <h:outputLabel class="fs-6 fw-bold"  value="#{fileController.selected.documentNumber}"></h:outputLabel>
                                     <h:outputLabel class="fs-6"  value="File Name:"></h:outputLabel>
@@ -86,7 +86,7 @@
                                         <h:commandButton value="Transfer" action="#{fileController.transferOutFile()}" ></h:commandButton>
                                     </p:panelGrid>
                                 </h:form>
-                                
+
                                 <h:form>
                                     <p:panelGrid columns="2"  class="w-100 border border-light">
                                         <f:facet name="header" >
@@ -118,6 +118,9 @@
                                                  >
                                     <p:printer target="barcode" ></p:printer>
                                 </h:commandButton>
+
+
+                                
 
                                 <h:panelGroup id="barcode" >
                                     <div class="container-fluid " >

@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -858,6 +860,7 @@ public class WebUserController implements Serializable {
                 usersForMyInstitute.add(wu);
             }
         }
+        Collections.sort(usersForMyInstitute, Comparator.comparing(WebUser::getName));
     }
 
     private boolean checkLoginNew() {
