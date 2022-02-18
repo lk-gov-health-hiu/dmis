@@ -81,27 +81,6 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="area" class="col-form-label fw-bold col-md-4">Area <small>(Required)</small></label>
-                            <div class="col-md-8">
-                                <p:autoComplete id="area" value="#{webUserController.selected.area}"
-                                                completeMethod="#{areaController.completeAreas}"
-                                                var="i" itemLabel="#{i.name}" itemValue="#{i}"
-                                                minQueryLength="3" maxResults="30"
-                                                forceSelection="true" required="true" requiredMessage="The Area field is required.">
-                                    <p:column headerText="Name">
-                                        <p:outputLabel value="#{i.name}"></p:outputLabel>
-                                    </p:column>
-                                    <p:column headerText="Parent">
-                                        <p:outputLabel value="#{i.parentArea.name}"></p:outputLabel>
-                                    </p:column>
-                                    <p:column headerText="Type">
-                                        <p:outputLabel value="#{i.type}"></p:outputLabel>
-                                    </p:column>
-                                </p:autoComplete >
-                                <h:message for="area" class="text-danger small"></h:message>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
                             <h:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" class="col-form-label fw-bold col-md-4" />
                             <div class="col-md-8">
                                 <h:inputText  autocomplete="false" id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" class="form-control"/>

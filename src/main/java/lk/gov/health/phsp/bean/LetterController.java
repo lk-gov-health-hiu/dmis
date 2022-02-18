@@ -8,6 +8,7 @@ import lk.gov.health.phsp.facade.DocumentFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,9 @@ import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.HistoryType;
 import lk.gov.health.phsp.enums.SearchFilterType;
 import lk.gov.health.phsp.facade.DocumentHistoryFacade;
+import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.WebUserFacade;
+import lk.gov.health.phsp.pojcs.Nameable;
 
 @Named
 @SessionScoped
@@ -43,6 +47,12 @@ public class LetterController implements Serializable {
 
     @EJB
     DocumentHistoryFacade documentHxFacade;
+    
+    @EJB
+    InstitutionFacade institutionFacade;
+    
+    @EJB
+    WebUserFacade webUserFacade;
 
     private List<Document> items = null;
     private List<Document> selectedItems = null;
@@ -58,6 +68,10 @@ public class LetterController implements Serializable {
     ItemApplicationController itemApplicationController;
     @Inject
     MenuController menuController;
+    @Inject
+    InstitutionApplicationController institutionApplicationController;
+    @Inject
+    WebUserApplicationController webUserApplicationController;
 
     private Institution institution;
     private WebUser webUser;
@@ -72,6 +86,82 @@ public class LetterController implements Serializable {
     public LetterController() {
     }
 
+    
+    
+    
+    public List<Nameable> completeInsOrUsersByWords(String nameQry) {
+        List<Nameable> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
+        }
+        if (nameQry.trim().equals("")) {
+            return resIns;
+        }
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        nameQry = nameQry.trim();
+        String words[] = nameQry.split("\\s+");
+
+        for (Institution i : allIns) {
+             boolean allWordsMatch = true;
+
+            for (String word : words) {
+                boolean thisWordMatch;
+                word = word.trim().toLowerCase();
+                if (i.getName() != null  && i.getName().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else if (i.getSname() != null  && i.getSname().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else if (i.getTname() != null  && i.getTname().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else{
+                    thisWordMatch=false;
+                }
+                if(thisWordMatch==false){
+                    allWordsMatch=false;
+                }
+            }
+
+            if (allWordsMatch) {
+                resIns.add(i);
+            }
+        }
+               
+       
+        List<WebUser> allUsrs = webUserApplicationController.getItems();
+       
+        
+
+        for (WebUser i : allUsrs) {
+             boolean allWordsMatch = true;
+
+            for (String word : words) {
+                boolean thisWordMatch;
+                word = word.trim().toLowerCase();
+                if (i.getName() != null  && i.getName().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else if (i.getCode()!= null  && i.getCode().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else if (i.getPerson()!= null && i.getPerson().getName() !=null  && i.getPerson().getName().toLowerCase().contains(word)) {
+                    thisWordMatch = true;
+                }else{
+                    thisWordMatch=false;
+                }
+                if(thisWordMatch==false){
+                    allWordsMatch=false;
+                }
+            }
+
+            if (allWordsMatch) {
+                resIns.add(i);
+            }
+        }
+        
+        resIns.sort(Comparator.comparing(Nameable::getName));
+        
+        return resIns;
+        
+    }
+    
     public void searchLetter() {
         if (searchTerm == null || searchTerm.trim().equals("")) {
             JsfUtil.addErrorMessage("No Search Term");
@@ -463,6 +553,18 @@ public class LetterController implements Serializable {
     public Document getEncounter(java.lang.Long id) {
         return getFacade().find(id);
     }
+    
+    public Nameable getNameable(java.lang.Long id) {
+        Institution i = institutionFacade.find(id);
+        if(i!=null){
+            return i;
+        }
+        WebUser u = webUserFacade.find(id);
+        if(u!=null){
+            return u;
+        }
+        return null;
+    }
 
     public List<Document> getItemsAvailableSelectMany() {
         return getFacade().findAll();
@@ -598,8 +700,8 @@ public class LetterController implements Serializable {
         this.documentHistories = documentHistories;
     }
 
-    @FacesConverter(forClass = Document.class)
-    public static class EncounterControllerConverter implements Converter {
+    @FacesConverter(forClass = Nameable.class)
+    public static class NameableConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
@@ -607,8 +709,8 @@ public class LetterController implements Serializable {
                 return null;
             }
             LetterController controller = (LetterController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "encounterController");
-            return controller.getEncounter(getKey(value));
+                    getValue(facesContext.getELContext(), null, "letterController");
+            return controller.getNameable(getKey(value));
         }
 
         java.lang.Long getKey(String value) {
@@ -628,11 +730,11 @@ public class LetterController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Document) {
-                Document o = (Document) object;
+            if (object instanceof Nameable) {
+                Nameable o = (Nameable) object;
                 return getStringKey(o.getId());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Document.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Nameable.class.getName()});
                 return null;
             }
         }

@@ -36,6 +36,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.pojcs.Nameable;
@@ -88,7 +89,15 @@ public class Document implements Serializable {
 
     @ManyToOne
     private Institution fromInstitution;
+    @ManyToOne
+    private WebUser fromWebUser;
+    
 
+    @Transient
+    private Nameable fromInsOrUser;
+    
+    private String registrationNo;
+    private String senderName;
 
 
     @ManyToOne
@@ -129,6 +138,9 @@ public class Document implements Serializable {
     private WebUser completedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
+    
+    
+    
 
     public String getIdString() {
         if (id == null) {
@@ -418,4 +430,61 @@ public class Document implements Serializable {
         this.documentLanguage = documentLanguage;
     }
 
+    public String getRegistrationNo() {
+        return registrationNo;
+    }
+
+    public void setRegistrationNo(String registrationNo) {
+        this.registrationNo = registrationNo;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public WebUser getFromWebUser() {
+        return fromWebUser;
+    }
+
+    public void setFromWebUser(WebUser fromWebUser) {
+        this.fromWebUser = fromWebUser;
+    }
+
+    public Nameable getFromInsOrUser() {
+        if(this.fromInstitution!=null && this.fromWebUser!=null){
+            fromInsOrUser = fromWebUser;
+        }if(this.fromInstitution!=null && this.fromWebUser==null){
+            fromInsOrUser = fromInstitution;
+        }if(this.fromInstitution==null && this.fromWebUser!=null){
+            fromInsOrUser = fromWebUser;
+        }if(this.fromInstitution==null && this.fromWebUser==null){
+            fromInsOrUser = null;
+        }
+        return fromInsOrUser;
+    }
+
+    public void setFromInsOrUser(Nameable fromInsOrUser) {
+        this.fromInsOrUser = fromInsOrUser;
+        if(fromInsOrUser==null){
+            this.fromInstitution=null;
+            this.fromWebUser=null;
+        }else if(fromInsOrUser instanceof Institution){
+            this.fromInstitution= (Institution) fromInsOrUser;
+            this.fromWebUser=null;
+        }else if(fromInsOrUser instanceof WebUser){
+            this.fromWebUser = (WebUser) fromInsOrUser;
+            this.fromInstitution=null;
+        }else{
+            this.fromInstitution=null;
+            this.fromWebUser=null;
+        }
+        
+    }
+
+    
+    
 }

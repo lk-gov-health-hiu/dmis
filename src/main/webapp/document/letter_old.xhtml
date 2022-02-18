@@ -112,9 +112,9 @@
 
                             <h:panelGroup layout="block" class="w-100" >
 
-                                <p:autoComplete id="from"  value="#{letterController.selected.fromInsOrUser}" 
+                                <p:autoComplete id="from"  value="#{letterController.selected.fromInstitution}" 
                                                 class="form-control"
-                                                completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                completeMethod="#{institutionController.completeInstitutionsByWords}"
                                                 var="insf"
                                                 forceSelection="true"
                                                 required="true"
