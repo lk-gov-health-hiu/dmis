@@ -294,12 +294,12 @@ public class LetterController implements Serializable {
         docHx.setHistoryType(HistoryType.Letter_Assigned);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
-        docHx.setToUser(webUserCopy);
+        docHx.setToUser(webUser);
         docHx.setItem(minute);
 
         saveDocumentHx(docHx);
 
-        selected.setCurrentOwner(webUserCopy);
+        selected.setCurrentOwner(webUser);
         documentFacade.edit(selected);
 
         JsfUtil.addSuccessMessage("Letter assigned successfully");
