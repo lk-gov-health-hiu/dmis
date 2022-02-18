@@ -109,6 +109,21 @@
                                             <h:commandButton value="View" action="#{letterController.toLetterView()}"  class="btn btn-success fw-bold m-2 ">
                                                 <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
                                             </h:commandButton>
+                                            <h:commandButton value="Accept" 
+                                                             rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed ne true}" 
+                                                             action="#{letterController.toAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
+                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
+                                            </h:commandButton>
+                                            <h:commandButton value="Mark as NOT Accepted" 
+                                                             rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed eq true}" 
+                                                             action="#{letterController.toReverseAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
+                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
+                                            </h:commandButton>
+                                            <h:commandButton value="Assign &amp; Accept"
+                                                             rendered="#{h.currentOwner ne webUserController.loggedUser}" 
+                                                             action="#{letterController.toAssignAndAcceptLetterMySelf()}"  class="btn btn-success fw-bold m-2 ">
+                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
+                                            </h:commandButton>
                                         </p:column>
                                     </p:dataTable>
                                 </div>

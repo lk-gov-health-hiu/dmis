@@ -47,10 +47,10 @@ public class LetterController implements Serializable {
 
     @EJB
     DocumentHistoryFacade documentHxFacade;
-    
+
     @EJB
     InstitutionFacade institutionFacade;
-    
+
     @EJB
     WebUserFacade webUserFacade;
 
@@ -86,9 +86,6 @@ public class LetterController implements Serializable {
     public LetterController() {
     }
 
-    
-    
-    
     public List<Nameable> completeInsOrUsersByWords(String nameQry) {
         List<Nameable> resIns = new ArrayList<>();
         if (nameQry == null) {
@@ -102,22 +99,22 @@ public class LetterController implements Serializable {
         String words[] = nameQry.split("\\s+");
 
         for (Institution i : allIns) {
-             boolean allWordsMatch = true;
+            boolean allWordsMatch = true;
 
             for (String word : words) {
                 boolean thisWordMatch;
                 word = word.trim().toLowerCase();
-                if (i.getName() != null  && i.getName().toLowerCase().contains(word)) {
+                if (i.getName() != null && i.getName().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else if (i.getSname() != null  && i.getSname().toLowerCase().contains(word)) {
+                } else if (i.getSname() != null && i.getSname().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else if (i.getTname() != null  && i.getTname().toLowerCase().contains(word)) {
+                } else if (i.getTname() != null && i.getTname().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else{
-                    thisWordMatch=false;
+                } else {
+                    thisWordMatch = false;
                 }
-                if(thisWordMatch==false){
-                    allWordsMatch=false;
+                if (thisWordMatch == false) {
+                    allWordsMatch = false;
                 }
             }
 
@@ -125,29 +122,26 @@ public class LetterController implements Serializable {
                 resIns.add(i);
             }
         }
-               
-       
+
         List<WebUser> allUsrs = webUserApplicationController.getItems();
-       
-        
 
         for (WebUser i : allUsrs) {
-             boolean allWordsMatch = true;
+            boolean allWordsMatch = true;
 
             for (String word : words) {
                 boolean thisWordMatch;
                 word = word.trim().toLowerCase();
-                if (i.getName() != null  && i.getName().toLowerCase().contains(word)) {
+                if (i.getName() != null && i.getName().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else if (i.getCode()!= null  && i.getCode().toLowerCase().contains(word)) {
+                } else if (i.getCode() != null && i.getCode().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else if (i.getPerson()!= null && i.getPerson().getName() !=null  && i.getPerson().getName().toLowerCase().contains(word)) {
+                } else if (i.getPerson() != null && i.getPerson().getName() != null && i.getPerson().getName().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else{
-                    thisWordMatch=false;
+                } else {
+                    thisWordMatch = false;
                 }
-                if(thisWordMatch==false){
-                    allWordsMatch=false;
+                if (thisWordMatch == false) {
+                    allWordsMatch = false;
                 }
             }
 
@@ -155,13 +149,13 @@ public class LetterController implements Serializable {
                 resIns.add(i);
             }
         }
-        
+
         resIns.sort(Comparator.comparing(Nameable::getName));
-        
+
         return resIns;
-        
+
     }
-    
+
     public void searchLetter() {
         if (searchTerm == null || searchTerm.trim().equals("")) {
             JsfUtil.addErrorMessage("No Search Term");
@@ -484,6 +478,78 @@ public class LetterController implements Serializable {
         return "/document/letter_view";
     }
 
+    public void toAcceptMyLetter() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return;
+        }
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and h.historyType=:ht "
+                + " and h.toUser=:tu "
+                + " order by h.id desc";
+        Map m = new HashMap();
+        m.put("doc", selected);
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("tu", webUserController.getLoggedUser());
+        DocumentHistory dh = documentHxFacade.findFirstByJpql(j, m);
+        if (dh != null) {
+            dh.setCompleted(true);
+            dh.setCompletedAt(new Date());
+            dh.setCompletedBy(webUserController.getLoggedUser());
+            saveDocumentHx(dh);
+            JsfUtil.addSuccessMessage("Letter Accepted.");
+        } else {
+            JsfUtil.addErrorMessage("Error.");
+        }
+    }
+    
+    public void toReverseAcceptMyLetter() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return;
+        }
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and h.historyType=:ht "
+                + " and h.toUser=:tu "
+                + " order by h.id desc";
+        Map m = new HashMap();
+        m.put("doc", selected);
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("tu", webUserController.getLoggedUser());
+        DocumentHistory dh = documentHxFacade.findFirstByJpql(j, m);
+        if (dh != null) {
+            dh.setCompleted(false);
+            saveDocumentHx(dh);
+            JsfUtil.addSuccessMessage("Letter Accepted.");
+        } else {
+            JsfUtil.addErrorMessage("Error.");
+        }
+    }
+
+    public void toAssignAndAcceptLetterMySelf() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return;
+        }
+        DocumentHistory dh = new DocumentHistory();
+        dh.setDocument(selected);
+        dh.setHistoryType(HistoryType.Letter_Assigned);
+        dh.setToUser(webUserController.getLoggedUser());
+        saveDocumentHx(dh);
+        dh.setCompletedBy(webUserController.getLoggedUser());
+        dh.setCompleted(true);
+        dh.setCompletedAt(new Date());
+        JsfUtil.addSuccessMessage("Letter Accepted.");
+        saveDocumentHx(dh);
+
+    }
+
     public void save(Document e) {
         if (e == null) {
             return;
@@ -553,14 +619,14 @@ public class LetterController implements Serializable {
     public Document getEncounter(java.lang.Long id) {
         return getFacade().find(id);
     }
-    
+
     public Nameable getNameable(java.lang.Long id) {
         Institution i = institutionFacade.find(id);
-        if(i!=null){
+        if (i != null) {
             return i;
         }
         WebUser u = webUserFacade.find(id);
-        if(u!=null){
+        if (u != null) {
             return u;
         }
         return null;
