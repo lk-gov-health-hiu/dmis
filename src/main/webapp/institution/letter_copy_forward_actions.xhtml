@@ -201,38 +201,65 @@
                                          rowKey="#{c.id}"
                                          >
                                 <p:column headerText="ID" style="width: 6em;">
+                                    <f:facet name="header" >
+                                        <h:outputText value="ID" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.document.id}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Letter Date"  style="width: 7em;">
+                                     <f:facet name="header" >
+                                        <h:outputText value="Letter Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.document.documentDate}">
                                         <f:convertDateTime pattern="dd MM yy" ></f:convertDateTime>
                                     </h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Stamp Date"   style="width: 7em;">
+                                     <f:facet name="header" >
+                                        <h:outputText value="Stamp Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.document.receivedDate}">
                                         <f:convertDateTime pattern="dd MM yy" ></f:convertDateTime>
                                     </h:outputLabel>
                                 </p:column>
                                 <p:column headerText="From"   style="width: 8em; overflow: hidden;">
+                                     <f:facet name="header" >
+                                        <h:outputText value="From" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
                                     <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Letter Number"   style="width: 8em; overflow: hidden;">
+                                     <f:facet name="header" >
+                                        <h:outputText value="Letter Number" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.document.documentNumber }"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Topic"   >
+                                     <f:facet name="header" >
+                                        <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Copied/Forwarded To"
                                           rendered="#{letterController.webUserCopy eq null}"
                                           style="width: 8em; overflow: hidden;">
+                                     <f:facet name="header" >
+                                        <h:outputText value="Copied / Forwarded To" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.toUser.person.name}"></h:outputLabel>
                                     <h:outputLabel value="#{c.toInstitution.name}"></h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Minute"   style="width: 3em; overflow: hidden;">
+                                <p:column headerText="Minute"   style="width: 6em; overflow: hidden;">
+                                     <f:facet name="header" >
+                                        <h:outputText value="Minute" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.item.name}"></h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Comments"   style="width: 4em; overflow: hidden;">
+                                <p:column headerText="Comments"   style="width: 6em; overflow: hidden;">
+                                     <f:facet name="header" >
+                                        <h:outputText value="Comments" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                    </f:facet>
                                     <h:outputLabel value="#{c.comments}"></h:outputLabel>
                                 </p:column>
                             </p:dataTable>
