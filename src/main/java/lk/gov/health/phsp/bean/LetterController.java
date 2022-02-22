@@ -1,5 +1,7 @@
 package lk.gov.health.phsp.bean;
 
+import java.io.IOException;
+import java.io.InputStream;
 import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -29,14 +31,18 @@ import javax.persistence.TemporalType;
 import lk.gov.health.phsp.entity.DocumentHistory;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.HistoryType;
 import lk.gov.health.phsp.enums.SearchFilterType;
 import lk.gov.health.phsp.facade.DocumentHistoryFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.pojcs.Nameable;
+import org.apache.commons.io.IOUtils;
+import org.primefaces.model.file.UploadedFile;
 
 @Named
 @SessionScoped
@@ -53,12 +59,16 @@ public class LetterController implements Serializable {
 
     @EJB
     WebUserFacade webUserFacade;
+    
+    @EJB
+    UploadFacade uploadFacade;
 
     private List<Document> items = null;
     private List<Document> selectedItems = null;
     private Document selected;
     private DocumentHistory selectedHistory;
     private List<DocumentHistory> selectedDocumentHistories;
+    private List<Upload> selectedUploads;
     private List<DocumentHistory> documentHistories;
     @Inject
     private WebUserController webUserController;
@@ -83,9 +93,22 @@ public class LetterController implements Serializable {
     private Date toDate;
     private SearchFilterType searchFilterType;
 
+    private UploadedFile file;
+    
+    private Upload removingUpload;
+
     public LetterController() {
     }
 
+    public String removeUpload(){
+        if(removingUpload==null){
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return "";
+        }
+        uploadFacade.remove(removingUpload);
+        return toLetterView();
+    }
+    
     public List<Nameable> completeInsOrUsersByWords(String nameQry) {
         List<Nameable> resIns = new ArrayList<>();
         if (nameQry == null) {
@@ -156,6 +179,43 @@ public class LetterController implements Serializable {
 
     }
 
+    public void uploadLetterImageOrPdf() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing selected");
+            return;
+        }
+        if (file == null) {
+            JsfUtil.addErrorMessage("No file");
+            return;
+        }
+        try {
+            InputStream input = file.getInputStream();
+            byte[] bytes = IOUtils.toByteArray(input);
+            Upload u = new Upload();
+            u.setDocument(selected);
+            u.setBaImage(bytes);
+            u.setFileName(file.getFileName());
+            u.setFileType(file.getContentType());
+            save(u);
+        } catch (IOException ex) {
+            Logger.getLogger(LetterController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void save(Upload up) {
+        if (up == null) {
+            return;
+        }
+        if (up.getId() == null) {
+            up.setCreatedAt(new Date());
+            up.setCreater(webUserController.getLoggedUser());
+            uploadFacade.create(up);
+        } else {
+            uploadFacade.edit(up);
+        }
+    }
+
     public void searchLetter() {
         if (searchTerm == null || searchTerm.trim().equals("")) {
             JsfUtil.addErrorMessage("No Search Term");
@@ -189,7 +249,7 @@ public class LetterController implements Serializable {
         m = new HashMap();
         m.put("dt", DocumentType.Letter);
         m.put("ins", webUserController.getLoggedInstitution());
-        
+
         m.put("dn", "%" + searchTerm.trim() + "%");
 
         items = documentFacade.findByJpql(j, m);
@@ -283,7 +343,7 @@ public class LetterController implements Serializable {
 
         selected.setCompleted(false);
         save(selected);
-        
+
         institution = null;
 
         JsfUtil.addSuccessMessage("Letter Sent successfully");
@@ -360,7 +420,6 @@ public class LetterController implements Serializable {
         docHx.setComments(comments);
         saveDocumentHx(docHx);
 
-        
         comments = "";
 
         JsfUtil.addSuccessMessage("Action Recorded");
@@ -484,6 +543,16 @@ public class LetterController implements Serializable {
         Map m = new HashMap();
         m.put("doc", selected);
         selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
+        
+        j = "select h "
+                + " from Upload h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " order by h.id";
+        m = new HashMap();
+        m.put("doc", selected);
+        selectedUploads = uploadFacade.findByJpql(j, m);
+        
         return "/document/letter_view";
     }
 
@@ -733,6 +802,8 @@ public class LetterController implements Serializable {
         }
         return fromDate;
     }
+    
+    
 
     public void setFromDate(Date fromDate) {
         this.fromDate = fromDate;
@@ -780,6 +851,34 @@ public class LetterController implements Serializable {
     public void setDocumentHistories(List<DocumentHistory> documentHistories) {
         this.documentHistories = documentHistories;
     }
+
+    
+    
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public List<Upload> getSelectedUploads() {
+        return selectedUploads;
+    }
+
+    public void setSelectedUploads(List<Upload> selectedUploads) {
+        this.selectedUploads = selectedUploads;
+    }
+
+    public Upload getRemovingUpload() {
+        return removingUpload;
+    }
+
+    public void setRemovingUpload(Upload removingUpload) {
+        this.removingUpload = removingUpload;
+    }
+    
+    
 
     @FacesConverter(forClass = Nameable.class)
     public static class NameableConverter implements Converter {

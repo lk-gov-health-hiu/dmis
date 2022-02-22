@@ -39,6 +39,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -55,8 +56,9 @@ public class Upload implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     //Main Properties
     Long id;
-   
-    
+
+    @ManyToOne
+    private Document document;
     @ManyToOne
     Institution institution;
     @ManyToOne
@@ -80,6 +82,17 @@ public class Upload implements Serializable {
     String comments;
     @Enumerated(EnumType.STRING)
     private UploadType uploadType;
+    @Transient
+    private boolean image;
+    @Transient
+    private boolean pdf;
+
+    public String getIdStr() {
+        if (this.id == null) {
+            return null;
+        }
+        return id + "";
+    }
 
     public Institution getInstitution() {
         return institution;
@@ -126,8 +139,6 @@ public class Upload implements Serializable {
         return "com.divudi.entity.Patient[ id=" + id + " ]";
     }
 
-    
-    
     public WebUser getCreater() {
         return creater;
     }
@@ -208,8 +219,6 @@ public class Upload implements Serializable {
         this.comments = comments;
     }
 
-
-
     public UploadType getUploadType() {
         return uploadType;
     }
@@ -218,6 +227,38 @@ public class Upload implements Serializable {
         this.uploadType = uploadType;
     }
 
+    public Document getDocument() {
+        return document;
+    }
 
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+
+    public boolean isImage() {
+        if (fileType == null) {
+            image = false;
+        }else{
+            if(fileType.contains("image")){
+                image = true;
+            }else{
+                image = false;
+            }
+        }
+        return image;
+    }
+
+    public boolean isPdf() {
+        if(fileType==null){
+            pdf = false;
+        }else{
+            if(fileType.contains("pdf")){
+                pdf=true;
+            }else{
+                pdf=false;
+            }
+        }
+        return pdf;
+    }
 
 }
