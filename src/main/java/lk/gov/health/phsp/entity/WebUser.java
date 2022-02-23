@@ -89,6 +89,9 @@ public class WebUser implements Serializable, Nameable {
 
     String code;
 
+    @Transient
+    private String webUserPersonName;
+
     /*
     Last Edit Properties
      */
@@ -595,6 +598,15 @@ public class WebUser implements Serializable, Nameable {
         if (person != null) {
             person.setSname(sname);
         }
+    }
+
+    public String getWebUserPersonName() {
+        if (this.person == null) {
+            webUserPersonName = "";
+        }else{
+            webUserPersonName = this.person.getName();
+        }
+        return webUserPersonName;
     }
 
 }

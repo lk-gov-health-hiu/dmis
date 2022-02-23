@@ -1,7 +1,5 @@
 package lk.gov.health.phsp.bean;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.entity.Institution;
@@ -12,7 +10,6 @@ import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,14 +21,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
@@ -43,16 +37,13 @@ import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
-import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.primefaces.event.ColumnResizeEvent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Marker;
 
 @Named
 @SessionScoped
@@ -860,7 +851,7 @@ public class WebUserController implements Serializable {
                 usersForMyInstitute.add(wu);
             }
         }
-        Collections.sort(usersForMyInstitute, Comparator.comparing(WebUser::getName));
+        Collections.sort(usersForMyInstitute, Comparator.comparing(WebUser::getWebUserPersonName));
     }
 
     private boolean checkLoginNew() {
@@ -2329,6 +2320,48 @@ public class WebUserController implements Serializable {
 
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {
+
+        @Override
+        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
+            if (value == null || value.length() == 0) {
+                return null;
+            }
+            WebUserController controller = (WebUserController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "webUserController");
+            return controller.getWebUser(getKey(value));
+        }
+
+        java.lang.Long getKey(String value) {
+            java.lang.Long key;
+            key = Long.valueOf(value);
+            return key;
+        }
+
+        String getStringKey(java.lang.Long value) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(value);
+            return sb.toString();
+        }
+
+        @Override
+        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
+            if (object == null) {
+                return null;
+            }
+            if (object instanceof WebUser) {
+                WebUser o = (WebUser) object;
+                return getStringKey(o.getId());
+            } else {
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + WebUser.class.getName());
+            }
+        }
+
+    }
+    
+    
+    
+    @FacesConverter("webUserConverter")
+    public static class WebUserConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {

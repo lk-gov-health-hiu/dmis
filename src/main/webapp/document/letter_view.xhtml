@@ -23,8 +23,6 @@
                         <div class="row">
                             <div class="col-md-6">
 
-                                <h:panelGrid columns="1" >
-
                                     <p:panelGrid columns="2"  class="w-100 border border-light">
 
                                         <h:outputLabel class="fs-6" value="Letter ID:"></h:outputLabel>
@@ -69,9 +67,8 @@
                                         <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.currentOwner.name}"></h:outputLabel>
                                     </p:panelGrid>
 
-
                                     <h:form >
-                                        <h:dataTable value="#{letterController.selectedUploads}" var="up" >
+                                        <h:dataTable value="#{letterController.selectedUploads}" var="up" class="w-100 border border-light">
                                             <h:column >
                                                 <h:commandButton value="X" class="btn btn-danger" action="#{letterController.removeUpload()}">
                                                     <f:setPropertyActionListener target="#{letterController.removingUpload}"
@@ -94,8 +91,6 @@
                                             </h:column>
                                         </h:dataTable>
                                     </h:form>
-
-
 
                                     <p:dataTable value="#{letterController.selectedDocumentHistories}"
                                                  var="h" 
@@ -149,7 +144,7 @@
                                             </h:panelGroup>
 
                                             <h:panelGroup rendered="#{h.historyType eq 'Letter_Action_Taken'}" >
-                                                <h:outputLabel class="fs-6 " value="Action takeb by&nbsp;"></h:outputLabel>
+                                                <h:outputLabel class="fs-6 " value="Action taken by&nbsp;"></h:outputLabel>
                                                 <h:outputText value="#{h.createdBy.person.name}" ></h:outputText>
                                                 <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
                                                 <h:outputLabel class="fs-6 " value="#{h.createdAt}">
@@ -231,13 +226,7 @@
                                         </p:column>
                                     </p:dataTable>
 
-
-                                </h:panelGrid>
-
-
-
                             </div>
-
 
                             <div class="col-md-6">
                                 <h:form>
@@ -248,10 +237,7 @@
                                         <h:outputLabel class="fs-6" value="Assign To:"></h:outputLabel>
                                         <p:selectOneMenu 
                                             value="#{letterController.webUser}" 
-                                            class="form-control"
-                                            filter="true"
-                                            filterMatchMode="contains"
-                                            >
+                                            class="form-control">
                                             <f:selectItem itemLabel="Select" ></f:selectItem>
                                             <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
                                                            itemLabel="#{u.person.name}" itemValue="#{u}"></f:selectItems>
@@ -337,7 +323,7 @@
                                 </h:form>
 
                                 <h:form enctype="multipart/form-data">
-                                    <h:panelGrid columns="2" >
+                                    <h:panelGrid columns="2" class="w-100 border border-light">
                                         <f:facet name="header" >
                                             File Upload (PDF/Images)
                                         </f:facet>
@@ -350,7 +336,7 @@
 
                                 <h:form >
 
-                                    <h:panelGrid columns="1" >
+                                    <h:panelGrid columns="1" class="w-100 border border-light">
                                         <f:facet name="header" >
                                             My Actions
                                         </f:facet>
@@ -373,7 +359,6 @@
 
                             </div>
 
-
                         </div>
                     </div>
                     <div class="card-footer bg-white">
@@ -388,8 +373,6 @@
                                 </h:commandButton>
 
                                 <p:spacer height="1" width="30" ></p:spacer>
-
-
 
                                 <h:panelGroup id="barcode" >
                                     <div class="container-fluid " >
@@ -436,10 +419,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
 
 
             </ui:define>
