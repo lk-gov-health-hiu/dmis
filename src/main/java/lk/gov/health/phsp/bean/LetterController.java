@@ -179,14 +179,14 @@ public class LetterController implements Serializable {
 
     }
 
-    public void uploadLetterImageOrPdf() {
+    public String uploadLetterImageOrPdf() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing selected");
-            return;
+            return "";
         }
         if (file == null) {
             JsfUtil.addErrorMessage("No file");
-            return;
+            return "";
         }
         try {
             InputStream input = file.getInputStream();
@@ -200,7 +200,7 @@ public class LetterController implements Serializable {
         } catch (IOException ex) {
             Logger.getLogger(LetterController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        return toLetterView();
     }
 
     private void save(Upload up) {
@@ -607,10 +607,10 @@ public class LetterController implements Serializable {
         return "/document/letter_view";
     }
 
-    public void toAcceptMyLetter() {
+    public String toAcceptMyLetter() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
-            return;
+            return "";
         }
         String j = "select h "
                 + " from DocumentHistory h "
@@ -637,12 +637,13 @@ public class LetterController implements Serializable {
         } else {
             JsfUtil.addErrorMessage("Error.");
         }
+        return toLetterView();
     }
 
-    public void toReverseAcceptMyLetter() {
+    public String toReverseAcceptMyLetter() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
-            return;
+            return "";
         }
         String j = "select h "
                 + " from DocumentHistory h "
@@ -665,12 +666,13 @@ public class LetterController implements Serializable {
         } else {
             JsfUtil.addErrorMessage("Error.");
         }
+        return toLetterView();
     }
 
-    public void toAssignAndAcceptLetterMySelf() {
+    public String toAssignAndAcceptLetterMySelf() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
-            return;
+            return "";
         }
         DocumentHistory dh = new DocumentHistory();
         dh.setDocument(selected);
@@ -682,7 +684,7 @@ public class LetterController implements Serializable {
         dh.setCompletedAt(new Date());
         JsfUtil.addSuccessMessage("Letter Accepted.");
         saveDocumentHx(dh);
-
+        return toLetterView();
     }
 
     public void save(Document e) {
