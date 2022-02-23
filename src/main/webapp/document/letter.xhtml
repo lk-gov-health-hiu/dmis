@@ -125,7 +125,7 @@
                                                 >
                                     <f:ajax execute="method" render="fromPerson" event="blur" ></f:ajax>
                                     <f:ajax execute="method" render="fromPerson" event="itemSelect" ></f:ajax>
-                                    
+
                                 </p:autoComplete>
                                 <h:panelGroup id="fromPerson" class="w-25 float-left" >
                                     <h:inputText  a:placeholder="Enter Persons Name" 
@@ -133,6 +133,12 @@
                                                   rendered="#{letterController.selected.fromInstitution.name eq 'Personal'}"
                                                   value="#{letterController.selected.senderName}" ></h:inputText>
                                 </h:panelGroup>
+
+                                <h:commandLink value="Add New Institution" style="float: right;" target="_blank"
+                                               immediate="true"
+                                                 action="#{menuController.toAddNewInstitutionAtLetterEntry()}"
+                                                 ></h:commandLink>
+
                             </h:panelGroup>
                             <p:spacer></p:spacer>
 

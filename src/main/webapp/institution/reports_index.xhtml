@@ -29,9 +29,14 @@
                                     <div class="row">
                                         <div class="col-12 p-2">
                                             <h:form>
-                                                <h:commandLink value="Copy/Forward List" 
+
+                                                <h:commandLink value="Letter Receive Register" 
+                                                               action="#{letterController.toReportsLetterReceived()}"
+                                                               class="btn btn-outline-primary w-100 btn-block my-2">
+                                                </h:commandLink>
+                                                <h:commandLink value="Letter Copy/Forward Register" 
                                                                action="#{letterController.toReportsLetterCopyForwardActions()}"
-                                                               class="btn btn-outline-primary w-100 btn-block">
+                                                               class="btn btn-outline-primary w-100 btn-block my-2">
                                                 </h:commandLink>
                                             </h:form>
                                         </div>

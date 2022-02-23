@@ -261,10 +261,30 @@ public class LetterController implements Serializable {
     }
 
     public String toListLetters() {
+        items = null;
         return "/document/letter_list";
     }
 
     public void listLetters() {
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.SYSTEM_DATE;
+        }
+        String j = "select d "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt "
+                + " and d.institution=:ins ";
+        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
+        j += " order by d." + searchFilterType.getCode();
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+    
+    public void listLettersReceived() {
         if (searchFilterType == null) {
             searchFilterType = SearchFilterType.SYSTEM_DATE;
         }
@@ -491,7 +511,12 @@ public class LetterController implements Serializable {
 
     public String toReportsLetterCopyForwardActions() {
         documentHistories = null;
-        return "/institution/letter_copy_forward_actions";
+        return "/institution/letter_copy_forward_register";
+    }
+    
+    public String toReportsLetterReceived() {
+        documentHistories = null;
+        return "/institution/letter_receive_register";
     }
 
     public void fillForwardCopyActions() {
