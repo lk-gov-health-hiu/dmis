@@ -257,6 +257,13 @@ public class MenuController implements Serializable {
         }
     }
 
+    
+    public String toAddNewInstitutionAtLetterEntry() {
+        institutionController.prepareToAddNewInstitution();
+        return "/institution/institution_at_letter_entry";
+    }
+    
+    
     public String toListUsersFirstLogin() {
         webUserController.prepareListingAllUsers();
         return "/national/admin/user_list";

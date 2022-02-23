@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <h:outputStylesheet library="css" name="styles.min.css"></h:outputStylesheet>
+        <link rel="shortcut icon" href="#{resource['image/favicon.ico']}" type="image/x-icon" />
+        <title >
+            <ui:insert name="title">
+                Document Management Information System
+            </ui:insert>
+        </title>
+    </h:head>
+    <h:body>
+
+        <h:form >
+
+            <p:messages ></p:messages>
+
+            <h:panelGroup id="display" class="form mx-auto text-center">
+
+
+                <h:panelGrid columns="2" class="mx-auto">
+
+                    <h:outputLabel value="Name:" for="name" />
+                    <h:inputText id="name" 
+                                 autocomplete="off"
+                                 class="form-control"
+                                 value="#{institutionController.selected.name}" title="Name" />
+
+
+
+                    <h:outputLabel value="Code:" for="code" />
+                    <h:inputText id="code" 
+                                 autocomplete="off"
+                                 class="form-control"
+                                 value="#{institutionController.selected.code}" title="Code" />
+
+
+
+
+                    <h:outputLabel value="Parent:" for="parent" />
+                    <p:autoComplete  id="parent" class="d-block" inputStyleClass="form-control" 
+                                     value="#{institutionController.selected.parent}" 
+                                     completeMethod="#{institutionController.completeInstitutions}"
+                                     var="i" 
+                                     itemLabel="#{i.name}" 
+                                     itemValue="#{i}" 
+                                     forceSelection="True"
+                                     maxResults="15" 
+                                     minQueryLength="3">
+                    </p:autoComplete >
+
+                    <h:outputLabel value="Address:" for="address" />
+                    <h:inputText id="address" class="form-control"  value="#{institutionController.selected.address}" title="Address" />
+
+                    <h:outputLabel value="Fax:" for="fax" />
+                    <h:inputText id="fax" class="form-control" value="#{institutionController.selected.fax}" title="Fax" />
+
+                    <h:outputLabel value="Email:" for="email" />
+                    <h:inputText id="email" class="form-control" value="#{institutionController.selected.email}" title="Email" />
+
+                    <h:outputLabel value="Phone:" for="phone" />
+                    <h:inputText id="phone" class="form-control" value="#{institutionController.selected.phone}" title="Phone" />
+
+                    <h:outputLabel value="Mobile:" for="mobile" />
+                    <h:inputText id="mobile" class="form-control" value="#{institutionController.selected.mobile}" title="Mobile" />
+
+                    <h:outputLabel value="Web:" for="web" />
+                    <h:inputText id="web" class="form-control" value="#{institutionController.selected.web}" title="Web" />
+
+
+
+                    <p:spacer ></p:spacer>
+                    <h:commandButton style="margin-left: 1.4em" class="btn btn-success" 
+                                     actionListener="#{institutionController.saveOrUpdateInstitution()}" 
+                                     value="Save"/>
+
+                </h:panelGrid>
+
+
+
+
+
+            </h:panelGroup>
+
+
+        </h:form>
+
+    </h:body>
+</html>
