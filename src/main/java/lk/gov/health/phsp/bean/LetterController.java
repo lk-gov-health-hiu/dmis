@@ -59,7 +59,7 @@ public class LetterController implements Serializable {
 
     @EJB
     WebUserFacade webUserFacade;
-    
+
     @EJB
     UploadFacade uploadFacade;
 
@@ -94,21 +94,21 @@ public class LetterController implements Serializable {
     private SearchFilterType searchFilterType;
 
     private UploadedFile file;
-    
+
     private Upload removingUpload;
 
     public LetterController() {
     }
 
-    public String removeUpload(){
-        if(removingUpload==null){
+    public String removeUpload() {
+        if (removingUpload == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
             return "";
         }
         uploadFacade.remove(removingUpload);
         return toLetterView();
     }
-    
+
     public List<Nameable> completeInsOrUsersByWords(String nameQry) {
         List<Nameable> resIns = new ArrayList<>();
         if (nameQry == null) {
@@ -221,13 +221,39 @@ public class LetterController implements Serializable {
             JsfUtil.addErrorMessage("No Search Term");
             return;
         }
-        String j = "select d "
+
+        String noSpaceStr = searchTerm.replaceAll("\\s", ""); // using built in method  
+
+        Long tid = null;
+        try {
+            tid = Long.valueOf(noSpaceStr);
+        } catch (Exception e) {
+            tid = null;
+        }
+
+        String j;
+        Map m ;
+
+        if (tid != null && tid != 0l) {
+            j = "select d "
+                    + " from Document d "
+                    + " where d.id=:tid ";
+            m = new HashMap();
+            m.put("tid", tid);
+            items = documentFacade.findByJpql(j, m);
+            if (items != null && !items.isEmpty()) {
+                return;
+            }
+        }
+
+        j = "select d "
                 + " from Document d "
                 + " where d.retired=false "
                 + " and d.documentType=:dt "
                 + " and d.documentNumber=:dn"
                 + " order by d.documentDate desc";
-        Map m = new HashMap();
+
+        m = new HashMap();
         m.put("dt", DocumentType.Letter);
         m.put("dn", searchTerm.trim());
         items = documentFacade.findByJpql(j, m);
@@ -283,7 +309,7 @@ public class LetterController implements Serializable {
         m.put("td", getToDate());
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
-    
+
     public void listLettersReceived() {
         if (searchFilterType == null) {
             searchFilterType = SearchFilterType.SYSTEM_DATE;
@@ -513,7 +539,7 @@ public class LetterController implements Serializable {
         documentHistories = null;
         return "/institution/letter_copy_forward_register";
     }
-    
+
     public String toReportsLetterReceived() {
         documentHistories = null;
         return "/institution/letter_receive_register";
@@ -568,7 +594,7 @@ public class LetterController implements Serializable {
         Map m = new HashMap();
         m.put("doc", selected);
         selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
-        
+
         j = "select h "
                 + " from Upload h "
                 + " where h.retired=false "
@@ -577,7 +603,7 @@ public class LetterController implements Serializable {
         m = new HashMap();
         m.put("doc", selected);
         selectedUploads = uploadFacade.findByJpql(j, m);
-        
+
         return "/document/letter_view";
     }
 
@@ -827,8 +853,6 @@ public class LetterController implements Serializable {
         }
         return fromDate;
     }
-    
-    
 
     public void setFromDate(Date fromDate) {
         this.fromDate = fromDate;
@@ -877,8 +901,6 @@ public class LetterController implements Serializable {
         this.documentHistories = documentHistories;
     }
 
-    
-    
     public UploadedFile getFile() {
         return file;
     }
@@ -902,8 +924,6 @@ public class LetterController implements Serializable {
     public void setRemovingUpload(Upload removingUpload) {
         this.removingUpload = removingUpload;
     }
-    
-    
 
     @FacesConverter(forClass = Nameable.class)
     public static class NameableConverter implements Converter {

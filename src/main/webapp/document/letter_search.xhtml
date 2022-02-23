@@ -28,7 +28,8 @@
                                         <h:inputText class="fs-6 fw-bold" autocomplete="off" 
                                                      value="#{letterController.searchTerm}">
                                         </h:inputText>
-                                        <h:commandButton value="Search" action="#{letterController.searchLetter}"  class="btn btn-success fw-bold m-2 "></h:commandButton>
+                                        <h:commandButton value="Search" 
+                                                         action="#{letterController.searchLetter}"  class="btn btn-success fw-bold m-2 "></h:commandButton>
                                         <p:spacer height="1" width="30" ></p:spacer>
                                         <h:commandButton value="Download"  class="btn btn-success fw-bold m-2 ">
                                             <p:dataExporter target="tbl" type="xls" fileName="List of Letters" ></p:dataExporter>
