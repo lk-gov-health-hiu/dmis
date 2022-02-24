@@ -5,7 +5,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:body>
 
@@ -16,77 +17,80 @@
             <ui:define name="content">
                 <p:growl ></p:growl>
                 <h:form >
-                    <div class="card my-3">
+                    <div class="card my-3 w-100">
                         <h5 class="card-header bg-success">
                             <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Letter Search" ></p:outputLabel>
                         </h5>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <p:panelGrid columns="6"  class="w-100 border border-light">
-                                        <h:outputLabel class="fs-6" value="Search Term:"></h:outputLabel>
-                                        <h:inputText class="fs-6 fw-bold" autocomplete="off" 
-                                                     value="#{letterController.searchTerm}">
-                                        </h:inputText>
-                                        <h:commandButton value="Search" 
-                                                         action="#{letterController.searchLetter}"  class="btn btn-success fw-bold m-2 "></h:commandButton>
-                                        <p:spacer height="1" width="30" ></p:spacer>
-                                        <h:commandButton value="Download"  class="btn btn-success fw-bold m-2 ">
-                                            <p:dataExporter target="tbl" type="xls" fileName="List of Letters" ></p:dataExporter>
-                                        </h:commandButton>
-                                        <h:commandButton value="Print"  class="btn btn-success fw-bold m-2 ">
-                                            <p:printer target="tbl" ></p:printer>
-                                        </h:commandButton>
-                                    </p:panelGrid>
-                                    <p:dataTable value="#{letterController.items}"
-                                                 var="h" 
-                                                 rowKey="#{h.id}"
-                                                 id="tbl"
-                                                 class="w-100 me-auto"
-                                                 rows="10"
-                                                 paginator="true"
-                                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                                 rowsPerPageTemplate="5,10,{ShowAll|'All'}"
-
-                                                 >
-
-
-                                        <p:column headerText="Letter Date">
-                                            <h:outputText value="#{h.documentDate}" >
-                                                <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Received Date">
-                                            <h:outputText value="#{h.receivedDate}" >
-                                                <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Receive Method">
-                                            <h:outputText value="#{h.receivedAs.name}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Number">
-                                            <h:outputText value="#{h.documentNumber}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Title">
-                                            <h:outputText value="#{h.documentName}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Sent From">
-                                            <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Assigned to">
-                                            <h:outputText value="#{h.currentOwner.person.name}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Actions" exportable="false">
-                                            <h:commandButton value="View" action="#{letterController.toLetterView()}"  class="btn btn-success fw-bold m-2 ">
-                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
-                                            </h:commandButton>
-                                        </p:column>
-                                    </p:dataTable>
+                                <div class="col-1" >
+                                    <h:outputLabel  value="Search Term:"></h:outputLabel>
                                 </div>
+                                <div class="col-8" >
+                                    <h:inputText class="form form-control w-100" autocomplete="off" style="width: 40em;"
+                                                 value="#{letterController.searchTerm}"
+                                                 a:placeholder="Search Letters by ID or Title or Number of Registration Number"
+                                                 >
+                                    </h:inputText>
+                                </div>
+                                <div class="col-3" >
+                                    <h:commandButton value="Search" 
+                                                     action="#{letterController.searchLetter}"  class="btn btn-success fw-bold"></h:commandButton>
+                                </div>
+
+
                             </div>
+
+                            <p:dataTable value="#{letterController.items}"
+                                         var="h" 
+                                         rowKey="#{h.id}"
+                                         id="tbl"
+                                         class="w-100 me-auto"
+                                         rows="10"
+                                         paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                         >
+
+                                <p:column headerText="Letter Date" sortBy="#{h.documentDate}" style="width: 8em;">
+                                    <h:outputText value="#{h.documentDate}" >
+                                        <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Received Date" sortBy="#{h.receivedDate}"  style="width: 8em;">
+                                    <h:outputText value="#{h.receivedDate}" >
+                                        <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Receive Method"  style="width: 8em;" sortBy="#{h.receivedAs.name}" filterBy="#{h.receivedAs.name}" filterMatchMode="contains">
+                                    <h:outputText value="#{h.receivedAs.name}" ></h:outputText>
+                                </p:column>
+                                <p:column headerText="Number"  style="width: 12em;" sortBy="#{h.documentNumber}" filterBy="#{h.documentNumber}" filterMatchMode="contains">
+                                    <h:outputText value="#{h.documentNumber}" ></h:outputText>
+                                </p:column>
+                                <p:column headerText="Title"  sortBy="#{h.documentName}" filterBy="#{h.documentName}" filterMatchMode="contains">>
+                                    <h:outputText value="#{h.documentName}" ></h:outputText>
+                                </p:column>
+                                <p:column headerText="From"  sortBy="#{h.fromInstitution.name}" filterBy="#{h.fromInstitution.name}" filterMatchMode="contains">>
+                                    <h:panelGroup rendered="#{h.fromInstitution.name eq 'Personal'}" >
+                                        <h:outputLabel value="#{h.senderName}"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{h.fromInstitution.name ne 'Personal'}" >
+                                        <h:outputLabel value="#{h.fromInstitution.name}"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:outputLabel value="#{h.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Actions" exportable="false">
+                                    <h:commandButton value="View" action="#{letterController.toLetterView()}"  class="btn btn-success fw-bold w-100 ">
+                                        <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
+                                    </h:commandButton>
+                                </p:column>
+                            </p:dataTable>
+
                         </div>
                     </div>
+
                 </h:form>
 
 

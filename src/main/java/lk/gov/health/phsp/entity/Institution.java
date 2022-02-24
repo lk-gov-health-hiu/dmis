@@ -26,7 +26,6 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.InstitutionType;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -34,7 +33,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
@@ -94,8 +92,6 @@ public class Institution implements Serializable, Nameable {
     @ManyToOne
     private Area pdhsArea;
 
-  
-
     @ManyToOne
     private WebUser creater;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -116,6 +112,9 @@ public class Institution implements Serializable, Nameable {
 
     @Transient
     InstitutionType institutionTypeRootTrans;
+
+    @Transient
+    private String displayName;
 
     public Long getId() {
         return id;
@@ -243,8 +242,6 @@ public class Institution implements Serializable, Nameable {
     public void setWeb(String web) {
         this.web = web;
     }
-
-
 
     public String getCode() {
         if (code == null || code.trim().equals("")) {
@@ -462,6 +459,13 @@ public class Institution implements Serializable, Nameable {
         this.sname = sname;
     }
 
-    
-    
+    public String getDisplayName() {
+        if (this.name == null) {
+            displayName = "";
+        } else {
+            displayName = this.name;
+        }
+        return displayName;
+    }
+
 }

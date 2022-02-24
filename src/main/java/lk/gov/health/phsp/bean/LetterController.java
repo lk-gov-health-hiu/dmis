@@ -67,6 +67,7 @@ public class LetterController implements Serializable {
     private List<Document> selectedItems = null;
     private Document selected;
     private DocumentHistory selectedHistory;
+    private DocumentHistory deletingHistory;
     private List<DocumentHistory> selectedDocumentHistories;
     private List<Upload> selectedUploads;
     private List<DocumentHistory> documentHistories;
@@ -179,6 +180,18 @@ public class LetterController implements Serializable {
 
     }
 
+    public String deleteDocumentHistory(){
+        if(deletingHistory==null){
+            JsfUtil.addErrorMessage("Nothing to delete");
+            return "";
+        }
+        deletingHistory.setRetired(true);
+        deletingHistory.setRetiredAt(new Date());
+        deletingHistory.setRetiredBy(webUserController.getLoggedUser());
+        saveDocumentHx(deletingHistory);
+        return toLetterView();
+    }
+    
     public String uploadLetterImageOrPdf() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing selected");
@@ -269,7 +282,9 @@ public class LetterController implements Serializable {
                 + " and d.institution=:ins "
                 + " and (d.documentNumber like :dn "
                 + " or d.documentName like :dn "
-                + " or d.documentCode like :dn )"
+                + " or d.documentCode like :dn "
+                + " or d.registrationNo like :dn "
+                + " or d.senderName like :dn)"
                 + " order by d.documentDate desc";
 
         m = new HashMap();
@@ -448,6 +463,37 @@ public class LetterController implements Serializable {
 
         JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
         return toLetterView();
+    }
+    
+    public String forwardOrCopyToAndNew() {
+        if (webUserCopy == null) {
+            JsfUtil.addErrorMessage("Select a user to transfer ownership");
+            return "";
+        }
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Select a file");
+            return "";
+        }
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
+        docHx.setDocument(selected);
+        docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setToUser(webUserCopy);
+        docHx.setComments(comments);
+        docHx.setItem(minute);
+
+        saveDocumentHx(docHx);
+
+        selected.setCompleted(false);
+        documentFacade.edit(selected);
+
+        minute = null;
+        webUserCopy = null;
+        comments = "";
+
+        JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
+        return menuController.toLetterAddNew();
     }
 
     public String recordActionTaken() {
@@ -812,6 +858,8 @@ public class LetterController implements Serializable {
     public DocumentHistory getSelectedHistory() {
         return selectedHistory;
     }
+    
+    
 
     public void setSelectedHistory(DocumentHistory selectedHistory) {
         this.selectedHistory = selectedHistory;
@@ -925,6 +973,14 @@ public class LetterController implements Serializable {
 
     public void setRemovingUpload(Upload removingUpload) {
         this.removingUpload = removingUpload;
+    }
+
+    public DocumentHistory getDeletingHistory() {
+        return deletingHistory;
+    }
+
+    public void setDeletingHistory(DocumentHistory deletingHistory) {
+        this.deletingHistory = deletingHistory;
     }
 
     @FacesConverter(forClass = Nameable.class)

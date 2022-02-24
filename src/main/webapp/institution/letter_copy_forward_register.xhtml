@@ -2,7 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions" >
 
     <h:body>
         <ui:composition template="/institution/reports_index.xhtml">
@@ -10,16 +12,16 @@
                 Letter Copy / Forward Register
             </ui:define>
             <ui:define name="reports">
-                <h:panelGrid columns="1" styleClass="alignTop">
+                <h:panelGrid columns="1" styleClass="alignTop" class="w-100">
                     <f:facet name="header">
                         <p:outputLabel value="Letter Copy / Forward Register"></p:outputLabel>
                     </f:facet>
 
                     <h:form>
-                        <div class="container align-items-center">
 
-                            <h:panelGrid columns="2" >
-                                <h:panelGrid columns="2" >
+                        <div class="row" >
+                            <div class="col" >
+                                <h:panelGrid columns="2" class="w-100" border="0">
 
                                     <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
                                     <p:datePicker value="#{letterController.fromDate}" pattern="dd MMMM yyyy hh:mm" showTime="true">
@@ -38,7 +40,9 @@
                                                     >
                                     </p:autoComplete>
                                 </h:panelGrid>
-                                <h:panelGrid columns="1" >
+                            </div>
+                            <div class="col" >
+                                <h:panelGrid columns="1"  class="w-100">
                                     <h:commandButton value="Process" class="btn btn-danger form-control"
                                                      action="#{letterController.fillForwardCopyActions}">
                                     </h:commandButton>
@@ -53,10 +57,15 @@
                                     </h:commandButton>
 
                                 </h:panelGrid>
-                            </h:panelGrid>
-
-
+                            </div>
                         </div>
+
+
+
+
+
+
+
                         <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
                             <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
                                          rendered="true" rowIndexVar="n" var="c" paginator="true"
@@ -125,7 +134,16 @@
                                     </h:outputLabel>
                                 </p:column>
                                 <p:column >
-                                    <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
+
+                                    <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
+                                        <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{c.document.fromInstitution.name ne 'Personal'}" >
+                                        <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+
+
                                 </p:column>
                                 <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
                                           filterBy="#{c.document.documentNumber}"
@@ -214,6 +232,10 @@
                                     <f:facet name="header" >
                                         <h:outputText value="Letter Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
                                     </f:facet>
+                                    <f:facet name="footer" >
+                                        <h:outputText value="Received on"  ></h:outputText>
+                                    </f:facet>                                 
+
                                     <h:outputLabel value="#{c.document.documentDate}">
                                         <f:convertDateTime pattern="dd MM yy" ></f:convertDateTime>
                                     </h:outputLabel>
@@ -222,6 +244,7 @@
                                     <f:facet name="header" >
                                         <h:outputText value="Stamp Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
                                     </f:facet>
+
                                     <h:outputLabel value="#{c.document.receivedDate}">
                                         <f:convertDateTime pattern="dd MM yy" ></f:convertDateTime>
                                     </h:outputLabel>
@@ -230,8 +253,18 @@
                                     <f:facet name="header" >
                                         <h:outputText value="From" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
                                     </f:facet>
-                                    <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
+                                    <f:facet name="footer" >
+                                        <h:outputText value="Received By"  ></h:outputText>
+                                    </f:facet> 
+
+                                    <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
+                                        <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{c.document.fromInstitution.name ne 'Personal'}" >
+                                        <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
+                                    </h:panelGroup>
                                     <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+
                                 </p:column>
                                 <p:column headerText="Letter Number"   style="width: 8em; overflow: hidden;">
                                     <f:facet name="header" >
@@ -239,45 +272,49 @@
                                     </f:facet>
                                     <h:outputLabel value="#{c.document.documentNumber }"></h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Topic"   >
-                                    <f:facet name="header" >
-                                        <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-                                    <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
-                                </p:column>
+
                                 <p:column headerText="Copied/Forwarded To"
                                           rendered="#{letterController.webUserCopy eq null}"
                                           style="width: 8em; overflow: hidden;">
                                     <f:facet name="header" >
                                         <h:outputText value="Copied / Forwarded To" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
                                     </f:facet>
+                                    <f:facet name="footer" >
+                                        <h:outputText value="Signature"  ></h:outputText>
+                                    </f:facet>  
                                     <h:outputLabel value="#{c.toUser.person.name}"></h:outputLabel>
                                     <h:outputLabel value="#{c.toInstitution.name}"></h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Minute"   style="width: 6em; overflow: hidden;">
+                                <p:column headerText="Topic"   >
                                     <f:facet name="header" >
-                                        <h:outputText value="Minute" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                        <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
                                     </f:facet>
-                                    <h:outputLabel value="#{c.item.name}"></h:outputLabel>
+
+                                    <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Comments"   style="width: 6em; overflow: hidden;">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Comments" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-                                    <h:outputLabel value="#{c.comments}"></h:outputLabel>
-                                </p:column>
+
+                                <f:facet name="footer">
+                                    <h:panelGrid  columns="12"  class="d-none d-print-block m-0 p-0 W-100"  >
+                                        <h:outputText value="Total Number of Letters : " ></h:outputText>
+                                        <h:outputText value="#{fn:length(letterController.documentHistories)}" ></h:outputText>
+                                        <p:spacer ></p:spacer>
+                                        <h:outputText value="Received By : " ></h:outputText>
+                                        <h:outputText value="_________________" ></h:outputText>
+                                        <p:spacer ></p:spacer>
+                                        <h:outputText value="Received On : " ></h:outputText>
+                                        <h:outputText value="_________________" ></h:outputText>
+                                        <p:spacer ></p:spacer>
+                                        <h:outputText value="Signature :" ></h:outputText>
+                                        <h:outputText value="_________________" ></h:outputText>
+                                    </h:panelGrid>
+
+                                </f:facet>
+
+
+
                             </p:dataTable>
 
-                            <h:panelGrid columns="8"  class="d-none d-print-block m-0 p-0 W-100"  >
-                                <h:outputText value="Received By : " ></h:outputText>
-                                <h:outputText value="_______________________________" ></h:outputText>
-                                <p:spacer ></p:spacer>
-                                <h:outputText value="Received On : " ></h:outputText>
-                                <h:outputText value="_______________________________" ></h:outputText>
-                                <p:spacer ></p:spacer>
-                                <h:outputText value="Signature :" ></h:outputText>
-                                <h:outputText value="_______________________________" ></h:outputText>
-                            </h:panelGrid>
+
 
                         </h:panelGrid>
 

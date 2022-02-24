@@ -6,423 +6,385 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
-
-    <body>
-
+    <h:body>
         <ui:composition template="/template1.xhtml">
             <ui:define name="title">
                 Letter Details
             </ui:define>
             <ui:define name="content">
                 <p:growl ></p:growl>
-                <div class="card my-3">
-                    <h5 class="card-header bg-success">
-                        <p:outputLabel class="text-white fs-5 fw-bold my-2" value="View File" ></p:outputLabel>
-                    </h5>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
+                <h:form>
+                    <div class="row">
 
-                                    <p:panelGrid columns="2"  class="w-100 border border-light">
-
-                                        <h:outputLabel class="fs-6" value="Letter ID:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.id}"></h:outputLabel>
-
-
-                                        <h:outputLabel class="fs-6" value="Letter Date:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold" id="ldate" value="#{letterController.selected.documentDate}">
-                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                        </h:outputLabel>
-
-                                        <h:outputLabel class="fs-6" value="Stamp Date:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold" id="rdate" value="#{letterController.selected.receivedDate}">
-                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                        </h:outputLabel>
-
-                                        <h:outputLabel class="fs-6" value="Received Method:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.receivedAs.name}"></h:outputLabel>
-
-                                        <h:outputLabel class="fs-6" value="Language:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.documentLanguage.name}"></h:outputLabel>
-
-                                        <h:outputLabel class="fs-6" value="Letter Number:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold"  value="#{letterController.selected.documentNumber}"></h:outputLabel>
-
-                                        <h:outputLabel class="fs-6"  value="Letter Title:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.documentName}"></h:outputLabel>
-
-                                        <h:outputLabel class="fs-6"  value="Letter Sent from:"></h:outputLabel>
-                                        <h:panelGroup >
-                                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromInstitution.name}"></h:outputLabel>
-                                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromWebUser.person.nameWithTitle}"></h:outputLabel>
-                                        </h:panelGroup>
-
-                                        <h:outputLabel class="fs-6"  value="Letter Details:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.comments}"></h:outputLabel>
-
-                                        <h:outputLabel class="fs-6" value="Current Location:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold"  value="#{letterController.selected.currentInstitution.name}"></h:outputLabel>
-
-                                        <h:outputLabel class="fs-6"  value="Current Holder:"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.currentOwner.name}"></h:outputLabel>
-                                    </p:panelGrid>
-
-                                    <h:form >
-                                        <h:dataTable value="#{letterController.selectedUploads}" var="up" class="w-100 border border-light">
-                                            <h:column >
-                                                <h:commandButton value="X" class="btn btn-danger" action="#{letterController.removeUpload()}">
-                                                    <f:setPropertyActionListener target="#{letterController.removingUpload}"
-                                                                                 value="#{up}" >
-                                                    </f:setPropertyActionListener>
-                                                </h:commandButton>
-                                                <h:panelGroup rendered="#{up.pdf}" >
-                                                    <p:media value="#{streamedContentController.imageByUploadId}" class="w-100" cache="false"
-                                                             player="pdf" width="600px" >
-                                                        <f:param name="id" value="#{up.idStr}" />
-                                                    </p:media>
-                                                </h:panelGroup>
-                                                <h:panelGroup rendered="#{up.image}" >
-                                                    <p:graphicImage class="w-100"
-                                                                    cache="false"  value="#{streamedContentController.imageByUploadId}"  >
-                                                        <f:param name="id" value="#{up.idStr}" />
-                                                    </p:graphicImage>
-                                                </h:panelGroup>
-
-                                            </h:column>
-                                        </h:dataTable>
-                                    </h:form>
-
-                                    <p:dataTable value="#{letterController.selectedDocumentHistories}"
-                                                 var="h" 
-                                                 rowKey="#{h.id}"
-                                                 >
-                                        <f:facet name="header" >
-                                            <h:outputText value="History" ></h:outputText>
-                                        </f:facet>
-                                        <p:column headerText="Action">
-                                            <h:outputText value="#{h.historyType.label}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Details">
-                                            <h:panelGroup rendered="#{h.historyType eq 'Letter_Created'}" >
-                                                <h:outputLabel class="fs-6 " value="Entered to the system by&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdBy.person.name}"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{h.historyType eq 'Letter_Assigned'}" >
-                                                <h:outputLabel class="fs-6 " value="Assigned to&nbsp;"></h:outputLabel>
-                                                <h:outputText value="#{h.toUser.person.name}" ></h:outputText>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                                <h:panelGroup rendered="#{h.completed}" >
-                                                    <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                                    </h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                    </h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                                </h:panelGroup>
-                                                <h:panelGroup rendered="#{!h.completed}" >
-                                                    <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
-                                                </h:panelGroup>
-                                            </h:panelGroup>
-
-                                            <h:panelGroup rendered="#{h.historyType eq 'Letter_Action_Taken'}" >
-                                                <h:outputLabel class="fs-6 " value="Action taken by&nbsp;"></h:outputLabel>
-                                                <h:outputText value="#{h.createdBy.person.name}" ></h:outputText>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                            </h:panelGroup>
-
-                                            <h:panelGroup rendered="#{h.historyType eq 'Letter_Copy_or_Forward'}" >
-                                                <h:outputLabel class="fs-6 " value="Copied/Forwarded to&nbsp;"></h:outputLabel>
-                                                <h:panelGroup rendered="#{h.item ne null}" >
-                                                    <h:outputLabel class="fs-6 " value="(&nbsp;"></h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="#{h.item.name}"></h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value=")&nbsp;"></h:outputLabel>
-                                                </h:panelGroup>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
-                                                <h:outputText value="#{h.toUser.person.name}" ></h:outputText>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                                <h:panelGroup rendered="#{h.completed}" >
-                                                    <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                                    </h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                    </h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                                </h:panelGroup>
-                                                <h:panelGroup rendered="#{!h.completed}" >
-                                                    <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
-                                                </h:panelGroup>
-                                            </h:panelGroup>
-
-                                            <h:panelGroup rendered="#{h.historyType eq 'Letter_Sent'}" >
-                                                <h:outputLabel class="fs-6 " value="Letter sent from&nbsp;"></h:outputLabel>
-                                                <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
-                                                <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                                <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                                <h:panelGroup rendered="#{h.completed}" >
-                                                    <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                                    </h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                    </h:outputLabel>
-                                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                                </h:panelGroup>
-                                                <h:panelGroup rendered="#{!h.completed}" >
-                                                    <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
-                                                </h:panelGroup>
-                                            </h:panelGroup>
-                                        </p:column>
-                                        <p:column headerText="Comments">
-                                            <h:outputText value="#{h.comments}" ></h:outputText>
-                                        </p:column>
-                                    </p:dataTable>
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <h:form>
-                                    <p:panelGrid columns="2"  class="w-100 border border-light">
-                                        <f:facet name="header" >
-                                            Assign to
-                                        </f:facet>
-                                        <h:outputLabel class="fs-6" value="Assign To:"></h:outputLabel>
-                                        <p:selectOneMenu 
-                                            value="#{letterController.webUser}" 
-                                            class="form-control">
-                                            <f:selectItem itemLabel="Select" ></f:selectItem>
-                                            <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
-                                                           itemLabel="#{u.person.name}" itemValue="#{u}"></f:selectItems>
-                                        </p:selectOneMenu>
-                                        <p:spacer></p:spacer>
-                                        <h:commandButton class="form-control btn btn-primary" value="Assign" 
-                                                         action="#{letterController.assignTo()}" ></h:commandButton>
-                                    </p:panelGrid>
-                                </h:form>
-
-                                <h:form>
-                                    <p:panelGrid columns="2"  class="w-100 border border-light">
-                                        <f:facet name="header" >
-                                            Forward / Copy to
-                                        </f:facet>
-                                        <h:outputLabel class="fs-6" value="Minutes / Forward / Copy To:"></h:outputLabel>
-                                        <p:autoComplete value="#{letterController.webUserCopy}" 
-                                                        completeMethod="#{webUserController.completeUsersByWord}"
-                                                        class="form-control"
-                                                        var="insf"
-                                                        itemLabel="#{insf.name}"
-                                                        itemValue="#{insf}"
-                                                        >
-                                        </p:autoComplete>
-
-                                        <h:outputLabel class="fs-6" value="Minute:"></h:outputLabel>
-                                        <h:selectOneMenu id="lang"  
-                                                         value="#{letterController.minute}" 
-                                                         class="form-control"
-                                                         >
-                                            <f:selectItem itemLabel="Select" ></f:selectItem>
-                                            <f:selectItems value="#{itemApplicationController.minutes}"
-                                                           var="d"
-                                                           itemLabel="#{d.name}"
-                                                           itemValue="#{d}" ></f:selectItems>
-                                        </h:selectOneMenu>
-
-                                        <h:outputLabel class="fs-6" value="Comment:"></h:outputLabel>
-                                        <h:inputTextarea 
-                                            class="form-control"
-                                            value="#{letterController.comments}" ></h:inputTextarea>
-
-                                        <p:spacer></p:spacer>
-                                        <h:commandButton class="form-control btn btn-primary" value="Send" 
-                                                         action="#{letterController.forwardOrCopyTo()}" ></h:commandButton>
-                                    </p:panelGrid>
-                                </h:form>
-
-                                <h:form>
-                                    <p:panelGrid columns="2"  class="w-100 border border-light">
-                                        <f:facet name="header" >
-                                            Add Actions
-                                        </f:facet>
-                                        <h:outputLabel class="fs-6" value="Action Details:"></h:outputLabel>
-                                        <h:inputTextarea class="form-control" value="#{letterController.comments}" ></h:inputTextarea>
-                                        <p:spacer></p:spacer>
-                                        <h:commandButton class="form-control btn btn-primary"  value="Record Action"
-                                                         action="#{letterController.recordActionTaken()}" ></h:commandButton>
-                                    </p:panelGrid>
-                                </h:form>
-
-                                <h:form>
-                                    <p:panelGrid columns="2"  class="w-100 border border-light">
-                                        <f:facet name="header" >
-                                            Transfer out
-                                        </f:facet>
-                                        <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
-                                        <p:autoComplete  class="form-control" inputStyleClass="form-control" 
-                                                         value="#{letterController.institution}" 
-                                                         completeMethod="#{institutionController.completeInstitutions}"
-                                                         var="i" 
-                                                         itemLabel="#{i.name}" 
-                                                         itemValue="#{i}" 
-                                                         forceSelection="True"
-                                                         maxResults="15" 
-                                                         minQueryLength="3">
-                                        </p:autoComplete >
-                                        <p:spacer></p:spacer>
-                                        <h:commandButton value="Transfer" 
-                                                         class="form-control btn btn-primary" 
-                                                         action="#{letterController.transferOutFile()}" ></h:commandButton>
-                                    </p:panelGrid>
-                                </h:form>
-
-                                <h:form enctype="multipart/form-data">
-                                    <h:panelGrid columns="2" class="w-100 border border-light">
-                                        <f:facet name="header" >
-                                            File Upload (PDF/Images)
-                                        </f:facet>
-                                        <p:fileUpload value="#{letterController.file}" mode="simple" skinSimple="true"
-                                                      class="btn btn-success fw-bold m-2 "/>
-                                        <p:commandButton value="Submit" ajax="false" 
-                                                         action="#{letterController.uploadLetterImageOrPdf()}" class="btn btn-warning"/>
-                                    </h:panelGrid>
-
-                                </h:form>
-
-                                <h:form >
-
-                                    <h:panelGrid columns="1" class="w-100 border border-light">
-                                        <f:facet name="header" >
-                                            My Actions
-                                        </f:facet>
-                                        <h:commandButton value="Accept" 
-                                                         rendered="#{letterController.selected.currentOwner eq webUserController.loggedUser and letterController.selected.completed ne true}" 
-                                                         action="#{letterController.toAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
-                                        </h:commandButton>
-                                        <h:commandButton value="Mark as NOT Accepted" 
-                                                         rendered="#{letterController.selected.currentOwner eq webUserController.loggedUser and letterController.selected.completed eq true}" 
-                                                         action="#{letterController.toReverseAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
-                                        </h:commandButton>
-                                        <h:commandButton value="Assign &amp; Accept"
-                                                         rendered="#{letterController.selected.currentOwner ne webUserController.loggedUser}" 
-                                                         action="#{letterController.toAssignAndAcceptLetterMySelf()}"  class="btn btn-success fw-bold m-2 ">
-                                        </h:commandButton>
-                                    </h:panelGrid>
-
-                                </h:form>
-
-
-                            </div>
-
+                        <div class="col">
+                            <p:outputLabel class="fw-bold my-2" value="File Details" ></p:outputLabel>
                         </div>
+                        <div class="col">
+                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterEdit()}" ></h:commandButton>
+                            <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterAddNew()}">
+                            </h:commandButton>
+                            <h:commandButton value="Reports" action="#{menuController.toReportsIndex()}" >
+                            </h:commandButton>
+                        </div>
+
                     </div>
-                    <div class="card-footer bg-white">
-                        <div class="col-md-6">
-                            <h:form>
-                                <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterEdit()}" ></h:commandButton>
-                                <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterAddNew()}">
-                                </h:commandButton>
-                                <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="Print Barcode"
-                                                 >
-                                    <p:printer target="barcode" ></p:printer>
-                                </h:commandButton>
+                </h:form>
 
-                                <p:spacer height="1" width="30" ></p:spacer>
+                <div class="row">
+                    <div class="col-md-6">
 
-                                <h:panelGroup id="barcode" >
-                                    <div class="container-fluid " >
-                                        <div class="row w-100 text-center" >
-                                            <div class="col-12 w-100 text-center">
-                                                <p:barcode cache="false" hrp="none"  type="code39" height="10" width="50" value="#{letterController.selected.idString}" >
-                                                </p:barcode>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <p:panelGrid columns="2"  class="w-100 border border-light">
 
-                                    <h:panelGroup rendered="false" >
+                            <h:outputLabel class="fs-6" value="Letter ID:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.id}"></h:outputLabel>
 
-                                        <div class="container-fluid" >
-                                            <div class="row" >
-                                                <div class="col-2">Name</div>
-                                                <div  class="col-1">:</div>
-                                                <div class="col-9">#{letterController.selected.documentName}</div>
-                                            </div>
-                                            <div class="row" >
-                                                <div class="col-2">Number</div>
-                                                <div  class="col-1">:</div>
-                                                <div class="col-9">#{letterController.selected.documentNumber}</div>
-                                            </div>
-                                            <div class="row" >
 
-                                            </div>
-                                            <div class="row" >
-                                                <div class="col-12">
-                                                    <p:barcode cache="false"  type="code39" height="30" width="300" value="#{letterController.selected.idString}" >
-                                                    </p:barcode>
-                                                </div>
-                                            </div>
+                            <h:outputLabel class="fs-6" value="Letter Date:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" id="ldate" value="#{letterController.selected.documentDate}">
+                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                            </h:outputLabel>
 
-                                        </div>
+                            <h:outputLabel class="fs-6" value="Stamp Date:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" id="rdate" value="#{letterController.selected.receivedDate}">
+                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                            </h:outputLabel>
 
+                            <h:outputLabel class="fs-6" value="Received Method:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.receivedAs.name}"></h:outputLabel>
+
+                            <h:outputLabel class="fs-6" value="Language:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.documentLanguage.name}"></h:outputLabel>
+
+                            <h:outputLabel class="fs-6" value="Letter Number:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold"  value="#{letterController.selected.documentNumber}"></h:outputLabel>
+
+                            <h:outputLabel class="fs-6"  value="Letter Title:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.documentName}"></h:outputLabel>
+
+                            <h:outputLabel class="fs-6"  value="Letter Sent from:"></h:outputLabel>
+                            <h:panelGroup >
+                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromInstitution.name}"></h:outputLabel>
+                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+                            </h:panelGroup>
+
+                            <h:outputLabel class="fs-6"  value="Letter Details:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.comments}"></h:outputLabel>
+
+                            <h:outputLabel class="fs-6" value="Current Location:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold"  value="#{letterController.selected.currentInstitution.name}"></h:outputLabel>
+
+                            <h:outputLabel class="fs-6"  value="Current Holder:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.currentOwner.name}"></h:outputLabel>
+                        </p:panelGrid>
+
+                        <h:form >
+                            <h:dataTable value="#{letterController.selectedUploads}" var="up" class="w-100 border border-light">
+                                <h:column >
+                                    <h:commandButton value="X" class="btn btn-danger" action="#{letterController.removeUpload()}">
+                                        <f:setPropertyActionListener target="#{letterController.removingUpload}"
+                                                                     value="#{up}" >
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                    <h:panelGroup rendered="#{up.pdf}" >
+                                        <p:media value="#{streamedContentController.imageByUploadId}" class="w-100" cache="false"
+                                                 player="pdf" width="600px" >
+                                            <f:param name="id" value="#{up.idStr}" />
+                                        </p:media>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{up.image}" >
+                                        <p:graphicImage class="w-100"
+                                                        cache="false"  value="#{streamedContentController.imageByUploadId}"  >
+                                            <f:param name="id" value="#{up.idStr}" />
+                                        </p:graphicImage>
                                     </h:panelGroup>
 
+                                </h:column>
+                            </h:dataTable>
+                        </h:form>
 
+                        <p:dataTable value="#{letterController.selectedDocumentHistories}"
+                                     var="h" 
+                                     rowKey="#{h.id}"
+                                     >
+                            <f:facet name="header" >
+                                <h:outputText value="History" ></h:outputText>
+                            </f:facet>
+                            <p:column headerText="Action">
+                                <h:outputText value="#{h.historyType.label}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Details">
+                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Created'}" >
+                                    <h:outputLabel class="fs-6 " value="Entered to the system by&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdBy.person.name}"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Assigned'}" >
+                                    <h:outputLabel class="fs-6 " value="Assigned to&nbsp;"></h:outputLabel>
+                                    <h:outputText value="#{h.toUser.person.name}" ></h:outputText>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                    <h:panelGroup rendered="#{h.completed}" >
+                                        <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{!h.completed}" >
+                                        <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
+                                    </h:panelGroup>
                                 </h:panelGroup>
 
+                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Action_Taken'}" >
+                                    <h:outputLabel class="fs-6 " value="Action taken by&nbsp;"></h:outputLabel>
+                                    <h:outputText value="#{h.createdBy.person.name}" ></h:outputText>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                </h:panelGroup>
 
-                            </h:form>
-                        </div>
+                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Copy_or_Forward'}" >
+                                    <h:outputLabel class="fs-6 " value="Copied/Forwarded to&nbsp;"></h:outputLabel>
+                                    <h:panelGroup rendered="#{h.item ne null}" >
+                                        <h:outputLabel class="fs-6 " value="(&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.item.name}"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value=")&nbsp;"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
+                                    <h:outputText value="#{h.toUser.person.name}" ></h:outputText>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                    <h:panelGroup rendered="#{h.completed}" >
+                                        <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{!h.completed}" >
+                                        <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Sent'}" >
+                                    <h:outputLabel class="fs-6 " value="Letter sent from&nbsp;"></h:outputLabel>
+                                    <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
+                                    <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                    </h:outputLabel>
+                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                    <h:panelGroup rendered="#{h.completed}" >
+                                        <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{!h.completed}" >
+                                        <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </p:column>
+                            <p:column headerText="Comments">
+                                <h:outputText value="#{h.comments}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Delete">
+                                <h:commandButton value="X" action="#{letterController.deleteDocumentHistory()}" >
+                                    <f:setPropertyActionListener value="#{h}" target="#{letterController.deleteDocumentHistory}" ></f:setPropertyActionListener>
+                                </h:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
                     </div>
+
+                    <div class="col-md-6">
+
+
+                        <h:form>
+                            <p:panelGrid columns="2"  class="w-100 border border-light">
+                                <f:facet name="header" >
+                                    Forward / Copy to
+                                </f:facet>
+                                <h:outputLabel class="fs-6" value="Minutes / Forward / Copy To:"></h:outputLabel>
+                                <p:autoComplete value="#{letterController.webUserCopy}" 
+                                                completeMethod="#{webUserController.completeUsersByWord}"
+                                                class="form-control"
+                                                var="insf"
+                                                itemLabel="#{insf.name}"
+                                                itemValue="#{insf}"
+                                                >
+                                </p:autoComplete>
+
+                                <h:outputLabel class="fs-6" value="Minute:"></h:outputLabel>
+                                <h:selectOneMenu id="lang"  
+                                                 value="#{letterController.minute}" 
+                                                 class="form-control"
+                                                 >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{itemApplicationController.minutes}"
+                                                   var="d"
+                                                   itemLabel="#{d.name}"
+                                                   itemValue="#{d}" ></f:selectItems>
+                                </h:selectOneMenu>
+
+                                <h:outputLabel class="fs-6" value="Comment:"></h:outputLabel>
+                                <h:inputTextarea 
+                                    class="form-control"
+                                    value="#{letterController.comments}" ></h:inputTextarea>
+
+                                <h:commandButton class="form-control btn btn-warning" value="Send &amp; New" 
+                                                 action="#{letterController.forwardOrCopyToAndNew()}" ></h:commandButton>
+                                <h:commandButton class="form-control btn btn-primary" value="Send" 
+                                                 action="#{letterController.forwardOrCopyTo()}" ></h:commandButton>
+                            </p:panelGrid>
+                        </h:form>
+
+                        <h:form>
+                            <p:panelGrid columns="2"  class="w-100 border border-light">
+                                <f:facet name="header" >
+                                    Assign to
+                                </f:facet>
+                                <h:outputLabel class="fs-6" value="Assign To:"></h:outputLabel>
+                                <p:selectOneMenu 
+                                    value="#{letterController.webUser}" 
+                                    class="form-control">
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
+                                                   itemLabel="#{u.person.name}" itemValue="#{u}"></f:selectItems>
+                                </p:selectOneMenu>
+                                <p:spacer></p:spacer>
+                                <h:commandButton class="form-control btn btn-primary" value="Assign" 
+                                                 action="#{letterController.assignTo()}" ></h:commandButton>
+                            </p:panelGrid>
+                        </h:form>
+
+                        <h:form>
+                            <p:panelGrid columns="2"  class="w-100 border border-light">
+                                <f:facet name="header" >
+                                    Add Actions
+                                </f:facet>
+                                <h:outputLabel class="fs-6" value="Action Details:"></h:outputLabel>
+                                <h:inputTextarea class="form-control" value="#{letterController.comments}" ></h:inputTextarea>
+                                <p:spacer></p:spacer>
+                                <h:commandButton class="form-control btn btn-primary"  value="Record Action"
+                                                 action="#{letterController.recordActionTaken()}" ></h:commandButton>
+                            </p:panelGrid>
+                        </h:form>
+
+                        <h:form>
+                            <p:panelGrid columns="2"  class="w-100 border border-light">
+                                <f:facet name="header" >
+                                    Transfer out
+                                </f:facet>
+                                <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
+                                <p:autoComplete  class="form-control" inputStyleClass="form-control" 
+                                                 value="#{letterController.institution}" 
+                                                 completeMethod="#{institutionController.completeInstitutions}"
+                                                 var="i" 
+                                                 itemLabel="#{i.name}" 
+                                                 itemValue="#{i}" 
+                                                 forceSelection="True"
+                                                 maxResults="15" 
+                                                 minQueryLength="3">
+                                </p:autoComplete >
+                                <p:spacer></p:spacer>
+                                <h:commandButton value="Transfer" 
+                                                 class="form-control btn btn-primary" 
+                                                 action="#{letterController.transferOutFile()}" ></h:commandButton>
+                            </p:panelGrid>
+                        </h:form>
+
+                        <h:form enctype="multipart/form-data">
+                            <h:panelGrid columns="2" class="w-100 border border-light">
+                                <f:facet name="header" >
+                                    File Upload (PDF/Images)
+                                </f:facet>
+                                <p:fileUpload value="#{letterController.file}" mode="simple" skinSimple="true"
+                                              class="btn btn-success fw-bold m-2 "/>
+                                <p:commandButton value="Submit" ajax="false" 
+                                                 action="#{letterController.uploadLetterImageOrPdf()}" class="btn btn-warning"/>
+                            </h:panelGrid>
+
+                        </h:form>
+
+                        <h:form >
+
+                            <h:panelGrid columns="1" class="w-100 border border-light">
+                                <f:facet name="header" >
+                                    My Actions
+                                </f:facet>
+                                <h:commandButton value="Accept" 
+                                                 rendered="#{letterController.selected.currentOwner eq webUserController.loggedUser and letterController.selected.completed ne true}" 
+                                                 action="#{letterController.toAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
+                                </h:commandButton>
+                                <h:commandButton value="Mark as NOT Accepted" 
+                                                 rendered="#{letterController.selected.currentOwner eq webUserController.loggedUser and letterController.selected.completed eq true}" 
+                                                 action="#{letterController.toReverseAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
+                                </h:commandButton>
+                                <h:commandButton value="Assign &amp; Accept"
+                                                 rendered="#{letterController.selected.currentOwner ne webUserController.loggedUser}" 
+                                                 action="#{letterController.toAssignAndAcceptLetterMySelf()}"  class="btn btn-success fw-bold m-2 ">
+                                </h:commandButton>
+                            </h:panelGrid>
+
+                        </h:form>
+
+
+                    </div>
+
                 </div>
+
+
+
 
 
             </ui:define>
         </ui:composition>
-    </body>
+    </h:body>
 </html>

@@ -59,6 +59,6 @@ public interface Nameable {
     public String getSname() ;
     public void setSname(String sname);
 
-    
+    public String getDisplayName();
     
 }
