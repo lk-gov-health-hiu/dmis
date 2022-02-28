@@ -13,11 +13,11 @@
             </ui:define>
             <ui:define name="content">
                 <p:growl ></p:growl>
-               
+
                 <p:focus id="acCopyForwardToIns"></p:focus>
-                
+
                 <h:form>
-                    
+
                     <div class="row">
 
                         <div class="col">
@@ -106,43 +106,64 @@
                             </h:dataTable>
                         </h:form>
 
-                        <p:dataTable value="#{letterController.selectedDocumentHistories}"
-                                     var="h" 
-                                     rowKey="#{h.id}"
-                                     >
-                            <f:facet name="header" >
-                                <h:outputText value="History" ></h:outputText>
-                            </f:facet>
-                            <p:column headerText="Action">
-                                <h:outputText value="#{h.historyType.label}" ></h:outputText>
-                            </p:column>
-                            <p:column headerText="Details">
-                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Created'}" >
-                                    <h:outputLabel class="fs-6 " value="Entered to the system by&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdBy.person.name}"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Assigned'}" >
-                                    <h:outputLabel class="fs-6 " value="Assigned to&nbsp;"></h:outputLabel>
-                                    <h:outputText value="#{h.toUser.person.name}" ></h:outputText>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                    <h:panelGroup rendered="#{h.completed}" >
-                                        <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+
+                        <h:form >
+
+                            <p:dataTable value="#{letterController.selectedDocumentHistories}"
+                                         var="h" 
+                                         rowKey="#{h.id}"
+                                         >
+                                <f:facet name="header" >
+                                    <h:outputText value="History" ></h:outputText>
+                                </f:facet>
+                                <p:column headerText="Action">
+                                    <h:outputText value="#{h.historyType.label}" ></h:outputText>
+                                </p:column>
+                                <p:column headerText="Details">
+                                    <h:panelGroup rendered="#{h.historyType eq 'Letter_Created'}" >
+                                        <h:outputLabel class="fs-6 " value="Entered to the system by&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdBy.person.name}"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{h.historyType eq 'Letter_Assigned'}" >
+                                        <h:outputLabel class="fs-6 " value="Assigned to&nbsp;"></h:outputLabel>
+                                        <h:outputText value="#{h.toUser.person.name}" ></h:outputText>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                        <h:panelGroup rendered="#{h.completed}" >
+                                            <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{!h.completed}" >
+                                            <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{h.historyType eq 'Letter_Action_Taken'}" >
+                                        <h:outputLabel class="fs-6 " value="Action taken by&nbsp;"></h:outputLabel>
+                                        <h:outputText value="#{h.createdBy.person.name}" ></h:outputText>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdAt}">
                                             <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
                                         </h:outputLabel>
@@ -152,45 +173,17 @@
                                         </h:outputLabel>
                                         <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{!h.completed}" >
-                                        <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
-                                    </h:panelGroup>
-                                </h:panelGroup>
 
-                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Action_Taken'}" >
-                                    <h:outputLabel class="fs-6 " value="Action taken by&nbsp;"></h:outputLabel>
-                                    <h:outputText value="#{h.createdBy.person.name}" ></h:outputText>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                </h:panelGroup>
-
-                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Copy_or_Forward'}" >
-                                    <h:outputLabel class="fs-6 " value="Copied/Forwarded to&nbsp;"></h:outputLabel>
-                                    <h:panelGroup rendered="#{h.item ne null}" >
-                                        <h:outputLabel class="fs-6 " value="(&nbsp;"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 " value="#{h.item.name}"></h:outputLabel>
-                                        <h:outputLabel class="fs-6 " value=")&nbsp;"></h:outputLabel>
-                                    </h:panelGroup>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
-                                    <h:outputText value="#{h.toUser.person.name}" ></h:outputText>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                    <h:panelGroup rendered="#{h.completed}" >
-                                        <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                    <h:panelGroup rendered="#{h.historyType eq 'Letter_Copy_or_Forward'}" >
+                                        <h:outputLabel class="fs-6 " value="Copied/Forwarded to&nbsp;"></h:outputLabel>
+                                        <h:panelGroup rendered="#{h.item ne null}" >
+                                            <h:outputLabel class="fs-6 " value="(&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.item.name}"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value=")&nbsp;"></h:outputLabel>
+                                        </h:panelGroup>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
+                                        <h:outputText value="#{h.toUser.person.name}" ></h:outputText>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdAt}">
                                             <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
                                         </h:outputLabel>
@@ -199,28 +192,28 @@
                                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                         </h:outputLabel>
                                         <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                        <h:panelGroup rendered="#{h.completed}" >
+                                            <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{!h.completed}" >
+                                            <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
+                                        </h:panelGroup>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{!h.completed}" >
-                                        <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
-                                    </h:panelGroup>
-                                </h:panelGroup>
 
-                                <h:panelGroup rendered="#{h.historyType eq 'Letter_Sent'}" >
-                                    <h:outputLabel class="fs-6 " value="Letter sent from&nbsp;"></h:outputLabel>
-                                    <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
-                                    <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value="#{h.createdAt}">
-                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                    <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
-                                    <h:panelGroup rendered="#{h.completed}" >
-                                        <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                    <h:panelGroup rendered="#{h.historyType eq 'Letter_Sent'}" >
+                                        <h:outputLabel class="fs-6 " value="Letter sent from&nbsp;"></h:outputLabel>
+                                        <h:outputText value="#{h.fromInstitution.name}" ></h:outputText>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;to&nbsp;"></h:outputLabel>
+                                        <h:outputText value="#{h.toInstitution.name}" ></h:outputText>
+                                        <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdAt}">
                                             <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
                                         </h:outputLabel>
@@ -229,21 +222,35 @@
                                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                         </h:outputLabel>
                                         <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                        <h:panelGroup rendered="#{h.completed}" >
+                                            <h:outputLabel class="fs-6 " value="Received at&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="&nbsp;on&nbsp;"></h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value="#{h.createdAt}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                            </h:outputLabel>
+                                            <h:outputLabel class="fs-6 " value=".&nbsp;"></h:outputLabel>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{!h.completed}" >
+                                            <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
+                                        </h:panelGroup>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{!h.completed}" >
-                                        <h:outputLabel class="fs-6 " value="Yet to Receive in the system."></h:outputLabel>
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                            </p:column>
-                            <p:column headerText="Comments">
-                                <h:outputText value="#{h.comments}" ></h:outputText>
-                            </p:column>
-                            <p:column headerText="Delete">
-                                <h:commandButton value="X" action="#{letterController.deleteDocumentHistory()}" >
-                                    <f:setPropertyActionListener value="#{h}" target="#{letterController.deleteDocumentHistory}" ></f:setPropertyActionListener>
-                                </h:commandButton>
-                            </p:column>
-                        </p:dataTable>
+                                </p:column>
+                                <p:column headerText="Comments">
+                                    <h:outputText value="#{h.comments}" ></h:outputText>
+                                </p:column>
+                                <p:column headerText="Delete">
+                                    <h:commandButton value="X" action="#{letterController.deleteDocumentHistory()}" >
+                                        <f:setPropertyActionListener value="#{h}"
+                                                                     target="#{letterController.deletingHistory}" ></f:setPropertyActionListener>
+                                    </h:commandButton>
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:form>
+
 
                     </div>
 
