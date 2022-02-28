@@ -110,6 +110,14 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
+    public void saveCurrentDocument() {
+        System.out.println("saveCurrentDocument = " + selected);
+        if (selected == null) {
+            return;
+        }
+        save(selected);
+    }
+
     public List<Nameable> completeInsOrUsersByWords(String nameQry) {
         List<Nameable> resIns = new ArrayList<>();
         if (nameQry == null) {
@@ -180,8 +188,8 @@ public class LetterController implements Serializable {
 
     }
 
-    public String deleteDocumentHistory(){
-        if(deletingHistory==null){
+    public String deleteDocumentHistory() {
+        if (deletingHistory == null) {
             JsfUtil.addErrorMessage("Nothing to delete");
             return "";
         }
@@ -191,7 +199,7 @@ public class LetterController implements Serializable {
         saveDocumentHx(deletingHistory);
         return toLetterView();
     }
-    
+
     public String uploadLetterImageOrPdf() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing selected");
@@ -245,7 +253,7 @@ public class LetterController implements Serializable {
         }
 
         String j;
-        Map m ;
+        Map m;
 
         if (tid != null && tid != 0l) {
             j = "select d "
@@ -464,7 +472,7 @@ public class LetterController implements Serializable {
         JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
         return toLetterView();
     }
-    
+
     public String forwardOrCopyToAndNew() {
         if (webUserCopy == null) {
             JsfUtil.addErrorMessage("Select a user to transfer ownership");
@@ -858,8 +866,6 @@ public class LetterController implements Serializable {
     public DocumentHistory getSelectedHistory() {
         return selectedHistory;
     }
-    
-    
 
     public void setSelectedHistory(DocumentHistory selectedHistory) {
         this.selectedHistory = selectedHistory;

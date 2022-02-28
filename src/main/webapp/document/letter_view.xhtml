@@ -13,7 +13,11 @@
             </ui:define>
             <ui:define name="content">
                 <p:growl ></p:growl>
+               
+                <p:focus id="acCopyForwardToIns"></p:focus>
+                
                 <h:form>
+                    
                     <div class="row">
 
                         <div class="col">
@@ -252,7 +256,7 @@
                                     Forward / Copy to
                                 </f:facet>
                                 <h:outputLabel class="fs-6" value="Minutes / Forward / Copy To:"></h:outputLabel>
-                                <p:autoComplete value="#{letterController.webUserCopy}" 
+                                <p:autoComplete id="acCopyForwardToIns" value="#{letterController.webUserCopy}" 
                                                 completeMethod="#{webUserController.completeUsersByWord}"
                                                 class="form-control"
                                                 var="insf"

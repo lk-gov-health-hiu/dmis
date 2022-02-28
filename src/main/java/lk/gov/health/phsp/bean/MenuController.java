@@ -68,6 +68,7 @@ public class MenuController implements Serializable {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.File);
         nd.setDocumentDate(new Date());
+        nd.setReceivedDate(new Date());
         nd.setInstitution(webUserController.getLoggedInstitution());
         nd.setInstitutionUnit(webUserController.getLoggedInstitution());
         nd.setOwner(webUserController.getLoggedUser());
@@ -84,6 +85,7 @@ public class MenuController implements Serializable {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
         nd.setDocumentDate(new Date());
+        nd.setReceivedDate(new Date());
         nd.setInstitution(webUserController.getLoggedInstitution());
         nd.setInstitutionUnit(webUserController.getLoggedInstitution());
         nd.setOwner(webUserController.getLoggedUser());
@@ -97,6 +99,7 @@ public class MenuController implements Serializable {
         return "/document/letter";
     }
 
+    
     public String toFileSearch() {
         fileController.setItems(null);
         fileController.setSearchTerm("");
