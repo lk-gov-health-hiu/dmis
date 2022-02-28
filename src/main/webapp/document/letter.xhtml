@@ -5,7 +5,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:f="http://xmlns.jcp.org/jsf/core" 
       xmlns:p="http://primefaces.org/ui" 
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      >
     <h:body>
         <ui:composition template="/template1.xhtml">
             <ui:define name="title" >
@@ -103,15 +104,15 @@
                             <h:outputLabel for="topic"  >Letter Title 
                                 <small class="px-2 text-muted">Required</small></h:outputLabel>
                             <h:panelGroup layout="block" class="w-100" >
-                                <h:inputText id="topic" 
-                                             autocomplete="off"
-                                             value="#{letterController.selected.documentName}" class="form-control"
-                                             required="true" requiredMessage="Need a Title">
+                                <h:inputTextarea id="topic" 
+                                                 a:maxlength="255"
+                                                 value="#{letterController.selected.documentName}" class="form-control"
+                                                 required="true" requiredMessage="Need a Title">
                                     <p:ajax event="blur" 
                                             listener="#{letterController.saveCurrentDocument()}"
                                             process="@form" 
                                             update="letterId" ></p:ajax>
-                                </h:inputText>
+                                </h:inputTextarea>
                             </h:panelGroup>
                             <h:message class="text-danger small" for="topic"></h:message>
 
