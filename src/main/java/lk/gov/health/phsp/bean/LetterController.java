@@ -26,6 +26,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.entity.DocumentHistory;
@@ -112,6 +113,14 @@ public class LetterController implements Serializable {
 
     public void saveCurrentDocument() {
         System.out.println("saveCurrentDocument = " + selected);
+        if (selected == null) {
+            return;
+        }
+        save(selected);
+    }
+    
+    public void saveCurrentDocumentAjax(AjaxBehaviorEvent event) {
+        System.out.println("saveCurrentDocumentAjax = " + selected);
         if (selected == null) {
             return;
         }
