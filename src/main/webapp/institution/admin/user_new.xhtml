@@ -33,33 +33,51 @@
                             <div class="form-group row mb-2">
                                 <label class="col-md-4 fs-6 fw-bold col-form-label" for="Name">
                                     Name<small>(Required)</small>
-                                    </label>
-                                
+                                </label>
+
                                 <div class="col-md-8">
                                     <p:inputText autocomplete="off" class="form-control w-100" id="name" required="true" requiredMessage="name is required" value="#{webUserController.selected.person.name}" title="Name" />
                                 </div>
                             </div>
-                            
-                             <div class="form-group row mb-2">
+
+                            <div class="form-group row mb-2">
                                 <label class="col-md-4 fs-6 fw-bold col-form-label" for="Code">
                                     Code
-                                    </label>
-                                
+                                </label>
+
                                 <div class="col-md-8">
                                     <p:inputText autocomplete="off" class="form-control w-100" id="code" required="false" requiredMessage="code is required" value="#{webUserController.selected.person.code}" title="Name" />
                                 </div>
                             </div>
-                            
+
                             <div class="form-group row">
                                 <label class="col-md-4 col-form-label fs-6 fw-bold" for="txtU">
-                                        Username<small>(Required)</small>
-                                    </label>
-                            
+                                    Publicly Listed
+                                </label>
+
+                                <div class="col-md-8">
+                                    <p:selectBooleanButton id="chkPublic" 
+                                                           offLabel="No"
+                                                           onLabel="Yes"
+                                                           value="#{webUserController.selected.publiclyListed}" 
+                                                           class="" />
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label fs-6 fw-bold" for="txtU">
+                                    Username<small>(Required)</small>
+                                </label>
+
                                 <div class="col-md-8">
                                     <p:inputText id="txtU" value="#{webUserController.selected.name}" class="form-control w-100" required="true" autocomplete="off" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
                                     <p:outputLabel id="lblune" style="color: red;" value="#{webUserController.userNameExsists()?'Username is already taken. Please try another.':''}" ></p:outputLabel>
                                 </div>
                             </div>
+
+
+
+
                             <div class="form-group row mb-2 mt-0">
                                 <label class="col-md-4 fs-6 fw-bold col-form-label" for="txtP">Password<small>(Required)</small>
                                 </label>
@@ -70,9 +88,9 @@
                             </div>
                             <div class="form-group row mb-2">
                                 <label class="col-md-4 fs-6 fw-bold col-form-label" for="txtPr">
-                                        Re-enter Password<small>(Required)</small>
-                                    </label>
-                              
+                                    Re-enter Password<small>(Required)</small>
+                                </label>
+
                                 <div class="col-md-8">
                                     <p:password  id="txtPr" class="form-control w-100" value="#{webUserController.passwordReenter}" title="Re-enter Password" required="true" autocomplete="off" requiredMessage="Password is required."/>
                                 </div>
@@ -81,7 +99,7 @@
                                 <label class="col-md-4 fs-6 fw-bold col-form-label" for="institution" >
                                     Institution<small>(Required)</small>
                                 </label>
-                                
+
                                 <div class="col-md-8">
                                     <p:selectOneMenu id="institution" class="form-control form-control-sm W-100" value="#{webUserController.selected.institution}" required="true">
                                         <f:selectItem itemLabel="Please Select" ></f:selectItem>
@@ -107,7 +125,7 @@
                             <div class="form-group row mb-2">
                                 <label class="col-md-4 fs-6 fw-bold col-form-label" for="webUserRole">
                                     Role<small>(Required)</small>
-                                    </label>
+                                </label>
                                 <div class="col-md-8">
                                     <p:selectOneMenu class="form-control form-control-sm w-100" id="webUserRole" value="#{webUserController.selected.webUserRole}" required="true">
                                         <f:selectItem itemLabel="Select" ></f:selectItem>

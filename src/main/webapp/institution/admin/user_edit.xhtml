@@ -6,13 +6,13 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <body>
+    <h:body>
 
-        <ui:composition template="/hospital/admin/index.xhtml">
+        <ui:composition template="/institution/admin/index.xhtml">
             <ui:define name="admin">
 
-                <h:form id="WebUserEditForm">
-                    <p:panel id="WebUserEditDlg">
+                <h:form >
+                    <p:panel >
 
 
                         <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" class="m-auto border border-light bg-white">
@@ -46,6 +46,15 @@
                                          title="Code" />
 
 
+                            <p:outputLabel value="Publicely Listed" 
+                                           for="chkPublic" class="fs-6 fw-bold"/>
+                            <p:selectBooleanButton id="chkPublic" 
+                                                   offLabel="No"
+                                                   onLabel="Yes"
+                                                   value="#{webUserController.selected.publiclyListed}" 
+                                                   class="" />
+                            
+                            
                             <p:outputLabel value="Institution" for="institution" class="fs-6 fw-bold"/>
                             <p:selectOneMenu class="form-control form-control-sm w-100"
                                              id="institution" style="width: 100%;" value="#{webUserController.selected.institution}" required="true">
@@ -67,7 +76,7 @@
                             <p:outputLabel value="Role" for="webUserRole" class="fs-6 fw-bold"/>
                             <p:selectOneMenu class="form-control form-control-sm w-100" id="webUserRole" value="#{webUserController.selected.webUserRole}"  required="true">
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{webUserController.webUserRolesForHospitalAdmin}" 
+                                <f:selectItems value="#{webUserController.webUserRolesForInstitutionAdmin}" 
                                                var="r" 
                                                itemLabel="#{r.label}" 
                                                itemValue="#{r}" >
@@ -86,6 +95,6 @@
             </ui:define>
         </ui:composition>
 
-    </body>
+    </h:body>
 </html>
 

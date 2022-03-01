@@ -90,7 +90,7 @@
     
     <error-page>
         <error-code>500</error-code>
-        <location>/WEB-INF/errorpages/general.xhtml</location>
+        <location>/app/error.xhtml</location>
     </error-page>
 
 

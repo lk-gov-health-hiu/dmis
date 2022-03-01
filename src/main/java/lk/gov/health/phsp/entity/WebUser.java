@@ -52,6 +52,7 @@ public class WebUser implements Serializable, Nameable {
     //Main Properties
     @Column(length = 50, nullable = false, unique = true)
     String name;
+    private boolean publiclyListed;
     String description;
     //Created Properties
     @ManyToOne
@@ -116,20 +117,6 @@ public class WebUser implements Serializable, Nameable {
     private boolean institutionAdministrator;
     @Transient
     private boolean authorityUser;
-    @Transient
-    private boolean meAdministrator;
-    @Transient
-    private boolean meSuperUser;
-    @Transient
-    private boolean meUser;
-    @Transient
-    private boolean doctor;
-    @Transient
-    private boolean nurse;
-    @Transient
-    private boolean client;
-    @Transient
-    private boolean midwife;
     @Transient
     private WebUserRole assumedRole;
     @Transient
@@ -430,6 +417,8 @@ public class WebUser implements Serializable, Nameable {
     public void setAssumedRole(WebUserRole assumedRole) {
         this.assumedRole = assumedRole;
     }
+    
+    
 
     public Institution getAssumedInstitution() {
         return assumedInstitution;
@@ -619,6 +608,14 @@ public class WebUser implements Serializable, Nameable {
             displayName = this.person.getName();
         }
         return displayName;
+    }
+
+    public boolean isPubliclyListed() {
+        return publiclyListed;
+    }
+
+    public void setPubliclyListed(boolean publiclyListed) {
+        this.publiclyListed = publiclyListed;
     }
 
 }
