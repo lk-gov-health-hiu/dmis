@@ -117,7 +117,7 @@
                                             </h:commandButton>
                                             <h:commandButton value="Accept" 
                                                              rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed ne true}" 
-                                                             action="#{letterController.toAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
+                                                             action="#{letterController.toAcceptAssignedLetter()}"  class="btn btn-success fw-bold m-2 ">
                                                 <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
                                             </h:commandButton>
                                             <h:commandButton value="Mark as NOT Accepted" 

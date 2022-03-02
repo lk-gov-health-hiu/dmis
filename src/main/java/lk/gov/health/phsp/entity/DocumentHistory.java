@@ -17,8 +17,10 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.HistoryType;
+import lk.gov.health.phsp.pojcs.Nameable;
 
 /**
  *
@@ -39,12 +41,12 @@ public class DocumentHistory implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private HistoryType historyType;
-    
+
     @Lob
     private String descreption;
 
     private Double orderNo;
-    
+
     @ManyToOne
     private Item item;
 
@@ -53,12 +55,15 @@ public class DocumentHistory implements Serializable {
 
     @ManyToOne
     private Institution toInstitution;
-    
+
+    @ManyToOne
+    private Institution institution;
+
     @ManyToOne
     private WebUser fromUser;
     @ManyToOne
     private WebUser toUser;
-    
+
     @Lob
     private String comments;
 
@@ -95,8 +100,79 @@ public class DocumentHistory implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Document document;
 
-    
-    
+    @Transient
+    private Nameable fromInsOrUser;
+    @Transient
+    private Nameable toInsOrUser;
+
+    public Nameable getFromInsOrUser() {
+        if (this.fromInstitution != null && this.fromUser != null) {
+            fromInsOrUser = fromUser;
+        }
+        if (this.fromInstitution != null && this.fromUser == null) {
+            fromInsOrUser = fromInstitution;
+        }
+        if (this.fromInstitution == null && this.fromUser != null) {
+            fromInsOrUser = fromUser;
+        }
+        if (this.fromInstitution == null && this.fromUser == null) {
+            fromInsOrUser = null;
+        }
+        return fromInsOrUser;
+    }
+
+    public void setFromInsOrUser(Nameable fromInsOrUser) {
+        this.fromInsOrUser = fromInsOrUser;
+        if (fromInsOrUser == null) {
+            this.fromInstitution = null;
+            this.fromUser = null;
+        } else if (fromInsOrUser instanceof Institution) {
+            this.fromInstitution = (Institution) fromInsOrUser;
+            this.fromUser = null;
+        } else if (fromInsOrUser instanceof WebUser) {
+            this.fromUser = (WebUser) fromInsOrUser;
+            this.fromInstitution = null;
+        } else {
+            this.fromInstitution = null;
+            this.fromUser = null;
+        }
+
+    }
+
+    public Nameable getToInsOrUser() {
+        if (this.toInstitution != null && this.toUser != null) {
+            toInsOrUser = toUser;
+        }
+        if (this.toInstitution != null && this.toUser == null) {
+            toInsOrUser = toInstitution;
+        }
+        if (this.toInstitution == null && this.toUser != null) {
+            toInsOrUser = toUser;
+        }
+        if (this.toInstitution == null && this.toUser == null) {
+            toInsOrUser = null;
+        }
+        return toInsOrUser;
+    }
+
+    public void setToInsOrUser(Nameable toInsOrUser) {
+        this.toInsOrUser = toInsOrUser;
+        if (toInsOrUser == null) {
+            this.toInstitution = null;
+            this.toUser = null;
+        } else if (toInsOrUser instanceof Institution) {
+            this.toInstitution = (Institution) toInsOrUser;
+            this.toUser = null;
+        } else if (toInsOrUser instanceof WebUser) {
+            this.toUser = (WebUser) toInsOrUser;
+            this.toInstitution = null;
+        } else {
+            this.toInstitution = null;
+            this.toUser = null;
+        }
+
+    }
+
     public Document getDocument() {
         return document;
     }
@@ -112,8 +188,6 @@ public class DocumentHistory implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-   
 
     public String getDescreption() {
         return descreption;
@@ -138,8 +212,6 @@ public class DocumentHistory implements Serializable {
     public void setFromInstitution(Institution fromInstitution) {
         this.fromInstitution = fromInstitution;
     }
-
-   
 
     public WebUser getCreatedBy() {
         return createdBy;
@@ -172,8 +244,6 @@ public class DocumentHistory implements Serializable {
     public void setAcceptedAt(Date acceptedAt) {
         this.acceptedAt = acceptedAt;
     }
-
-    
 
     public boolean isRetired() {
         return retired;
@@ -278,7 +348,13 @@ public class DocumentHistory implements Serializable {
     public void setItem(Item item) {
         this.item = item;
     }
-    
-    
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
 
 }

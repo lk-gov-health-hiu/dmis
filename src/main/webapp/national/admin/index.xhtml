@@ -2,92 +2,97 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:p="http://primefaces.org/ui" xmlns:h="http://xmlns.jcp.org/jsf/html">
-<h:body>
-    <ui:composition template="/template1.xhtml">
-        <ui:define name="content">
+      xmlns:p="http://primefaces.org/ui" xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
 
-            <h:panelGroup rendered="#{webUserController.hasPrivilege('System_Administration')}">
+                <h:panelGroup rendered="#{webUserController.hasPrivilege('System_Administration')}">
 
-                <div class="row">
-                    <div class="col-3">
-                        <h:form>
+                    <div class="row">
+                        <div class="col-3">
+                            <h:form>
 
-                            <div class="list-group mt-3">
+                                <div class="list-group mt-3">
 
-                                <h:commandButton value="New User" action="#{menuController.toAddNewUser()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="View Users" action="#{menuController.toListUsers()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="Reload" action="#{webUserApplicationController.resetWebUsers()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="New User" action="#{menuController.toAddNewUser()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="View Users" action="#{menuController.toListUsers()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="Reload" action="#{webUserApplicationController.resetWebUsers()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
 
-                                <h:commandButton value="Add Multiple Users" action="/national/admin/add_multiple_users"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="Set User Privilages" action="#{webUserController.toSetUserPrivilages()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="View Transactions"
-                                    action="#{userTransactionController.toSearchUserTransactions()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="Suspicious Login Attempts"
-                                    action="#{userTransactionController.toSuspiciousLoginAttempts()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                            </div>
-                            <div class="list-group mt-3">
-                                <h:commandButton value="New Institution"
-                                    action="#{menuController.toAddNewInstitution()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="List Institutions"
-                                    action="#{menuController.toListInstitutions()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="List Institutions &amp; Users"
-                                    action="#{menuController.toListInstitutionsWithUsers()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="Add Multiple new Institutions and Users"
-                                    action="/national/admin/add_multiple_institutions_with_a_user"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="Relod Institutions"
-                                    action="#{institutionController.resetAllInstitutions()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                            </div>
-                            <div class="list-group mt-3">
-                                <h:commandButton value="Add Area" action="#{areaController.toAddArea()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="List Area" action="#{areaController.toListAreasForSysAdmin()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="Adding MOH with Users"
-                                    action="/national/admin/add_multiple_moh_areas_with_users"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                                <h:commandButton value="Reload Areas"
-                                    action="#{areaApplicationController.invalidateItems()}"
-                                    class="list-group-item list-group-item-action"></h:commandButton>
-                            </div>
-                            <div class="list-group mt-3">
-                                <h:commandButton value="Manage Metadata" class="list-group-item list-group-item-action"
-                                    action="/systemAdmin/manage_metadata_index"></h:commandButton>
-                                <h:commandButton value="Manage Data" class="list-group-item list-group-item-action"
-                                    action="/systemAdmin/manage_data_index"></h:commandButton>
-                                <h:commandButton value="Manage Preferences"
-                                    class="list-group-item list-group-item-action"
-                                    action="#{preferenceController.toManagePreferences()}"></h:commandButton>
-                            </div>
-                        </h:form>
+                                    <h:commandButton value="Add Multiple Users" action="/national/admin/add_multiple_users"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="Set User Privilages" action="#{webUserController.toSetUserPrivilages()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="View Transactions"
+                                                     action="#{userTransactionController.toSearchUserTransactions()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="Suspicious Login Attempts"
+                                                     action="#{userTransactionController.toSuspiciousLoginAttempts()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                </div>
+                                <div class="list-group mt-3">
+                                    <h:commandButton value="New Institution"
+                                                     action="#{menuController.toAddNewInstitution()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="List Institutions"
+                                                     action="#{menuController.toListInstitutions()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="List Institutions &amp; Users"
+                                                     action="#{menuController.toListInstitutionsWithUsers()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="Add Multiple new Institutions and Users"
+                                                     action="/national/admin/add_multiple_institutions_with_a_user"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="Relod Institutions"
+                                                     action="#{institutionController.resetAllInstitutions()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                </div>
+                                <div class="list-group mt-3">
+                                    <h:commandButton value="Add Area" action="#{areaController.toAddArea()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="List Area" action="#{areaController.toListAreasForSysAdmin()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="Adding MOH with Users"
+                                                     action="/national/admin/add_multiple_moh_areas_with_users"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                    <h:commandButton value="Reload Areas"
+                                                     action="#{areaApplicationController.invalidateItems()}"
+                                                     class="list-group-item list-group-item-action"></h:commandButton>
+                                </div>
+                                <div class="list-group mt-3">
+                                    <h:commandButton value="Manage Metadata" class="list-group-item list-group-item-action"
+                                                     action="/systemAdmin/manage_metadata_index"></h:commandButton>
+                                    <h:commandButton value="Manage Data" class="list-group-item list-group-item-action"
+                                                     action="/systemAdmin/manage_data_index"></h:commandButton>
+                                    <h:commandButton value="Manage Preferences"
+                                                     class="list-group-item list-group-item-action"
+                                                     action="#{preferenceController.toManagePreferences()}"></h:commandButton>
+
+                                    <h:commandButton value="Add Institution to Upload"
+                                                     class="list-group-item list-group-item-action"
+                                                     action="#{letterController.tmpAddInsToUpload()}"></h:commandButton>
+
+                                </div>
+                            </h:form>
+                        </div>
+
+                        <div class="col-9">
+                            <h:panelGroup class="align-top">
+                                <ui:insert name="admin">
+
+                                </ui:insert>
+                            </h:panelGroup>
+                        </div>
                     </div>
 
-                    <div class="col-9">
-                        <h:panelGroup class="align-top">
-                            <ui:insert name="admin">
+                </h:panelGroup>
 
-                            </ui:insert>
-                        </h:panelGroup>
-                    </div>
-                </div>
+            </ui:define>
 
-            </h:panelGroup>
-
-        </ui:define>
-
-    </ui:composition>
-</h:body>
+        </ui:composition>
+    </h:body>
 
 </html>

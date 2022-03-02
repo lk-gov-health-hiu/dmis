@@ -72,6 +72,8 @@ public class LetterController implements Serializable {
     private List<DocumentHistory> selectedDocumentHistories;
     private List<Upload> selectedUploads;
     private List<DocumentHistory> documentHistories;
+    private List<DocumentHistory> listedToAcceptCopyForwards;
+    DocumentHistory selectedToAcceptCopyForwards;
     @Inject
     private WebUserController webUserController;
     @Inject
@@ -87,7 +89,7 @@ public class LetterController implements Serializable {
 
     private Institution institution;
     private WebUser webUser;
-    private WebUser webUserCopy;
+    private Nameable webUserCopy;
     private Item minute;
     private String searchTerm;
     private String comments;
@@ -118,7 +120,7 @@ public class LetterController implements Serializable {
         }
         save(selected);
     }
-    
+
     public void saveCurrentDocumentAjax(AjaxBehaviorEvent event) {
         System.out.println("saveCurrentDocumentAjax = " + selected);
         if (selected == null) {
@@ -167,28 +169,31 @@ public class LetterController implements Serializable {
         List<WebUser> allUsrs = webUserApplicationController.getItems();
 
         for (WebUser i : allUsrs) {
-            boolean allWordsMatch = true;
 
-            for (String word : words) {
-                boolean thisWordMatch;
-                word = word.trim().toLowerCase();
-                if (i.getName() != null && i.getName().toLowerCase().contains(word)) {
-                    thisWordMatch = true;
-                } else if (i.getCode() != null && i.getCode().toLowerCase().contains(word)) {
-                    thisWordMatch = true;
-                } else if (i.getPerson() != null && i.getPerson().getName() != null && i.getPerson().getName().toLowerCase().contains(word)) {
-                    thisWordMatch = true;
-                } else {
-                    thisWordMatch = false;
+            if (i.isPubliclyListed()) {
+                boolean allWordsMatch = true;
+
+                for (String word : words) {
+                    boolean thisWordMatch;
+                    word = word.trim().toLowerCase();
+                    if (i.getName() != null && i.getName().toLowerCase().contains(word)) {
+                        thisWordMatch = true;
+                    } else if (i.getCode() != null && i.getCode().toLowerCase().contains(word)) {
+                        thisWordMatch = true;
+                    } else if (i.getPerson() != null && i.getPerson().getName() != null && i.getPerson().getName().toLowerCase().contains(word)) {
+                        thisWordMatch = true;
+                    } else {
+                        thisWordMatch = false;
+                    }
+                    if (thisWordMatch == false) {
+                        allWordsMatch = false;
+                    }
                 }
-                if (thisWordMatch == false) {
-                    allWordsMatch = false;
+                if (allWordsMatch) {
+                    resIns.add(i);
                 }
             }
 
-            if (allWordsMatch) {
-                resIns.add(i);
-            }
         }
 
         resIns.sort(Comparator.comparing(Nameable::getName));
@@ -224,6 +229,7 @@ public class LetterController implements Serializable {
             Upload u = new Upload();
             u.setDocument(selected);
             u.setBaImage(bytes);
+            u.setInstitution(webUserController.getLoggedInstitution());
             u.setFileName(file.getFileName());
             u.setFileType(file.getContentType());
             save(u);
@@ -417,6 +423,7 @@ public class LetterController implements Serializable {
         docHx.setDocument(selected);
         docHx.setFromInstitution(selected.getCurrentInstitution());
         docHx.setToInstitution(institution);
+        docHx.setInstitution(webUserController.getLoggedInstitution());
         saveDocumentHx(docHx);
 
         selected.setCompleted(false);
@@ -440,12 +447,15 @@ public class LetterController implements Serializable {
         docHx.setFromUser(selected.getCurrentOwner());
         docHx.setToUser(webUser);
         docHx.setItem(minute);
-
+        docHx.setComments(comments);
+        docHx.setInstitution(webUserController.getLoggedInstitution());
         saveDocumentHx(docHx);
 
         selected.setCurrentOwner(webUser);
         selected.setCompleted(false);
         documentFacade.edit(selected);
+
+        comments = "";
 
         JsfUtil.addSuccessMessage("Letter assigned successfully");
         return toLetterView();
@@ -465,10 +475,10 @@ public class LetterController implements Serializable {
         docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
-        docHx.setToUser(webUserCopy);
+        docHx.setToInsOrUser(webUserCopy);
         docHx.setComments(comments);
         docHx.setItem(minute);
-
+        docHx.setInstitution(webUserController.getLoggedInstitution());
         saveDocumentHx(docHx);
 
         selected.setCompleted(false);
@@ -496,9 +506,10 @@ public class LetterController implements Serializable {
         docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
-        docHx.setToUser(webUserCopy);
+        docHx.setToInsOrUser(webUserCopy);
         docHx.setComments(comments);
         docHx.setItem(minute);
+        docHx.setInstitution(webUserController.getLoggedInstitution());
 
         saveDocumentHx(docHx);
 
@@ -527,6 +538,7 @@ public class LetterController implements Serializable {
         docHx.setHistoryType(HistoryType.Letter_Action_Taken);
         docHx.setDocument(selected);
         docHx.setComments(comments);
+        docHx.setInstitution(webUserController.getLoggedInstitution());
         saveDocumentHx(docHx);
 
         comments = "";
@@ -612,7 +624,7 @@ public class LetterController implements Serializable {
         documentHistories = findDocumentHistories(fromDate, toDate, HistoryType.Letter_Copy_or_Forward, webUserController.getLoggedInstitution(), webUserCopy);
     }
 
-    public List<DocumentHistory> findDocumentHistories(Date fd, Date td, HistoryType ht, Institution i, WebUser u) {
+    public List<DocumentHistory> findDocumentHistories(Date fd, Date td, HistoryType ht, Institution i, Nameable u) {
         List<HistoryType> hts = new ArrayList<>();
         if (ht != null) {
             hts.add(ht);
@@ -622,7 +634,7 @@ public class LetterController implements Serializable {
         return findDocumentHistories(fd, td, hts, i, u);
     }
 
-    public List<DocumentHistory> findDocumentHistories(Date fd, Date td, List<HistoryType> hts, Institution i, WebUser u) {
+    public List<DocumentHistory> findDocumentHistories(Date fd, Date td, List<HistoryType> hts, Institution i, Nameable u) {
         Map m = new HashMap();
         String j = "select h "
                 + " from DocumentHistory h "
@@ -630,8 +642,13 @@ public class LetterController implements Serializable {
                 + " and h.historyType in :hts "
                 + " and h.document.institution=:i ";
         if (u != null) {
-            j += " and h.toUser=:u ";
-            m.put("u", u);
+            if (u instanceof WebUser) {
+                j += " and h.toUser=:u ";
+                m.put("u", u);
+            }else if(u instanceof Institution){
+                j += " and h.toInstitution=:ti ";
+                m.put("ti", u);
+            }
         }
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
@@ -653,24 +670,34 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.document=:doc "
+                + " and (h.institution=:ins or h.fromInstitution=:ins or h.toInstitution=:ins) "
                 + " order by h.id";
         Map m = new HashMap();
         m.put("doc", selected);
+        m.put("ins", webUserController.getLoggedInstitution());
         selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
 
         j = "select h "
                 + " from Upload h "
                 + " where h.retired=false "
                 + " and h.document=:doc "
+                + " and (h.institution=:ins or h.document.institution=:fins) "
                 + " order by h.id";
         m = new HashMap();
         m.put("doc", selected);
+        m.put("ins", webUserController.getLoggedInstitution());
+        //TODO: Need to allow only original upload
+        if (selected.getFromInstitution() != null) {
+            m.put("fins", selected.getFromInstitution());
+        } else {
+            m.put("fins", webUserController.getLoggedInstitution());
+        }
         selectedUploads = uploadFacade.findByJpql(j, m);
 
         return "/document/letter_view";
     }
 
-    public String toAcceptMyLetter() {
+    public String toAcceptAssignedLetter() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
@@ -701,6 +728,39 @@ public class LetterController implements Serializable {
             JsfUtil.addErrorMessage("Error.");
         }
         return toLetterView();
+    }
+
+    public String toAcceptCopyForwardedLetter() {
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document.retired=false "
+                + " and h.historyType=:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=:com "
+                + " order by h.id desc";
+        Map m = new HashMap();
+        m.put("doc", selected);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("com", false);
+        listedToAcceptCopyForwards = documentHxFacade.findByJpql(j, m);
+        return "";
+    }
+
+    public void acceptSelectedCopyForwardedLetter() {
+        if (selectedToAcceptCopyForwards == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return;
+        }
+
+        selectedToAcceptCopyForwards.setCompleted(true);
+        selectedToAcceptCopyForwards.setCompletedAt(new Date());
+        selectedToAcceptCopyForwards.setCompletedBy(webUserController.getLoggedUser());
+        saveDocumentHx(selectedToAcceptCopyForwards);
+
+        listedToAcceptCopyForwards.remove(selectedToAcceptCopyForwards);
+
     }
 
     public String toReverseAcceptMyLetter() {
@@ -739,6 +799,7 @@ public class LetterController implements Serializable {
         }
         DocumentHistory dh = new DocumentHistory();
         dh.setDocument(selected);
+        dh.setInstitution(webUserController.getLoggedInstitution());
         dh.setHistoryType(HistoryType.Letter_Assigned);
         dh.setToUser(webUserController.getLoggedUser());
         saveDocumentHx(dh);
@@ -942,11 +1003,11 @@ public class LetterController implements Serializable {
         this.searchFilterType = searchFilterType;
     }
 
-    public WebUser getWebUserCopy() {
+    public Nameable getWebUserCopy() {
         return webUserCopy;
     }
 
-    public void setWebUserCopy(WebUser webUserCopy) {
+    public void setWebUserCopy(Nameable webUserCopy) {
         this.webUserCopy = webUserCopy;
     }
 
@@ -996,6 +1057,42 @@ public class LetterController implements Serializable {
 
     public void setDeletingHistory(DocumentHistory deletingHistory) {
         this.deletingHistory = deletingHistory;
+    }
+
+    public List<DocumentHistory> getListedToAcceptCopyForwards() {
+        return listedToAcceptCopyForwards;
+    }
+
+    public void setListedToAcceptCopyForwards(List<DocumentHistory> listedToAcceptCopyForwards) {
+        this.listedToAcceptCopyForwards = listedToAcceptCopyForwards;
+    }
+
+    @Deprecated
+    public void tmpAddInsToDocHx() {
+        List<DocumentHistory> tdhs = documentHxFacade.findAll();
+        for (DocumentHistory tdh : tdhs) {
+            if (tdh.getInstitution() == null) {
+                if (tdh.getFromInstitution() != null) {
+                    tdh.setInstitution(tdh.getFromInstitution());
+                    saveDocumentHx(tdh);
+                } else if (tdh.getToInstitution() != null) {
+                    tdh.setInstitution(tdh.getToInstitution());
+                    saveDocumentHx(tdh);
+                }
+            }
+        }
+    }
+
+    public void tmpAddInsToUpload() {
+        List<Upload> tdhs = uploadFacade.findAll();
+        for (Upload tdh : tdhs) {
+            if (tdh.getInstitution() == null) {
+                if (tdh.getDocument() != null && tdh.getDocument().getInstitution() != null) {
+                    tdh.setInstitution(tdh.getDocument().getInstitution());
+                    uploadFacade.edit(tdh);
+                }
+            }
+        }
     }
 
     @FacesConverter(forClass = Nameable.class)

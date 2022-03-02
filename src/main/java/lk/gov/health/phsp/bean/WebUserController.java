@@ -2317,6 +2317,13 @@ public class WebUserController implements Serializable {
     public void setLoggedInstitution(Institution loggedInstitution) {
         this.loggedInstitution = loggedInstitution;
     }
+    
+    public void markAllUsersPublic(){
+        for(WebUser u:webUserApplicationController.getItems()){
+            u.setPubliclyListed(true);
+            save(u);
+        }
+    }
 
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {

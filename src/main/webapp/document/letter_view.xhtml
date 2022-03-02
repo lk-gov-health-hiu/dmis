@@ -27,7 +27,7 @@
                             <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterEdit()}" ></h:commandButton>
                             <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterAddNew()}">
                             </h:commandButton>
-                            <h:commandButton value="Reports" action="#{menuController.toReportsIndex()}" >
+                            <h:commandButton  class="m-2 btn btn-warning w-25 me-2"  value="Reports" action="#{menuController.toReportsIndex()}" >
                             </h:commandButton>
                         </div>
 
@@ -91,7 +91,7 @@
                                     </h:commandButton>
                                     <h:panelGroup rendered="#{up.pdf}" >
                                         <p:media value="#{streamedContentController.imageByUploadId}" class="w-100" cache="false"
-                                                 player="pdf" width="600px" >
+                                                 player="pdf" width="600px" height="800px" >
                                             <f:param name="id" value="#{up.idStr}" />
                                         </p:media>
                                     </h:panelGroup>
@@ -264,7 +264,7 @@
                                 </f:facet>
                                 <h:outputLabel class="fs-6" value="Minutes / Forward / Copy To:"></h:outputLabel>
                                 <p:autoComplete id="acCopyForwardToIns" value="#{letterController.webUserCopy}" 
-                                                completeMethod="#{webUserController.completeUsersByWord}"
+                                                completeMethod="#{letterController.completeInsOrUsersByWords}"
                                                 class="form-control"
                                                 var="insf"
                                                 itemLabel="#{insf.name}"
@@ -309,6 +309,12 @@
                                     <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
                                                    itemLabel="#{u.person.name}" itemValue="#{u}"></f:selectItems>
                                 </p:selectOneMenu>
+
+                                <h:outputLabel class="fs-6" value="Comment:"></h:outputLabel>
+                                <h:inputTextarea 
+                                    class="form-control"
+                                    value="#{letterController.comments}" ></h:inputTextarea>
+
                                 <p:spacer></p:spacer>
                                 <h:commandButton class="form-control btn btn-primary" value="Assign" 
                                                  action="#{letterController.assignTo()}" ></h:commandButton>
@@ -329,7 +335,7 @@
                         </h:form>
 
                         <h:form>
-                            <p:panelGrid columns="2"  class="w-100 border border-light">
+                            <p:panelGrid columns="2"  class="w-100 border border-light" rendered="false">
                                 <f:facet name="header" >
                                     Transfer out
                                 </f:facet>
@@ -372,7 +378,7 @@
                                 </f:facet>
                                 <h:commandButton value="Accept" 
                                                  rendered="#{letterController.selected.currentOwner eq webUserController.loggedUser and letterController.selected.completed ne true}" 
-                                                 action="#{letterController.toAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
+                                                 action="#{letterController.toAcceptAssignedLetter()}"  class="btn btn-success fw-bold m-2 ">
                                 </h:commandButton>
                                 <h:commandButton value="Mark as NOT Accepted" 
                                                  rendered="#{letterController.selected.currentOwner eq webUserController.loggedUser and letterController.selected.completed eq true}" 

@@ -91,10 +91,16 @@ public class Document implements Serializable {
     private Institution fromInstitution;
     @ManyToOne
     private WebUser fromWebUser;
+    @ManyToOne
+    private Institution toInstitution;
+    @ManyToOne
+    private WebUser toWebUser;
     
 
     @Transient
     private Nameable fromInsOrUser;
+     @Transient
+    private Nameable toInsOrUser;
     
     private String registrationNo;
     private String senderName;
@@ -453,6 +459,10 @@ public class Document implements Serializable {
     public void setFromWebUser(WebUser fromWebUser) {
         this.fromWebUser = fromWebUser;
     }
+    
+    
+    
+    
 
     public Nameable getFromInsOrUser() {
         if(this.fromInstitution!=null && this.fromWebUser!=null){
@@ -485,6 +495,69 @@ public class Document implements Serializable {
         
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public Nameable getToInsOrUser() {
+        if(this.toInstitution!=null && this.toWebUser!=null){
+            toInsOrUser = toWebUser;
+        }if(this.toInstitution!=null && this.toWebUser==null){
+            toInsOrUser = toInstitution;
+        }if(this.toInstitution==null && this.toWebUser!=null){
+            toInsOrUser = toWebUser;
+        }if(this.toInstitution==null && this.toWebUser==null){
+            toInsOrUser = null;
+        }
+        return toInsOrUser;
+    }
+
+    public void setToInsOrUser(Nameable toInsOrUser) {
+        this.toInsOrUser = toInsOrUser;
+        if(toInsOrUser==null){
+            this.toInstitution=null;
+            this.toWebUser=null;
+        }else if(toInsOrUser instanceof Institution){
+            this.toInstitution= (Institution) toInsOrUser;
+            this.toWebUser=null;
+        }else if(toInsOrUser instanceof WebUser){
+            this.toWebUser = (WebUser) toInsOrUser;
+            this.toInstitution=null;
+        }else{
+            this.toInstitution=null;
+            this.toWebUser=null;
+        }
+        
+    }
+
+    public Institution getToInstitution() {
+        return toInstitution;
+    }
+
+    public void setToInstitution(Institution toInstitution) {
+        this.toInstitution = toInstitution;
+    }
+
+    public WebUser getToWebUser() {
+        return toWebUser;
+    }
+
+    public void setToWebUser(WebUser toWebUser) {
+        this.toWebUser = toWebUser;
+    }
+    
+    
     
     
 }
