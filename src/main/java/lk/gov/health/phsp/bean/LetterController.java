@@ -557,7 +557,9 @@ public class LetterController implements Serializable {
             if (selectedHistory == null) {
                 selectedHistory = new DocumentHistory();
                 selectedHistory.setHistoryType(HistoryType.Letter_Created);
+                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             }
+            selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             selectedHistory.setToInstitution(selected.getCurrentInstitution());
             selectedHistory.setCompleted(true);
             selectedHistory.setCompletedAt(new Date());
@@ -624,6 +626,67 @@ public class LetterController implements Serializable {
         documentHistories = findDocumentHistories(fromDate, toDate, HistoryType.Letter_Copy_or_Forward, webUserController.getLoggedInstitution(), webUserCopy);
     }
 
+    public String toAcceptForwardCopyLettersToReceive() {
+        documentHistories = null;
+        return "/institution/accept_copy_forwards";
+    }
+
+    public void acceptSelectedHistoryForCopyForward() {
+        if (selectedHistory == null) {
+            JsfUtil.addErrorMessage("Nothing to accept");
+            return;
+        }
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        saveDocumentHx(selectedHistory);
+
+        DocumentHistory ndh = new DocumentHistory();
+        ndh.setDocument(selectedHistory.getDocument());
+        ndh.setHistoryType(HistoryType.Letter_Copy_or_Forward_Accepted);
+        ndh.setInstitution(webUserController.getLoggedInstitution());
+        ndh.setToInstitution(selected.getCurrentInstitution());
+        ndh.setCompleted(true);
+        ndh.setCompletedAt(new Date());
+        ndh.setCompletedBy(webUserController.getLoggedUser());
+        ndh.setDocument(selected);
+        saveDocumentHx(ndh);
+        
+        documentHistories.remove(selectedHistory);
+        
+        selectedHistory = null;
+    }
+
+    public void fillForwardCopyLettersToReceive() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and (h.toInstitution=:ti or h.toUser=:tu) "
+                + " and h.completed=false ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.fromUser=:fu ";
+                m.put("fu", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.fromInstitution=:fi ";
+                m.put("fi", webUserCopy);
+            }
+        }
+
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+
+        m.put("ti", webUserController.getLoggedInstitution());
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
     public List<DocumentHistory> findDocumentHistories(Date fd, Date td, HistoryType ht, Institution i, Nameable u) {
         List<HistoryType> hts = new ArrayList<>();
         if (ht != null) {
@@ -645,7 +708,7 @@ public class LetterController implements Serializable {
             if (u instanceof WebUser) {
                 j += " and h.toUser=:u ";
                 m.put("u", u);
-            }else if(u instanceof Institution){
+            } else if (u instanceof Institution) {
                 j += " and h.toInstitution=:ti ";
                 m.put("ti", u);
             }

@@ -22,7 +22,7 @@
                  <p:submenu class="submenu" label="Letter" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter" action="#{menuController.toLetterAddNew()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Search Letters" action="#{menuController.toLetterSearch()}" />
-                    <p:menuitem class="submenu-item" ajax="false" value="Accept Forwarded Letters" action="#{letterController.toAcceptAssignedLetter()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Accept Copied/Forwarded Letters" action="#{letterController.toAcceptForwardCopyLettersToReceive()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Accept Assigned Letters" action="#{letterController.toListLetters()}" />
                 </p:submenu>
                 <p:menuitem class="text-white" ajax="false" value="Reports" action="#{menuController.toReportsIndex()}" />
