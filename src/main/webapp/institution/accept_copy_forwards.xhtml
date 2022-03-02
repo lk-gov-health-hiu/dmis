@@ -159,10 +159,10 @@
                                 </p:column>
                                 <p:column headerText="Copied/Forwarded To"
                                           rendered="#{letterController.webUserCopy eq null}"
-                                          sortBy="#{c.toUser.person.name}" 
-                                          filterBy="#{c.toUser.person.name}"
+                                          sortBy="#{c.toInsOrUser.name}" 
+                                          filterBy="#{c.toInsOrUser.name}"
                                           filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.toUser.person.name}"></h:outputLabel>
+                                    <h:outputLabel value="#{c.toInsOrUser.name}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Minute" sortBy="#{c.item.name}" 
                                           filterBy="#{c.item.name}"
@@ -175,10 +175,12 @@
                                     <h:outputLabel value="#{c.comments}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Actions" >
-                                    <h:commandButton value="View" action="#{letterController.toLetterView()}" >
+                                    <h:commandButton value="View" action="#{letterController.toLetterView()}" class="mx-2 btn btn-success" >
                                         <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" ></f:setPropertyActionListener>
                                     </h:commandButton>
-                                     <h:commandButton value="Accept" action="#{letterController.acceptSelectedHistoryForCopyForward}" >
+                                     <h:commandButton value="Accept" 
+                                                       class="btn btn-danger mx-2"
+                                                      action="#{letterController.acceptSelectedHistoryForCopyForward}" >
                                          <f:setPropertyActionListener target="#{letterController.selectedHistory}" 
                                                                      value="#{c}" ></f:setPropertyActionListener>
                                     </h:commandButton>
