@@ -53,6 +53,11 @@
                                          rowsPerPageTemplate="5,10,{ShowAll|'All'}"
                                          >
 
+                                <p:column headerText="Letter ID" sortBy="#{h.id}" filterBy="#{h.id}" style="width: 8em;">
+                                    <h:outputText value="#{h.id}" >
+                                    </h:outputText>
+                                </p:column>
+                                
                                 <p:column headerText="Letter Date" sortBy="#{h.documentDate}" style="width: 8em;">
                                     <h:outputText value="#{h.documentDate}" >
                                         <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>

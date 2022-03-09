@@ -565,7 +565,7 @@ public class LetterController implements Serializable {
             JsfUtil.addErrorMessage("Select a file");
             return "";
         }
-
+        save(selected);
         DocumentHistory docHx = new DocumentHistory();
         docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
         docHx.setDocument(selected);
@@ -1283,18 +1283,14 @@ public class LetterController implements Serializable {
         this.listedToAcceptCopyForwards = listedToAcceptCopyForwards;
     }
 
-    @Deprecated
+//    @Deprecated
     public void tmpAddInsToDocHx() {
+        System.out.println("tmpAddInsToDocHx");
         List<DocumentHistory> tdhs = documentHxFacade.findAll();
+        System.out.println("tdhs = " + tdhs.size());
         for (DocumentHistory tdh : tdhs) {
             if (tdh.getInstitution() == null) {
-                if (tdh.getFromInstitution() != null) {
-                    tdh.setInstitution(tdh.getFromInstitution());
-                    saveDocumentHx(tdh);
-                } else if (tdh.getToInstitution() != null) {
-                    tdh.setInstitution(tdh.getToInstitution());
-                    saveDocumentHx(tdh);
-                }
+                tdh.setInstitution(tdh.getDocument().getInstitution());
             }
         }
     }
