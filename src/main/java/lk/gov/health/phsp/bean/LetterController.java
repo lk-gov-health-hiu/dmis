@@ -405,7 +405,7 @@ public class LetterController implements Serializable {
 
         m.put("lc", HistoryType.Letter_Created);
         m.put("lr", HistoryType.Letter_Copy_or_Forward);
-        
+
         m.put("fd", fromDate);
         m.put("td", toDate);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
@@ -555,34 +555,36 @@ public class LetterController implements Serializable {
         JsfUtil.addSuccessMessage("Letter assigned successfully");
         return toLetterView();
     }
-    
-    
+
     public String assignMultipleLetters() {
-        if (selected == null) {
-            JsfUtil.addErrorMessage("Select a letter");
+        if (webUser == null) {
+            JsfUtil.addErrorMessage("Select a user");
+            return "";
+        }
+        if (selectedDocumentHistories == null || selectedDocumentHistories.isEmpty()) {
+            JsfUtil.addErrorMessage("Select letters");
             return "";
         }
 
-        DocumentHistory docHx = new DocumentHistory();
-        docHx.setHistoryType(HistoryType.Letter_Assigned);
-        docHx.setDocument(selected);
-        docHx.setFromUser(selected.getCurrentOwner());
-        docHx.setToUser(webUser);
-        docHx.setItem(minute);
-        docHx.setComments(comments);
-        docHx.setInstitution(webUserController.getLoggedInstitution());
-        saveDocumentHx(docHx);
+        for (DocumentHistory lds : selectedDocumentHistories) {
+            DocumentHistory docHx = new DocumentHistory();
+            docHx.setHistoryType(HistoryType.Letter_Assigned);
+            docHx.setDocument(lds.getDocument());
+            docHx.setToUser(webUser);
+            docHx.setItem(minute);
+            docHx.setInstitution(webUserController.getLoggedInstitution());
+            saveDocumentHx(docHx);
 
-        selected.setCurrentOwner(webUser);
-        selected.setCompleted(false);
-        documentFacade.edit(selected);
+            lds.getDocument().setCurrentOwner(webUser);
+            lds.getDocument().setCompleted(false);
+            documentFacade.edit(lds.getDocument());
+        }
 
-        comments = "";
+        selectedDocumentHistories = null;
 
-        JsfUtil.addSuccessMessage("Letter assigned successfully");
-        return toLetterView();
+        JsfUtil.addSuccessMessage("Letters assigned successfully");
+        return toAssignMultipleLetters();
     }
-    
 
     public String forwardOrCopyTo() {
         if (webUserCopy == null) {
