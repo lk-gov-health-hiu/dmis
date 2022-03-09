@@ -14,13 +14,19 @@
                     <!-- <div class="card">
                          <div class="card-header">-->
                     <div class="div bg-white px-5 py-5">
-                        <h3 class="fw-bold mb-3">Adding Multiplt Users</h3>
-                        <!--   </div>-->
+                        <h3 class="fw-bold mb-3">Adding Multiple Users</h3>
+                        
+                        <div class="row mb-3">
+                            <h:outputLabel value="Area" class="col-form-label col-md-4 fw-bold"></h:outputLabel> 
 
-
-                        <!--<div class="card-body">
-                            <div class="form-group row">-->
-
+                            <div class="col-md-8">
+                                <p:autoComplete  value="#{webUserController.area}"
+                                                 completeMethod="#{areaApplicationController.completeAreas}"
+                                                 var="a"
+                                                 itemLabel="#{a.name}"
+                                                 itemValue="#{a}" ></p:autoComplete>
+                            </div>
+                        </div>
                         <div class="row mb-3">
                             <h:outputLabel value="Institution" class="col-form-label col-md-4 fw-bold"></h:outputLabel>
                             <div class="col-md-8">
@@ -55,8 +61,12 @@
 
                         <div class="row mb-3">
                             <div class="buttons">
-                                <h:commandButton value="Download" class="btn btn-success fw-bold " >
 
+                                <h:commandButton  class="btn btn-primary" style="float: left;" value="Add Mutiple Users"
+                                                  action="#{webUserController.addMultipleUsers()}"/> 
+                                <h:commandButton  class="btn btn-primary" style="float: left;" value="Clear Added Users"
+                                                  action="#{webUserController.clearAddedUsers()}"/> 
+                                <h:commandButton value="Download" class="btn btn-success fw-bold " >
                                     <p:dataExporter target="tbl" type="xls" fileName="New Users - #{webUserController.institution.name}" ></p:dataExporter>
                                 </h:commandButton>
                             </div>
@@ -80,10 +90,7 @@
                         <!--</div>-->
 
                         <!-- <div class="card-footer">-->
-                        <h:commandButton  class="btn btn-primary" style="float: left;" value="Add Mutiple Users"
-                                          action="#{webUserController.addMultipleUsers()}"/> 
-                        <h:commandButton  class="btn btn-primary" style="float: left;" value="Clear Added Users"
-                                          action="#{webUserController.clearAddedUsers()}"/> 
+
                         <!-- </div>-->
                     </div>
                 </h:form>
