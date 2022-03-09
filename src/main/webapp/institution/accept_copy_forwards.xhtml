@@ -83,8 +83,8 @@
                                         <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
                                                   filterMatchMode="contains">
                                         </p:column>
-                                        <p:column headerText="Stamp Date" sortBy="#{c.document.receivedDate}" 
-                                                  filterBy="#{c.document.receivedDate}"
+                                        <p:column headerText="Send Date" sortBy="#{c.createdAt}" 
+                                                  filterBy="#{c.createdAt}"
                                                   filterMatchMode="contains">
                                         </p:column>
                                         <p:column headerText="From"
@@ -100,10 +100,10 @@
                                                   filterBy="#{c.document.documentName}"
                                                   filterMatchMode="contains">
                                         </p:column>
-                                        <p:column headerText="Copied/Forwarded To"
+                                        <p:column headerText="Copied/Forwarded From"
                                                   rendered="#{letterController.webUserCopy eq null}"
-                                                  sortBy="#{c.toUser.person.name}" 
-                                                  filterBy="#{c.toUser.person.name}"
+                                                  sortBy="#{c.toInsOrUser.name}" 
+                                                  filterBy="#{c.toInsOrUser.name}"
                                                   filterMatchMode="contains">
                                         </p:column>
                                         <p:column headerText="Minute" sortBy="#{c.item.name}" 
@@ -128,15 +128,14 @@
                                         <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
                                     </h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Stamp Date" sortBy="#{c.document.receivedDate}" 
-                                          filterBy="#{c.document.receivedDate}"
+                                <p:column headerText="Sent Date" sortBy="#{c.createdAt}" 
+                                          filterBy="#{c.createdAt}"
                                           filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.document.receivedDate}">
+                                    <h:outputLabel value="#{c.createdAt}">
                                         <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
                                     </h:outputLabel>
                                 </p:column>
                                 <p:column >
-
                                     <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
                                         <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
                                     </h:panelGroup>
@@ -144,8 +143,6 @@
                                         <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
                                     </h:panelGroup>
                                     <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
-
-
                                 </p:column>
                                 <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
                                           filterBy="#{c.document.documentNumber}"
