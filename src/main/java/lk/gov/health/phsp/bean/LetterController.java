@@ -555,6 +555,34 @@ public class LetterController implements Serializable {
         JsfUtil.addSuccessMessage("Letter assigned successfully");
         return toLetterView();
     }
+    
+    
+    public String assignMultipleLetters() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Select a letter");
+            return "";
+        }
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Assigned);
+        docHx.setDocument(selected);
+        docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setToUser(webUser);
+        docHx.setItem(minute);
+        docHx.setComments(comments);
+        docHx.setInstitution(webUserController.getLoggedInstitution());
+        saveDocumentHx(docHx);
+
+        selected.setCurrentOwner(webUser);
+        selected.setCompleted(false);
+        documentFacade.edit(selected);
+
+        comments = "";
+
+        JsfUtil.addSuccessMessage("Letter assigned successfully");
+        return toLetterView();
+    }
+    
 
     public String forwardOrCopyTo() {
         if (webUserCopy == null) {
