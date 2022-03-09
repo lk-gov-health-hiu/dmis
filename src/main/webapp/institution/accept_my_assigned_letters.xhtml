@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                Accept My Assigned Letters
+            </ui:define>
+            <ui:define name="content">
+                <p:growl ></p:growl>
+                <h:form >
+                    <div class="card my-3">
+                        <h5 class="card-header bg-success">
+                            <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Accept My Assigned Letters" ></p:outputLabel>
+                        </h5>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h:panelGrid columns="2" >
+                                        <p:panelGrid columns="2"  class="border border-light">
+
+                                            <h:outputLabel class="fs-6" value="From:"></h:outputLabel>
+                                            <p:datePicker monthNavigator="true" yearNavigator="true" 
+                                                          class="fs-6 fw-bold"   
+                                                          showTime="true"
+                                                          pattern="dd MMMM yyyy hh:mm a"
+                                                          value="#{letterController.fromDate}">
+                                            </p:datePicker>
+                                            <h:outputLabel class="fs-6" value="To:"></h:outputLabel>
+                                            <p:datePicker class="fs-6 fw-bold"  
+                                                          monthNavigator="true" yearNavigator="true" 
+                                                          showTime="true"
+                                                          pattern="dd MMMM yyyy hh:mm a"
+                                                          value="#{letterController.toDate}">
+                                            </p:datePicker>
+                                        </p:panelGrid>
+
+                                        <h:panelGrid columns="1" >
+                                            <h:commandButton value="Process" action="#{letterController.fillMyLettersToAccept()}" class="btn btn-danger form-control"></h:commandButton>
+                                            <h:commandButton value="Print"  class="btn btn-success form-control">
+                                                <p:printer target="tbl" ></p:printer>
+                                            </h:commandButton>
+                                            <h:commandButton value="Download"  class="btn btn-warning form-control">
+                                                <p:dataExporter target="tbl" type="xls" fileName="List of Letters Assigned to Me yet to accept" ></p:dataExporter>
+                                            </h:commandButton>
+
+                                        </h:panelGrid>
+
+                                    </h:panelGrid>
+
+
+                                    <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
+                                        <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
+                                                     rendered="true" rowIndexVar="n" var="c" paginator="true"
+                                                     rowKey="#{c.id}"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
+                                            <p:column headerText="ID" sortBy="#{c.document.id}" filterBy="#{c.document.id}"
+                                                      filterMatchMode="contains">
+                                                <h:outputLabel value="#{c.document.id}"></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
+                                                      filterMatchMode="contains">
+                                                <h:outputLabel value="#{c.document.documentDate}">
+                                                    <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
+                                                </h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Stamped Date" sortBy="#{c.document.receivedDate}" 
+                                                      filterBy="#{c.document.receivedDate}"
+                                                      filterMatchMode="contains">
+                                                <h:outputLabel value="#{c.document.receivedDate}">
+                                                    <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
+                                                </h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Assigned Date" sortBy="#{c.createdAt}" 
+                                                      filterBy="#{c.createdAt}"
+                                                      filterMatchMode="contains">
+                                                <h:outputLabel value="#{c.createdAt}">
+                                                    <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
+                                                </h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="From" sortBy="#{c.document.fromInsOrUser.name}" filterBy="#{c.fromInsOrUser.name}"
+                                                      filterMatchMode="contains">
+                                                <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
+                                                    <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{c.document.fromInstitution.name ne 'Personal'}" >
+                                                    <h:outputLabel value="#{c.document.fromInsOrUser.name}"></h:outputLabel>
+                                                </h:panelGroup>
+                                            </p:column>
+                                            <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
+                                                      filterBy="#{c.document.documentNumber}"
+                                                      filterMatchMode="contains">
+                                                <h:outputLabel value="#{c.document.documentNumber }"></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Topic" sortBy="#{c.document.documentName}" 
+                                                      filterBy="#{c.document.documentName}"
+                                                      filterMatchMode="contains">
+                                                <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Comments" sortBy="#{c.comments}" 
+                                                      filterBy="#{c.comments}"
+                                                      filterMatchMode="contains">
+                                                <h:outputLabel value="#{c.comments}"></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Actions" >
+                                                <h:commandButton value="View" action="#{letterController.toLetterView()}" class="mx-2 btn btn-success" >
+                                                    <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" ></f:setPropertyActionListener>
+                                                </h:commandButton>
+                                                <h:commandButton value="Accept" 
+                                                                 class="btn btn-danger mx-2"
+                                                                 action="#{letterController.acceptMyAssignedLetter()}" >
+                                                    <f:setPropertyActionListener target="#{letterController.selectedHistory}" 
+                                                                                 value="#{c}" ></f:setPropertyActionListener>
+                                                </h:commandButton>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </h:panelGrid>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </h:form>
+
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

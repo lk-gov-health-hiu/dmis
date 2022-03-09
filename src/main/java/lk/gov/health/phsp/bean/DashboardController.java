@@ -68,7 +68,7 @@ public class DashboardController implements Serializable {
     private Date toDate;
     private List<InstitutionCount> ics;
 
-    private Long todayPcr;
+    private Long receivedLettersThroughSystemToday;
     private Long todayRat;
     private Long todayPositivePcr;
     private Long todayPositiveRat;
@@ -277,7 +277,7 @@ public class DashboardController implements Serializable {
         Date yesterdayStart = CommonController.startOfTheDate(c.getTime());
         Date yesterdayEnd = CommonController.endOfTheDate(c.getTime());
 
-        todayPcr = dashboardApplicationController.getOrderCount(webUserController.getLoggedInstitution(), todayStart, now,
+        receivedLettersThroughSystemToday = dashboardApplicationController.getOrderCount(webUserController.getLoggedInstitution(), todayStart, now,
                 itemApplicationController.getPcr(), null, null, null);
         todayRat = dashboardApplicationController.getOrderCount(webUserController.getLoggedInstitution(), todayStart, now,
                 itemApplicationController.getRat(), null, null, null);
@@ -317,8 +317,8 @@ public class DashboardController implements Serializable {
                 null);
 
 //      Calculate today's positive PCR percentage
-        if (this.todayPcr != 0 ) {
-        	double tempRate = ((double)this.todayPositivePcr/this.todayPcr) * 100;
+        if (this.receivedLettersThroughSystemToday != 0 ) {
+        	double tempRate = ((double)this.todayPositivePcr/this.receivedLettersThroughSystemToday) * 100;
         	this.todayPcrPositiveRate = df.format(tempRate) + "%";
         } else {
         	this.todayPcrPositiveRate = "0.00%";
@@ -365,7 +365,7 @@ public class DashboardController implements Serializable {
         Date yesterdayStart = CommonController.startOfTheDate(c.getTime());
         Date yesterdayEnd = CommonController.endOfTheDate(c.getTime());
 
-        todayPcr = dashboardApplicationController.getOrderCount(webUserController.getLoggedInstitution(), todayStart, now,
+        receivedLettersThroughSystemToday = dashboardApplicationController.getOrderCount(webUserController.getLoggedInstitution(), todayStart, now,
                 itemApplicationController.getPcr(), null, null, null);
         todayRat = dashboardApplicationController.getOrderCount(webUserController.getLoggedInstitution(), todayStart, now,
                 itemApplicationController.getRat(), null, null, null);
@@ -405,8 +405,8 @@ public class DashboardController implements Serializable {
                 null);
 
 //      Calculate today's positive PCR percentage
-        if (this.todayPcr != 0 ) {
-        	double tempRate = ((double) this.todayPositivePcr/this.todayPcr) * 100;
+        if (this.receivedLettersThroughSystemToday != 0 ) {
+        	double tempRate = ((double) this.todayPositivePcr/this.receivedLettersThroughSystemToday) * 100;
         	this.todayPcrPositiveRate = df.format(tempRate) + "%";
         } else {
         	this.todayPcrPositiveRate = "0.0%";
@@ -450,7 +450,7 @@ public class DashboardController implements Serializable {
             return;
         }
 
-        todayPcr = dashboardApplicationController.getOrderCountArea(webUserController.getLoggedInstitution().getRdhsArea(), todayStart, now,
+        receivedLettersThroughSystemToday = dashboardApplicationController.getOrderCountArea(webUserController.getLoggedInstitution().getRdhsArea(), todayStart, now,
                 itemApplicationController.getPcr(), null, null, null);
         todayRat = dashboardApplicationController.getOrderCountArea(webUserController.getLoggedInstitution().getRdhsArea(), todayStart, now,
                 itemApplicationController.getRat(), null, null, null);
@@ -538,8 +538,8 @@ public class DashboardController implements Serializable {
         );
 
 //      Calculate today's positive PCR percentage
-        if (this.todayPcr != 0) {
-        	double tempRate = ((double) this.todayPositivePcr/this.todayPcr) * 100;
+        if (this.receivedLettersThroughSystemToday != 0) {
+        	double tempRate = ((double) this.todayPositivePcr/this.receivedLettersThroughSystemToday) * 100;
         	this.todayPcrPositiveRate = df.format(tempRate) + "%";
         } else {
         	this.todayPcrPositiveRate = "0.00%";
@@ -588,7 +588,7 @@ public class DashboardController implements Serializable {
             return;
         }
 
-        todayPcr = dashboardApplicationController.getOrderCountArea(webUserController.getLoggedInstitution().getPdhsArea(), todayStart, now,
+        receivedLettersThroughSystemToday = dashboardApplicationController.getOrderCountArea(webUserController.getLoggedInstitution().getPdhsArea(), todayStart, now,
                 itemApplicationController.getPcr(), null, null, null);
         todayRat = dashboardApplicationController.getOrderCountArea(webUserController.getLoggedInstitution().getPdhsArea(), todayStart, now,
                 itemApplicationController.getRat(), null, null, null);
@@ -632,8 +632,8 @@ public class DashboardController implements Serializable {
                 null);
 
 //      Calculate today's positive PCR percentage
-        if (this.todayPcr != 0 || this.todayPcr != null) {
-        	double tempRate = ((double) this.todayPositivePcr/this.todayPcr) * 100;
+        if (this.receivedLettersThroughSystemToday != 0 || this.receivedLettersThroughSystemToday != null) {
+        	double tempRate = ((double) this.todayPositivePcr/this.receivedLettersThroughSystemToday) * 100;
         	this.todayPcrPositiveRate = df.format(tempRate) + "%";
         } else {
         	this.todayPcrPositiveRate = "0.00%";
@@ -895,11 +895,11 @@ public class DashboardController implements Serializable {
         this.samplesToReceive = samplesToReceive;
     }
 
-    public Long getTodayPcr() {
-        if (todayPcr == null) {
+    public Long getReceivedLettersThroughSystemToday() {
+        if (receivedLettersThroughSystemToday == null) {
             prepareMohDashboard();
         }
-        return todayPcr;
+        return receivedLettersThroughSystemToday;
     }
 
     public Long getTodayRat() {
@@ -939,7 +939,7 @@ public class DashboardController implements Serializable {
 	 * @return the todayPcrPositiveRate
 	 */
 	public String getTodayPcrPositiveRate() {
-		if (this.todayPcr == null) {
+		if (this.receivedLettersThroughSystemToday == null) {
 			this.prepareMohDashboard();
 		}
 		return todayPcrPositiveRate;
@@ -1075,10 +1075,10 @@ public class DashboardController implements Serializable {
 
 
     public Long getTodaysTests() {
-        if (getTodayPcr() != null && getTodayRat() != null) {
-            todaysTests = getTodayPcr() + getTodayRat();
-        } else if (getTodayPcr() != null) {
-            todaysTests = getTodayPcr();
+        if (getReceivedLettersThroughSystemToday() != null && getTodayRat() != null) {
+            todaysTests = getReceivedLettersThroughSystemToday() + getTodayRat();
+        } else if (getReceivedLettersThroughSystemToday() != null) {
+            todaysTests = getReceivedLettersThroughSystemToday();
         } else if (getTodayRat() != null) {
             todaysTests = getTodayRat();
         } else {

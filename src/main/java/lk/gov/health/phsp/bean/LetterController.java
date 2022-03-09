@@ -101,6 +101,8 @@ public class LetterController implements Serializable {
 
     private Upload removingUpload;
 
+    private boolean newHx;
+
     public LetterController() {
     }
 
@@ -367,6 +369,99 @@ public class LetterController implements Serializable {
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
+    public void fillMyLettersToAccept() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=false ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void fillLettersToAssign() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and "
+                + " ( "
+                + " (h.institution=:ins and h.historyType=:lc) "
+                + " or "
+                + " ((h.toUser.institution=:ins or h.toInstitution=:ins) and h.historyType=:lr) "
+                + " ) "
+                + " and h.completed=true ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+
+        m.put("ins", webUserController.getLoggedInstitution());
+
+        m.put("lc", HistoryType.Letter_Created);
+        m.put("lr", HistoryType.Letter_Copy_or_Forward);
+        
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void fillCopyForwardedLettersToMeToReceive() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=false ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void fillMyAcceptedLetters() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=true ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void fillMyReceivedLetters() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=true ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
     public void retireSelectedEncounter() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
@@ -548,7 +643,6 @@ public class LetterController implements Serializable {
     }
 
     public String saveAndView() {
-        boolean newHx = false;
         if (selected.getId() == null) {
             newHx = true;
         }
@@ -571,7 +665,6 @@ public class LetterController implements Serializable {
     }
 
     public String saveAndNew() {
-        boolean newHx = false;
         if (selected.getId() == null) {
             newHx = true;
         }
@@ -609,6 +702,7 @@ public class LetterController implements Serializable {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
         }
+        newHx = false;
         return "/document/letter";
     }
 
@@ -622,6 +716,11 @@ public class LetterController implements Serializable {
         return "/institution/letter_receive_register";
     }
 
+    public String toAssignMultipleLetters() {
+        items = null;
+        return "/institution/assign_multiple_letters";
+    }
+
     public void fillForwardCopyActions() {
         documentHistories = findDocumentHistories(fromDate, toDate, HistoryType.Letter_Copy_or_Forward, webUserController.getLoggedInstitution(), webUserCopy);
     }
@@ -629,6 +728,26 @@ public class LetterController implements Serializable {
     public String toAcceptForwardCopyLettersToReceive() {
         documentHistories = null;
         return "/institution/accept_copy_forwards";
+    }
+
+    public String toAcceptMyAssignedLetters() {
+        documentHistories = null;
+        return "/institution/accept_my_assigned_letters";
+    }
+
+    public String toAcceptCopyForwardedLettersToMe() {
+        documentHistories = null;
+        return "/institution/accept_my_copy_forwarded_letters";
+    }
+
+    public String toAcceptedMyAssignedLetters() {
+        documentHistories = null;
+        return "/institution/accepted_my_assigned_letters";
+    }
+
+    public String toAcceptedCopyForwardedLettersToMe() {
+        documentHistories = null;
+        return "/institution/accepted_my_copy_forwarded_letters";
     }
 
     public void acceptSelectedHistoryForCopyForward() {
@@ -651,9 +770,9 @@ public class LetterController implements Serializable {
         ndh.setCompletedBy(webUserController.getLoggedUser());
         ndh.setDocument(selected);
         saveDocumentHx(ndh);
-        
+
         documentHistories.remove(selectedHistory);
-        
+
         selectedHistory = null;
     }
 
@@ -823,6 +942,40 @@ public class LetterController implements Serializable {
         saveDocumentHx(selectedToAcceptCopyForwards);
 
         listedToAcceptCopyForwards.remove(selectedToAcceptCopyForwards);
+
+    }
+
+    public void acceptMyAssignedLetter() {
+        if (selectedHistory == null) {
+            JsfUtil.addErrorMessage("No Letter Selected");
+            return;
+        }
+
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        saveDocumentHx(selectedHistory);
+
+        documentHistories.remove(selectedHistory);
+
+        JsfUtil.addSuccessMessage("Accepted Successfully.");
+
+    }
+
+    public void receiveLetterCopiedOrForwardedToMe() {
+        if (selectedHistory == null) {
+            JsfUtil.addErrorMessage("No Letter Selected");
+            return;
+        }
+
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        saveDocumentHx(selectedHistory);
+
+        documentHistories.remove(selectedHistory);
+
+        JsfUtil.addSuccessMessage("Received Successfully.");
 
     }
 
@@ -1156,6 +1309,14 @@ public class LetterController implements Serializable {
                 }
             }
         }
+    }
+
+    public boolean isNewHx() {
+        return newHx;
+    }
+
+    public void setNewHx(boolean newHx) {
+        this.newHx = newHx;
     }
 
     @FacesConverter(forClass = Nameable.class)

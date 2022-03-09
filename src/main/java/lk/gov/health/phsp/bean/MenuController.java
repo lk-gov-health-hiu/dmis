@@ -94,8 +94,10 @@ public class MenuController implements Serializable {
         nd.setReceivedDate(new Date());
         letterController.setSelected(nd);
 
+        letterController.setNewHx(true);
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.Letter_Created);
+        ndh.setInstitution(webUserController.getLoggedInstitution());
         return "/document/letter";
     }
 
