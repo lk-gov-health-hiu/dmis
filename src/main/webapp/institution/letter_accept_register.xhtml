@@ -7,14 +7,14 @@
       xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions" >
 
     <h:body>
-        <ui:composition template="/template1.xhtml">
+        <ui:composition template="/institution/reports_index.xhtml">
             <ui:define name="title">
-                Accept Copied/Forwarded Letters
+                Letter Accept Register
             </ui:define>
-            <ui:define name="content">
+            <ui:define name="reports">
                 <h:panelGrid columns="1" styleClass="alignTop" class="w-100">
                     <f:facet name="header">
-                        <p:outputLabel value="Accept Copied/Forwarded Letters (Those Received withint the system)"></p:outputLabel>
+                        <p:outputLabel value="Letter Accept Register (Received and Accepted withint the system)"></p:outputLabel>
                     </f:facet>
 
                     <h:form>
@@ -23,21 +23,19 @@
                             <div class="col" >
                                 <h:panelGrid columns="2" class="w-100" border="0">
 
-                                    <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
+                                    <h:outputLabel class="h6 fw-bold" value="From Date"></h:outputLabel>
                                     <p:datePicker value="#{letterController.fromDate}" pattern="dd MMMM yyyy hh:mm" showTime="true">
                                     </p:datePicker><!-- comment -->
 
-                                    <h:outputLabel class="h6 fw-bold" value="To"></h:outputLabel>
+                                    <h:outputLabel class="h6 fw-bold" value="To Date"></h:outputLabel>
                                     <p:datePicker value="#{letterController.toDate}" pattern="dd MMMM yyyy hh:mm" showTime="true"></p:datePicker>
 
-                                    <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
-                                    <p:autoComplete id="from"  value="#{letterController.webUserCopy}" 
-                                                    class="form-control"
+                                    <h:outputLabel class="h6 fw-bold" value="From Institution / Employee"></h:outputLabel>
+                                    <p:autoComplete value="#{letterController.webUserCopy}" 
                                                     completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                    class="form-control"
                                                     var="insf"
-                                                    forceSelection="true"
-                                                    maxResults="10" 
-                                                    itemLabel="#{insf.displayName}"
+                                                    itemLabel="#{insf.name}"
                                                     itemValue="#{insf}"
                                                     >
                                     </p:autoComplete>
@@ -46,7 +44,7 @@
                             <div class="col" >
                                 <h:panelGrid columns="1"  class="w-100">
                                     <h:commandButton value="Process" class="btn btn-danger form-control"
-                                                     action="#{letterController.fillForwardCopyLettersToReceive}">
+                                                     action="#{letterController.fillLetterAcceptRegister}">
                                     </h:commandButton>
                                     <h:commandButton value="Print" class="btn btn-warning form-control"
                                                      >
@@ -83,8 +81,8 @@
                                         <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
                                                   filterMatchMode="contains">
                                         </p:column>
-                                        <p:column headerText="Send Date" sortBy="#{c.createdAt}" 
-                                                  filterBy="#{c.createdAt}"
+                                        <p:column headerText="Stamp Date" sortBy="#{c.document.receivedDate}" 
+                                                  filterBy="#{c.document.receivedDate}"
                                                   filterMatchMode="contains">
                                         </p:column>
                                         <p:column headerText="From"
@@ -100,10 +98,10 @@
                                                   filterBy="#{c.document.documentName}"
                                                   filterMatchMode="contains">
                                         </p:column>
-                                        <p:column headerText="Copied/Forwarded From"
+                                        <p:column headerText="Copied/Forwarded To"
                                                   rendered="#{letterController.webUserCopy eq null}"
-                                                  sortBy="#{c.toInsOrUser.name}" 
-                                                  filterBy="#{c.toInsOrUser.name}"
+                                                  sortBy="#{c.toUser.person.name}" 
+                                                  filterBy="#{c.toUser.person.name}"
                                                   filterMatchMode="contains">
                                         </p:column>
                                         <p:column headerText="Minute" sortBy="#{c.item.name}" 
@@ -128,14 +126,15 @@
                                         <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
                                     </h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Sent Date" sortBy="#{c.createdAt}" 
-                                          filterBy="#{c.createdAt}"
+                                <p:column headerText="Stamp Date" sortBy="#{c.document.receivedDate}" 
+                                          filterBy="#{c.document.receivedDate}"
                                           filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.createdAt}">
+                                    <h:outputLabel value="#{c.document.receivedDate}">
                                         <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
                                     </h:outputLabel>
                                 </p:column>
                                 <p:column >
+
                                     <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
                                         <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
                                     </h:panelGroup>
@@ -143,6 +142,8 @@
                                         <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
                                     </h:panelGroup>
                                     <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+
+
                                 </p:column>
                                 <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
                                           filterBy="#{c.document.documentNumber}"
@@ -156,10 +157,10 @@
                                 </p:column>
                                 <p:column headerText="Copied/Forwarded To"
                                           rendered="#{letterController.webUserCopy eq null}"
-                                          sortBy="#{c.toInsOrUser.name}" 
-                                          filterBy="#{c.toInsOrUser.name}"
+                                          sortBy="#{c.toUser.person.name}" 
+                                          filterBy="#{c.toUser.person.name}"
                                           filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.toInsOrUser.name}"></h:outputLabel>
+                                    <h:outputLabel value="#{c.toUser.person.name}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Minute" sortBy="#{c.item.name}" 
                                           filterBy="#{c.item.name}"
@@ -172,14 +173,8 @@
                                     <h:outputLabel value="#{c.comments}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Actions" >
-                                    <h:commandButton value="View" action="#{letterController.toLetterView()}" class="mx-2 btn btn-success" >
+                                    <h:commandButton value="View" action="#{letterController.toLetterView()}" >
                                         <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" ></f:setPropertyActionListener>
-                                    </h:commandButton>
-                                     <h:commandButton value="Accept" 
-                                                       class="btn btn-danger mx-2"
-                                                      action="#{letterController.acceptSelectedHistoryForCopyForward}" >
-                                         <f:setPropertyActionListener target="#{letterController.selectedHistory}" 
-                                                                     value="#{c}" ></f:setPropertyActionListener>
                                     </h:commandButton>
                                 </p:column>
                                 <p:columnGroup type="footer">
@@ -220,7 +215,7 @@
                             </h:panelGrid>
 
                             <h:panelGrid columns="9" class="d-none d-print-block m-0 p-0 W-100"  rendered="#{letterController.webUserCopy ne null}">
-                                <h:outputText class="font-weight-bold h5" value="#{letterController.webUserCopy.name}" ></h:outputText>
+                                <h:outputText class="font-weight-bold h5" value="#{letterController.webUserCopy.displayName}" ></h:outputText>
                                 <p:spacer></p:spacer>
                                 <h:outputText class="h6" value="From" ></h:outputText>
                                 <h:outputText class="h6" value="&nbsp;:&nbsp;" ></h:outputText>
@@ -237,7 +232,7 @@
                                 </h:outputText>
                             </h:panelGrid>
 
-
+                           
 
                             <p:dataTable reflow="false" id="tblPrint" value="#{letterController.documentHistories}"
                                          rendered="true" rowIndexVar="n" var="c" paginator="false" class=" m-0 p-0  W-100"

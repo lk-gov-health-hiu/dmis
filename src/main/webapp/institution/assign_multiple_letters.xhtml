@@ -43,7 +43,8 @@
                                         </p:panelGrid>
 
                                         <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.fillLettersToAssign()}" class="btn btn-danger form-control"></h:commandButton>
+                                            <h:commandButton value="Process" 
+                                                             action="#{letterController.fillLettersToAssign()}" class="btn btn-danger form-control"></h:commandButton>
                                             <h:commandButton value="Print"  class="btn btn-success form-control">
                                                 <p:printer target="tbl" ></p:printer>
                                             </h:commandButton>

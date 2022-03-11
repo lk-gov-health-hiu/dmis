@@ -387,19 +387,21 @@ public class LetterController implements Serializable {
     }
 
     public void fillLettersToAssign() {
+        System.out.println("fillLettersToAssign");
         Map m = new HashMap();
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and "
-                + " ( "
+                + " ("
                 + " (h.institution=:ins and h.historyType=:lc) "
                 + " or "
-                + " ((h.toUser.institution=:ins or h.toInstitution=:ins) and h.historyType=:lr) "
-                + " ) "
-                + " and h.completed=true ";
+                + " ((h.toInstitution=:ins or h.toUser.institution=:ins) and h.historyType=:lr) "
+                + " )";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
+        
+        //and (h.toInstitution=:ti or h.toUser=:tu)
 
         m.put("ins", webUserController.getLoggedInstitution());
 
@@ -408,7 +410,10 @@ public class LetterController implements Serializable {
 
         m.put("fd", fromDate);
         m.put("td", toDate);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        System.out.println("documentHistories = " + documentHistories.size());
     }
 
     public void fillCopyForwardedLettersToMeToReceive() {
@@ -740,6 +745,11 @@ public class LetterController implements Serializable {
         documentHistories = null;
         return "/institution/letter_copy_forward_register";
     }
+    
+    public String toReportsLetterAcceptRegister() {
+        documentHistories = null;
+        return "/institution/letter_accept_register";
+    }
 
     public String toReportsLetterReceived() {
         documentHistories = null;
@@ -753,6 +763,36 @@ public class LetterController implements Serializable {
 
     public void fillForwardCopyActions() {
         documentHistories = findDocumentHistories(fromDate, toDate, HistoryType.Letter_Copy_or_Forward, webUserController.getLoggedInstitution(), webUserCopy);
+    }
+    
+    public void fillLetterAcceptRegister() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and (h.toInstitution=:ti or h.toUser=:tu or h.toUser.institution=:ti) "
+                + " and h.completed=true ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.fromUser=:fu ";
+                m.put("fu", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.fromInstitution=:fi ";
+                m.put("fi", webUserCopy);
+            }
+        }
+
+        j += " and h.completedAt between :fd and :td "
+                + " order by h.id";
+
+        m.put("ti", webUserController.getLoggedInstitution());
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
     public String toAcceptForwardCopyLettersToReceive() {
@@ -812,7 +852,7 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType =:ht "
-                + " and (h.toInstitution=:ti or h.toUser=:tu) "
+                + " and (h.toInstitution=:ti or h.toUser=:tu or h.toUser.institution=:ti) "
                 + " and h.completed=false ";
         if (webUserCopy != null) {
             if (webUserCopy instanceof WebUser) {
@@ -893,17 +933,16 @@ public class LetterController implements Serializable {
                 + " from Upload h "
                 + " where h.retired=false "
                 + " and h.document=:doc "
-                + " and (h.institution=:ins or h.document.institution=:fins) "
                 + " order by h.id";
         m = new HashMap();
         m.put("doc", selected);
-        m.put("ins", webUserController.getLoggedInstitution());
+//        m.put("ins", webUserController.getLoggedInstitution());
         //TODO: Need to allow only original upload
-        if (selected.getFromInstitution() != null) {
-            m.put("fins", selected.getFromInstitution());
-        } else {
-            m.put("fins", webUserController.getLoggedInstitution());
-        }
+//        if (selected.getFromInstitution() != null) {
+//            m.put("fins", selected.getFromInstitution());
+//        } else {
+//            m.put("fins", webUserController.getLoggedInstitution());
+//        }
         selectedUploads = uploadFacade.findByJpql(j, m);
 
         return "/document/letter_view";
