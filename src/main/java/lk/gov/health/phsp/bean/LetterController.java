@@ -923,7 +923,7 @@ public class LetterController implements Serializable {
                 + " where h.retired=false "
                 + " and h.document=:doc "
                 + " and (h.institution=:ins or h.fromInstitution=:ins or h.toInstitution=:ins) "
-                + " order by h.id";
+                + " order by h.id desc";
         Map m = new HashMap();
         m.put("doc", selected);
         m.put("ins", webUserController.getLoggedInstitution());
