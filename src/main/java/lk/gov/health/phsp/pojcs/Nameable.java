@@ -35,6 +35,9 @@ public interface Nameable {
     public String getName();
     public void setName(String name) ;
     
+    public String getInsName();
+    public void setInsName(String name) ;
+    
     public String getCode();
     public void setCode(String code);
     

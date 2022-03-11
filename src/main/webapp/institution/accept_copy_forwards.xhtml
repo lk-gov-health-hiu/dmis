@@ -102,8 +102,8 @@
                                         </p:column>
                                         <p:column headerText="Copied/Forwarded From"
                                                   rendered="#{letterController.webUserCopy eq null}"
-                                                  sortBy="#{c.toInsOrUser.name}" 
-                                                  filterBy="#{c.toInsOrUser.name}"
+                                                  sortBy="#{c.fromInsOrUser.insName}" 
+                                                  filterBy="#{c.fromInsOrUser.insName}"
                                                   filterMatchMode="contains">
                                         </p:column>
                                         <p:column headerText="Minute" sortBy="#{c.item.name}" 
@@ -156,10 +156,10 @@
                                 </p:column>
                                 <p:column headerText="Copied/Forwarded To"
                                           rendered="#{letterController.webUserCopy eq null}"
-                                          sortBy="#{c.toInsOrUser.name}" 
-                                          filterBy="#{c.toInsOrUser.name}"
+                                          sortBy="#{c.fromInsOrUser.insName}" 
+                                          filterBy="#{c.fromInsOrUser.insName}"
                                           filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.toInsOrUser.name}"></h:outputLabel>
+                                    <h:outputLabel value="#{c.fromInsOrUser.insName}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Minute" sortBy="#{c.item.name}" 
                                           filterBy="#{c.item.name}"

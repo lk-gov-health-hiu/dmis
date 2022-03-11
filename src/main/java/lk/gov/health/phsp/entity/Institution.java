@@ -116,6 +116,9 @@ public class Institution implements Serializable, Nameable {
     @Transient
     private String displayName;
 
+    @Transient
+    private String insName;
+
     public Long getId() {
         return id;
     }
@@ -466,6 +469,18 @@ public class Institution implements Serializable, Nameable {
             displayName = this.name;
         }
         return displayName;
+    }
+
+    @Override
+    public String getInsName() {
+        insName = name;
+        return insName;
+    }
+
+    @Override
+    public void setInsName(String name) {
+        this.insName = name;
+        this.name = this.insName;
     }
 
 }

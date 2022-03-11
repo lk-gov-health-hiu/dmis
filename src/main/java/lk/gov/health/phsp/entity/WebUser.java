@@ -127,6 +127,8 @@ public class WebUser implements Serializable, Nameable {
     private boolean restrictedToInstitution;
     @Transient
     private boolean currentlyInAssumedState;
+    @Transient
+    private String insName;
 
     public WebUser() {
     }
@@ -417,8 +419,6 @@ public class WebUser implements Serializable, Nameable {
     public void setAssumedRole(WebUserRole assumedRole) {
         this.assumedRole = assumedRole;
     }
-    
-    
 
     public Institution getAssumedInstitution() {
         return assumedInstitution;
@@ -616,6 +616,23 @@ public class WebUser implements Serializable, Nameable {
 
     public void setPubliclyListed(boolean publiclyListed) {
         this.publiclyListed = publiclyListed;
+    }
+
+    @Override
+    public String getInsName() {
+        if (institution != null) {
+            if (institution.getDisplayName() != null) {
+                insName = institution.getDisplayName();
+            }else if(institution.getName()!=null){
+                insName = institution.getName();
+            }
+        }
+        return insName;
+    }
+
+    @Override
+    public void setInsName(String insName) {
+        this.insName = insName;
     }
 
 }
