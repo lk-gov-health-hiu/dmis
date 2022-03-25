@@ -266,6 +266,8 @@ public class LetterController implements Serializable {
         Long tid = null;
         try {
             tid = Long.valueOf(noSpaceStr);
+            
+            
         } catch (Exception e) {
             tid = null;
         }
@@ -316,15 +318,8 @@ public class LetterController implements Serializable {
         m = new HashMap();
         m.put("dt", DocumentType.Letter);
         m.put("ins", webUserController.getLoggedInstitution());
-
         m.put("dn", "%" + searchTerm.trim() + "%");
-
         items = documentFacade.findByJpql(j, m);
-
-        /**
-         * private String documentName; private String documentNumber; private
-         * String documentCode;
-         */
     }
 
     public void searchLetterByInsOrUser() {
