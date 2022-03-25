@@ -256,24 +256,23 @@ public class LetterController implements Serializable {
     }
 
     public void searchLetter() {
+        System.out.println("searchLetter");
         if (searchTerm == null || searchTerm.trim().equals("")) {
             JsfUtil.addErrorMessage("No Search Term");
             return;
         }
+        String j;
+        Map m;
 
         String noSpaceStr = searchTerm.replaceAll("\\s", ""); // using built in method  
 
         Long tid = null;
         try {
             tid = Long.valueOf(noSpaceStr);
-            
-            
+
         } catch (Exception e) {
             tid = null;
         }
-
-        String j;
-        Map m;
 
         if (tid != null && tid != 0l) {
             j = "select d "
@@ -281,7 +280,11 @@ public class LetterController implements Serializable {
                     + " where d.id=:tid ";
             m = new HashMap();
             m.put("tid", tid);
+            System.out.println("By ID");
+            System.out.println("m = " + m);
+            System.out.println("j = " + j);
             items = documentFacade.findByJpql(j, m);
+            System.out.println("items = " + items.size());
             if (items != null && !items.isEmpty()) {
                 return;
             }
@@ -298,8 +301,12 @@ public class LetterController implements Serializable {
         m.put("dt", DocumentType.Letter);
         m.put("dn", searchTerm.trim());
         items = documentFacade.findByJpql(j, m);
-
+        System.out.println("By Name");
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        
         if (items != null && !items.isEmpty()) {
+            System.out.println("items = " + items.size());
             return;
         }
 
@@ -319,7 +326,10 @@ public class LetterController implements Serializable {
         m.put("dt", DocumentType.Letter);
         m.put("ins", webUserController.getLoggedInstitution());
         m.put("dn", "%" + searchTerm.trim() + "%");
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         items = documentFacade.findByJpql(j, m);
+         System.out.println("items = " + items.size());
     }
 
     public void searchLetterByInsOrUser() {
