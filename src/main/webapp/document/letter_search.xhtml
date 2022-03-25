@@ -22,7 +22,7 @@
                             <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Letter Search" ></p:outputLabel>
                         </h5>
                         <div class="card-body">
-                            <div class="row">
+                            <div class="row card-body">
                                 <div class="col-1" >
                                     <h:outputLabel  value="Search Term:"></h:outputLabel>
                                 </div>
@@ -36,6 +36,33 @@
                                 <div class="col-3" >
                                     <h:commandButton value="Search" 
                                                      action="#{letterController.searchLetter}"  class="btn btn-success fw-bold"></h:commandButton>
+                                </div>
+
+
+                            </div>
+
+                            <div class="row card-body">
+                                <div class="col-1" >
+                                    <h:outputLabel  value="Search From:"></h:outputLabel>
+                                </div>
+                                <div class="col-8" >
+                                    <p:autoComplete  value="#{letterController.searchUserOrIns}" 
+                                                     class="from form-control w-100"
+                                                     completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                     var="insf"
+                                                     forceSelection="true"
+                                                     required="true"
+                                                     requiredMessage="Need to select"
+                                                     maxResults="10" inputStyle="color:red;"
+                                                     itemLabel="#{insf.displayName}"
+                                                     itemValue="#{insf}"
+                                                     placeholder="Search by From"
+                                                     >
+                                    </p:autoComplete>
+                                </div>
+                                <div class="col-3" >
+                                    <h:commandButton value="Search" 
+                                                     action="#{letterController.searchLetterByInsOrUser}"  class="btn btn-success fw-bold"></h:commandButton>
                                 </div>
 
 
@@ -57,7 +84,7 @@
                                     <h:outputText value="#{h.id}" >
                                     </h:outputText>
                                 </p:column>
-                                
+
                                 <p:column headerText="Letter Date" sortBy="#{h.documentDate}" style="width: 8em;">
                                     <h:outputText value="#{h.documentDate}" >
                                         <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>

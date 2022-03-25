@@ -74,7 +74,7 @@
                                         <h:panelGroup id="regNo" >
                                             <h:inputText  a:placeholder="Enter Registration No." 
                                                           class="form-control"
-                                                          rendered="#{letterController.selected.receivedAs.code eq 'letter_receive_category_registered_post'}"
+                                                          rendered="#{letterController.selected.receivedAs.code eq 'letter_receive_category_registered_post' or letterController.selected.receivedAs.code eq 'speed_post'}"
                                                           value="#{letterController.selected.registrationNo}" >
                                                 <p:ajax event="blur" process="@this" ></p:ajax>
                                             </h:inputText>
