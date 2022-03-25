@@ -206,7 +206,8 @@
                         <h:panelGrid columns="1" 
                                      styleClass="alignTop" 
                                      id="gridPrint" 
-                                     class="d-none d-print-block m-0 p-0 W-100" >
+                                     class="d-none d-print-block m-0 p-0 W-100" 
+                                     >
 
                             <h:panelGrid columns="3" class="d-none d-print-block m-0 p-0 W-100" >
                                 <h:outputText class="h5" value="#{webUserController.loggedUser.institution.name}" ></h:outputText>
@@ -236,17 +237,16 @@
 
                             <p:dataTable reflow="false" id="tblPrint" value="#{letterController.documentHistories}"
                                          rendered="true" rowIndexVar="n" var="c" paginator="false" class=" m-0 p-0  W-100"
-                                         rowKey="#{c.id}"
-                                         >
+                                         rowKey="#{c.id}">
                                 <p:column headerText="ID" style="width: 6em;">
                                     <f:facet name="header" >
-                                        <h:outputText value="ID" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                        <h:outputText value="ID" style="font-weight: bold; color: black; font-size: 14px;" class="fw-bold" ></h:outputText>
                                     </f:facet>
-                                    <h:outputLabel value="#{c.document.id}"></h:outputLabel>
+                                    <h:outputLabel value="#{c.document.id}" style="font-weight: bold; color: black;font-size: 14px;" ></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Letter Date"  style="width: 7em;">
                                     <f:facet name="header" >
-                                        <h:outputText value="Letter Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                        <h:outputText value="Letter Date" style="font-weight: bold; color: black; " class="fw-bold" ></h:outputText>
                                     </f:facet>
                                     <f:facet name="footer" >
                                         <h:outputText value="Received on"  ></h:outputText>
@@ -282,11 +282,11 @@
                                     <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
 
                                 </p:column>
-                                <p:column headerText="Letter Number"   style="width: 8em; overflow: hidden;">
+                                <p:column headerText="Letter Number"   style="width: 10em; overflow: auto;">
                                     <f:facet name="header" >
                                         <h:outputText value="Letter Number" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
                                     </f:facet>
-                                    <h:outputLabel value="#{c.document.documentNumber }"></h:outputLabel>
+                                    <h:outputLabel value="#{c.document.documentNumber }"  ></h:outputLabel>
                                 </p:column>
 
                                 <p:column headerText="Copied/Forwarded To"
@@ -303,10 +303,10 @@
                                 </p:column>
                                 <p:column headerText="Topic"   >
                                     <f:facet name="header" >
-                                        <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                        <h:outputText value="Topic" style="font-weight: bold; color: black;font-size: 14px;" class="fw-bold" ></h:outputText>
                                     </f:facet>
 
-                                    <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
+                                    <h:outputLabel value="#{c.document.documentName}"  style="font-weight: bold; color: black;font-size: 14px;" ></h:outputLabel>
                                 </p:column>
 
                                 <f:facet name="footer">

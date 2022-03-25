@@ -90,6 +90,7 @@ public class LetterController implements Serializable {
     private Institution institution;
     private WebUser webUser;
     private Nameable webUserCopy;
+    private Nameable searchUserOrIns;
     private Item minute;
     private String searchTerm;
     private String comments;
@@ -265,6 +266,8 @@ public class LetterController implements Serializable {
         Long tid = null;
         try {
             tid = Long.valueOf(noSpaceStr);
+            
+            
         } catch (Exception e) {
             tid = null;
         }
@@ -315,15 +318,39 @@ public class LetterController implements Serializable {
         m = new HashMap();
         m.put("dt", DocumentType.Letter);
         m.put("ins", webUserController.getLoggedInstitution());
-
         m.put("dn", "%" + searchTerm.trim() + "%");
+        items = documentFacade.findByJpql(j, m);
+    }
+
+    public void searchLetterByInsOrUser() {
+        if (searchUserOrIns == null) {
+            JsfUtil.addErrorMessage("No Search User or Institution");
+            return;
+        }
+
+        String j;
+        Map m = new HashMap();
+
+        j = "select d "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt "
+                + " and d.institution=:ins ";
+
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("dt", DocumentType.Letter);
+        if (searchUserOrIns instanceof WebUser) {
+            j += " and d.fromUser=:fu ";
+            m.put("fu", (WebUser) searchUserOrIns);
+        } else if (searchUserOrIns instanceof Institution) {
+            j += " and d.fromInstitution=:fu ";
+            m.put("fu", (Institution) searchUserOrIns);
+        }
+
+        j += " order by d.documentDate desc";
 
         items = documentFacade.findByJpql(j, m);
 
-        /**
-         * private String documentName; private String documentNumber; private
-         * String documentCode;
-         */
     }
 
     public String toListLetters() {
@@ -400,9 +427,8 @@ public class LetterController implements Serializable {
                 + " )";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
-        
-        //and (h.toInstitution=:ti or h.toUser=:tu)
 
+        //and (h.toInstitution=:ti or h.toUser=:tu)
         m.put("ins", webUserController.getLoggedInstitution());
 
         m.put("lc", HistoryType.Letter_Created);
@@ -745,7 +771,7 @@ public class LetterController implements Serializable {
         documentHistories = null;
         return "/institution/letter_copy_forward_register";
     }
-    
+
     public String toReportsLetterAcceptRegister() {
         documentHistories = null;
         return "/institution/letter_accept_register";
@@ -764,7 +790,7 @@ public class LetterController implements Serializable {
     public void fillForwardCopyActions() {
         documentHistories = findDocumentHistories(fromDate, toDate, HistoryType.Letter_Copy_or_Forward, webUserController.getLoggedInstitution(), webUserCopy);
     }
-    
+
     public void fillLetterAcceptRegister() {
         Map m = new HashMap();
         String j = "select h "
@@ -1382,6 +1408,14 @@ public class LetterController implements Serializable {
 
     public void setNewHx(boolean newHx) {
         this.newHx = newHx;
+    }
+
+    public Nameable getSearchUserOrIns() {
+        return searchUserOrIns;
+    }
+
+    public void setSearchUserOrIns(Nameable searchUserOrIns) {
+        this.searchUserOrIns = searchUserOrIns;
     }
 
     @FacesConverter(forClass = Nameable.class)
