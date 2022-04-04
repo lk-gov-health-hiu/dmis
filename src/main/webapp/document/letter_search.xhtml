@@ -5,7 +5,6 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:body>
@@ -15,13 +14,18 @@
                 Letter Search
             </ui:define>
             <ui:define name="content">
-                <p:growl ></p:growl>
-                <h:form >
-                    <div class="card my-3 w-100">
-                        <h5 class="card-header bg-success">
-                            <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Letter Search" ></p:outputLabel>
-                        </h5>
-                        <div class="card-body">
+                <p:growl class="card bg-danger form-control" ></p:growl>
+
+                <div class="card my-3 w-100">
+                    <h5 class="card-header bg-success">
+                        <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Letter Search" ></p:outputLabel>
+                    </h5>
+                    <div class="card-body">
+
+                        <h:form >
+
+
+
                             <div class="row card-body">
                                 <div class="col-1" >
                                     <h:outputLabel  value="Search Term:"></h:outputLabel>
@@ -41,6 +45,9 @@
 
                             </div>
 
+                        </h:form>
+
+                        <h:form >
                             <div class="row card-body">
                                 <div class="col-1" >
                                     <h:outputLabel  value="Search From:"></h:outputLabel>
@@ -67,7 +74,11 @@
 
 
                             </div>
+                        </h:form>
 
+
+
+                        <h:form >
                             <p:dataTable value="#{letterController.items}"
                                          var="h" 
                                          rowKey="#{h.id}"
@@ -119,11 +130,13 @@
                                     </h:commandButton>
                                 </p:column>
                             </p:dataTable>
+                        </h:form>
 
-                        </div>
+
+
                     </div>
+                </div>
 
-                </h:form>
 
 
             </ui:define>
