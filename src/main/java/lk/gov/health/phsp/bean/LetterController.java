@@ -266,8 +266,7 @@ public class LetterController implements Serializable {
         Long tid = null;
         try {
             tid = Long.valueOf(noSpaceStr);
-            
-            
+
         } catch (Exception e) {
             tid = null;
         }
@@ -396,6 +395,24 @@ public class LetterController implements Serializable {
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
+    public void listLastLettersReceived() {
+        int numberToList = 100;
+        searchFilterType = SearchFilterType.SYSTEM_DATE;
+        String j = "select d "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt "
+                + " and d.institution=:ins ";
+        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
+        j += " order by d.id desc";
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("fd", CommonController.startOfYesterday());
+        m.put("td", CommonController.endOfYear());
+        items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP, numberToList);
+    }
+
     public void fillMyLettersToAccept() {
         Map m = new HashMap();
         String j = "select h "
@@ -405,7 +422,7 @@ public class LetterController implements Serializable {
                 + " and h.toUser=:tu "
                 + " and h.completed=false ";
         j += " and h.createdAt between :fd and :td "
-                + " order by h.id";
+                + " order by h.id desc";
         m.put("tu", webUserController.getLoggedUser());
         m.put("ht", HistoryType.Letter_Assigned);
         m.put("fd", fromDate);
@@ -828,6 +845,9 @@ public class LetterController implements Serializable {
 
     public String toAcceptMyAssignedLetters() {
         documentHistories = null;
+        setFromDate(CommonController.startOfTheMonth());
+        setToDate(CommonController.endOfTheMonth());
+        fillMyLettersToAccept();
         return "/institution/accept_my_assigned_letters";
     }
 
@@ -878,7 +898,7 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType =:ht "
-                + " and (h.toInstitution=:ti or h.toUser=:tu or h.toUser.institution=:ti) "
+                + " and (h.toInstitution=:ti or h.toInstitution=:uti or h.toUser=:tu or h.toUser.institution=:ti) "
                 + " and h.completed=false ";
         if (webUserCopy != null) {
             if (webUserCopy instanceof WebUser) {
@@ -894,11 +914,13 @@ public class LetterController implements Serializable {
                 + " order by h.id";
 
         m.put("ti", webUserController.getLoggedInstitution());
+        m.put("uti", webUserController.getLoggedUser().getInstitution());
         m.put("tu", webUserController.getLoggedUser());
         m.put("ht", HistoryType.Letter_Copy_or_Forward);
         m.put("fd", fromDate);
         m.put("td", toDate);
-
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 

@@ -91,7 +91,7 @@
                                          rowsPerPageTemplate="5,10,{ShowAll|'All'}"
                                          >
 
-                                <p:column headerText="Letter ID" sortBy="#{h.id}" filterBy="#{h.id}" style="width: 8em;">
+                                <p:column headerText="Letter ID" sortBy="#{h.id}" filterBy="#{h.id}" filterMatchMode="contains" style="width: 8em;">
                                     <h:outputText value="#{h.id}" >
                                     </h:outputText>
                                 </p:column>
@@ -106,7 +106,8 @@
                                         <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Receive Method"  style="width: 8em;" sortBy="#{h.receivedAs.name}" filterBy="#{h.receivedAs.name}" filterMatchMode="contains">
+                                <p:column headerText="Receive Method"  style="width: 8em;" sortBy="#{h.receivedAs.name}" 
+                                          filterBy="#{h.receivedAs.name}" filterMatchMode="contains">
                                     <h:outputText value="#{h.receivedAs.name}" ></h:outputText>
                                 </p:column>
                                 <p:column headerText="Number"  style="width: 12em;" sortBy="#{h.documentNumber}" filterBy="#{h.documentNumber}" filterMatchMode="contains">

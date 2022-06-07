@@ -113,8 +113,10 @@ public class MenuController implements Serializable {
         letterController.setItems(null);
         letterController.setSearchTerm("");
         letterController.setSelected(null);
+        letterController.listLastLettersReceived();
         return "/document/letter_search";
     }
+    
 
     public String toFileLedger() {
         fileController.setItems(null);

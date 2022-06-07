@@ -71,6 +71,7 @@ public class ItemApplicationController {
     private List<Item> symptomaticStatuses;
 
     private List<Item> letterReceiveCategories;
+    private List<Item> letterStatuses;
     private List<Item> documentLanguages;
     private Item pcr;
     private Item rat;
@@ -539,17 +540,17 @@ public class ItemApplicationController {
     }
 
     public List<Item> getInvestigationFilters() {
-       List<Item> output = new ArrayList<>();
-       for (SearchFilterType filter: SearchFilterType.values()) {
+        List<Item> output = new ArrayList<>();
+        for (SearchFilterType filter : SearchFilterType.values()) {
             String code = filter.getCode();
             String label = filter.getLabel();
             Item item = new Item();
             item.setCode(code);
             item.setName(label);
             output.add(item);
-       }
-       this.investigationFilters = output;
-       return this.investigationFilters;
+        }
+        this.investigationFilters = output;
+        return this.investigationFilters;
     }
 
     public void setInvestigationFilters(List<Item> investigationFilters) {
@@ -612,6 +613,17 @@ public class ItemApplicationController {
 
     public void setSymptomaticStatuses(List<Item> symptomaticStatuses) {
         this.symptomaticStatuses = symptomaticStatuses;
+    }
+
+    public List<Item> getLetterStatuses() {
+        if (letterStatuses == null) {
+            letterStatuses = findChildDictionaryItems("letter_statuses");
+        }
+        return letterStatuses;
+    }
+
+    public void setLetterStatuses(List<Item> letterStatuses) {
+        this.letterStatuses = letterStatuses;
     }
 
 }
