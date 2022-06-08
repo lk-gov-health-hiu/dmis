@@ -106,6 +106,16 @@
                                                   filterBy="#{c.fromInsOrUser.insName}"
                                                   filterMatchMode="contains">
                                         </p:column>
+                                        
+                                        
+                                         <p:column headerText="Copied/Forwarded From"
+                                                  rendered="#{letterController.webUserCopy eq null}"
+                                                  sortBy="#{c.fromInsOrUser.insName}" 
+                                                  filterBy="#{c.fromInsOrUser.insName}"
+                                                  filterMatchMode="contains">
+                                        </p:column>
+                                        
+                                        
                                         <p:column headerText="Minute" sortBy="#{c.item.name}" 
                                                   filterBy="#{c.item.name}"
                                                   filterMatchMode="contains">
@@ -161,6 +171,16 @@
                                           filterMatchMode="contains">
                                     <h:outputLabel value="#{c.fromInsOrUser.insName}"></h:outputLabel>
                                 </p:column>
+                                
+                                 <p:column headerText="Copied/Forwarded From"
+                                           sortBy="#{c.toInstitution.name}" 
+                                           filterBy="#{c.toInstitution.name}"
+                                          filterMatchMode="contains">
+                                     <h:outputLabel value="#{c.toInstitution.name}"></h:outputLabel>
+                                     ||
+                                     <h:outputLabel value="#{c.toUser.institution.name}"></h:outputLabel>
+                                </p:column>
+                                
                                 <p:column headerText="Minute" sortBy="#{c.item.name}" 
                                           filterBy="#{c.item.name}"
                                           filterMatchMode="contains">
@@ -175,7 +195,7 @@
                                     <h:commandButton value="View" action="#{letterController.toLetterView()}" class="mx-2 btn btn-success" >
                                         <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" ></f:setPropertyActionListener>
                                     </h:commandButton>
-                                     <h:commandButton value="Accept" 
+                                     <h:commandButton value="Receive" 
                                                        class="btn btn-danger mx-2"
                                                       action="#{letterController.acceptSelectedHistoryForCopyForward}" >
                                          <f:setPropertyActionListener target="#{letterController.selectedHistory}" 

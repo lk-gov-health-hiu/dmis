@@ -420,14 +420,53 @@ public class LetterController implements Serializable {
                 + " where h.retired=false "
                 + " and h.historyType =:ht "
                 + " and h.toUser=:tu "
-                + " and h.completed=false ";
-        j += " and h.createdAt between :fd and :td "
-                + " order by h.id desc";
+                + " and h.completed=:c ";
+        j += " and h.createdAt between :fd and :td ";
         m.put("tu", webUserController.getLoggedUser());
         m.put("ht", HistoryType.Letter_Assigned);
         m.put("fd", fromDate);
         m.put("td", toDate);
+        m.put("c", false);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public Long countMyLettersToAccept(Date fd, Date td) {
+        Long c = 0l;
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=:c ";
+        j += " and h.createdAt between :fd and :td ";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("fd", fd);
+        m.put("td", td);
+        m.put("c", false);
+        c = documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+        return c;
+    }
+
+    public Long countMyLettersAccepted(Date fd, Date td) {
+        Long c = 0l;
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=:c ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id desc";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("fd", fd);
+        m.put("td", td);
+        m.put("c", true);
+        c = documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+        return c;
     }
 
     public void fillLettersToAssign() {
@@ -814,7 +853,34 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType =:ht "
-                + " and (h.toInstitution=:ti or h.toUser=:tu or h.toUser.institution=:ti) "
+                + " and h.toInstitution=:ti "
+                + " and h.completed=true ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.fromUser=:fu ";
+                m.put("fu", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.fromInstitution=:fi ";
+                m.put("fi", webUserCopy);
+            }
+        }
+        j += " and h.completedAt between :fd and :td "
+                + " order by h.id";
+        m.put("ti", webUserController.getLoggedInstitution());
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        if (documentHistories == null) {
+            documentHistories = new ArrayList<>();
+        }
+
+        m = new HashMap();
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser in :uss "
                 + " and h.completed=true ";
         if (webUserCopy != null) {
             if (webUserCopy instanceof WebUser) {
@@ -829,13 +895,18 @@ public class LetterController implements Serializable {
         j += " and h.completedAt between :fd and :td "
                 + " order by h.id";
 
-        m.put("ti", webUserController.getLoggedInstitution());
-        m.put("tu", webUserController.getLoggedUser());
+        m.put("uss", webUserController.getUsersForMyInstitute());
         m.put("ht", HistoryType.Letter_Copy_or_Forward);
         m.put("fd", fromDate);
         m.put("td", toDate);
 
-        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        List<DocumentHistory> tdhx = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        
+        if(tdhx!=null){
+            documentHistories.addAll(tdhx);
+        }
+        
+
     }
 
     public String toAcceptForwardCopyLettersToReceive() {
@@ -880,7 +951,8 @@ public class LetterController implements Serializable {
         ndh.setDocument(selectedHistory.getDocument());
         ndh.setHistoryType(HistoryType.Letter_Copy_or_Forward_Accepted);
         ndh.setInstitution(webUserController.getLoggedInstitution());
-        ndh.setToInstitution(selected.getCurrentInstitution());
+        ndh.setToInstitution(webUserController.getLoggedInstitution());
+        ndh.setFromInstitution(selectedHistory.getFromInstitution());
         ndh.setCompleted(true);
         ndh.setCompletedAt(new Date());
         ndh.setCompletedBy(webUserController.getLoggedUser());
@@ -898,8 +970,8 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType =:ht "
-                + " and (h.toInstitution=:ti or h.toInstitution=:uti or h.toUser=:tu or h.toUser.institution=:ti) "
-                + " and h.completed=false ";
+                + " and h.toInstitution=:ti "
+                + " and h.completed=:c ";
         if (webUserCopy != null) {
             if (webUserCopy instanceof WebUser) {
                 j += " and h.fromUser=:fu ";
@@ -911,17 +983,61 @@ public class LetterController implements Serializable {
         }
 
         j += " and h.createdAt between :fd and :td "
-                + " order by h.id";
+                + " order by h.id desc";
 
         m.put("ti", webUserController.getLoggedInstitution());
-        m.put("uti", webUserController.getLoggedUser().getInstitution());
-        m.put("tu", webUserController.getLoggedUser());
+        System.out.println("webUserController.getLoggedInstitution() = " + webUserController.getLoggedInstitution());
+//        m.put("uti", webUserController.getLoggedUser().getInstitution());
+        System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution());
+//        m.put("tu", webUserController.getLoggedUser());
+        System.out.println("webUserController.getLoggedUser() = " + webUserController.getLoggedUser());
         m.put("ht", HistoryType.Letter_Copy_or_Forward);
         m.put("fd", fromDate);
+        System.out.println("fromDate = " + fromDate);
+        System.out.println("toDate = " + toDate);
         m.put("td", toDate);
+        m.put("c", false);
         System.out.println("j = " + j);
         System.out.println("m = " + m);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        if (documentHistories == null) {
+            documentHistories = new ArrayList<>();
+        }
+
+        m = new HashMap();
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser in :us "
+                + " and h.completed=:c ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.fromUser=:fu ";
+                m.put("fu", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.fromInstitution=:fi ";
+                m.put("fi", webUserCopy);
+            }
+        }
+
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id desc";
+
+        m.put("us", webUserController.getUsersForMyInstitute());
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("c", false);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+
+        List<DocumentHistory> uihxs = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        if (uihxs != null) {
+            documentHistories.addAll(uihxs);
+        }
+
     }
 
     public List<DocumentHistory> findDocumentHistories(Date fd, Date td, HistoryType ht, Institution i, Nameable u) {
