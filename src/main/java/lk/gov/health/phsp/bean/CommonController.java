@@ -524,6 +524,17 @@ public class CommonController implements Serializable {
         c.set(Calendar.MILLISECOND, 1);
         return c.getTime();
     }
+    
+    public static Date startOfYesterday() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 1);
+        c.add(Calendar.DATE, -1);
+        return c.getTime();
+    }
 
     public static Date startOfTheDate(Date d) {
         Calendar c = Calendar.getInstance();

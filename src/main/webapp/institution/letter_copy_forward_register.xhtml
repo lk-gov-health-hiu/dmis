@@ -134,16 +134,9 @@
                                     </h:outputLabel>
                                 </p:column>
                                 <p:column >
-
-                                    <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
-                                        <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{c.document.fromInstitution.name ne 'Personal'}" >
-                                        <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
-                                    </h:panelGroup>
+                                    <h:outputLabel value="#{c.document.senderName}"  rendered="#{c.document.fromInstitution.name eq 'Personal'}"></h:outputLabel>
+                                    <h:outputLabel value="#{c.document.fromInstitution.name}"  rendered="#{c.document.fromInstitution.name ne 'Personal'}" ></h:outputLabel>
                                     <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
-
-
                                 </p:column>
                                 <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
                                           filterBy="#{c.document.documentNumber}"
@@ -172,7 +165,7 @@
                                           filterMatchMode="contains">
                                     <h:outputLabel value="#{c.comments}"></h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Actions" >
+                                <p:column headerText="Actions" exportable="false" >
                                     <h:commandButton value="View" action="#{letterController.toLetterView()}" >
                                         <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" ></f:setPropertyActionListener>
                                     </h:commandButton>
@@ -233,7 +226,7 @@
                                 </h:outputText>
                             </h:panelGrid>
 
-                           
+
 
                             <p:dataTable reflow="false" id="tblPrint" value="#{letterController.documentHistories}"
                                          rendered="true" rowIndexVar="n" var="c" paginator="false" class=" m-0 p-0  W-100"
@@ -272,15 +265,9 @@
                                     <f:facet name="footer" >
                                         <h:outputText value="Received By"  ></h:outputText>
                                     </f:facet> 
-
-                                    <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
-                                        <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{c.document.fromInstitution.name ne 'Personal'}" >
-                                        <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
-                                    </h:panelGroup>
+                                    <h:outputLabel value="#{c.document.senderName}" rendered="#{c.document.fromInstitution.name eq 'Personal'}"></h:outputLabel>
+                                    <h:outputLabel value="#{c.document.fromInstitution.name}" rendered="#{c.document.fromInstitution.name ne 'Personal'}" ></h:outputLabel>
                                     <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
-
                                 </p:column>
                                 <p:column headerText="Letter Number"   style="width: 10em; overflow: auto;">
                                     <f:facet name="header" >

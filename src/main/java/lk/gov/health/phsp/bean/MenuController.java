@@ -57,11 +57,18 @@ public class MenuController implements Serializable {
     InstitutionController institutionController;
     @Inject
     PreferenceController preferenceController;
+    @Inject
+    DashboardController dashboardController;
 
     /**
      * Creates a new instance of MenuController
      */
     public MenuController() {
+    }
+
+    public String toIndex() {
+        dashboardController.preparePersonalDashboard();
+        return "/index";
     }
 
     public String toFileAddNew() {
@@ -80,7 +87,7 @@ public class MenuController implements Serializable {
         ndh.setHistoryType(HistoryType.File_Created);
         return "/document/file";
     }
-    
+
     public String toLetterAddNew() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
@@ -101,18 +108,18 @@ public class MenuController implements Serializable {
         return "/document/letter";
     }
 
-    
     public String toFileSearch() {
         fileController.setItems(null);
         fileController.setSearchTerm("");
         fileController.setSelected(null);
         return "/document/file_search";
     }
-    
+
     public String toLetterSearch() {
         letterController.setItems(null);
         letterController.setSearchTerm("");
         letterController.setSelected(null);
+        letterController.listLastLettersReceived();
         return "/document/letter_search";
     }
 
@@ -262,13 +269,11 @@ public class MenuController implements Serializable {
         }
     }
 
-    
     public String toAddNewInstitutionAtLetterEntry() {
         institutionController.prepareToAddNewInstitution();
         return "/institution/institution_at_letter_entry";
     }
-    
-    
+
     public String toListUsersFirstLogin() {
         webUserController.prepareListingAllUsers();
         return "/national/admin/user_list";

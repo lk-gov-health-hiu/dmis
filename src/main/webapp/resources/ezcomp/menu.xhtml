@@ -12,17 +12,15 @@
     <cc:implementation>
         <h:form>
             <p:menubar id="main-menu">
-                <p:menuitem class="text-white" ajax="false" value="Home" icon="ui-icon-home" action="/index" />
+                <p:menuitem class="text-white" ajax="false" value="Home" icon="ui-icon-home" action="#{menuController.toIndex()}" />
                 <p:submenu class="submenu" label="Files" >
                     <p:menuitem class="submenu-item" ajax="false" value="New File" action="#{menuController.toFileAddNew()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Search File" action="#{menuController.toFileSearch()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="File Ledger" action="#{menuController.toFileSearch()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Receive Files" action="#{menuController.toFileSearch()}" />
                 </p:submenu>
-                 <p:submenu class="submenu" label="Letter" >
-                    <p:menuitem class="submenu-item" ajax="false" value="Record New Letter Received" action="#{menuController.toLetterAddNew()}"  />
-                    <p:menuitem class="submenu-item" ajax="false" value="Generate Letter" action="#{menuController.toLetterAddNew()}"  />
-                    <p:menuitem class="submenu-item" ajax="false" value="Receive Letters" action="#{letterController.toAcceptForwardCopyLettersToReceive()}" />
+                <p:submenu class="submenu" label="Letter" >
+                    <p:menuitem class="submenu-item" ajax="false" value="New Letter" action="#{menuController.toLetterAddNew()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Search Letters" action="#{menuController.toLetterSearch()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Assign Multiple Letters" action="#{letterController.toAssignMultipleLetters()}" />
                 </p:submenu>
@@ -31,7 +29,7 @@
                     <p:menuitem class="submenu-item" ajax="false" value="My Assigned &amp; Accepted Letter List" action="#{letterController.toAcceptedMyAssignedLetters()}" />
                     <p:separator/>
                     <p:menuitem class="submenu-item" ajax="false" value="Receive Copy / Forwarded Letters" action="#{letterController.toAcceptCopyForwardedLettersToMe()}" />
-                    
+
                     <p:menuitem class="submenu-item" ajax="false" value="My Received Copy / Forwarded Letters" action="#{letterController.toAcceptedCopyForwardedLettersToMe()}" />
                 </p:submenu>
                 <p:menuitem class="text-white" ajax="false" value="Reports" action="#{menuController.toReportsIndex()}" />

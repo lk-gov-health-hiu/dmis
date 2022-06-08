@@ -76,6 +76,8 @@ public class Document implements Serializable {
     private Document parentDocument;
     @ManyToOne
     private Item documentLanguage;
+    @ManyToOne
+    private Item letterStatus;
 
     @ManyToOne
     private Institution institution;
@@ -555,6 +557,14 @@ public class Document implements Serializable {
 
     public void setToWebUser(WebUser toWebUser) {
         this.toWebUser = toWebUser;
+    }
+
+    public Item getLetterStatus() {
+        return letterStatus;
+    }
+
+    public void setLetterStatus(Item letterStatus) {
+        this.letterStatus = letterStatus;
     }
     
     
