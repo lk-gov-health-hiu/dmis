@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:body>
+
+        <ui:composition template="/institution/reports_index.xhtml">
+            <ui:define name="title">
+                Institution Counts - Letters
+            </ui:define>
+            <ui:define name="reports">
+                <p:growl ></p:growl>
+                <h:form >
+                    <div class="card my-3">
+                        <h5 class="card-header bg-success">
+                            <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Institution Counts - Letters" ></p:outputLabel>
+                        </h5>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h:panelGrid columns="2" >
+                                        <p:panelGrid columns="2"  class="border border-light">
+
+                                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
+                                            <h:selectOneMenu value="#{letterController.searchFilterType}" class="form-select">
+                                                <f:selectItems value="#{commonController.searchFilterTypes}" var="c"
+                                                               itemLabel="#{c.label}" itemValue="#{c}"></f:selectItems>
+                                            </h:selectOneMenu>
+
+                                            <h:outputLabel class="fs-6" value="From:"></h:outputLabel>
+                                            <p:datePicker monthNavigator="true" yearNavigator="true" 
+                                                          class="fs-6 fw-bold"   
+                                                          showTime="true"
+                                                          pattern="dd MMMM yyyy hh:mm a"
+                                                          value="#{letterController.fromDate}">
+                                            </p:datePicker>
+                                            <h:outputLabel class="fs-6" value="To:"></h:outputLabel>
+                                            <p:datePicker class="fs-6 fw-bold"  
+                                                          monthNavigator="true" yearNavigator="true" 
+                                                          showTime="true"
+                                                          pattern="dd MMMM yyyy hh:mm a"
+                                                          value="#{letterController.toDate}">
+                                            </p:datePicker>
+                                        </p:panelGrid>
+
+                                        <h:panelGrid columns="1" >
+                                            <h:commandButton value="Process" action="#{letterController.listInstitutionCountLetters()}" class="btn btn-danger form-control"></h:commandButton>
+                                             <h:commandButton value="Print"  class="btn btn-success form-control">
+                                                <p:printer target="tbl" ></p:printer>
+                                            </h:commandButton>
+                                            <h:commandButton value="Download"  class="btn btn-warning form-control">
+                                                <p:dataExporter target="tbl" type="xls" fileName="Count of Letters by Institution" ></p:dataExporter>
+                                            </h:commandButton>
+                                           
+                                        </h:panelGrid>
+
+                                    </h:panelGrid>
+
+
+
+
+                                    <p:dataTable value="#{letterController.institutionCounts}"
+                                                 var="h" 
+                                                 rowKey="#{h.institution.id}"
+                                                 id="tbl"
+
+                                                 style="width: 100%;"
+
+                                                 rows="10"
+                                                 paginator="true"
+                                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                                 rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+
+                                                 >
+
+
+                                        <p:column headerText="Institution">
+                                            <h:outputText value="#{h.institution.name}" >
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Count">
+                                            <h:outputText value="#{h.count}" >
+                                            </h:outputText>
+                                        </p:column>
+                                        
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  
+
+                </h:form>
+
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

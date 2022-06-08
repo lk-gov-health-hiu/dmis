@@ -140,7 +140,7 @@ public class MenuController implements Serializable {
     public String toReportsIndex() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case National:
-                return "/institution/reports_index";
+                return "/national/reports_index";
             case Institutional:
                 return "/institution/reports_index";
             default:

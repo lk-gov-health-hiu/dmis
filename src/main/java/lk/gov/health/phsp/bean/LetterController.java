@@ -41,6 +41,7 @@ import lk.gov.health.phsp.facade.DocumentHistoryFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
+import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Nameable;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.model.file.UploadedFile;
@@ -73,6 +74,7 @@ public class LetterController implements Serializable {
     private List<Upload> selectedUploads;
     private List<DocumentHistory> documentHistories;
     private List<DocumentHistory> listedToAcceptCopyForwards;
+    private List<InstitutionCount> institutionCounts;
     DocumentHistory selectedToAcceptCopyForwards;
     @Inject
     private WebUserController webUserController;
@@ -304,7 +306,7 @@ public class LetterController implements Serializable {
         System.out.println("By Name");
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-        
+
         if (items != null && !items.isEmpty()) {
             System.out.println("items = " + items.size());
             return;
@@ -329,7 +331,7 @@ public class LetterController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         items = documentFacade.findByJpql(j, m);
-         System.out.println("items = " + items.size());
+        System.out.println("items = " + items.size());
     }
 
     public void searchLetterByInsOrUser() {
@@ -404,6 +406,58 @@ public class LetterController implements Serializable {
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void listInstitutionCountLetters() {
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.SYSTEM_DATE;
+        }
+        String j = "";
+
+        j += "select new lk.gov.health.phsp.pojcs.InstitutionCount(d.institution, count(d))";
+        j += " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt ";
+        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
+        j += " group by d.institution "
+                + " order by count(d) desc" ;
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        institutionCounts = new ArrayList<>();
+        List<Object> objs = documentFacade.findObjectByJpql(j, m, TemporalType.TIMESTAMP);
+        for(Object o:objs){
+            if(o instanceof InstitutionCount){
+                institutionCounts.add((InstitutionCount) o);
+            }
+        }
+    }
+    
+     public void listDailyCountLetters() {
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.SYSTEM_DATE;
+        }
+        String j = "";
+
+        j += "select new lk.gov.health.phsp.pojcs.InstitutionCount(d.receivedDate, count(d))";
+        j += " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt ";
+        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
+        j += " group by d.receivedDate "
+                + " order by d.receivedDate" ;
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        institutionCounts = new ArrayList<>();
+        List<Object> objs = documentFacade.findObjectByJpql(j, m, TemporalType.TIMESTAMP);
+        for(Object o:objs){
+            if(o instanceof InstitutionCount){
+                institutionCounts.add((InstitutionCount) o);
+            }
+        }
     }
 
     public void fillMyLettersToAccept() {
@@ -790,6 +844,16 @@ public class LetterController implements Serializable {
     public String toReportsLetterReceived() {
         documentHistories = null;
         return "/institution/letter_receive_register";
+    }
+
+    public String toReportsInstitutionCountsLetters() {
+        institutionCounts = null;
+        return "/national/institution_counts_letters";
+    }
+    
+    public String toReportsDailyCountsLetters() {
+        institutionCounts = null;
+        return "/national/daily_counts_letters";
     }
 
     public String toAssignMultipleLetters() {
@@ -1426,6 +1490,14 @@ public class LetterController implements Serializable {
 
     public void setSearchUserOrIns(Nameable searchUserOrIns) {
         this.searchUserOrIns = searchUserOrIns;
+    }
+
+    public List<InstitutionCount> getInstitutionCounts() {
+        return institutionCounts;
+    }
+
+    public void setInstitutionCounts(List<InstitutionCount> institutionCounts) {
+        this.institutionCounts = institutionCounts;
     }
 
     @FacesConverter(forClass = Nameable.class)

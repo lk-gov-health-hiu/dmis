@@ -20,9 +20,10 @@
                     <p:menuitem class="submenu-item" ajax="false" value="Receive Files" action="#{menuController.toFileSearch()}" />
                 </p:submenu>
                  <p:submenu class="submenu" label="Letter" >
-                    <p:menuitem class="submenu-item" ajax="false" value="New Letter" action="#{menuController.toLetterAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="Record New Letter Received" action="#{menuController.toLetterAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="Generate Letter" action="#{menuController.toLetterAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="Receive Letters" action="#{letterController.toAcceptForwardCopyLettersToReceive()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Search Letters" action="#{menuController.toLetterSearch()}" />
-                    <p:menuitem class="submenu-item" ajax="false" value="Receive Copied/Forwarded Letters" action="#{letterController.toAcceptForwardCopyLettersToReceive()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Assign Multiple Letters" action="#{letterController.toAssignMultipleLetters()}" />
                 </p:submenu>
                 <p:submenu class="submenu" label="My Letters" >

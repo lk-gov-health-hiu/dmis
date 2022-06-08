@@ -52,6 +52,11 @@ public class InstitutionCount {
         this.date = date;
         this.encounerType = encounerType;
     }
+    
+    public InstitutionCount(Date date, Long count) {
+        this.count = count;
+        this.date = date;
+    }
 
     public InstitutionCount(Item itemValue, Long count) {
         this.itemValue = itemValue;
