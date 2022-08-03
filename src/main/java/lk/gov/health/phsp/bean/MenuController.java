@@ -26,12 +26,14 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.entity.DocumentHistory;
 import lk.gov.health.phsp.entity.UserPrivilege;
+import lk.gov.health.phsp.enums.DocumentGenerationType;
 import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.HistoryType;
 import lk.gov.health.phsp.enums.Privilege;
@@ -91,6 +93,7 @@ public class MenuController implements Serializable {
     public String toLetterAddNew() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
         nd.setDocumentDate(new Date());
         nd.setReceivedDate(new Date());
         nd.setInstitution(webUserController.getLoggedInstitution());
@@ -108,9 +111,10 @@ public class MenuController implements Serializable {
         return "/document/letter";
     }
     
-    public String toLetterCreateNew() {
+    public String toLetterGenerateNew() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentGenerationType(DocumentGenerationType.Generated_by_system);
         nd.setDocumentDate(new Date());
         nd.setReceivedDate(new Date());
         nd.setInstitution(webUserController.getLoggedInstitution());
@@ -126,7 +130,11 @@ public class MenuController implements Serializable {
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.Letter_Generated);
         ndh.setInstitution(webUserController.getLoggedInstitution());
-        return "/document/letter_generate_create";
+        
+        letterController.setToInsOrUser(new ArrayList<>());
+        letterController.setSelectedDocumentHistories(new ArrayList<>());
+        
+        return "/document/letter_generate";
     }
 
     public String toFileSearch() {

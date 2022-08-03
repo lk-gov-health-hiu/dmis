@@ -179,7 +179,11 @@ public class Institution implements Serializable, Nameable {
 
     @Override
     public String toString() {
-        return name;
+        if(id==null){
+            return null;
+        }else{
+            return id.toString();
+        }
     }
 
     public InstitutionType getInstitutionType() {

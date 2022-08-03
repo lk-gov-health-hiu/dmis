@@ -64,4 +64,7 @@ public interface Nameable {
 
     public String getDisplayName();
     
+    @Override
+    public String toString();
+    
 }

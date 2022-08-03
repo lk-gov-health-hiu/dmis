@@ -29,6 +29,9 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum HistoryType {
+    From_List("From List"),
+    To_List("To List"),
+    Through_List("Through List"),
     File_Created("File Created"),
     File_Institution_Transfer("File Transfer"),
     File_Owner_Transfer("File Owner Change"),

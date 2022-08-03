@@ -120,16 +120,17 @@
                             </h:outputLabel>
 
                             <h:panelGroup layout="block" class="w-100" >
-                                <p:autoComplete id="from"  value="#{letterController.selected.toInsOrUser}" 
+                                <p:autoComplete id="from"  value="#{letterController.toInsOrUser}" 
                                                 class="form-control"
                                                 completeMethod="#{letterController.completeInsOrUsersByWords}"
-                                                var="insf"
+                                                var="insf" multiple="true"
                                                 forceSelection="true"
                                                 required="true"
                                                 requiredMessage="Need to select"
                                                 maxResults="10" inputStyle="color:red;"
-                                                itemLabel="#{insf.displayName}"
+                                                itemLabel="#{insf.name}"
                                                 itemValue="#{insf}"
+                                                converter="nameableConverter"
                                                 >
                                     <f:ajax execute="method" render="fromPerson" event="blur" ></f:ajax>
                                     <f:ajax execute="method" render="fromPerson" event="itemSelect" ></f:ajax>

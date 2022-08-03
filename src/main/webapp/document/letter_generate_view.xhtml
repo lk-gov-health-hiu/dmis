@@ -24,8 +24,8 @@
                             <p:outputLabel class="fw-bold my-2" value="File Details" ></p:outputLabel>
                         </div>
                         <div class="col">
-                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterEdit()}" ></h:commandButton>
-                            <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterAddNew()}">
+                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterGenerateEdit()}" ></h:commandButton>
+                            <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterGenerateNew()}">
                             </h:commandButton>
                             <h:commandButton  class="m-2 btn btn-warning w-25 me-2"  value="Reports" action="#{menuController.toReportsIndex()}" >
                             </h:commandButton>
@@ -70,6 +70,12 @@
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromInstitution.name}"></h:outputLabel>
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromWebUser.person.nameWithTitle}"></h:outputLabel>
                             </h:panelGroup>
+                            
+                            <h:outputLabel class="fs-6"  value="Letter Sent to:"></h:outputLabel>
+                            <h:panelGroup >
+                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.toInstitution.name}"></h:outputLabel>
+                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.toWebUser.person.nameWithTitle}"></h:outputLabel>
+                            </h:panelGroup>
 
                             <h:outputLabel class="fs-6"  value="Letter Details:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.comments}"></h:outputLabel>
@@ -77,12 +83,7 @@
                             <h:outputLabel class="fs-6"  value="Letter Status:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.letterStatus.name}"></h:outputLabel>
 
-                            
-                            <h:outputLabel class="fs-6" value="Current Location:"></h:outputLabel>
-                            <h:outputLabel class="fs-6 fw-bold"  value="#{letterController.selected.currentInstitution.name}"></h:outputLabel>
-
-                            <h:outputLabel class="fs-6"  value="Current Holder:"></h:outputLabel>
-                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.currentOwner.name}"></h:outputLabel>
+                           
                         </p:panelGrid>
 
                         <h:form >

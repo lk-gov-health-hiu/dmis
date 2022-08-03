@@ -331,10 +331,10 @@ public class WebUser implements Serializable, Nameable {
 
     @Override
     public String toString() {
-        if (person != null) {
-            return person.getNameWithTitle();
+        if (id != null) {
+            return id.toString();
         } else {
-            return name;
+            return null;
         }
     }
 
@@ -623,7 +623,7 @@ public class WebUser implements Serializable, Nameable {
         if (institution != null) {
             if (institution.getDisplayName() != null) {
                 insName = institution.getDisplayName();
-            }else if(institution.getName()!=null){
+            } else if (institution.getName() != null) {
                 insName = institution.getName();
             }
         }
