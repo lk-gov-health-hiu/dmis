@@ -77,6 +77,11 @@ public class LetterController implements Serializable {
     private List<Nameable> fromInsOrUser;
     private List<Nameable> toInsOrUser;
     private List<Nameable> throughInsOrUser;
+
+    private Map<Long, Nameable> fromInsOrUserMap;
+    private Map<Long, Nameable> toInsOrUserMap;
+    private Map<Long, Nameable> throughInsOrUserMap;
+
     private List<Upload> selectedUploads;
     private List<DocumentHistory> documentHistories;
     private List<DocumentHistory> listedToAcceptCopyForwards;
@@ -804,12 +809,18 @@ public class LetterController implements Serializable {
     public String saveAndViewGeneratedLetter() {
         if (selected.getId() == null) {
             newHx = true;
+        }else{
+            newHx = false;
         }
         if (getToInsOrUser().isEmpty()) {
             JsfUtil.addErrorMessage("Please select to whom you are sending this");
             return "";
         }
         save(selected);
+        toInsOrUserMap = new HashMap<>();
+        for(Nameable n:getToInsOrUser()){
+            toInsOrUserMap.put(n.getId(), n);
+        }
         if (newHx) {
             if (selectedHistory == null) {
                 selectedHistory = new DocumentHistory();
@@ -826,7 +837,7 @@ public class LetterController implements Serializable {
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
 
-            for (Nameable toui : getToInsOrUser()) {
+            for (Nameable toui : getToInsOrUserMap().values()) {
                 DocumentHistory ndhx = new DocumentHistory();
                 ndhx.setHistoryType(HistoryType.To_List);
                 ndhx.setInstitution(webUserController.getLoggedInstitution());
@@ -854,14 +865,14 @@ public class LetterController implements Serializable {
             m.put("doc", selected);
             m.put("hxt", HistoryType.To_List);
             List<DocumentHistory> toDxHxs = documentHxFacade.findByJpql(j, m);
-            for (Nameable toui : getToInsOrUser()) {
+            for (Nameable toui : getToInsOrUserMap().values()) {
                 for (DocumentHistory dhx : toDxHxs) {
                     boolean found = false;
-                    if (toui instanceof Institution) {
+                    if (toui instanceof Institution && dhx.getToInstitution()!=null) {
                         if (dhx.getToInstitution().equals((Institution) toui)) {
                             found = true;
                         }
-                    } else if (toui instanceof WebUser) {
+                    } else if (toui instanceof WebUser && dhx.getToUser()!=null) {
                         if (dhx.getToUser().equals((WebUser) toui)) {
                             found = true;
                         }
@@ -886,7 +897,7 @@ public class LetterController implements Serializable {
             }
             for (DocumentHistory dhx : toDxHxs) {
                 boolean found = false;
-                for (Nameable toui : getToInsOrUser()) {
+                for (Nameable toui : getToInsOrUserMap().values()) {
                     if (toui instanceof Institution) {
                         if (dhx.getToInstitution().equals((Institution) toui)) {
                             found = true;
@@ -970,7 +981,7 @@ public class LetterController implements Serializable {
         newHx = false;
         return "/document/letter";
     }
-    
+
     public String toLetterGenerateEdit() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No Letter Selected");
@@ -1092,6 +1103,11 @@ public class LetterController implements Serializable {
         documentHistories = null;
         return "/institution/accept_my_copy_forwarded_letters";
     }
+    
+    public String toAcceptLettersToInstitution() {
+        documentHistories = null;
+        return "/institution/accept_letters";
+    }
 
     public String toAcceptedMyAssignedLetters() {
         documentHistories = null;
@@ -1163,6 +1179,83 @@ public class LetterController implements Serializable {
         System.out.println("toDate = " + toDate);
         m.put("td", toDate);
         m.put("c", false);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        if (documentHistories == null) {
+            documentHistories = new ArrayList<>();
+        }
+
+        m = new HashMap();
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser in :us "
+                + " and h.completed=:c ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.fromUser=:fu ";
+                m.put("fu", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.fromInstitution=:fi ";
+                m.put("fi", webUserCopy);
+            }
+        }
+
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id desc";
+
+        m.put("us", webUserController.getUsersForMyInstitute());
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("c", false);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+
+        List<DocumentHistory> uihxs = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        if (uihxs != null) {
+            documentHistories.addAll(uihxs);
+        }
+
+    }
+    
+    public void fillLettersToAccept() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType in :hts "
+                + " and h.toInstitution=:ti ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.fromUser=:fu ";
+                m.put("fu", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.fromInstitution=:fi ";
+                m.put("fi", webUserCopy);
+            }
+        }
+
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id desc";
+
+        m.put("ti", webUserController.getLoggedInstitution());
+        System.out.println("webUserController.getLoggedInstitution() = " + webUserController.getLoggedInstitution());
+//        m.put("uti", webUserController.getLoggedUser().getInstitution());
+        System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution());
+//        m.put("tu", webUserController.getLoggedUser());
+        System.out.println("webUserController.getLoggedUser() = " + webUserController.getLoggedUser());
+       List<HistoryType> hts = new ArrayList<>();
+       hts.add(HistoryType.To_List);
+       hts.add(HistoryType.Letter_Copy_or_Forward);
+        m.put("hts", hts);
+        m.put("fd", fromDate);
+        System.out.println("fromDate = " + fromDate);
+        System.out.println("toDate = " + toDate);
+        m.put("td", toDate);
         System.out.println("j = " + j);
         System.out.println("m = " + m);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
@@ -1315,21 +1408,25 @@ public class LetterController implements Serializable {
         m.put("ins", webUserController.getLoggedInstitution());
         selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
         selectedToList = new ArrayList<>();
-        toInsOrUser = new ArrayList<>();
+        
+        toInsOrUserMap = new HashMap<>();
         if (selectedDocumentHistories != null) {
             for (DocumentHistory tdhx : selectedDocumentHistories) {
                 if (tdhx.getHistoryType() != null && tdhx.getHistoryType().equals(HistoryType.To_List)) {
 //                    selectedDocumentHistories.remove(tdhx);
                     selectedToList.add(tdhx);
                     if (tdhx.getToInstitution() != null) {
-                        toInsOrUser.add(tdhx.getToInstitution());
+                        toInsOrUserMap.put(tdhx.getToInstitution().getId(), tdhx.getToInstitution());
                     }
                     if (tdhx.getToUser() != null) {
-                        toInsOrUser.add(tdhx.getToUser());
+                        toInsOrUserMap.put(tdhx.getToUser().getId(), tdhx.getToUser());
                     }
                 }
             }
         }
+        selectedDocumentHistories.removeAll(selectedToList);
+
+        toInsOrUser = new ArrayList<>(toInsOrUserMap.values());
 
         j = "select h "
                 + " from Upload h "
@@ -1889,6 +1986,39 @@ public class LetterController implements Serializable {
         this.throughInsOrUser = throughInsOrUser;
     }
 
+    public Map<Long, Nameable> getFromInsOrUserMap() {
+        if (fromInsOrUserMap == null) {
+            fromInsOrUserMap = new HashMap<>();
+        }
+        return fromInsOrUserMap;
+    }
+
+    public void setFromInsOrUserMap(Map<Long, Nameable> fromInsOrUserMap) {
+        this.fromInsOrUserMap = fromInsOrUserMap;
+    }
+
+    public Map<Long, Nameable> getToInsOrUserMap() {
+        if (toInsOrUserMap == null) {
+            toInsOrUserMap = new HashMap<>();
+        }
+        return toInsOrUserMap;
+    }
+
+    public void setToInsOrUserMap(Map<Long, Nameable> toInsOrUserMap) {
+        this.toInsOrUserMap = toInsOrUserMap;
+    }
+
+    public Map<Long, Nameable> getThroughInsOrUserMap() {
+        if (throughInsOrUserMap == null) {
+            throughInsOrUserMap = new HashMap<>();
+        }
+        return throughInsOrUserMap;
+    }
+
+    public void setThroughInsOrUserMap(Map<Long, Nameable> throughInsOrUserMap) {
+        this.throughInsOrUserMap = throughInsOrUserMap;
+    }
+
     @FacesConverter(forClass = Nameable.class)
     public static class NameableConverter implements Converter {
 
@@ -1929,9 +2059,8 @@ public class LetterController implements Serializable {
         }
 
     }
-    
-    
-    @FacesConverter(value="nameableConverter")
+
+    @FacesConverter(value = "nameableConverter")
     public static class NameableInterfaceConverter implements Converter {
 
         @Override

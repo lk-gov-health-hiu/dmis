@@ -20,11 +20,13 @@
                     <p:menuitem class="submenu-item" ajax="false" value="Receive Files" action="#{menuController.toFileSearch()}" />
                 </p:submenu>
                 <p:menuitem class="submenu-item" ajax="false" value="Search Letters" action="#{menuController.toLetterSearch()}" />
+                <p:menuitem class="submenu-item" ajax="false" value="Accept Letters" action="#{letterController.toAcceptLettersToInstitution()}" />
+
                 <p:submenu class="submenu" label="Receive Mail" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter" action="#{menuController.toLetterAddNew()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Assign Multiple Letters" action="#{letterController.toAssignMultipleLetters()}" />
                 </p:submenu>
-                
+
                 <p:submenu class="submenu" label="Mail Department" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter"
                                 action="#{menuController.toLetterAddNew()}"  />
@@ -36,8 +38,8 @@
                                 action="#{menuController.toLetterGenerateNew()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="New Internal Memo" action="#{menuController.toLetterAddNew()}"  />
                 </p:submenu>
-                
-                
+
+
 
                 <p:submenu class="submenu" label="My Letters" >
                     <p:menuitem class="submenu-item" ajax="false" value="Accept Assigned Letters" action="#{letterController.toAcceptMyAssignedLetters()}"  />

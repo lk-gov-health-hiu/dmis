@@ -21,7 +21,7 @@
                     <div class="row">
 
                         <div class="col">
-                            <p:outputLabel class="fw-bold my-2" value="File Details" ></p:outputLabel>
+                            <p:outputLabel class="fw-bold my-2" value="Generated Letter Details" ></p:outputLabel>
                         </div>
                         <div class="col">
                             <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterGenerateEdit()}" ></h:commandButton>
@@ -70,11 +70,13 @@
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromInstitution.name}"></h:outputLabel>
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromWebUser.person.nameWithTitle}"></h:outputLabel>
                             </h:panelGroup>
-                            
+
                             <h:outputLabel class="fs-6"  value="Letter Sent to:"></h:outputLabel>
                             <h:panelGroup >
-                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.toInstitution.name}"></h:outputLabel>
-                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.toWebUser.person.nameWithTitle}"></h:outputLabel>
+                                <ui:repeat value="#{letterController.toInsOrUser}" var="ti" >
+                                    <h:outputLabel class="fs-6 fw-bold" value="#{ti.name}"></h:outputLabel>
+                                    <br/>
+                                </ui:repeat>
                             </h:panelGroup>
 
                             <h:outputLabel class="fs-6"  value="Letter Details:"></h:outputLabel>
@@ -83,7 +85,7 @@
                             <h:outputLabel class="fs-6"  value="Letter Status:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.letterStatus.name}"></h:outputLabel>
 
-                           
+
                         </p:panelGrid>
 
                         <h:form >
