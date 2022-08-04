@@ -316,6 +316,22 @@ public class WebUserController implements Serializable {
         ins.addAll(institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution()));
         return ins;
     }
+    
+    public List<Institution> findMailBranchInstitutions() {
+        List<Institution> ins = new ArrayList<>();
+        if (loggedUser == null) {
+            return ins;
+        }
+        if (loggedUser.getInstitution() == null) {
+            return ins;
+        }
+        if(loggedUser.getInstitution().getParent()==null){
+            return ins;
+        }
+        ins.add(loggedUser.getInstitution().getParent());
+        ins.addAll(institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution().getParent()));
+        return ins;
+    }
 
     public List<Institution> findAutherizedPmcis() {
         List<Institution> ins = new ArrayList<>();
@@ -731,6 +747,26 @@ public class WebUserController implements Serializable {
         }
         return ins;
     }
+    
+    public List<Institution> completeLoggableMailBranchInstitutions(String qry) {
+        List<Institution> ins = new ArrayList<>();
+        if (qry == null) {
+            return ins;
+        }
+        if (qry.trim().equals("")) {
+            return ins;
+        }
+        qry = qry.trim().toLowerCase();
+        for (Institution i : getLoggableMailBranchDepartments()) {
+            if (i.getName() == null) {
+                continue;
+            }
+            if (i.getName().toLowerCase().contains(qry)) {
+                ins.add(i);
+            }
+        }
+        return ins;
+    }
 
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
@@ -764,6 +800,7 @@ public class WebUserController implements Serializable {
 
     public String login(boolean withoutPassword) {
         loggableInstitutions = null;
+        loggableMailBranchDepartments=null;
         loggablePmcis = null;
         loggableGnAreas = null;
         institutionController.setMyClinics(null);
@@ -795,6 +832,7 @@ public class WebUserController implements Serializable {
     public String loginNew() {
         System.out.println("loginNew - " + new Date());
         loggableInstitutions = null;
+        loggableMailBranchDepartments=null;
         loggablePmcis = null;
         loggableGnAreas = null;
         loggedInstitution = null;
@@ -2091,6 +2129,8 @@ public class WebUserController implements Serializable {
     public void setLoggableInstitutions(List<Institution> loggableInstitutions) {
         this.loggableInstitutions = loggableInstitutions;
     }
+    
+    
 
     public UploadedFile getFile() {
         return file;
@@ -2295,6 +2335,17 @@ public class WebUserController implements Serializable {
             u.setPubliclyListed(true);
             save(u);
         }
+    }
+
+    public List<Institution> getLoggableMailBranchDepartments() {
+        if(loggableMailBranchDepartments==null){
+            loggableMailBranchDepartments = findMailBranchInstitutions();
+        }
+        return loggableMailBranchDepartments;
+    }
+
+    public void setLoggableMailBranchDepartments(List<Institution> loggableMailBranchDepartments) {
+        this.loggableMailBranchDepartments = loggableMailBranchDepartments;
     }
 
     @FacesConverter(forClass = WebUser.class)

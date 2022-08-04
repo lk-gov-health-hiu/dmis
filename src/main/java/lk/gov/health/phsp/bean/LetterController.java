@@ -806,10 +806,36 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
+    public String saveAndViewLetterBranch() {
+        if (selected.getId() == null) {
+            newHx = true;
+        }
+        save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
+            }
+            selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+            
+            selectedHistory.setToInstitution(selected.getToInstitution());
+            selectedHistory.setToUser(selected.getToWebUser());
+            
+            selectedHistory.setFromInstitution(selected.getFromInstitution());
+            selectedHistory.setFromUser(selected.getFromWebUser());
+            
+            selectedHistory.setCompleted(false);
+            
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
+        return toLetterView();
+    }
+
     public String saveAndViewGeneratedLetter() {
         if (selected.getId() == null) {
             newHx = true;
-        }else{
+        } else {
             newHx = false;
         }
         if (getToInsOrUser().isEmpty()) {
@@ -818,7 +844,7 @@ public class LetterController implements Serializable {
         }
         save(selected);
         toInsOrUserMap = new HashMap<>();
-        for(Nameable n:getToInsOrUser()){
+        for (Nameable n : getToInsOrUser()) {
             toInsOrUserMap.put(n.getId(), n);
         }
         if (newHx) {
@@ -868,11 +894,11 @@ public class LetterController implements Serializable {
             for (Nameable toui : getToInsOrUserMap().values()) {
                 for (DocumentHistory dhx : toDxHxs) {
                     boolean found = false;
-                    if (toui instanceof Institution && dhx.getToInstitution()!=null) {
+                    if (toui instanceof Institution && dhx.getToInstitution() != null) {
                         if (dhx.getToInstitution().equals((Institution) toui)) {
                             found = true;
                         }
-                    } else if (toui instanceof WebUser && dhx.getToUser()!=null) {
+                    } else if (toui instanceof WebUser && dhx.getToUser() != null) {
                         if (dhx.getToUser().equals((WebUser) toui)) {
                             found = true;
                         }
@@ -926,16 +952,41 @@ public class LetterController implements Serializable {
         if (newHx) {
             if (selectedHistory == null) {
                 selectedHistory = new DocumentHistory();
-                selectedHistory.setHistoryType(HistoryType.Letter_Created);
+                selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
+                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             }
-            selectedHistory.setToInstitution(selected.getCurrentInstitution());
-            selectedHistory.setCompleted(true);
-            selectedHistory.setCompletedAt(new Date());
-            selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+            selectedHistory.setToInstitution(selected.getToInstitution());
+            
+            selectedHistory.setFromInstitution(selected.getFromInstitution());
+            selectedHistory.setFromUser(selected.getFromWebUser());
+            
+            selectedHistory.setToUser(selected.getToWebUser());
+            selectedHistory.setToInstitution(selected.getToInstitution());
+            
+            selectedHistory.setCompleted(false);
+            selectedHistory.setDocument(selected);
+            
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
-        return menuController.toLetterAddNew();
+        return menuController.toLetterMailBranchAddNew();
+    }
+
+    public String saveAndNewLetterBranch() {
+        if (selected.getId() == null) {
+            newHx = true;
+        }
+        save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
+            }
+            selectedHistory.setCompleted(false);
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
+        return menuController.toLetterMailBranchAddNew();
     }
 
     public String saveAndNewGeneratedLetter() {
@@ -1103,7 +1154,7 @@ public class LetterController implements Serializable {
         documentHistories = null;
         return "/institution/accept_my_copy_forwarded_letters";
     }
-    
+
     public String toAcceptLettersToInstitution() {
         documentHistories = null;
         return "/institution/accept_letters";
@@ -1221,7 +1272,7 @@ public class LetterController implements Serializable {
         }
 
     }
-    
+
     public void fillLettersToAccept() {
         Map m = new HashMap();
         String j = "select h "
@@ -1248,9 +1299,9 @@ public class LetterController implements Serializable {
         System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution());
 //        m.put("tu", webUserController.getLoggedUser());
         System.out.println("webUserController.getLoggedUser() = " + webUserController.getLoggedUser());
-       List<HistoryType> hts = new ArrayList<>();
-       hts.add(HistoryType.To_List);
-       hts.add(HistoryType.Letter_Copy_or_Forward);
+        List<HistoryType> hts = new ArrayList<>();
+        hts.add(HistoryType.To_List);
+        hts.add(HistoryType.Letter_Copy_or_Forward);
         m.put("hts", hts);
         m.put("fd", fromDate);
         System.out.println("fromDate = " + fromDate);
@@ -1371,7 +1422,7 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.document=:doc "
-                + " and (h.institution=:ins or h.fromInstitution=:ins or h.toInstitution=:ins) "
+                + " and (h.institution=:ins) "
                 + " order by h.id desc";
         Map m = new HashMap();
         m.put("doc", selected);
@@ -1393,7 +1444,7 @@ public class LetterController implements Serializable {
 //            m.put("fins", webUserController.getLoggedInstitution());
 //        }
         selectedUploads = uploadFacade.findByJpql(j, m);
-        return "/document/letter_view";
+        return "/document/letter_mail_branch_view";
     }
 
     public String toGeneraterLetterView() {
@@ -1408,7 +1459,7 @@ public class LetterController implements Serializable {
         m.put("ins", webUserController.getLoggedInstitution());
         selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
         selectedToList = new ArrayList<>();
-        
+
         toInsOrUserMap = new HashMap<>();
         if (selectedDocumentHistories != null) {
             for (DocumentHistory tdhx : selectedDocumentHistories) {

@@ -29,8 +29,9 @@
 
                 <p:submenu class="submenu" label="Mail Branch" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter"
+                                action="#{menuController.toLetterMailBranchAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="Letter Register" 
                                 action="#{menuController.toLetterAddNew()}"  />
-                    <p:menuitem class="submenu-item" ajax="false" value="New Internal Memo" action="#{menuController.toLetterAddNew()}"  />
                 </p:submenu>
 
                 <p:submenu class="submenu" label="Create" >
