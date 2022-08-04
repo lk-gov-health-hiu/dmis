@@ -12,7 +12,7 @@ public enum Privilege {
     //Main Menu Privileges
     File_Management("File Management"),
     Institutional_Mail_Management("Institutional Mail Management"),
-    Postal_Branch_Mail_Management("Postal Branch Mail Management"),
+    Mail_Branch_Mail_Management("Mail Branch Mail Management"),
     System_Administration("System Administration"),
     Institution_Administration("Institution Administration"),
     User("User"),
@@ -33,7 +33,7 @@ public enum Privilege {
     Search_Letter("Search Letter"),
     Add_Actions_To_Letter("Add Actions"),
     Remove_Actions_To_Letter("Remove Actions"),
-    //Postal Branch Mail Management
+    //Mail Branch Mail Management
     Add_Letter_Postal_Branch("Add Letter"),
     Edit_Letter_Postal_Branch("Edit Letter"),
     Retire_Letter_Postal_Branch("Retire Letter"),

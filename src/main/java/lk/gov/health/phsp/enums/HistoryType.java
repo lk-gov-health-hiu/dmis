@@ -35,6 +35,7 @@ public enum HistoryType {
     File_Created("File Created"),
     File_Institution_Transfer("File Transfer"),
     File_Owner_Transfer("File Owner Change"),
+    Letter_added_by_mail_branch("Letter added by Mail Branch"),
     Letter_Created("Letter Created"),
     Letter_Generated("Letter Generated"),
     Letter_Assigned("Letter Assigned"),
