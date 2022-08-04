@@ -106,7 +106,7 @@ public class WebUserController implements Serializable {
 
     private List<Institution> loggableInstitutions;
     private List<Institution> loggablePmcis;
-    private List<Institution> loggableProcedureRooms;
+    private List<Institution> loggableMailBranchDepartments;
 
     private List<Area> loggableGnAreas;
     private WebUserRole userRole;
