@@ -911,9 +911,7 @@ public class WebUserController implements Serializable {
         m.put("ret", false);
         return getFacade().findByJpql(temSQL, m);
     }
-    
-    
-    
+
     public List<WebUser> completeUsersByWord(String nameQry) {
         List<WebUser> resIns = new ArrayList<>();
         if (nameQry == null) {
@@ -927,22 +925,22 @@ public class WebUserController implements Serializable {
         String words[] = nameQry.split("\\s+");
 
         for (WebUser i : allIns) {
-             boolean allWordsMatch = true;
+            boolean allWordsMatch = true;
 
             for (String word : words) {
                 boolean thisWordMatch;
                 word = word.trim().toLowerCase();
-                if (i.getName() != null  && i.getName().toLowerCase().contains(word)) {
+                if (i.getName() != null && i.getName().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else if (i.getCode()!= null  && i.getCode().toLowerCase().contains(word)) {
+                } else if (i.getCode() != null && i.getCode().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else if (i.getPerson()!= null && i.getPerson().getName() !=null  && i.getPerson().getName().toLowerCase().contains(word)) {
+                } else if (i.getPerson() != null && i.getPerson().getName() != null && i.getPerson().getName().toLowerCase().contains(word)) {
                     thisWordMatch = true;
-                }else{
-                    thisWordMatch=false;
+                } else {
+                    thisWordMatch = false;
                 }
-                if(thisWordMatch==false){
-                    allWordsMatch=false;
+                if (thisWordMatch == false) {
+                    allWordsMatch = false;
                 }
             }
 
@@ -952,7 +950,6 @@ public class WebUserController implements Serializable {
         }
         return resIns;
     }
-    
 
     private boolean checkLogin(boolean withoutPassword) {
         if (loggedUser != null && withoutPassword) {
@@ -995,13 +992,26 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.Manage_Institution_Users);
                 wups.add(Privilege.Manage_Authorised_Institutions);
             case Institutional_Super_User:
-
             case Institutional_User:
                 //Menu
                 wups.add(Privilege.File_Management);
-                wups.add(Privilege.Letter_Management);
-                wups.add(Privilege.Finance_Management);
+                wups.add(Privilege.Institutional_Mail_Management);
                 wups.add(Privilege.User);
+                wups.add(Privilege.Search_File);
+                wups.add(Privilege.Retire_File);
+                break;
+            case System_Administrator:
+            case Super_User:
+                //Menu
+                wups.add(Privilege.Manage_Users);
+            case User:
+                wups.add(Privilege.Monitoring_and_evaluation);
+                wups.add(Privilege.Monitoring_and_evaluation_reports);
+                wups.add(Privilege.View_aggragate_date);
+                wups.add(Privilege.File_Management);
+                wups.add(Privilege.Institutional_Mail_Management);
+                wups.add(Privilege.User);
+                wups.add(Privilege.Add_File);
                 wups.add(Privilege.Search_File);
                 wups.add(Privilege.Retire_File);
 //                Motinoring & Evaluation
@@ -1010,46 +1020,9 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.View_individual_data);
                 wups.add(Privilege.View_aggragate_date);
 
-                /**
-                 *
-                 *
-                 * File_Management Letter_Management HR_Management
-                 * Inventory_Management Finance_Management Audit_Management User
-                 *
-                 * //File Management Add_File Edit_File Transfer_File
-                 * Receive_File Search_File Retire_File
-                 *
-                 * //Letter Management Add_Letter("Add Letter"),
-                 * Edit_Letter("Edit Letter"), Assign_Letter("Assign Letter"),
-                 * Transfer_Letter("Transfer Letter"), Receive_Letter("Receive
-                 * Letter"), Retire_Letter("Retire Letter"),
-                 * Search_Letter("Search Letter"), Add_Actions_To_Letter("Add
-                 * Actions"), Remove_Actions_To_Letter("Remove Actions"),
-                 *
-                 *
-                 */
                 break;
-            case System_Administrator:
-                //Menu
-                wups.add(Privilege.Manage_Users);
-                
-                break;
-            case Super_User:
 
-                break;
-            case User:
 
-                wups.add(Privilege.Monitoring_and_evaluation);
-                wups.add(Privilege.Monitoring_and_evaluation_reports);
-                wups.add(Privilege.View_aggragate_date);
-                wups.add(Privilege.File_Management);
-                wups.add(Privilege.Letter_Management);
-                wups.add(Privilege.Finance_Management);
-                wups.add(Privilege.User);
-                wups.add(Privilege.Add_File);
-                wups.add(Privilege.Search_File);
-                wups.add(Privilege.Retire_File);
-                
         }
         return wups;
     }
@@ -1437,7 +1410,7 @@ public class WebUserController implements Serializable {
 
                 WebUser newUser = new WebUser();
                 String un = "sa_" + CommonController.prepareAsCode(line).toLowerCase();
-                if(un.length()>50){
+                if (un.length() > 50) {
                     un = un.substring(0, 49);
                 }
                 newUser.setName(un);
@@ -1720,8 +1693,6 @@ public class WebUserController implements Serializable {
         WebUserRole[] rs = urs.toArray(new WebUserRole[0]);
         return rs;
     }
-
-   
 
     private List<WebUserRole> findManagableRoles(WebUserRole ur) {
         List<WebUserRole> urs = new ArrayList<>();
@@ -2318,9 +2289,9 @@ public class WebUserController implements Serializable {
     public void setLoggedInstitution(Institution loggedInstitution) {
         this.loggedInstitution = loggedInstitution;
     }
-    
-    public void markAllUsersPublic(){
-        for(WebUser u:webUserApplicationController.getItems()){
+
+    public void markAllUsersPublic() {
+        for (WebUser u : webUserApplicationController.getItems()) {
             u.setPubliclyListed(true);
             save(u);
         }
@@ -2365,9 +2336,7 @@ public class WebUserController implements Serializable {
         }
 
     }
-    
-    
-    
+
     @FacesConverter("webUserConverter")
     public static class WebUserConverter implements Converter {
 

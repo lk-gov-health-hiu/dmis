@@ -309,6 +309,16 @@ public class WebUser implements Serializable, Nameable {
     public void setWebUserRole(WebUserRole webUserRole) {
         this.webUserRole = webUserRole;
     }
+    
+    @Override
+    public Boolean getInstitute() {
+        return false;
+    }
+
+    @Override
+    public Boolean getWebUser() {
+        return true;
+    }
 
     @Override
     public int hashCode() {

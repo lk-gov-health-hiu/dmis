@@ -11,14 +11,11 @@ package lk.gov.health.phsp.enums;
 public enum Privilege {
     //Main Menu Privileges
     File_Management("File Management"),
-    Letter_Management("Letter Management"),
-    HR_Management("HR Management"),
-    Inventory_Management("Inventory Management"),
-    Finance_Management("Finance Management"),
-    Audit_Management("Audit Management"),
-    User("User"),
-    Institution_Administration("Institution Administration"),
+    Institutional_Mail_Management("Institutional Mail Management"),
+    Postal_Branch_Mail_Management("Postal Branch Mail Management"),
     System_Administration("System Administration"),
+    Institution_Administration("Institution Administration"),
+    User("User"),
     //File Management
     Add_File("Add File"),
     Edit_File("Edit File"),
@@ -26,7 +23,7 @@ public enum Privilege {
     Receive_File("Receive File"),
     Search_File("Search File"),
     Retire_File("Retire File"),
-    //Letter Management
+    //Institutional Mail Management
     Add_Letter("Add Letter"),
     Edit_Letter("Edit Letter"),
     Assign_Letter("Assign Letter"),
@@ -36,6 +33,11 @@ public enum Privilege {
     Search_Letter("Search Letter"),
     Add_Actions_To_Letter("Add Actions"),
     Remove_Actions_To_Letter("Remove Actions"),
+    //Postal Branch Mail Management
+    Add_Letter_Postal_Branch("Add Letter"),
+    Edit_Letter_Postal_Branch("Edit Letter"),
+    Retire_Letter_Postal_Branch("Retire Letter"),
+    Search_Letter_Postal_Branch("Search Letter"),
     //Institution Administration
     Manage_Institution_Users("Manage Institution Users"),
     Manage_Authorised_Areas("Manage Authorised Areas"),

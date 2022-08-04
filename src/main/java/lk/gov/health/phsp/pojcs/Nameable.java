@@ -64,6 +64,9 @@ public interface Nameable {
 
     public String getDisplayName();
     
+    public Boolean getInstitute();
+    public Boolean getWebUser();
+    
     @Override
     public String toString();
     

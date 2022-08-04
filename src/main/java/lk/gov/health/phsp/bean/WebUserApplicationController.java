@@ -94,8 +94,8 @@ public class WebUserApplicationController {
         allPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
         TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", allPrivilegeRoot, Privilege.File_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", allPrivilegeRoot, Privilege.Inventory_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot, Privilege.Finance_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", allPrivilegeRoot, Privilege.Institutional_Mail_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot, Privilege.Postal_Branch_Mail_Management);
         TreeNode user = new PrivilegeTreeNode("User", allPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", allPrivilegeRoot, Privilege.Monitoring_and_evaluation);
@@ -142,8 +142,8 @@ public class WebUserApplicationController {
         provincialPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
         TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", provincialPrivilegeRoot, Privilege.File_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", provincialPrivilegeRoot, Privilege.Inventory_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", provincialPrivilegeRoot, Privilege.Finance_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", provincialPrivilegeRoot, Privilege.Institutional_Mail_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", provincialPrivilegeRoot, Privilege.Postal_Branch_Mail_Management);
         TreeNode user = new PrivilegeTreeNode("User", provincialPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("System Administration", provincialPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", provincialPrivilegeRoot, Privilege.Monitoring_and_evaluation);
@@ -182,8 +182,8 @@ public class WebUserApplicationController {
         regionalPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
         TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", regionalPrivilegeRoot, Privilege.File_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", regionalPrivilegeRoot, Privilege.Inventory_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", regionalPrivilegeRoot, Privilege.Finance_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", regionalPrivilegeRoot, Privilege.Institutional_Mail_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", regionalPrivilegeRoot, Privilege.Postal_Branch_Mail_Management);
         TreeNode user = new PrivilegeTreeNode("User", regionalPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("System Administration", regionalPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", regionalPrivilegeRoot, Privilege.Monitoring_and_evaluation);
@@ -222,8 +222,8 @@ public class WebUserApplicationController {
         hospitalPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
         TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", hospitalPrivilegeRoot, Privilege.File_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", hospitalPrivilegeRoot, Privilege.Inventory_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", hospitalPrivilegeRoot, Privilege.Finance_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", hospitalPrivilegeRoot, Privilege.Institutional_Mail_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", hospitalPrivilegeRoot, Privilege.Postal_Branch_Mail_Management);
         TreeNode user = new PrivilegeTreeNode("User", hospitalPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("System Administration", hospitalPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", hospitalPrivilegeRoot, Privilege.Monitoring_and_evaluation);
@@ -261,8 +261,8 @@ public class WebUserApplicationController {
         labPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
         TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", labPrivilegeRoot, Privilege.File_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", labPrivilegeRoot, Privilege.Inventory_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", labPrivilegeRoot, Privilege.Finance_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", labPrivilegeRoot, Privilege.Institutional_Mail_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", labPrivilegeRoot, Privilege.Postal_Branch_Mail_Management);
         TreeNode user = new PrivilegeTreeNode("User", labPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", labPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", labPrivilegeRoot, Privilege.Monitoring_and_evaluation);
@@ -301,8 +301,8 @@ public class WebUserApplicationController {
         mohPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
         TreeNode clientManagement = new PrivilegeTreeNode("Patient Management", mohPrivilegeRoot, Privilege.File_Management);
-        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", mohPrivilegeRoot, Privilege.Inventory_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", mohPrivilegeRoot, Privilege.Finance_Management);
+        TreeNode sampleManagement = new PrivilegeTreeNode("Sample Management", mohPrivilegeRoot, Privilege.Institution_Administration);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", mohPrivilegeRoot, Privilege.Postal_Branch_Mail_Management);
         TreeNode user = new PrivilegeTreeNode("User", mohPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", mohPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", mohPrivilegeRoot, Privilege.Monitoring_and_evaluation);

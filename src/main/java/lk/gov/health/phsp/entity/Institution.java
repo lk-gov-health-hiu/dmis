@@ -179,9 +179,9 @@ public class Institution implements Serializable, Nameable {
 
     @Override
     public String toString() {
-        if(id==null){
+        if (id == null) {
             return null;
-        }else{
+        } else {
             return id.toString();
         }
     }
@@ -485,6 +485,16 @@ public class Institution implements Serializable, Nameable {
     public void setInsName(String name) {
         this.insName = name;
         this.name = this.insName;
+    }
+
+    @Override
+    public Boolean getInstitute() {
+        return true;
+    }
+
+    @Override
+    public Boolean getWebUser() {
+        return false;
     }
 
 }

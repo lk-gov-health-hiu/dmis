@@ -74,7 +74,7 @@
                             <h:outputLabel class="fs-6"  value="Letter Sent to:"></h:outputLabel>
                             <h:panelGroup >
                                 <ui:repeat value="#{letterController.toInsOrUser}" var="ti" >
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{ti.name}"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold #{ti.institute?'text-primary':'text-secondary'}" value="#{ti.name}"></h:outputLabel>
                                     <br/>
                                 </ui:repeat>
                             </h:panelGroup>
