@@ -132,7 +132,6 @@
 
                             <h:outputLabel for="from"  >From 
                             </h:outputLabel>
-
                             <h:panelGroup layout="block" class="w-100" >
                                 <p:autoComplete id="from"  value="#{letterController.selected.fromInsOrUser}" 
                                                 class="form-control"
@@ -154,71 +153,74 @@
                                                   rendered="#{letterController.selected.fromInstitution.name eq 'Personal' or letterController.selected.fromInstitution.name eq 'Other' }"
                                                   value="#{letterController.selected.senderName}" ></h:inputText>
                                 </h:panelGroup>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="from"></h:message>
 
-                                <h:outputLabel for="from"  >To 
-                                </h:outputLabel>
+                            <h:outputLabel for="from"  >To 
+                            </h:outputLabel>
+                            <h:panelGroup layout="block" class="w-100" >
+                                <p:autoComplete id="to"  value="#{letterController.selected.toInstitution}" 
+                                                class="form-control"
+                                                completeMethod="#{webUserController.completeLoggableMailBranchInstitutions}"
+                                                var="insf"
+                                                forceSelection="true"
+                                                required="true"
+                                                requiredMessage="Need to select"
+                                                maxResults="10" inputStyle="color:red;"
+                                                itemLabel="#{insf.displayName}"
+                                                itemValue="#{insf}"
+                                                >
+                                    <f:ajax execute="to" render="to" event="blur" ></f:ajax>
+                                    <f:ajax execute="to" render="to" event="itemSelect" ></f:ajax>
+                                </p:autoComplete>
 
-                                <h:panelGroup layout="block" class="w-100" >
-                                    <p:autoComplete id="to"  value="#{letterController.selected.toInstitution}" 
-                                                    class="form-control"
-                                                    completeMethod="#{webUserController.completeLoggableMailBranchInstitutions}"
-                                                    var="insf"
-                                                    forceSelection="true"
-                                                    required="true"
-                                                    requiredMessage="Need to select"
-                                                    maxResults="10" inputStyle="color:red;"
-                                                    itemLabel="#{insf.displayName}"
-                                                    itemValue="#{insf}"
-                                                    >
-                                        <f:ajax execute="to" render="to" event="blur" ></f:ajax>
-                                        <f:ajax execute="to" render="to" event="itemSelect" ></f:ajax>
-                                    </p:autoComplete>
-                                    
 
-                                    
 
-                                </h:panelGroup>
-                                <p:spacer></p:spacer>
 
-                                <h:outputLabel for="comments"  >Letter Details 
-                                </h:outputLabel>
-                                <h:inputTextarea id="comments"  value="#{letterController.selected.comments}" class="form-control"
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="to"></h:message>
+
+                            <h:outputLabel for="comments"  >Letter Details 
+                            </h:outputLabel>
+                            <h:inputTextarea id="comments"  value="#{letterController.selected.comments}" class="form-control"
+                                             >
+                            </h:inputTextarea>
+                            <p:spacer></p:spacer>
+
+
+                            <h:outputLabel for="status"  >Status </h:outputLabel>
+                            <h:panelGroup layout="status" class="w-50"  >
+                                <p:selectOneMenu id="status"  
+                                                 value="#{letterController.selected.letterStatus}" 
+                                                 class="form-control"
                                                  >
-                                </h:inputTextarea>
-                                <p:spacer></p:spacer>
-
-
-                                <h:outputLabel for="status"  >Status </h:outputLabel>
-                                <h:panelGroup layout="status" class="w-50"  >
-                                    <p:selectOneMenu id="status"  
-                                                     value="#{letterController.selected.letterStatus}" 
-                                                     class="form-control"
-                                                     >
-                                        <f:selectItem itemLabel="Select" ></f:selectItem>
-                                        <f:selectItems value="#{itemApplicationController.letterStatuses}"
-                                                       var="s"
-                                                       itemLabel="#{s.name}"
-                                                       itemValue="#{s}" ></f:selectItems>
-                                        <p:ajax event="blur" process="@this" ></p:ajax>
-                                    </p:selectOneMenu>
-                                </h:panelGroup>
-                                <h:message class="text-danger small" for="status"></h:message>
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{itemApplicationController.letterStatuses}"
+                                                   var="s"
+                                                   itemLabel="#{s.name}"
+                                                   itemValue="#{s}" ></f:selectItems>
+                                    <p:ajax event="blur" process="@this" ></p:ajax>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="status"></h:message>
 
 
 
-                                <f:facet name="footer" class="m-2 p-2" >
+                            <f:facet name="footer" class="m-2 p-2" >
 
 
-                                    <h:commandButton id="btnSaveAdd" tabindex="10" class="btn btn-success fw-bold m-2 "
-                                                     action="#{letterController.saveAndViewLetterBranch()}" value="SAVE &amp; View">
-                                    </h:commandButton>
-                                    <h:commandButton rendered="true" tabindex="10" class="btn btn-warning fw-bold m-2 "
-                                                     action="#{letterController.saveAndNew()}" value="SAVE &amp; New">
-                                    </h:commandButton>
-                                    <p:messages class="m-1 col"></p:messages>
-                                    <p:defaultCommand target="btnSaveAdd" />
+                                <h:commandButton id="btnSaveAdd" tabindex="10" class="btn btn-success fw-bold m-2 "
+                                                 action="#{letterController.saveAndViewLetterBranch()}" value="SAVE &amp; View">
+                                </h:commandButton>
+                                <h:commandButton rendered="true" tabindex="10" class="btn btn-warning fw-bold m-2 "
+                                                 action="#{letterController.saveAndNew()}" value="SAVE &amp; New">
+                                </h:commandButton>
+                                <p:messages class="m-1 col"></p:messages>
+                                <p:defaultCommand target="btnSaveAdd" />
 
-                                </f:facet>
+                            </f:facet>
+
+
 
                         </h:panelGrid>
 

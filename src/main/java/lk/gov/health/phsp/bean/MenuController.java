@@ -129,7 +129,7 @@ public class MenuController implements Serializable {
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.Letter_added_by_mail_branch);
         ndh.setInstitution(webUserController.getLoggedInstitution());
-        return "/document/letter_mail_branch_view";
+        return "/document/letter_mail_branch";
     }
     
     public String toLetterGenerateNew() {

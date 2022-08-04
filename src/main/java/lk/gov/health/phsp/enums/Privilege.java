@@ -53,7 +53,17 @@ public enum Privilege {
     Monitoring_and_evaluation_reports("Monitoring & Evaluation Reports"),
     View_individual_data("View Individual Data"),
     View_aggragate_date("View Aggregate Data"),
-    //Sample Management
+    //Deprecated
+    @Deprecated
+    Letter_Management("Letter Management"),
+    @Deprecated
+    HR_Management("HR Management"),
+    @Deprecated
+    Inventory_Management("Inventory Management"),
+    @Deprecated
+    Finance_Management("Finance Management"),
+    @Deprecated
+    Audit_Management("Audit Management"),
     ;
 
     public final String label;
