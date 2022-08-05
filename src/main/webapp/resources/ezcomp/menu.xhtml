@@ -24,6 +24,8 @@
 
                 <p:submenu class="submenu" label="Receive Mail" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter" action="#{menuController.toLetterAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="Receive Letters" action="#{letterController.toAcceptCopyForwardedLettersToMe()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Received Letters" action="#{letterController.toAcceptedCopyForwardedLettersToMe()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Assign Multiple Letters" action="#{letterController.toAssignMultipleLetters()}" />
                 </p:submenu>
 

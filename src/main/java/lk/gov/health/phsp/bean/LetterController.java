@@ -530,11 +530,12 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType in :ht "
-                + " and h.toUser=:tu "
+                + " and (h.toUser=:tu or h.toInstitution=:ti) "
                 + " and h.completed=false ";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
         m.put("tu", webUserController.getLoggedUser());
+        m.put("ti", webUserController.getLoggedInstitution());
         List<HistoryType> hxtx = new ArrayList<>();
         hxtx.add(HistoryType.Letter_Copy_or_Forward);
         hxtx.add(HistoryType.Letter_added_by_mail_branch);
