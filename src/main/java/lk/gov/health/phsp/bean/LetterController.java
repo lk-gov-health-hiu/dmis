@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import java.io.IOException;
 import java.io.InputStream;
 import lk.gov.health.phsp.entity.Document;
@@ -101,6 +102,7 @@ public class LetterController implements Serializable {
     WebUserApplicationController webUserApplicationController;
 
     private Institution institution;
+
     private WebUser webUser;
     private Nameable webUserCopy;
     private Nameable searchUserOrIns;
@@ -527,13 +529,32 @@ public class LetterController implements Serializable {
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired=false "
-                + " and h.historyType =:ht "
+                + " and h.historyType in :ht "
                 + " and h.toUser=:tu "
                 + " and h.completed=false ";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
         m.put("tu", webUserController.getLoggedUser());
-        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        List<HistoryType> hxtx = new ArrayList<>();
+        hxtx.add(HistoryType.Letter_Copy_or_Forward);
+        hxtx.add(HistoryType.Letter_added_by_mail_branch);
+        m.put("ht", hxtx);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void fillMailBranchSentLetters() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.institution=:ins ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("ht", HistoryType.Letter_added_by_mail_branch);
         m.put("fd", fromDate);
         m.put("td", toDate);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
@@ -817,15 +838,15 @@ public class LetterController implements Serializable {
                 selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
             }
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-            
+
             selectedHistory.setToInstitution(selected.getToInstitution());
             selectedHistory.setToUser(selected.getToWebUser());
-            
+
             selectedHistory.setFromInstitution(selected.getFromInstitution());
             selectedHistory.setFromUser(selected.getFromWebUser());
-            
+
             selectedHistory.setCompleted(false);
-            
+
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
@@ -956,16 +977,16 @@ public class LetterController implements Serializable {
                 selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             }
             selectedHistory.setToInstitution(selected.getToInstitution());
-            
+
             selectedHistory.setFromInstitution(selected.getFromInstitution());
             selectedHistory.setFromUser(selected.getFromWebUser());
-            
+
             selectedHistory.setToUser(selected.getToWebUser());
             selectedHistory.setToInstitution(selected.getToInstitution());
-            
+
             selectedHistory.setCompleted(false);
             selectedHistory.setDocument(selected);
-            
+
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
@@ -1033,6 +1054,15 @@ public class LetterController implements Serializable {
         return "/document/letter";
     }
 
+    public String toLetterEditMailBranch() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        newHx = false;
+        return "/document/letter_mail_branch";
+    }
+
     public String toLetterGenerateEdit() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No Letter Selected");
@@ -1055,6 +1085,11 @@ public class LetterController implements Serializable {
     public String toReportsLetterReceived() {
         documentHistories = null;
         return "/institution/letter_receive_register";
+    }
+
+    public String toRegisterMailBranch() {
+        documentHistories = null;
+        return "/institution/register_mail_branch_sent";
     }
 
     public String toReportsInstitutionCountsLetters() {
@@ -1609,6 +1644,18 @@ public class LetterController implements Serializable {
 
         JsfUtil.addSuccessMessage("Received Successfully.");
 
+    }
+    
+    public void markMailBranchLetterAsReceived() {
+        if (selectedHistory == null) {
+            JsfUtil.addErrorMessage("No Letter Selected");
+            return;
+        }
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        saveDocumentHx(selectedHistory);
+        JsfUtil.addSuccessMessage("Received Successfully.");
     }
 
     public String toReverseAcceptMyLetter() {
