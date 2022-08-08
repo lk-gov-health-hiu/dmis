@@ -583,13 +583,17 @@ public class LetterController implements Serializable {
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired=false "
-                + " and h.historyType =:ht "
-                + " and h.toUser=:tu "
+                + " and h.historyType in :ht "
+                + " and (h.toUser=:tu or h.toInstitution=:ti) "
                 + " and h.completed=true ";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
         m.put("tu", webUserController.getLoggedUser());
-        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("ti", webUserController.getLoggedInstitution());
+        List<HistoryType> hts = new ArrayList<>();
+        hts.add(HistoryType.Letter_Copy_or_Forward);
+        hts.add(HistoryType.Letter_added_by_mail_branch);
+        m.put("ht", hts);
         m.put("fd", fromDate);
         m.put("td", toDate);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
