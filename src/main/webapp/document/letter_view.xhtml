@@ -21,10 +21,12 @@
                     <div class="row">
 
                         <div class="col">
-                            <p:outputLabel class="fw-bold my-2" value="Received Letter Details" ></p:outputLabel>
+                            <p:outputLabel class="fw-bold my-2" value="Letter Details" ></p:outputLabel>
                         </div>
                         <div class="col">
-                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterEdit()}" ></h:commandButton>
+                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" 
+                                             value="To Edit" 
+                                             action="#{letterController.toLetterEdit()}" ></h:commandButton>
                             <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterAddNew()}">
                             </h:commandButton>
                             <h:commandButton  class="m-2 btn btn-warning w-25 me-2"  value="Reports" action="#{menuController.toReportsIndex()}" >
@@ -48,7 +50,7 @@
                                 <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                             </h:outputLabel>
 
-                            <h:outputLabel class="fs-6" value="Stamp Date:"></h:outputLabel>
+                            <h:outputLabel class="fs-6" value="Received Date:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" id="rdate" value="#{letterController.selected.receivedDate}">
                                 <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                             </h:outputLabel>
@@ -76,13 +78,7 @@
 
                             <h:outputLabel class="fs-6"  value="Letter Status:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.letterStatus.name}"></h:outputLabel>
-
                             
-                            <h:outputLabel class="fs-6" value="Current Location:"></h:outputLabel>
-                            <h:outputLabel class="fs-6 fw-bold"  value="#{letterController.selected.currentInstitution.name}"></h:outputLabel>
-
-                            <h:outputLabel class="fs-6"  value="Current Holder:"></h:outputLabel>
-                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.currentOwner.name}"></h:outputLabel>
                         </p:panelGrid>
 
                         <h:form >
@@ -125,7 +121,7 @@
                                 </p:column>
                                 <p:column headerText="Details">
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Created'}" >
-                                        <h:outputLabel class="fs-6 " value="Entered to the system by&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="By&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdBy.person.name}"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdAt}">

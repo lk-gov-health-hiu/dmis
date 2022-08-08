@@ -577,6 +577,27 @@ public class LetterController implements Serializable {
         m.put("td", toDate);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
+    
+    public void fillNewLetterRegistry() {
+        System.out.println("fillNewLetterRegistry ");
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired<> :ret "
+                + " and h.historyType = :ht "
+                + " and h.toInstitution= :ti ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("ti", webUserController.getLoggedInstitution());
+        m.put("ht", HistoryType.Letter_Created);
+        m.put("fd", fromDate);
+        m.put("ret", true);
+        m.put("td", toDate);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        System.out.println("documentHistories = " + documentHistories.size());
+    }
 
     public void fillMyReceivedLetters() {
         Map m = new HashMap();
@@ -1055,6 +1076,12 @@ public class LetterController implements Serializable {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
         }
+        if(selected.getInstitution()!=null){
+            if(!selected.getInstitution().equals(webUserController.getLoggedInstitution())){
+                JsfUtil.addErrorMessage("You are NOT Autherized to edit this letter.");
+                return "";
+            }
+        }
         newHx = false;
         return "/document/letter";
     }
@@ -1203,6 +1230,11 @@ public class LetterController implements Serializable {
     public String toAcceptedMyAssignedLetters() {
         documentHistories = null;
         return "/institution/accepted_my_assigned_letters";
+    }
+    
+    public String toNewLetterRegistry() {
+        documentHistories = null;
+        return "/institution/registry_new_letter";
     }
 
     public String toAcceptedCopyForwardedLettersToMe() {

@@ -23,7 +23,7 @@
 
                 <p:submenu class="submenu" label="Receive Letters" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter" action="#{menuController.toLetterAddNew()}"  />
-                    <p:menuitem class="submenu-item" ajax="false" value="New Letter Registry" action="#{menuController.toLetterAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="New Letter Registry" action="#{letterController.toNewLetterRegistry()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Receive Letters" action="#{letterController.toAcceptCopyForwardedLettersToMe()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Received Letter Registry" action="#{letterController.toAcceptedCopyForwardedLettersToMe()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Accept Letters" action="#{letterController.toAcceptLettersToInstitution()}" />
