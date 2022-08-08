@@ -1519,6 +1519,7 @@ public class LetterController implements Serializable {
     }
 
     public String toMailDepartmentReceivedLetterView() {
+        System.out.println("toMailDepartmentReceivedLetterView");
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired=false "
@@ -1613,6 +1614,7 @@ public class LetterController implements Serializable {
     }
 
     public String toLetterViewFromDocumentHistory() {
+        System.out.println("toLetterViewFromDocumentHistory");
         if (selectedHistory != null) {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
@@ -1637,6 +1639,7 @@ public class LetterController implements Serializable {
             case Generated_by_system:
                 return toGeneraterLetterView();
             case Received_by_mail_branch:
+                System.out.println("Received_by_mail_branch = " );
                 if (webUserController.getLoggedInstitution().equals(selected.getInstitution())) {
                     return toMailDepartmentReceivedLetterView();
                 } else {
