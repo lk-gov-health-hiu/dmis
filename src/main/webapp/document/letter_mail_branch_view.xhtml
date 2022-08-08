@@ -251,7 +251,11 @@
                         <h:form >
                             <h:dataTable value="#{letterController.selectedUploads}" var="up" class="w-100 border border-light">
                                 <h:column >
-                                    <h:commandButton value="X" class="btn btn-danger" action="#{letterController.removeUpload()}">
+                                    <h:commandButton value="X" class="btn btn-danger" 
+                                                     disabled="#{up.institution ne webUserController.loggedInstitution}"
+                                                     onclick="if (!confirm('Really want to do that?'))
+                                                                 return false"
+                                                     action="#{letterController.removeUpload()}">
                                         <f:setPropertyActionListener target="#{letterController.removingUpload}"
                                                                      value="#{up}" >
                                         </f:setPropertyActionListener>

@@ -78,13 +78,18 @@
 
                             <h:outputLabel class="fs-6"  value="Letter Status:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.letterStatus.name}"></h:outputLabel>
-                            
+
                         </p:panelGrid>
 
                         <h:form >
                             <h:dataTable value="#{letterController.selectedUploads}" var="up" class="w-100 border border-light">
                                 <h:column >
-                                    <h:commandButton value="X" class="btn btn-danger" action="#{letterController.removeUpload()}">
+                                    <h:commandButton value="X" class="btn btn-danger"
+                                                     disabled="#{up.institution ne webUserController.loggedInstitution}"
+                                                     action="#{letterController.removeUpload()}"
+                                                     onclick="if (!confirm('Really want to do that?'))
+                                                                 return false"
+                                                     >
                                         <f:setPropertyActionListener target="#{letterController.removingUpload}"
                                                                      value="#{up}" >
                                         </f:setPropertyActionListener>

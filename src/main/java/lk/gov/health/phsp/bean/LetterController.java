@@ -545,6 +545,26 @@ public class LetterController implements Serializable {
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
+    public void fillLettersToReceive() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType in :ht "
+                + " and (h.toUser.institution=:ti or h.toInstitution=:ti) "
+                + " and h.completed=false ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("ti", webUserController.getLoggedInstitution());
+        List<HistoryType> hxtx = new ArrayList<>();
+        hxtx.add(HistoryType.Letter_Copy_or_Forward);
+        hxtx.add(HistoryType.Letter_added_by_mail_branch);
+        m.put("ht", hxtx);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
     public void fillMailBranchSentLetters() {
         Map m = new HashMap();
         String j = "select h "
@@ -577,7 +597,7 @@ public class LetterController implements Serializable {
         m.put("td", toDate);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
-    
+
     public void fillNewLetterRegistry() {
         System.out.println("fillNewLetterRegistry ");
         Map m = new HashMap();
@@ -1076,8 +1096,8 @@ public class LetterController implements Serializable {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
         }
-        if(selected.getInstitution()!=null){
-            if(!selected.getInstitution().equals(webUserController.getLoggedInstitution())){
+        if (selected.getInstitution() != null) {
+            if (!selected.getInstitution().equals(webUserController.getLoggedInstitution())) {
                 JsfUtil.addErrorMessage("You are NOT Autherized to edit this letter.");
                 return "";
             }
@@ -1222,6 +1242,11 @@ public class LetterController implements Serializable {
         return "/institution/accept_my_copy_forwarded_letters";
     }
 
+    public String toReceiveLetters() {
+        documentHistories = null;
+        return "/institution/receive_letters";
+    }
+
     public String toAcceptLettersToInstitution() {
         documentHistories = null;
         return "/institution/accept_letters";
@@ -1231,7 +1256,7 @@ public class LetterController implements Serializable {
         documentHistories = null;
         return "/institution/accepted_my_assigned_letters";
     }
-    
+
     public String toNewLetterRegistry() {
         documentHistories = null;
         return "/institution/registry_new_letter";
@@ -1460,6 +1485,7 @@ public class LetterController implements Serializable {
     }
 
     public String toInstitutionReceivedLetterView() {
+        System.out.println("toInstitutionReceivedLetterView");
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired=false "
@@ -1469,7 +1495,10 @@ public class LetterController implements Serializable {
         Map m = new HashMap();
         m.put("doc", selected);
         m.put("ins", webUserController.getLoggedInstitution());
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
+        System.out.println("selectedDocumentHistories = " + selectedDocumentHistories.size());
 
         j = "select h "
                 + " from Upload h "
@@ -1583,6 +1612,43 @@ public class LetterController implements Serializable {
         return toInstitutionReceivedLetterView();
     }
 
+    public String toLetterViewFromDocumentHistory() {
+        if (selectedHistory != null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        selected = selectedHistory.getDocument();
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        if (selected.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Error");
+            return "";
+        }
+        if (selectedHistory.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Error");
+            return "";
+        }
+        if (selected.getDocumentGenerationType() == null) {
+            return toInstitutionReceivedLetterView();
+        }
+        switch (selected.getDocumentGenerationType()) {
+            case Generated_by_system:
+                return toGeneraterLetterView();
+            case Received_by_mail_branch:
+                if (webUserController.getLoggedInstitution().equals(selected.getInstitution())) {
+                    return toMailDepartmentReceivedLetterView();
+                } else {
+                    return toInstitutionReceivedLetterView();
+                }
+            case Other:
+            case Received_by_institution:
+                return toInstitutionReceivedLetterView();
+        }
+        return toInstitutionReceivedLetterView();
+    }
+
     public String toAcceptAssignedLetter() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
@@ -1682,7 +1748,7 @@ public class LetterController implements Serializable {
         JsfUtil.addSuccessMessage("Received Successfully.");
 
     }
-    
+
     public void markMailBranchLetterAsReceived() {
         if (selectedHistory == null) {
             JsfUtil.addErrorMessage("No Letter Selected");
