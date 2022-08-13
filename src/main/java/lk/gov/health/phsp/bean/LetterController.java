@@ -402,25 +402,6 @@ public class LetterController implements Serializable {
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
-    public void listLettersReceived() {
-        if (searchFilterType == null) {
-            searchFilterType = SearchFilterType.SYSTEM_DATE;
-        }
-        String j = "select d "
-                + " from Document d "
-                + " where d.retired=false "
-                + " and d.documentType=:dt "
-                + " and d.institution=:ins ";
-        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
-        j += " order by d." + searchFilterType.getCode();
-        Map m = new HashMap();
-        m.put("dt", DocumentType.Letter);
-        m.put("ins", webUserController.getLoggedInstitution());
-        m.put("fd", getFromDate());
-        m.put("td", getToDate());
-        items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-    }
-
     public void listLastLettersReceived() {
         int numberToList = 100;
         searchFilterType = SearchFilterType.SYSTEM_DATE;
@@ -563,6 +544,32 @@ public class LetterController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void fillLettersReceived() {
+        System.out.println("fillLettersReceived");
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired<>:ret "
+                + " and h.historyType in :ht "
+                + " and (h.toUser.institution=:ti or h.toInstitution=:ti) ";
+        j += " and h.completed=:com ";
+        j += " and h.createdAt between :fd and :td ";
+        j += " order by h.id";
+        m.put("ti", webUserController.getLoggedInstitution());
+        List<HistoryType> hxtx = new ArrayList<>();
+        hxtx.add(HistoryType.Letter_Copy_or_Forward);
+        hxtx.add(HistoryType.Letter_added_by_mail_branch);
+        m.put("ht", hxtx);
+        m.put("com", false);
+        m.put("ret", true);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        System.out.println("documentHistories = " + documentHistories.size());
     }
 
     public void fillMailBranchSentLetters() {
@@ -1136,7 +1143,7 @@ public class LetterController implements Serializable {
 
     public String toReportsLetterReceived() {
         documentHistories = null;
-        return "/institution/letter_receive_register";
+        return "/institution/letter_received_registry";
     }
 
     public String toRegisterMailBranch() {
@@ -1245,6 +1252,11 @@ public class LetterController implements Serializable {
     public String toReceiveLetters() {
         documentHistories = null;
         return "/institution/receive_letters";
+    }
+
+    public String toReceivedLetterRegistry() {
+        documentHistories = null;
+        return "/institution/letter_received_registry";
     }
 
     public String toAcceptLettersToInstitution() {
@@ -1639,7 +1651,7 @@ public class LetterController implements Serializable {
             case Generated_by_system:
                 return toGeneraterLetterView();
             case Received_by_mail_branch:
-                System.out.println("Received_by_mail_branch = " );
+                System.out.println("Received_by_mail_branch = ");
                 if (webUserController.getLoggedInstitution().equals(selected.getInstitution())) {
                     return toMailDepartmentReceivedLetterView();
                 } else {
