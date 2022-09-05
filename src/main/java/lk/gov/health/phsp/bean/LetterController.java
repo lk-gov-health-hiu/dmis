@@ -785,6 +785,32 @@ public class LetterController implements Serializable {
             }
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             selectedHistory.setToInstitution(selected.getCurrentInstitution());
+            selectedHistory.setToUser(selected.getToWebUser());
+            selectedHistory.setCompleted(true);
+            selectedHistory.setCompletedAt(new Date());
+            selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
+        return toLetterView();
+    }
+    
+    
+    public String saveAndViewGeneratedLetter() {
+        if (selected.getId() == null) {
+            newHx = true;
+        }
+        save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.Letter_Generated);
+                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+            }
+            selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+            selectedHistory.setFromInstitution(webUserController.getLoggedInstitution());
+            selectedHistory.setToInstitution(selected.getToInstitution());
+            selectedHistory.setToUser(selected.getToWebUser());
             selectedHistory.setCompleted(true);
             selectedHistory.setCompletedAt(new Date());
             selectedHistory.setCompletedBy(webUserController.getLoggedUser());
@@ -812,6 +838,29 @@ public class LetterController implements Serializable {
             saveDocumentHx(selectedHistory);
         }
         return menuController.toLetterAddNew();
+    }
+    
+    
+    public String saveAndNewGeneratedLetter() {
+        if (selected.getId() == null) {
+            newHx = true;
+        }
+        save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.Letter_Generated);
+            }
+            selectedHistory.setToInstitution(selected.getToInstitution());
+            selectedHistory.setToUser(selected.getToWebUser());
+            selectedHistory.setFromInstitution(selected.getCurrentInstitution());
+            selectedHistory.setCompleted(true);
+            selectedHistory.setCompletedAt(new Date());
+            selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
+        return menuController.toLetterCreateNew();
     }
 
     public void saveDocumentHx(DocumentHistory hx) {

@@ -107,6 +107,27 @@ public class MenuController implements Serializable {
         ndh.setInstitution(webUserController.getLoggedInstitution());
         return "/document/letter";
     }
+    
+    public String toLetterCreateNew() {
+        Document nd = new Document();
+        nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentDate(new Date());
+        nd.setReceivedDate(new Date());
+        nd.setInstitution(webUserController.getLoggedInstitution());
+        nd.setInstitutionUnit(webUserController.getLoggedInstitution());
+        nd.setFromInstitution(webUserController.getLoggedInstitution());
+        nd.setOwner(webUserController.getLoggedUser());
+        nd.setCurrentInstitution(webUserController.getLoggedInstitution());
+        nd.setCurrentOwner(webUserController.getLoggedUser());
+        nd.setReceivedDate(new Date());
+        letterController.setSelected(nd);
+
+        letterController.setNewHx(true);
+        DocumentHistory ndh = new DocumentHistory();
+        ndh.setHistoryType(HistoryType.Letter_Generated);
+        ndh.setInstitution(webUserController.getLoggedInstitution());
+        return "/document/letter_generate_create";
+    }
 
     public String toFileSearch() {
         fileController.setItems(null);
