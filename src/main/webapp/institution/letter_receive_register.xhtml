@@ -53,6 +53,9 @@
                                              <h:commandButton value="Print"  class="btn btn-success form-control">
                                                 <p:printer target="tblPrint" ></p:printer>
                                             </h:commandButton>
+                                            <h:commandButton value="Compact Print"  class="btn btn-success form-control">
+                                                <p:printer target="tblPrintC" ></p:printer>
+                                            </h:commandButton>
                                             <h:commandButton value="Download"  class="btn btn-warning form-control">
                                                 <p:dataExporter target="tbl" type="xls" fileName="List of Letters" ></p:dataExporter>
                                             </h:commandButton>
@@ -223,6 +226,80 @@
                             </p:column>
 
                         </p:dataTable>
+                        
+                        <h:panelGroup id="tblPrintC">
+                            <table >
+                                <tr>
+                                    <th>Test</th>
+                                </tr>
+                            </table>
+                        </h:panelGroup>
+                        
+                        <h:dataTable  value="#{letterController.items}"
+                                     rendered="true" 
+                                     >
+                            <h:column >
+                                <f:facet name="header" >
+                                    <h:outputText value="ID" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.id}"></h:outputLabel>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header" >
+                                    <h:outputText value="Letter Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.documentDate}">
+                                    <f:convertDateTime pattern="dd/MM/yy" ></f:convertDateTime>
+                                </h:outputLabel>
+                            </h:column>
+                            <h:column  style="width: 7em;">
+                                <f:facet name="header" >
+                                    <h:outputText value="Stamp Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.receivedDate}">
+                                    <f:convertDateTime pattern="dd/MM/yy" ></f:convertDateTime>
+                                </h:outputLabel>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header" >
+                                    <h:outputText value="Method" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.receivedAs.name}"></h:outputLabel>
+                            </h:column>
+                            <h:column headerText="From"   style="width: 8em; overflow: hidden;">
+                                <f:facet name="header" >
+                                    <h:outputText value="From" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:panelGroup rendered="#{c.fromInstitution.name eq 'Personal'}" >
+                                    <h:outputLabel value="#{c.senderName}"></h:outputLabel>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{c.fromInstitution.name ne 'Personal'}" >
+                                    <h:outputLabel value="#{c.fromInstitution.name}"></h:outputLabel>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{c.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+                            </h:column>
+                            <h:column  style="width: 8em; overflow: hidden;">
+                                <f:facet name="header" >
+                                    <h:outputText value="Letter Number" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.documentNumber }"></h:outputLabel>
+                            </h:column>
+                            <h:column  >
+                                <f:facet name="header" >
+                                    <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.documentName}"></h:outputLabel>
+                            </h:column>
+                            <h:column 
+                                      rendered="#{letterController.webUserCopy eq null}"
+                                      style="width: 8em; overflow: hidden;">
+                                <f:facet name="header" >
+                                    <h:outputText value="Assigned to" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.currentOwner.person.name}"></h:outputLabel>
+                            </h:column>
+
+                        </h:dataTable>
 
 
                     </h:panelGrid>
