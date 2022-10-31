@@ -21,13 +21,11 @@
                     <div class="row">
 
                         <div class="col">
-                            <p:outputLabel class="fw-bold my-2" value="Letter Details" ></p:outputLabel>
+                            <p:outputLabel class="fw-bold my-2" value="Generated Letter Details" ></p:outputLabel>
                         </div>
                         <div class="col">
-                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" 
-                                             value="To Edit" 
-                                             action="#{letterController.toLetterEdit()}" ></h:commandButton>
-                            <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterAddNew()}">
+                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterGenerateEdit()}" ></h:commandButton>
+                            <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterGenerateNew()}">
                             </h:commandButton>
                             <h:commandButton  class="m-2 btn btn-warning w-25 me-2"  value="Reports" action="#{menuController.toReportsIndex()}" >
                             </h:commandButton>
@@ -50,7 +48,7 @@
                                 <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                             </h:outputLabel>
 
-                            <h:outputLabel class="fs-6" value="Received Date:"></h:outputLabel>
+                            <h:outputLabel class="fs-6" value="Stamp Date:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" id="rdate" value="#{letterController.selected.receivedDate}">
                                 <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                             </h:outputLabel>
@@ -73,23 +71,27 @@
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromWebUser.person.nameWithTitle}"></h:outputLabel>
                             </h:panelGroup>
 
+                            <h:outputLabel class="fs-6"  value="Letter Sent to:"></h:outputLabel>
+                            <h:panelGroup >
+                                <ui:repeat value="#{letterController.toInsOrUser}" var="ti" >
+                                    <h:outputLabel class="fs-6 fw-bold #{ti.institute?'text-primary':'text-secondary'}" value="#{ti.name}"></h:outputLabel>
+                                    <br/>
+                                </ui:repeat>
+                            </h:panelGroup>
+
                             <h:outputLabel class="fs-6"  value="Letter Details:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.comments}"></h:outputLabel>
 
                             <h:outputLabel class="fs-6"  value="Letter Status:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.letterStatus.name}"></h:outputLabel>
 
+
                         </p:panelGrid>
 
                         <h:form >
                             <h:dataTable value="#{letterController.selectedUploads}" var="up" class="w-100 border border-light">
                                 <h:column >
-                                    <h:commandButton value="X" class="btn btn-danger"
-                                                     disabled="#{up.institution ne webUserController.loggedInstitution}"
-                                                     action="#{letterController.removeUpload()}"
-                                                     onclick="if (!confirm('Really want to do that?'))
-                                                                 return false"
-                                                     >
+                                    <h:commandButton value="X" class="btn btn-danger" action="#{letterController.removeUpload()}">
                                         <f:setPropertyActionListener target="#{letterController.removingUpload}"
                                                                      value="#{up}" >
                                         </f:setPropertyActionListener>
@@ -126,7 +128,7 @@
                                 </p:column>
                                 <p:column headerText="Details">
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Created'}" >
-                                        <h:outputLabel class="fs-6 " value="By&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="Entered to the system by&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdBy.person.name}"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdAt}">

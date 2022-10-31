@@ -31,6 +31,7 @@ package lk.gov.health.phsp.enums;
 public enum DocumentType {
     File("File"),
     Letter("Letter"),
+    Internal_Memo("Internal Memo"),
     Register("Register"),
     Other("Other");
     

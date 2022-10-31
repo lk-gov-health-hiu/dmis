@@ -49,7 +49,7 @@
                                         </p:panelGrid>
 
                                         <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.listLettersReceived()}" class="btn btn-danger form-control"></h:commandButton>
+                                            <h:commandButton value="Process" action="#{letterController.fillLettersReceived()}" class="btn btn-danger form-control"></h:commandButton>
                                              <h:commandButton value="Print"  class="btn btn-success form-control">
                                                 <p:printer target="tblPrint" ></p:printer>
                                             </h:commandButton>
@@ -92,7 +92,7 @@
                                                 <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
                                             </h:outputText>
                                         </p:column>
-                                        <p:column headerText="Received Date">
+                                        <p:column headerText="Stamp Date">
                                             <h:outputText value="#{h.receivedDate}" >
                                                 <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
                                             </h:outputText>
@@ -115,26 +115,21 @@
                                             </h:panelGroup>
                                             <h:outputLabel value="#{h.fromWebUser.person.nameWithTitle}"></h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Assigned to">
-                                            <h:outputText value="#{h.currentOwner.person.name}" ></h:outputText>
+                                        <p:column headerText="Received Date">
+                                            <h:outputText value="#{h.completedAt}" >
+                                                <f:convertDateTime pattern="dd MM yy hh:mm a" ></f:convertDateTime>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Received by">
+                                            <h:outputText value="#{h.completedBy.webUserPersonName}" ></h:outputText>
                                         </p:column>
                                         <p:column headerText="Actions" exportable="false" styleClass="d-print-none">
                                             <h:commandButton value="View" action="#{letterController.toLetterView()}"  class="btn btn-success fw-bold m-2 ">
                                                 <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
                                             </h:commandButton>
-                                            <h:commandButton value="Accept" 
-                                                             rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed ne true}" 
-                                                             action="#{letterController.toAcceptAssignedLetter()}"  class="btn btn-success fw-bold m-2 ">
-                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
-                                            </h:commandButton>
-                                            <h:commandButton value="Mark as NOT Accepted" 
+                                            <h:commandButton value="Mark as NOT received" 
                                                              rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed eq true}" 
                                                              action="#{letterController.toReverseAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
-                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
-                                            </h:commandButton>
-                                            <h:commandButton value="Assign &amp; Accept"
-                                                             rendered="#{h.currentOwner ne webUserController.loggedUser}" 
-                                                             action="#{letterController.toAssignAndAcceptLetterMySelf()}"  class="btn btn-success fw-bold m-2 ">
                                                 <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
                                             </h:commandButton>
                                         </p:column>

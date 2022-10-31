@@ -20,6 +20,7 @@ public enum InstitutionType {
     MOH_Office("MOH Office"),
     Clinic("Clinic"),
     OPD("OPD"),
+    MailBranch("Mail Branch"),
     @Deprecated
     Medical_Clinic("Medical Clinic"),
     @Deprecated
