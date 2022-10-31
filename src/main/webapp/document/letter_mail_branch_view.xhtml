@@ -70,6 +70,11 @@
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromInstitution.name}"></h:outputLabel>
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromWebUser.person.nameWithTitle}"></h:outputLabel>
                             </h:panelGroup>
+                            
+                            <h:outputLabel class="fs-6"  value="Letter Sent to:"></h:outputLabel>
+                            <h:panelGroup >
+                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.toInsOrUser.name}"></h:outputLabel>
+                            </h:panelGroup>
 
                             <h:outputLabel class="fs-6"  value="Letter Details:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.comments}"></h:outputLabel>

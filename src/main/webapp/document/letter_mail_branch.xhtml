@@ -161,7 +161,7 @@
                             <h:panelGroup layout="block" class="w-100" >
                                 <p:autoComplete id="to"  value="#{letterController.selected.toInstitution}" 
                                                 class="form-control"
-                                                completeMethod="#{webUserController.completeLoggableMailBranchInstitutions}"
+                                                completeMethod="#{letterController.completeInsOrUsersByWords}"
                                                 var="insf"
                                                 forceSelection="true"
                                                 required="true"
