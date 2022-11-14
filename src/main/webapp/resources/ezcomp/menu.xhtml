@@ -20,24 +20,36 @@
                     <p:menuitem class="submenu-item" ajax="false" value="Receive Files" action="#{menuController.toFileSearch()}" />
                 </p:submenu>
                 <p:menuitem class="submenu-item" ajax="false" value="Search Letters" action="#{menuController.toLetterSearch()}" />
-                <p:submenu class="submenu" label="Receive Mail" >
+
+                <p:submenu class="submenu" label="Receive Letters" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter" action="#{menuController.toLetterAddNew()}"  />
-                    <p:menuitem class="submenu-item" ajax="false" value="Assign Multiple Letters" action="#{letterController.toAssignMultipleLetters()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="New Letter Registry" action="#{letterController.toNewLetterRegistry()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="To Receive Letters List" action="#{letterController.toReceiveLetters()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Received Letter Registry" action="#{letterController.toReceivedLetterRegistry()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Accept Letters" action="#{letterController.toAcceptLettersToInstitution()}" />
+
                 </p:submenu>
-                
-                <p:submenu class="submenu" label="Mail Department" >
+
+                <p:submenu class="submenu" label="Letters Actions" >
+                    <p:menuitem class="submenu-item" ajax="false" value="Assign Letters" action="#{letterController.toAssignMultipleLetters()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Assigned Registry" action="#{letterController.toAssignMultipleLetters()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Copy/Forward Registry" action="#{letterController.toAcceptCopyForwardedLettersToMe()}" />
+                </p:submenu>
+
+                <p:submenu class="submenu" label="Mail Branch" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter"
-                                action="#{menuController.toLetterAddNew()}"  />
-                    <p:menuitem class="submenu-item" ajax="false" value="New Internal Memo" action="#{menuController.toLetterAddNew()}"  />
+                                action="#{menuController.toLetterMailBranchAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="Mail Register" 
+                                action="#{letterController.toRegisterMailBranch()}"  />
                 </p:submenu>
 
                 <p:submenu class="submenu" label="Create" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter"
-                                action="#{menuController.toLetterCreateNew()}"  />
+                                action="#{menuController.toLetterGenerateNew()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="New Internal Memo" action="#{menuController.toLetterAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="Letter Creation Registry" action="#{letterController.toAcceptCopyForwardedLettersToMe()}" />
                 </p:submenu>
-                
-                
+
 
                 <p:submenu class="submenu" label="My Letters" >
                     <p:menuitem class="submenu-item" ajax="false" value="Accept Assigned Letters" action="#{letterController.toAcceptMyAssignedLetters()}"  />

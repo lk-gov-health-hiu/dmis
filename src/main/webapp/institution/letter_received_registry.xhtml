@@ -11,7 +11,7 @@
 
         <ui:composition template="/template1.xhtml">
             <ui:define name="title">
-                Received Letters
+                Receive Letters Register
             </ui:define>
             <ui:define name="content">
                 <p:growl ></p:growl>
@@ -19,7 +19,7 @@
                     <div class="card my-3">
                         <h5 class="card-header bg-success">
                             <p:outputLabel class="text-white fs-5 fw-bold my-2" 
-                                           value="My Received Copied or Forwarded Letters" ></p:outputLabel>
+                                           value="Receive Letters" ></p:outputLabel>
                         </h5>
                         <div class="card-body">
                             <div class="row">
@@ -44,12 +44,13 @@
                                         </p:panelGrid>
 
                                         <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.fillMyReceivedLetters()}" class="btn btn-danger form-control"></h:commandButton>
+                                            <h:commandButton value="Process" action="#{letterController.fillLettersReceived}"
+                                                             class="btn btn-danger form-control"></h:commandButton>
                                             <h:commandButton value="Print"  class="btn btn-success form-control">
                                                 <p:printer target="tbl" ></p:printer>
                                             </h:commandButton>
                                             <h:commandButton value="Download"  class="btn btn-warning form-control">
-                                                <p:dataExporter target="tbl" type="xls" fileName="My Received Copied or Forwarded Letters" ></p:dataExporter>
+                                                <p:dataExporter target="tbl" type="xls" fileName="List to Receive" ></p:dataExporter>
                                             </h:commandButton>
 
                                         </h:panelGrid>
@@ -74,27 +75,6 @@
                                                     <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
                                                 </h:outputLabel>
                                             </p:column>
-                                            <p:column headerText="Stamped Date" sortBy="#{c.document.receivedDate}" 
-                                                      filterBy="#{c.document.receivedDate}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.document.receivedDate}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Assigned Date" sortBy="#{c.createdAt}" 
-                                                      filterBy="#{c.createdAt}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.createdAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Accepted Date" sortBy="#{c.completedAt}" 
-                                                      filterBy="#{c.completedAt}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.completedAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </p:column>
                                             <p:column headerText="From" sortBy="#{c.document.fromInsOrUser.name}" filterBy="#{c.fromInsOrUser.name}"
                                                       filterMatchMode="contains">
                                                 <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
@@ -117,11 +97,20 @@
                                             <p:column headerText="Comments" sortBy="#{c.comments}" 
                                                       filterBy="#{c.comments}"
                                                       filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.comments}"></h:outputLabel>
+                                                <h:outputText rendered="#{c.historyType eq 'Letter_added_by_mail_branch'}" 
+                                                               value="Added by Mail Branch"></h:outputText>
+                                                <h:outputText rendered="#{c.historyType eq 'Letter_Copy_or_Forward'}" 
+                                                               value="Copied or Forwarded"></h:outputText>
                                             </p:column>
                                             <p:column headerText="Actions" >
-                                                <h:commandButton value="View" action="#{letterController.toLetterView()}" class="mx-2 btn btn-success" >
-                                                    <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" ></f:setPropertyActionListener>
+                                                <h:commandButton value="View" action="#{letterController.toLetterViewFromDocumentHistory()}" class="mx-2 btn btn-success" >
+                                                    <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}" ></f:setPropertyActionListener>
+                                                </h:commandButton>
+                                                <h:commandButton value="Accept" 
+                                                                 class="btn btn-danger mx-2"
+                                                                 action="#{letterController.receiveLetterCopiedOrForwardedToMe()}" >
+                                                    <f:setPropertyActionListener target="#{letterController.selectedHistory}" 
+                                                                                 value="#{c}" ></f:setPropertyActionListener>
                                                 </h:commandButton>
                                             </p:column>
                                         </p:dataTable>

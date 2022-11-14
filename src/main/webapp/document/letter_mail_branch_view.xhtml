@@ -21,13 +21,11 @@
                     <div class="row">
 
                         <div class="col">
-                            <p:outputLabel class="fw-bold my-2" value="Letter Details" ></p:outputLabel>
+                            <p:outputLabel class="fw-bold my-2" value="Received Letter Details" ></p:outputLabel>
                         </div>
                         <div class="col">
-                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" 
-                                             value="To Edit" 
-                                             action="#{letterController.toLetterEdit()}" ></h:commandButton>
-                            <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterAddNew()}">
+                            <h:commandButton class="m-2 btn btn-warning w-25 me-2" value="To Edit" action="#{letterController.toLetterEditMailBranch()}" ></h:commandButton>
+                            <h:commandButton class="m-2 btn btn-success w-25" value="Add New Letter" action="#{menuController.toLetterMailBranchAddNew()}">
                             </h:commandButton>
                             <h:commandButton  class="m-2 btn btn-warning w-25 me-2"  value="Reports" action="#{menuController.toReportsIndex()}" >
                             </h:commandButton>
@@ -50,7 +48,7 @@
                                 <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                             </h:outputLabel>
 
-                            <h:outputLabel class="fs-6" value="Received Date:"></h:outputLabel>
+                            <h:outputLabel class="fs-6" value="Stamp Date:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" id="rdate" value="#{letterController.selected.receivedDate}">
                                 <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                             </h:outputLabel>
@@ -72,6 +70,11 @@
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromInstitution.name}"></h:outputLabel>
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromWebUser.person.nameWithTitle}"></h:outputLabel>
                             </h:panelGroup>
+                            
+                            <h:outputLabel class="fs-6"  value="Letter Sent to:"></h:outputLabel>
+                            <h:panelGroup >
+                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.toInsOrUser.name}"></h:outputLabel>
+                            </h:panelGroup>
 
                             <h:outputLabel class="fs-6"  value="Letter Details:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.comments}"></h:outputLabel>
@@ -79,37 +82,15 @@
                             <h:outputLabel class="fs-6"  value="Letter Status:"></h:outputLabel>
                             <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.letterStatus.name}"></h:outputLabel>
 
+
+                            <h:outputLabel class="fs-6" value="Current Location:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold"  value="#{letterController.selected.currentInstitution.name}"></h:outputLabel>
+
+                            <h:outputLabel class="fs-6"  value="Current Holder:"></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.currentOwner.name}"></h:outputLabel>
                         </p:panelGrid>
 
-                        <h:form >
-                            <h:dataTable value="#{letterController.selectedUploads}" var="up" class="w-100 border border-light">
-                                <h:column >
-                                    <h:commandButton value="X" class="btn btn-danger"
-                                                     disabled="#{up.institution ne webUserController.loggedInstitution}"
-                                                     action="#{letterController.removeUpload()}"
-                                                     onclick="if (!confirm('Really want to do that?'))
-                                                                 return false"
-                                                     >
-                                        <f:setPropertyActionListener target="#{letterController.removingUpload}"
-                                                                     value="#{up}" >
-                                        </f:setPropertyActionListener>
-                                    </h:commandButton>
-                                    <h:panelGroup rendered="#{up.pdf}" >
-                                        <p:media value="#{streamedContentController.imageByUploadId}" class="w-100" cache="false"
-                                                 player="pdf" width="600px" height="800px" >
-                                            <f:param name="id" value="#{up.idStr}" />
-                                        </p:media>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{up.image}" >
-                                        <p:graphicImage class="w-100"
-                                                        cache="false"  value="#{streamedContentController.imageByUploadId}"  >
-                                            <f:param name="id" value="#{up.idStr}" />
-                                        </p:graphicImage>
-                                    </h:panelGroup>
 
-                                </h:column>
-                            </h:dataTable>
-                        </h:form>
 
 
                         <h:form >
@@ -126,7 +107,7 @@
                                 </p:column>
                                 <p:column headerText="Details">
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Created'}" >
-                                        <h:outputLabel class="fs-6 " value="By&nbsp;"></h:outputLabel>
+                                        <h:outputLabel class="fs-6 " value="Entered to the system by&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdBy.person.name}"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="&nbsp;at&nbsp;"></h:outputLabel>
                                         <h:outputLabel class="fs-6 " value="#{h.createdAt}">
@@ -260,108 +241,6 @@
                     </div>
 
                     <div class="col-md-6">
-
-
-                        <h:form>
-                            <p:panelGrid columns="2"  class="w-100 border border-light">
-                                <f:facet name="header" >
-                                    Forward / Copy to
-                                </f:facet>
-                                <h:outputLabel class="fs-6" value="Minutes / Forward / Copy To:"></h:outputLabel>
-                                <p:autoComplete id="acCopyForwardToIns" value="#{letterController.webUserCopy}" 
-                                                completeMethod="#{letterController.completeInsOrUsersByWords}"
-                                                class="form-control"
-                                                var="insf"
-                                                itemLabel="#{insf.displayName}"
-                                                itemValue="#{insf}"
-                                                >
-                                </p:autoComplete>
-
-                                <h:outputLabel class="fs-6" value="Minute:"></h:outputLabel>
-                                <h:selectOneMenu id="lang"  
-                                                 value="#{letterController.minute}" 
-                                                 class="form-control"
-                                                 >
-                                    <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{itemApplicationController.minutes}"
-                                                   var="d"
-                                                   itemLabel="#{d.name}"
-                                                   itemValue="#{d}" ></f:selectItems>
-                                </h:selectOneMenu>
-
-                                <h:outputLabel class="fs-6" value="Comment:"></h:outputLabel>
-                                <h:inputTextarea 
-                                    class="form-control"
-                                    value="#{letterController.comments}" ></h:inputTextarea>
-
-                                <h:commandButton class="form-control btn btn-warning" value="Send &amp; New" 
-                                                 action="#{letterController.forwardOrCopyToAndNew()}" ></h:commandButton>
-                                <h:commandButton class="form-control btn btn-primary" value="Send" 
-                                                 action="#{letterController.forwardOrCopyTo()}" ></h:commandButton>
-                            </p:panelGrid>
-                        </h:form>
-
-                        <h:form>
-                            <p:panelGrid columns="2"  class="w-100 border border-light">
-                                <f:facet name="header" >
-                                    Assign to
-                                </f:facet>
-                                <h:outputLabel class="fs-6" value="Assign To:"></h:outputLabel>
-                                <p:selectOneMenu 
-                                    value="#{letterController.webUser}" 
-                                    class="form-control">
-                                    <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
-                                                   itemLabel="#{u.person.name}" itemValue="#{u}"></f:selectItems>
-                                </p:selectOneMenu>
-
-                                <h:outputLabel class="fs-6" value="Comment:"></h:outputLabel>
-                                <h:inputTextarea 
-                                    class="form-control"
-                                    value="#{letterController.comments}" ></h:inputTextarea>
-
-                                <p:spacer></p:spacer>
-                                <h:commandButton class="form-control btn btn-primary" value="Assign" 
-                                                 action="#{letterController.assignTo()}" ></h:commandButton>
-                            </p:panelGrid>
-                        </h:form>
-
-                        <h:form>
-                            <p:panelGrid columns="2"  class="w-100 border border-light">
-                                <f:facet name="header" >
-                                    Add Actions
-                                </f:facet>
-                                <h:outputLabel class="fs-6" value="Action Details:"></h:outputLabel>
-                                <h:inputTextarea class="form-control" value="#{letterController.comments}" ></h:inputTextarea>
-                                <p:spacer></p:spacer>
-                                <h:commandButton class="form-control btn btn-primary"  value="Record Action"
-                                                 action="#{letterController.recordActionTaken()}" ></h:commandButton>
-                            </p:panelGrid>
-                        </h:form>
-
-                        <h:form>
-                            <p:panelGrid columns="2"  class="w-100 border border-light" rendered="false">
-                                <f:facet name="header" >
-                                    Transfer out
-                                </f:facet>
-                                <h:outputLabel class="fs-6" value="Transfer To:"></h:outputLabel>
-                                <p:autoComplete  class="form-control" inputStyleClass="form-control" 
-                                                 value="#{letterController.institution}" 
-                                                 completeMethod="#{institutionController.completeInstitutions}"
-                                                 var="i" 
-                                                 itemLabel="#{i.name}" 
-                                                 itemValue="#{i}" 
-                                                 forceSelection="True"
-                                                 maxResults="15" 
-                                                 minQueryLength="3">
-                                </p:autoComplete >
-                                <p:spacer></p:spacer>
-                                <h:commandButton value="Transfer" 
-                                                 class="form-control btn btn-primary" 
-                                                 action="#{letterController.transferOutFile()}" ></h:commandButton>
-                            </p:panelGrid>
-                        </h:form>
-
                         <h:form enctype="multipart/form-data">
                             <h:panelGrid columns="2" class="w-100 border border-light">
                                 <f:facet name="header" >
@@ -374,30 +253,34 @@
                             </h:panelGrid>
 
                         </h:form>
-
                         <h:form >
+                            <h:dataTable value="#{letterController.selectedUploads}" var="up" class="w-100 border border-light">
+                                <h:column >
+                                    <h:commandButton value="X" class="btn btn-danger" 
+                                                     disabled="#{up.institution ne webUserController.loggedInstitution}"
+                                                     onclick="if (!confirm('Really want to do that?'))
+                                                                 return false"
+                                                     action="#{letterController.removeUpload()}">
+                                        <f:setPropertyActionListener target="#{letterController.removingUpload}"
+                                                                     value="#{up}" >
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                    <h:panelGroup rendered="#{up.pdf}" >
+                                        <p:media value="#{streamedContentController.imageByUploadId}" class="w-100" cache="false"
+                                                 player="pdf" width="600px" height="800px" >
+                                            <f:param name="id" value="#{up.idStr}" />
+                                        </p:media>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{up.image}" >
+                                        <p:graphicImage class="w-100"
+                                                        cache="false"  value="#{streamedContentController.imageByUploadId}"  >
+                                            <f:param name="id" value="#{up.idStr}" />
+                                        </p:graphicImage>
+                                    </h:panelGroup>
 
-                            <h:panelGrid columns="1" class="w-100 border border-light">
-                                <f:facet name="header" >
-                                    My Actions
-                                </f:facet>
-                                <h:commandButton value="Accept" 
-                                                 rendered="#{letterController.selected.currentOwner eq webUserController.loggedUser and letterController.selected.completed ne true}" 
-                                                 action="#{letterController.toAcceptAssignedLetter()}"  class="btn btn-success fw-bold m-2 ">
-                                </h:commandButton>
-                                <h:commandButton value="Mark as NOT Accepted" 
-                                                 rendered="#{letterController.selected.currentOwner eq webUserController.loggedUser and letterController.selected.completed eq true}" 
-                                                 action="#{letterController.toReverseAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
-                                </h:commandButton>
-                                <h:commandButton value="Assign &amp; Accept"
-                                                 rendered="#{letterController.selected.currentOwner ne webUserController.loggedUser}" 
-                                                 action="#{letterController.toAssignAndAcceptLetterMySelf()}"  class="btn btn-success fw-bold m-2 ">
-                                </h:commandButton>
-                            </h:panelGrid>
-
+                                </h:column>
+                            </h:dataTable>
                         </h:form>
-
-
                     </div>
 
                 </div>

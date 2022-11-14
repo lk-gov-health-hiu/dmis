@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import java.io.IOException;
 import java.io.InputStream;
 import lk.gov.health.phsp.entity.Document;
@@ -71,11 +72,22 @@ public class LetterController implements Serializable {
     private DocumentHistory selectedHistory;
     private DocumentHistory deletingHistory;
     private List<DocumentHistory> selectedDocumentHistories;
+    private List<DocumentHistory> selectedFromList;
+    private List<DocumentHistory> selectedToList;
+    private List<DocumentHistory> selectedThroughList;
+    private List<Nameable> fromInsOrUser;
+    private List<Nameable> toInsOrUser;
+    private List<Nameable> throughInsOrUser;
+
+    private Map<Long, Nameable> fromInsOrUserMap;
+    private Map<Long, Nameable> toInsOrUserMap;
+    private Map<Long, Nameable> throughInsOrUserMap;
+
     private List<Upload> selectedUploads;
     private List<DocumentHistory> documentHistories;
     private List<DocumentHistory> listedToAcceptCopyForwards;
     private List<InstitutionCount> institutionCounts;
-    DocumentHistory selectedToAcceptCopyForwards;
+    private DocumentHistory selectedToAcceptCopyForwards;
     @Inject
     private WebUserController webUserController;
     @Inject
@@ -90,6 +102,7 @@ public class LetterController implements Serializable {
     WebUserApplicationController webUserApplicationController;
 
     private Institution institution;
+
     private WebUser webUser;
     private Nameable webUserCopy;
     private Nameable searchUserOrIns;
@@ -389,25 +402,6 @@ public class LetterController implements Serializable {
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
-    public void listLettersReceived() {
-        if (searchFilterType == null) {
-            searchFilterType = SearchFilterType.SYSTEM_DATE;
-        }
-        String j = "select d "
-                + " from Document d "
-                + " where d.retired=false "
-                + " and d.documentType=:dt "
-                + " and d.institution=:ins ";
-        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
-        j += " order by d." + searchFilterType.getCode();
-        Map m = new HashMap();
-        m.put("dt", DocumentType.Letter);
-        m.put("ins", webUserController.getLoggedInstitution());
-        m.put("fd", getFromDate());
-        m.put("td", getToDate());
-        items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-    }
-
     public void listLastLettersReceived() {
         int numberToList = 100;
         searchFilterType = SearchFilterType.SYSTEM_DATE;
@@ -516,13 +510,79 @@ public class LetterController implements Serializable {
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired=false "
-                + " and h.historyType =:ht "
-                + " and h.toUser=:tu "
+                + " and h.historyType in :ht "
+                + " and (h.toUser=:tu or h.toInstitution=:ti) "
                 + " and h.completed=false ";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
         m.put("tu", webUserController.getLoggedUser());
-        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("ti", webUserController.getLoggedInstitution());
+        List<HistoryType> hxtx = new ArrayList<>();
+        hxtx.add(HistoryType.Letter_Copy_or_Forward);
+        hxtx.add(HistoryType.Letter_added_by_mail_branch);
+        m.put("ht", hxtx);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void fillLettersToReceive() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType in :ht "
+                + " and (h.toUser.institution=:ti or h.toInstitution=:ti) "
+                + " and h.completed=false ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("ti", webUserController.getLoggedInstitution());
+        List<HistoryType> hxtx = new ArrayList<>();
+        hxtx.add(HistoryType.Letter_Copy_or_Forward);
+        hxtx.add(HistoryType.Letter_added_by_mail_branch);
+        m.put("ht", hxtx);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public void fillLettersReceived() {
+        System.out.println("fillLettersReceived");
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired<>:ret "
+                + " and h.historyType in :ht "
+                + " and (h.toUser.institution=:ti or h.toInstitution=:ti) ";
+        j += " and h.completed=:com ";
+        j += " and h.createdAt between :fd and :td ";
+        j += " order by h.id";
+        m.put("ti", webUserController.getLoggedInstitution());
+        List<HistoryType> hxtx = new ArrayList<>();
+        hxtx.add(HistoryType.Letter_Copy_or_Forward);
+        hxtx.add(HistoryType.Letter_added_by_mail_branch);
+        m.put("ht", hxtx);
+        m.put("com", false);
+        m.put("ret", true);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        System.out.println("documentHistories = " + documentHistories.size());
+    }
+
+    public void fillMailBranchSentLetters() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.institution=:ins ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("ht", HistoryType.Letter_added_by_mail_branch);
         m.put("fd", fromDate);
         m.put("td", toDate);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
@@ -545,18 +605,43 @@ public class LetterController implements Serializable {
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
+    public void fillNewLetterRegistry() {
+        System.out.println("fillNewLetterRegistry ");
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired<> :ret "
+                + " and h.historyType = :ht "
+                + " and h.toInstitution= :ti ";
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("ti", webUserController.getLoggedInstitution());
+        m.put("ht", HistoryType.Letter_Created);
+        m.put("fd", fromDate);
+        m.put("ret", true);
+        m.put("td", toDate);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        System.out.println("documentHistories = " + documentHistories.size());
+    }
+
     public void fillMyReceivedLetters() {
         Map m = new HashMap();
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired=false "
-                + " and h.historyType =:ht "
-                + " and h.toUser=:tu "
+                + " and h.historyType in :ht "
+                + " and (h.toUser=:tu or h.toInstitution=:ti) "
                 + " and h.completed=true ";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
         m.put("tu", webUserController.getLoggedUser());
-        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("ti", webUserController.getLoggedInstitution());
+        List<HistoryType> hts = new ArrayList<>();
+        hts.add(HistoryType.Letter_Copy_or_Forward);
+        hts.add(HistoryType.Letter_added_by_mail_branch);
+        m.put("ht", hts);
         m.put("fd", fromDate);
         m.put("td", toDate);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
@@ -794,13 +879,48 @@ public class LetterController implements Serializable {
         }
         return toLetterView();
     }
-    
-    
-    public String saveAndViewGeneratedLetter() {
+
+    public String saveAndViewLetterBranch() {
         if (selected.getId() == null) {
             newHx = true;
         }
         save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
+            }
+            selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+
+            selectedHistory.setToInstitution(selected.getToInstitution());
+            selectedHistory.setToUser(selected.getToWebUser());
+
+            selectedHistory.setFromInstitution(selected.getFromInstitution());
+            selectedHistory.setFromUser(selected.getFromWebUser());
+
+            selectedHistory.setCompleted(false);
+
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
+        return toLetterView();
+    }
+
+    public String saveAndViewGeneratedLetter() {
+        if (selected.getId() == null) {
+            newHx = true;
+        } else {
+            newHx = false;
+        }
+        if (getToInsOrUser().isEmpty()) {
+            JsfUtil.addErrorMessage("Please select to whom you are sending this");
+            return "";
+        }
+        save(selected);
+        toInsOrUserMap = new HashMap<>();
+        for (Nameable n : getToInsOrUser()) {
+            toInsOrUserMap.put(n.getId(), n);
+        }
         if (newHx) {
             if (selectedHistory == null) {
                 selectedHistory = new DocumentHistory();
@@ -816,6 +936,84 @@ public class LetterController implements Serializable {
             selectedHistory.setCompletedBy(webUserController.getLoggedUser());
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
+
+            for (Nameable toui : getToInsOrUserMap().values()) {
+                DocumentHistory ndhx = new DocumentHistory();
+                ndhx.setHistoryType(HistoryType.To_List);
+                ndhx.setInstitution(webUserController.getLoggedInstitution());
+                ndhx.setFromInstitution(webUserController.getLoggedInstitution());
+                if (toui instanceof Institution) {
+                    ndhx.setToInstitution((Institution) toui);
+                } else if (toui instanceof WebUser) {
+                    ndhx.setToUser((WebUser) toui);
+                }
+                ndhx.setCompleted(true);
+                ndhx.setCompletedAt(new Date());
+                ndhx.setCompletedBy(webUserController.getLoggedUser());
+                ndhx.setDocument(selected);
+                saveDocumentHx(ndhx);
+            }
+
+        } else {
+            String j = "Select h "
+                    + " from DocumentHistory h "
+                    + " where h.retired<>:ret "
+                    + " and h.document=:doc "
+                    + " and h.historyType=:hxt";
+            Map m = new HashMap();
+            m.put("ret", true);
+            m.put("doc", selected);
+            m.put("hxt", HistoryType.To_List);
+            List<DocumentHistory> toDxHxs = documentHxFacade.findByJpql(j, m);
+            for (Nameable toui : getToInsOrUserMap().values()) {
+                for (DocumentHistory dhx : toDxHxs) {
+                    boolean found = false;
+                    if (toui instanceof Institution && dhx.getToInstitution() != null) {
+                        if (dhx.getToInstitution().equals((Institution) toui)) {
+                            found = true;
+                        }
+                    } else if (toui instanceof WebUser && dhx.getToUser() != null) {
+                        if (dhx.getToUser().equals((WebUser) toui)) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        DocumentHistory ndhx = new DocumentHistory();
+                        ndhx.setHistoryType(HistoryType.To_List);
+                        ndhx.setInstitution(webUserController.getLoggedInstitution());
+                        ndhx.setFromInstitution(webUserController.getLoggedInstitution());
+                        if (toui instanceof Institution) {
+                            ndhx.setToInstitution((Institution) toui);
+                        } else if (toui instanceof WebUser) {
+                            ndhx.setToUser((WebUser) toui);
+                        }
+                        ndhx.setCompleted(true);
+                        ndhx.setCompletedAt(new Date());
+                        ndhx.setCompletedBy(webUserController.getLoggedUser());
+                        ndhx.setDocument(selected);
+                        saveDocumentHx(ndhx);
+                    }
+                }
+            }
+            for (DocumentHistory dhx : toDxHxs) {
+                boolean found = false;
+                for (Nameable toui : getToInsOrUserMap().values()) {
+                    if (toui instanceof Institution) {
+                        if (dhx.getToInstitution().equals((Institution) toui)) {
+                            found = true;
+                        }
+                    } else if (toui instanceof WebUser) {
+                        if (dhx.getToUser().equals((WebUser) toui)) {
+                            found = true;
+                        }
+                    }
+                }
+                if (!found) {
+                    dhx.setRetired(true);
+                    saveDocumentHx(dhx);
+                }
+            }
+
         }
         return toLetterView();
     }
@@ -828,19 +1026,43 @@ public class LetterController implements Serializable {
         if (newHx) {
             if (selectedHistory == null) {
                 selectedHistory = new DocumentHistory();
-                selectedHistory.setHistoryType(HistoryType.Letter_Created);
+                selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
+                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             }
-            selectedHistory.setToInstitution(selected.getCurrentInstitution());
-            selectedHistory.setCompleted(true);
-            selectedHistory.setCompletedAt(new Date());
-            selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+            selectedHistory.setToInstitution(selected.getToInstitution());
+
+            selectedHistory.setFromInstitution(selected.getFromInstitution());
+            selectedHistory.setFromUser(selected.getFromWebUser());
+
+            selectedHistory.setToUser(selected.getToWebUser());
+            selectedHistory.setToInstitution(selected.getToInstitution());
+
+            selectedHistory.setCompleted(false);
+            selectedHistory.setDocument(selected);
+
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
-        return menuController.toLetterAddNew();
+        return menuController.toLetterMailBranchAddNew();
     }
-    
-    
+
+    public String saveAndNewLetterBranch() {
+        if (selected.getId() == null) {
+            newHx = true;
+        }
+        save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
+            }
+            selectedHistory.setCompleted(false);
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
+        return menuController.toLetterMailBranchAddNew();
+    }
+
     public String saveAndNewGeneratedLetter() {
         if (selected.getId() == null) {
             newHx = true;
@@ -860,7 +1082,7 @@ public class LetterController implements Serializable {
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
-        return menuController.toLetterCreateNew();
+        return menuController.toLetterGenerateNew();
     }
 
     public void saveDocumentHx(DocumentHistory hx) {
@@ -881,8 +1103,32 @@ public class LetterController implements Serializable {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
         }
+        if (selected.getInstitution() != null) {
+            if (!selected.getInstitution().equals(webUserController.getLoggedInstitution())) {
+                JsfUtil.addErrorMessage("You are NOT Autherized to edit this letter.");
+                return "";
+            }
+        }
         newHx = false;
         return "/document/letter";
+    }
+
+    public String toLetterEditMailBranch() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        newHx = false;
+        return "/document/letter_mail_branch";
+    }
+
+    public String toLetterGenerateEdit() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No Letter Selected");
+            return "";
+        }
+        newHx = false;
+        return "/document/letter_generate";
     }
 
     public String toReportsLetterCopyForwardActions() {
@@ -897,14 +1143,19 @@ public class LetterController implements Serializable {
 
     public String toReportsLetterReceived() {
         documentHistories = null;
-        return "/institution/letter_receive_register";
+        return "/institution/letter_received_registry";
+    }
+
+    public String toRegisterMailBranch() {
+        documentHistories = null;
+        return "/institution/register_mail_branch_sent";
     }
 
     public String toReportsInstitutionCountsLetters() {
         institutionCounts = null;
         return "/national/institution_counts_letters";
     }
-    
+
     public String toReportsDailyCountsLetters() {
         institutionCounts = null;
         return "/national/daily_counts_letters";
@@ -973,11 +1224,10 @@ public class LetterController implements Serializable {
         m.put("td", toDate);
 
         List<DocumentHistory> tdhx = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-        
-        if(tdhx!=null){
+
+        if (tdhx != null) {
             documentHistories.addAll(tdhx);
         }
-        
 
     }
 
@@ -999,9 +1249,29 @@ public class LetterController implements Serializable {
         return "/institution/accept_my_copy_forwarded_letters";
     }
 
+    public String toReceiveLetters() {
+        documentHistories = null;
+        return "/institution/receive_letters";
+    }
+
+    public String toReceivedLetterRegistry() {
+        documentHistories = null;
+        return "/institution/letter_received_registry";
+    }
+
+    public String toAcceptLettersToInstitution() {
+        documentHistories = null;
+        return "/institution/accept_letters";
+    }
+
     public String toAcceptedMyAssignedLetters() {
         documentHistories = null;
         return "/institution/accepted_my_assigned_letters";
+    }
+
+    public String toNewLetterRegistry() {
+        documentHistories = null;
+        return "/institution/registry_new_letter";
     }
 
     public String toAcceptedCopyForwardedLettersToMe() {
@@ -1112,6 +1382,83 @@ public class LetterController implements Serializable {
 
     }
 
+    public void fillLettersToAccept() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType in :hts "
+                + " and h.toInstitution=:ti ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.fromUser=:fu ";
+                m.put("fu", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.fromInstitution=:fi ";
+                m.put("fi", webUserCopy);
+            }
+        }
+
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id desc";
+
+        m.put("ti", webUserController.getLoggedInstitution());
+        System.out.println("webUserController.getLoggedInstitution() = " + webUserController.getLoggedInstitution());
+//        m.put("uti", webUserController.getLoggedUser().getInstitution());
+        System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution());
+//        m.put("tu", webUserController.getLoggedUser());
+        System.out.println("webUserController.getLoggedUser() = " + webUserController.getLoggedUser());
+        List<HistoryType> hts = new ArrayList<>();
+        hts.add(HistoryType.To_List);
+        hts.add(HistoryType.Letter_Copy_or_Forward);
+        m.put("hts", hts);
+        m.put("fd", fromDate);
+        System.out.println("fromDate = " + fromDate);
+        System.out.println("toDate = " + toDate);
+        m.put("td", toDate);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        if (documentHistories == null) {
+            documentHistories = new ArrayList<>();
+        }
+
+        m = new HashMap();
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser in :us "
+                + " and h.completed=:c ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.fromUser=:fu ";
+                m.put("fu", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.fromInstitution=:fi ";
+                m.put("fi", webUserCopy);
+            }
+        }
+
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id desc";
+
+        m.put("us", webUserController.getUsersForMyInstitute());
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("c", false);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+
+        List<DocumentHistory> uihxs = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        if (uihxs != null) {
+            documentHistories.addAll(uihxs);
+        }
+
+    }
+
     public List<DocumentHistory> findDocumentHistories(Date fd, Date td, HistoryType ht, Institution i, Nameable u) {
         List<HistoryType> hts = new ArrayList<>();
         if (ht != null) {
@@ -1149,16 +1496,47 @@ public class LetterController implements Serializable {
         return documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
-    public String toLetterView() {
-        if (selected == null) {
-            JsfUtil.addErrorMessage("No File Selected");
-            return "";
-        }
+    public String toInstitutionReceivedLetterView() {
+        System.out.println("toInstitutionReceivedLetterView");
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.document=:doc "
                 + " and (h.institution=:ins or h.fromInstitution=:ins or h.toInstitution=:ins) "
+                + " order by h.id desc";
+        Map m = new HashMap();
+        m.put("doc", selected);
+        m.put("ins", webUserController.getLoggedInstitution());
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
+        System.out.println("selectedDocumentHistories = " + selectedDocumentHistories.size());
+
+        j = "select h "
+                + " from Upload h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " order by h.id";
+        m = new HashMap();
+        m.put("doc", selected);
+//        m.put("ins", webUserController.getLoggedInstitution());
+        //TODO: Need to allow only original upload
+//        if (selected.getFromInstitution() != null) {
+//            m.put("fins", selected.getFromInstitution());
+//        } else {
+//            m.put("fins", webUserController.getLoggedInstitution());
+//        }
+        selectedUploads = uploadFacade.findByJpql(j, m);
+        return "/document/letter_view";
+    }
+
+    public String toMailDepartmentReceivedLetterView() {
+        System.out.println("toMailDepartmentReceivedLetterView");
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and (h.institution=:ins) "
                 + " order by h.id desc";
         Map m = new HashMap();
         m.put("doc", selected);
@@ -1180,8 +1558,110 @@ public class LetterController implements Serializable {
 //            m.put("fins", webUserController.getLoggedInstitution());
 //        }
         selectedUploads = uploadFacade.findByJpql(j, m);
+        return "/document/letter_mail_branch_view";
+    }
 
-        return "/document/letter_view";
+    public String toGeneraterLetterView() {
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and (h.institution=:ins or h.fromInstitution=:ins or h.toInstitution=:ins) "
+                + " order by h.id desc";
+        Map m = new HashMap();
+        m.put("doc", selected);
+        m.put("ins", webUserController.getLoggedInstitution());
+        selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
+        selectedToList = new ArrayList<>();
+
+        toInsOrUserMap = new HashMap<>();
+        if (selectedDocumentHistories != null) {
+            for (DocumentHistory tdhx : selectedDocumentHistories) {
+                if (tdhx.getHistoryType() != null && tdhx.getHistoryType().equals(HistoryType.To_List)) {
+//                    selectedDocumentHistories.remove(tdhx);
+                    selectedToList.add(tdhx);
+                    if (tdhx.getToInstitution() != null) {
+                        toInsOrUserMap.put(tdhx.getToInstitution().getId(), tdhx.getToInstitution());
+                    }
+                    if (tdhx.getToUser() != null) {
+                        toInsOrUserMap.put(tdhx.getToUser().getId(), tdhx.getToUser());
+                    }
+                }
+            }
+        }
+        selectedDocumentHistories.removeAll(selectedToList);
+
+        toInsOrUser = new ArrayList<>(toInsOrUserMap.values());
+
+        j = "select h "
+                + " from Upload h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " order by h.id";
+        m = new HashMap();
+        m.put("doc", selected);
+        selectedUploads = uploadFacade.findByJpql(j, m);
+
+        return "/document/letter_generate_view";
+    }
+
+    public String toLetterView() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        if (selected.getDocumentGenerationType() == null) {
+            return toInstitutionReceivedLetterView();
+        }
+        switch (selected.getDocumentGenerationType()) {
+            case Generated_by_system:
+                return toGeneraterLetterView();
+            case Received_by_mail_branch:
+                return toMailDepartmentReceivedLetterView();
+            case Other:
+            case Received_by_institution:
+                return toInstitutionReceivedLetterView();
+        }
+        return toInstitutionReceivedLetterView();
+    }
+
+    public String toLetterViewFromDocumentHistory() {
+        System.out.println("toLetterViewFromDocumentHistory");
+        if (selectedHistory != null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        selected = selectedHistory.getDocument();
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        if (selected.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Error");
+            return "";
+        }
+        if (selectedHistory.getInstitution() == null) {
+            JsfUtil.addErrorMessage("Error");
+            return "";
+        }
+        if (selected.getDocumentGenerationType() == null) {
+            return toInstitutionReceivedLetterView();
+        }
+        switch (selected.getDocumentGenerationType()) {
+            case Generated_by_system:
+                return toGeneraterLetterView();
+            case Received_by_mail_branch:
+                System.out.println("Received_by_mail_branch = ");
+                if (webUserController.getLoggedInstitution().equals(selected.getInstitution())) {
+                    return toMailDepartmentReceivedLetterView();
+                } else {
+                    return toInstitutionReceivedLetterView();
+                }
+            case Other:
+            case Received_by_institution:
+                return toInstitutionReceivedLetterView();
+        }
+        return toInstitutionReceivedLetterView();
     }
 
     public String toAcceptAssignedLetter() {
@@ -1282,6 +1762,18 @@ public class LetterController implements Serializable {
 
         JsfUtil.addSuccessMessage("Received Successfully.");
 
+    }
+
+    public void markMailBranchLetterAsReceived() {
+        if (selectedHistory == null) {
+            JsfUtil.addErrorMessage("No Letter Selected");
+            return;
+        }
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        saveDocumentHx(selectedHistory);
+        JsfUtil.addSuccessMessage("Received Successfully.");
     }
 
     public String toReverseAcceptMyLetter() {
@@ -1636,8 +2128,156 @@ public class LetterController implements Serializable {
         this.institutionCounts = institutionCounts;
     }
 
+    public DocumentHistory getSelectedToAcceptCopyForwards() {
+        return selectedToAcceptCopyForwards;
+    }
+
+    public void setSelectedToAcceptCopyForwards(DocumentHistory selectedToAcceptCopyForwards) {
+        this.selectedToAcceptCopyForwards = selectedToAcceptCopyForwards;
+    }
+
+    public List<DocumentHistory> getSelectedFromList() {
+        if (selectedFromList == null) {
+            selectedFromList = new ArrayList<>();
+        }
+        return selectedFromList;
+    }
+
+    public void setSelectedFromList(List<DocumentHistory> selectedFromList) {
+        this.selectedFromList = selectedFromList;
+    }
+
+    public List<DocumentHistory> getSelectedToList() {
+        if (selectedToList == null) {
+            selectedToList = new ArrayList<>();
+        }
+        return selectedToList;
+    }
+
+    public void setSelectedToList(List<DocumentHistory> selectedToList) {
+        this.selectedToList = selectedToList;
+    }
+
+    public List<DocumentHistory> getSelectedThroughList() {
+        if (selectedThroughList == null) {
+            selectedThroughList = new ArrayList<>();
+        }
+        return selectedThroughList;
+    }
+
+    public void setSelectedThroughList(List<DocumentHistory> selectedThroughList) {
+        this.selectedThroughList = selectedThroughList;
+    }
+
+    public List<Nameable> getFromInsOrUser() {
+        if (fromInsOrUser == null) {
+            fromInsOrUser = new ArrayList<>();
+        }
+        return fromInsOrUser;
+    }
+
+    public void setFromInsOrUser(List<Nameable> fromInsOrUser) {
+        this.fromInsOrUser = fromInsOrUser;
+    }
+
+    public List<Nameable> getToInsOrUser() {
+        if (toInsOrUser == null) {
+            toInsOrUser = new ArrayList<>();
+        }
+        return toInsOrUser;
+    }
+
+    public void setToInsOrUser(List<Nameable> toInsOrUser) {
+        this.toInsOrUser = toInsOrUser;
+    }
+
+    public List<Nameable> getThroughInsOrUser() {
+        if (throughInsOrUser == null) {
+            throughInsOrUser = new ArrayList<>();
+        }
+        return throughInsOrUser;
+    }
+
+    public void setThroughInsOrUser(List<Nameable> throughInsOrUser) {
+        this.throughInsOrUser = throughInsOrUser;
+    }
+
+    public Map<Long, Nameable> getFromInsOrUserMap() {
+        if (fromInsOrUserMap == null) {
+            fromInsOrUserMap = new HashMap<>();
+        }
+        return fromInsOrUserMap;
+    }
+
+    public void setFromInsOrUserMap(Map<Long, Nameable> fromInsOrUserMap) {
+        this.fromInsOrUserMap = fromInsOrUserMap;
+    }
+
+    public Map<Long, Nameable> getToInsOrUserMap() {
+        if (toInsOrUserMap == null) {
+            toInsOrUserMap = new HashMap<>();
+        }
+        return toInsOrUserMap;
+    }
+
+    public void setToInsOrUserMap(Map<Long, Nameable> toInsOrUserMap) {
+        this.toInsOrUserMap = toInsOrUserMap;
+    }
+
+    public Map<Long, Nameable> getThroughInsOrUserMap() {
+        if (throughInsOrUserMap == null) {
+            throughInsOrUserMap = new HashMap<>();
+        }
+        return throughInsOrUserMap;
+    }
+
+    public void setThroughInsOrUserMap(Map<Long, Nameable> throughInsOrUserMap) {
+        this.throughInsOrUserMap = throughInsOrUserMap;
+    }
+
     @FacesConverter(forClass = Nameable.class)
     public static class NameableConverter implements Converter {
+
+        @Override
+        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
+            if (value == null || value.length() == 0) {
+                return null;
+            }
+            LetterController controller = (LetterController) facesContext.getApplication().getELResolver().
+                    getValue(facesContext.getELContext(), null, "letterController");
+            return controller.getNameable(getKey(value));
+        }
+
+        java.lang.Long getKey(String value) {
+            java.lang.Long key;
+            key = Long.valueOf(value);
+            return key;
+        }
+
+        String getStringKey(java.lang.Long value) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(value);
+            return sb.toString();
+        }
+
+        @Override
+        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
+            if (object == null) {
+                return null;
+            }
+            if (object instanceof Nameable) {
+                Nameable o = (Nameable) object;
+                return getStringKey(o.getId());
+            } else {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Nameable.class.getName()});
+                return null;
+            }
+        }
+
+    }
+
+    @FacesConverter(value = "nameableConverter")
+    public static class NameableInterfaceConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
