@@ -831,7 +831,7 @@ public class LetterController implements Serializable {
         comments = "";
 
         JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
-        return menuController.toLetterAddNew();
+        return menuController.toLetterAddNewReceivedLetter();
     }
 
     public String recordActionTaken() {
@@ -857,7 +857,7 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
-    public String saveAndView() {
+    public String saveAndViewReceivedLetter() {
         if (selected.getId() == null) {
             newHx = true;
         }
@@ -867,9 +867,10 @@ public class LetterController implements Serializable {
                 selectedHistory = new DocumentHistory();
                 selectedHistory.setHistoryType(HistoryType.Letter_Created);
                 selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+                
             }
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-            selectedHistory.setToInstitution(selected.getCurrentInstitution());
+            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
             selectedHistory.setToUser(selected.getToWebUser());
             selectedHistory.setCompleted(true);
             selectedHistory.setCompletedAt(new Date());
@@ -1018,7 +1019,7 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
-    public String saveAndNew() {
+    public String saveAndNewReceivedLetter() {
         if (selected.getId() == null) {
             newHx = true;
         }
@@ -1026,24 +1027,20 @@ public class LetterController implements Serializable {
         if (newHx) {
             if (selectedHistory == null) {
                 selectedHistory = new DocumentHistory();
-                selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
+                selectedHistory.setHistoryType(HistoryType.Letter_Created);
                 selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             }
-            selectedHistory.setToInstitution(selected.getToInstitution());
+            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
 
             selectedHistory.setFromInstitution(selected.getFromInstitution());
             selectedHistory.setFromUser(selected.getFromWebUser());
-
-            selectedHistory.setToUser(selected.getToWebUser());
-            selectedHistory.setToInstitution(selected.getToInstitution());
-
             selectedHistory.setCompleted(false);
             selectedHistory.setDocument(selected);
 
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
-        return menuController.toLetterMailBranchAddNew();
+        return menuController.toLetterAddNewReceivedLetter();
     }
 
     public String saveAndNewLetterBranch() {

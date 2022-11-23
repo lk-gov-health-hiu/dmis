@@ -88,10 +88,10 @@
         <location>/app/timeout.xhtml</location>
     </error-page>
     
-    <error-page>
+<!--    <error-page>
         <error-code>500</error-code>
         <location>/app/error.xhtml</location>
-    </error-page>
+    </error-page>-->
 
 
 </web-app>
