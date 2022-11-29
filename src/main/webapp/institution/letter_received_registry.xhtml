@@ -103,7 +103,7 @@
                                                                value="Copied or Forwarded"></h:outputText>
                                             </p:column>
                                             <p:column headerText="Actions" >
-                                                <h:commandButton value="View" action="#{letterController.toLetterViewFromDocumentHistory()}" class="mx-2 btn btn-success" >
+                                                <h:commandButton value="View*" action="#{letterController.toLetterViewFromDocumentHistory()}" class="mx-2 btn btn-success" >
                                                     <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}" ></f:setPropertyActionListener>
                                                 </h:commandButton>
                                                 <h:commandButton value="Accept" 

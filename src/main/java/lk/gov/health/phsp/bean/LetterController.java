@@ -1051,15 +1051,22 @@ public class LetterController implements Serializable {
             newHx = true;
         }
         save(selected);
-        if (newHx) {
-            if (selectedHistory == null) {
-                selectedHistory = new DocumentHistory();
-                selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
-            }
-            selectedHistory.setCompleted(false);
-            selectedHistory.setDocument(selected);
-            saveDocumentHx(selectedHistory);
+        if (selectedHistory == null) {
+            selectedHistory = new DocumentHistory();
+            selectedHistory.setHistoryType(HistoryType.Letter_added_by_mail_branch);
         }
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+
+        selectedHistory.setToInstitution(selected.getToInstitution());
+        selectedHistory.setToUser(selected.getToWebUser());
+
+        selectedHistory.setFromInstitution(selected.getFromInstitution());
+        selectedHistory.setFromUser(selected.getFromWebUser());
+
+        selectedHistory.setCompleted(false);
+
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
         return menuController.toLetterMailBranchAddNew();
     }
 
@@ -1607,7 +1614,7 @@ public class LetterController implements Serializable {
 
     public String toLetterView() {
         if (selected == null) {
-            JsfUtil.addErrorMessage("No File Selected");
+            JsfUtil.addErrorMessage("No Letter Selected");
             return "";
         }
         if (selected.getDocumentGenerationType() == null) {
@@ -1628,12 +1635,12 @@ public class LetterController implements Serializable {
     public String toLetterViewFromDocumentHistory() {
         System.out.println("toLetterViewFromDocumentHistory");
         if (selectedHistory != null) {
-            JsfUtil.addErrorMessage("No File Selected");
+            JsfUtil.addErrorMessage("No Letter History Selected");
             return "";
         }
         selected = selectedHistory.getDocument();
         if (selected == null) {
-            JsfUtil.addErrorMessage("No File Selected");
+            JsfUtil.addErrorMessage("No Letter Selected");
             return "";
         }
         if (selected.getInstitution() == null) {
