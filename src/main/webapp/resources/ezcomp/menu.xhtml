@@ -22,7 +22,7 @@
                 <p:menuitem class="submenu-item" ajax="false" value="Search Letters" action="#{menuController.toLetterSearch()}" />
 
                 <p:submenu class="submenu" label="Receive Letters" >
-                    <p:menuitem class="submenu-item" ajax="false" value="New Letter" action="#{menuController.toLetterAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="Record A New Received Letter" action="#{menuController.toLetterAddNewReceivedLetter()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter Registry" action="#{letterController.toNewLetterRegistry()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="To Receive Letters List" action="#{letterController.toReceiveLetters()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Received Letter Registry" action="#{letterController.toReceivedLetterRegistry()}" />
@@ -46,7 +46,7 @@
                 <p:submenu class="submenu" label="Create" >
                     <p:menuitem class="submenu-item" ajax="false" value="New Letter"
                                 action="#{menuController.toLetterGenerateNew()}"  />
-                    <p:menuitem class="submenu-item" ajax="false" value="New Internal Memo" action="#{menuController.toLetterAddNew()}"  />
+                    <p:menuitem class="submenu-item" ajax="false" value="New Internal Memo" action="#{menuController.toLetterAddNewReceivedLetter()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Letter Creation Registry" action="#{letterController.toAcceptCopyForwardedLettersToMe()}" />
                 </p:submenu>
 

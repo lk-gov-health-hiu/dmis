@@ -90,7 +90,7 @@ public class MenuController implements Serializable {
         return "/document/file";
     }
 
-    public String toLetterAddNew() {
+    public String toLetterAddNewReceivedLetter() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
         nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
@@ -108,6 +108,7 @@ public class MenuController implements Serializable {
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.Letter_Created);
         ndh.setInstitution(webUserController.getLoggedInstitution());
+        ndh.setToInstitution(webUserController.getLoggedInstitution());
         return "/document/letter";
     }
     

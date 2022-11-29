@@ -194,10 +194,10 @@
 
                                 
                                 <h:commandButton id="btnSaveAdd" tabindex="10" class="btn btn-success fw-bold m-2 "
-                                                 action="#{letterController.saveAndView()}" value="SAVE &amp; View">
+                                                 action="#{letterController.saveAndViewReceivedLetter()}" value="SAVE &amp; View">
                                 </h:commandButton>
                                 <h:commandButton rendered="true" tabindex="10" class="btn btn-warning fw-bold m-2 "
-                                                 action="#{letterController.saveAndNew()}" value="SAVE &amp; New">
+                                                 action="#{letterController.saveAndNewReceivedLetter()}" value="SAVE &amp; New">
                                 </h:commandButton>
                                 <p:messages class="m-1 col"></p:messages>
                                 <p:defaultCommand target="btnSaveAdd" />
