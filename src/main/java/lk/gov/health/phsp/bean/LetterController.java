@@ -881,6 +881,30 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
+      public String saveAndViewRecordANewRecivedLetter() {
+        if (selected.getId() == null) {
+            newHx = true;
+        }
+        save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.Letter_Created);
+                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+                
+            }
+            selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+            selectedHistory.setToUser(selected.getToWebUser());
+            selectedHistory.setCompleted(true);
+            selectedHistory.setCompletedAt(new Date());
+            selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
+        return "/document/save_and_view_record_a_new_recived_letter";
+    }
+    
     public String saveAndViewLetterBranch() {
         if (selected.getId() == null) {
             newHx = true;
@@ -1041,6 +1065,31 @@ public class LetterController implements Serializable {
             saveDocumentHx(selectedHistory);
         }
         return menuController.toLetterAddNewReceivedLetter();
+    }
+    
+    
+    public String saveAndNewRecordANewRecivedLetter() {
+        if (selected.getId() == null) {
+            newHx = true;
+        }
+        save(selected);
+        if (newHx) {
+            if (selectedHistory == null) {
+                selectedHistory = new DocumentHistory();
+                selectedHistory.setHistoryType(HistoryType.Letter_Created);
+                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+            }
+            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+
+            selectedHistory.setFromInstitution(selected.getFromInstitution());
+            selectedHistory.setFromUser(selected.getFromWebUser());
+            selectedHistory.setCompleted(false);
+            selectedHistory.setDocument(selected);
+
+            selectedHistory.setDocument(selected);
+            saveDocumentHx(selectedHistory);
+        }
+        return menuController.toRecoardANewReceivedLetter();
     }
 
     public String saveAndNewLetterBranch() {
