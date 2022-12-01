@@ -465,6 +465,8 @@ public class LetterController implements Serializable {
                 + " and h.historyType =:ht "
                 + " and h.toUser=:tu "
                 + " and h.completed=:c ";
+        
+        
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id desc";
         m.put("tu", webUserController.getLoggedUser());
