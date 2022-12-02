@@ -1167,6 +1167,22 @@ public class LetterController implements Serializable {
         newHx = false;
         return "/document/letter";
     }
+    
+    
+    public String toRecoardANewReceivedLetter() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        if (selected.getInstitution() != null) {
+            if (!selected.getInstitution().equals(webUserController.getLoggedInstitution())) {
+                JsfUtil.addErrorMessage("You are NOT Autherized to edit this letter.");
+                return "";
+            }
+        }
+        newHx = false;
+        return "/document/recoard_a_new_received_letter";
+    }
 
     public String toLetterEditMailBranch() {
         if (selected == null) {
