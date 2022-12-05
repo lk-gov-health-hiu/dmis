@@ -113,7 +113,7 @@ public class MenuController implements Serializable {
     }
     
     
-    public String toRecoardANewReceivedLetter() {
+    public String toUnitLetterAdd() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
         nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
@@ -132,7 +132,7 @@ public class MenuController implements Serializable {
         ndh.setHistoryType(HistoryType.Letter_Created);
         ndh.setInstitution(webUserController.getLoggedInstitution());
         ndh.setToInstitution(webUserController.getLoggedInstitution());
-        return "/document/recoard_a_new_received_letter";
+        return "/document/unit_letter_add";
     }
     
     public String toLetterMailBranchAddNew() {

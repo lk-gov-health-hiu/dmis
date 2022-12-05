@@ -382,6 +382,11 @@ public class LetterController implements Serializable {
         items = null;
         return "/document/letter_list";
     }
+    
+    public String toUnitLetterList() {
+        items = null;
+        return "/document/unit_letter_list";
+    }
 
     public void listLetters() {
         if (searchFilterType == null) {
@@ -904,7 +909,7 @@ public class LetterController implements Serializable {
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
-        return "/document/save_and_view_record_a_new_recived_letter";
+        return "/document/unit_letter_view";
     }
     
     public String saveAndViewLetterBranch() {
@@ -1091,7 +1096,7 @@ public class LetterController implements Serializable {
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
-        return menuController.toRecoardANewReceivedLetter();
+        return menuController.toUnitLetterAdd();
     }
 
     public String saveAndNewLetterBranch() {
@@ -1195,7 +1200,7 @@ public class LetterController implements Serializable {
             }
         }
         newHx = false;
-        return "/document/edit_letter";
+        return "/document/unit_letter_edit";
     }
 
     public String toLetterEditMailBranch() {
