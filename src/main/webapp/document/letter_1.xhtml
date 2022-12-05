@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      >
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title" >
+                Letter
+            </ui:define>
+            <ui:define name="content">
+                <h:form >
+                    <div class="fw-bold w-100" >
+                        <h4 class="text-center fw-bold"> 
+                            <h:outputText value="Letter" ></h:outputText>
+                            <h:panelGroup  id="letterId" >
+                                <h:outputText value="&nbsp;-&nbsp;" rendered="#{letterController.selected.id ne null}" ></h:outputText>
+                                <h:outputText value="#{letterController.selected.id}" rendered="#{letterController.selected.id ne null}" ></h:outputText>
+                            </h:panelGroup>
+                        </h4>
+
+                        <h:panelGrid columns="3"  class="text-left  fw-bold w-100 mx-auto" >
+                            <h:outputLabel for="letterDate"  >Letter Date 
+                            </h:outputLabel>
+                            <h:panelGroup layout="block" class="w-50 text-left" >
+                                <p:datePicker id="letterDate" 
+                                              value="#{letterController.selected.documentDate}" 
+                                              monthNavigator="true"
+                                              yearNavigator="true"
+                                              class="w-50"
+                                              required="false" pattern="dd/MM/yyyy">
+                                    <p:ajax event="blur" process="@this" ></p:ajax>
+                                </p:datePicker>
+                            </h:panelGroup>
+
+                            <h:message class="text-danger small" for="letterDate"></h:message>
+
+                            <h:outputLabel for="receivedDate"  >Stamp Date 
+                                <small class="px-2 text-muted">Required</small></h:outputLabel>
+                            <h:panelGroup layout="block" class="w-50 text-left" >
+                                <p:datePicker id="receivedDate"  value="#{letterController.selected.receivedDate}" 
+                                              required="true" pattern="dd/MM/yyyy" requiredMessage="Need a Received Date"
+                                              monthNavigator="true"
+                                              yearNavigator="true">
+                                    <p:ajax event="blur" process="@this" ></p:ajax>
+                                </p:datePicker>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="receivedDate"></h:message>
+
+
+
+                            <h:outputLabel for="method"  >Received method </h:outputLabel>
+                            <h:panelGroup class="text-left" layout="block">
+                                <div class="row" >
+                                    <div >
+                                        <p:selectOneMenu id="method"  value="#{letterController.selected.receivedAs}" 
+                                                         class="form-control"
+                                                         >
+                                            <f:ajax execute="method" render="regNo" event="blur" ></f:ajax>
+                                            <f:ajax execute="method" render="regNo" event="change" ></f:ajax>
+                                            <f:selectItem itemLabel="Select" ></f:selectItem>
+                                            <f:selectItems value="#{itemApplicationController.letterReceiveCategories}"
+                                                           var="i"
+                                                           itemLabel="#{i.name}"
+                                                           itemValue="#{i}" ></f:selectItems>
+                                            <p:ajax event="blur" process="@this" ></p:ajax>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div  >
+                                        <h:panelGroup id="regNo" >
+                                            <h:inputText  a:placeholder="Enter Registration No." 
+                                                          class="form-control"
+                                                          rendered="#{letterController.selected.receivedAs.code eq 'letter_receive_category_registered_post' or letterController.selected.receivedAs.code eq 'speed_post'}"
+                                                          value="#{letterController.selected.registrationNo}" >
+                                                <p:ajax event="blur" process="@this" ></p:ajax>
+                                            </h:inputText>
+                                        </h:panelGroup>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="method"></h:message>
+
+                            <h:outputLabel for="lang"  >Language </h:outputLabel>
+                            <h:panelGroup layout="block" class="w-50"  >
+                                <p:selectOneMenu id="lang"  
+                                                 value="#{letterController.selected.documentLanguage}" 
+                                                 class="form-control"
+                                                 >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{itemApplicationController.documentLanguages}"
+                                                   var="d"
+                                                   itemLabel="#{d.name}"
+                                                   itemValue="#{d}" ></f:selectItems>
+                                    <p:ajax event="blur" process="@this" ></p:ajax>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="method"></h:message>
+
+
+                            <h:outputLabel for="title"  >Letter Number </h:outputLabel>
+                            <h:panelGroup layout="block" class="w-75" >
+                                <p:inputText id="title" 
+                                             autocomplete="off"
+                                             value="#{letterController.selected.documentNumber}" class="form-control"
+                                             >
+                                    <p:ajax event="blur" 
+                                            listener="#{letterController.saveCurrentDocumentAjax}"
+                                            process="@this" 
+                                            update="letterId" ></p:ajax>
+                                </p:inputText>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="title"></h:message>
+
+                            <h:outputLabel for="topic"  >Letter Title 
+                                <small class="px-2 text-muted">Required</small></h:outputLabel>
+                            <h:panelGroup layout="block" class="w-100" >
+                                <p:inputTextarea id="topic" 
+                                                 a:maxlength="255"
+                                                 value="#{letterController.selected.documentName}" class="form-control"
+                                                 required="true" requiredMessage="Need a Title">
+                                    <p:ajax event="blur" 
+                                            listener="#{letterController.saveCurrentDocumentAjax}"
+                                            process="@this" 
+                                            update="letterId" ></p:ajax>
+                                </p:inputTextarea>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="topic"></h:message>
+
+                            <h:outputLabel for="from"  >From 
+                            </h:outputLabel>
+
+                            <h:panelGroup layout="block" class="w-100" >
+                                <p:autoComplete id="from"  value="#{letterController.selected.fromInsOrUser}" 
+                                                class="form-control"
+                                                completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                var="insf"
+                                                forceSelection="true"
+                                                required="true"
+                                                requiredMessage="Need to select"
+                                                maxResults="10" inputStyle="color:red;"
+                                                itemLabel="#{insf.displayName}"
+                                                itemValue="#{insf}"
+                                                >
+                                    <f:ajax execute="method" render="fromPerson" event="blur" ></f:ajax>
+                                    <f:ajax execute="method" render="fromPerson" event="itemSelect" ></f:ajax>
+
+                                </p:autoComplete>
+                                <h:panelGroup id="fromPerson" class="w-25 float-left" >
+                                    <h:inputText  a:placeholder="Enter Persons or Institution Name" 
+                                                  class="form-control"
+                                                  rendered="#{letterController.selected.fromInstitution.name eq 'Personal' or letterController.selected.fromInstitution.name eq 'Other' }"
+                                                  value="#{letterController.selected.senderName}" ></h:inputText>
+                                </h:panelGroup>
+
+                                <h:commandLink value="Add New Institution" style="float: right;" target="_blank"
+                                               immediate="true" rendered="false"
+                                               action="#{menuController.toAddNewInstitutionAtLetterEntry()}"
+                                               ></h:commandLink>
+
+                            </h:panelGroup>
+                            <p:spacer></p:spacer>
+
+                            <h:outputLabel for="comments"  >Letter Details 
+                            </h:outputLabel>
+                            <h:inputTextarea id="comments"  value="#{letterController.selected.comments}" class="form-control"
+                                             >
+                            </h:inputTextarea>
+                            <p:spacer></p:spacer>
+                            
+                            
+                            <h:outputLabel for="status"  >Status </h:outputLabel>
+                            <h:panelGroup layout="status" class="w-50"  >
+                                <p:selectOneMenu id="status"  
+                                                 value="#{letterController.selected.letterStatus}" 
+                                                 class="form-control"
+                                                 >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{itemApplicationController.letterStatuses}"
+                                                   var="s"
+                                                   itemLabel="#{s.name}"
+                                                   itemValue="#{s}" ></f:selectItems>
+                                    <p:ajax event="blur" process="@this" ></p:ajax>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="status"></h:message>
+                            
+                            
+
+                            <f:facet name="footer" class="m-2 p-2" >
+
+                                
+                                <h:commandButton id="btnSaveAdd" tabindex="10" class="btn btn-success fw-bold m-2 "
+                                                 action="#{letterController.saveAndViewReceivedLetter()}" value="SAVE &amp; View">
+                                </h:commandButton>
+                                <h:commandButton rendered="true" tabindex="10" class="btn btn-warning fw-bold m-2 "
+                                                 action="#{letterController.saveAndNewReceivedLetter()}" value="SAVE &amp; New">
+                                </h:commandButton>
+                                <p:messages class="m-1 col"></p:messages>
+                                <p:defaultCommand target="btnSaveAdd" />
+
+                            </f:facet>
+
+                        </h:panelGrid>
+
+
+
+                    </div>
+
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
