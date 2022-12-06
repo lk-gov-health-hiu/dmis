@@ -382,7 +382,7 @@ public class LetterController implements Serializable {
         items = null;
         return "/document/letter_list";
     }
-    
+
     public String toUnitLetterList() {
         items = null;
         return "/document/unit_letter_list";
@@ -470,8 +470,7 @@ public class LetterController implements Serializable {
                 + " and h.historyType =:ht "
                 + " and h.toUser=:tu "
                 + " and h.completed=:c ";
-        
-        
+
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id desc";
         m.put("tu", webUserController.getLoggedUser());
@@ -874,7 +873,7 @@ public class LetterController implements Serializable {
                 selectedHistory = new DocumentHistory();
                 selectedHistory.setHistoryType(HistoryType.Letter_Created);
                 selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-                
+
             }
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
@@ -888,7 +887,7 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
-      public String saveAndViewRecordANewRecivedLetter() {
+    public String saveAndViewRecordANewRecivedLetter() {
         if (selected.getId() == null) {
             newHx = true;
         }
@@ -898,7 +897,7 @@ public class LetterController implements Serializable {
                 selectedHistory = new DocumentHistory();
                 selectedHistory.setHistoryType(HistoryType.Letter_Created);
                 selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-                
+
             }
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
@@ -911,7 +910,7 @@ public class LetterController implements Serializable {
         }
         return "/document/unit_letter_view";
     }
-    
+
     public String saveAndViewLetterBranch() {
         if (selected.getId() == null) {
             newHx = true;
@@ -1073,8 +1072,7 @@ public class LetterController implements Serializable {
         }
         return menuController.toLetterAddNewReceivedLetter();
     }
-    
-    
+
     public String saveAndNewRecordANewRecivedLetter() {
         if (selected.getId() == null) {
             newHx = true;
@@ -1172,7 +1170,7 @@ public class LetterController implements Serializable {
         newHx = false;
         return "/document/letter";
     }
-    
+
     public String toRecoardANewReceivedLetter() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
@@ -1187,8 +1185,8 @@ public class LetterController implements Serializable {
         newHx = false;
         return "/document/recoard_a_new_received_letter";
     }
-    
-        public String toEditANewReceivedLetter() {
+
+    public String toEditANewReceivedLetter() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
