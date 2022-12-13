@@ -383,6 +383,11 @@ public class LetterController implements Serializable {
         return "/document/letter_list";
     }
 
+    public String toUnitLetterList() {
+        items = null;
+        return "/document/unit_letter_list";
+    }
+
     public void listLetters() {
         if (searchFilterType == null) {
             searchFilterType = SearchFilterType.SYSTEM_DATE;
@@ -465,6 +470,7 @@ public class LetterController implements Serializable {
                 + " and h.historyType =:ht "
                 + " and h.toUser=:tu "
                 + " and h.completed=:c ";
+
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id desc";
         m.put("tu", webUserController.getLoggedUser());
@@ -867,7 +873,7 @@ public class LetterController implements Serializable {
                 selectedHistory = new DocumentHistory();
                 selectedHistory.setHistoryType(HistoryType.Letter_Created);
                 selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-                
+
             }
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
@@ -881,30 +887,48 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
-      public String saveAndViewRecordANewRecivedLetter() {
-        if (selected.getId() == null) {
-            newHx = true;
+    public String unitLetterAddSaveAndView() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Not selected");
+            return "";
         }
+        selected.setToInstitution(webUserController.getLoggedInstitution());
         save(selected);
-        if (newHx) {
-            if (selectedHistory == null) {
-                selectedHistory = new DocumentHistory();
-                selectedHistory.setHistoryType(HistoryType.Letter_Created);
-                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-                
-            }
-            selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
-            selectedHistory.setToUser(selected.getToWebUser());
-            selectedHistory.setCompleted(true);
-            selectedHistory.setCompletedAt(new Date());
-            selectedHistory.setCompletedBy(webUserController.getLoggedUser());
-            selectedHistory.setDocument(selected);
-            saveDocumentHx(selectedHistory);
-        }
-        return "/document/save_and_view_record_a_new_recived_letter";
+
+        selectedHistory = new DocumentHistory();
+        selectedHistory.setHistoryType(HistoryType.Letter_Created);
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
+
+        return "/document/unit_letter_view";
     }
     
+    public String unitLetterEditSaveAndView() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Not selected");
+            return "";
+        }
+        selected.setToInstitution(webUserController.getLoggedInstitution());
+        save(selected);
+
+        selectedHistory = new DocumentHistory();
+        selectedHistory.setHistoryType(HistoryType.Letter_Created);
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
+
+        return "/document/unit_letter_view";
+    }
+
     public String saveAndViewLetterBranch() {
         if (selected.getId() == null) {
             newHx = true;
@@ -1066,30 +1090,43 @@ public class LetterController implements Serializable {
         }
         return menuController.toLetterAddNewReceivedLetter();
     }
-    
-    
-    public String saveAndNewRecordANewRecivedLetter() {
-        if (selected.getId() == null) {
-            newHx = true;
+
+    public String unitLetterEditSaveAndNew() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return "";
         }
+        selected.setToInstitution(webUserController.getLoggedInstitution());
         save(selected);
-        if (newHx) {
-            if (selectedHistory == null) {
-                selectedHistory = new DocumentHistory();
-                selectedHistory.setHistoryType(HistoryType.Letter_Created);
-                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-            }
-            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
 
-            selectedHistory.setFromInstitution(selected.getFromInstitution());
-            selectedHistory.setFromUser(selected.getFromWebUser());
-            selectedHistory.setCompleted(false);
-            selectedHistory.setDocument(selected);
+        selectedHistory = new DocumentHistory();
+        selectedHistory.setHistoryType(HistoryType.Letter_Created);
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setCompleted(false);
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
 
-            selectedHistory.setDocument(selected);
-            saveDocumentHx(selectedHistory);
+        return menuController.toUnitLetterAdd();
+    }
+    
+    public String unitLetterAddSaveAndNew() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return "";
         }
-        return menuController.toRecoardANewReceivedLetter();
+        selected.setToInstitution(webUserController.getLoggedInstitution());
+        save(selected);
+
+        selectedHistory = new DocumentHistory();
+        selectedHistory.setHistoryType(HistoryType.Letter_Created);
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setCompleted(false);
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
+
+        return menuController.toUnitLetterAdd();
     }
 
     public String saveAndNewLetterBranch() {
@@ -1164,6 +1201,36 @@ public class LetterController implements Serializable {
         }
         newHx = false;
         return "/document/letter";
+    }
+
+    public String toRecoardANewReceivedLetter() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        if (selected.getInstitution() != null) {
+            if (!selected.getInstitution().equals(webUserController.getLoggedInstitution())) {
+                JsfUtil.addErrorMessage("You are NOT Autherized to edit this letter.");
+                return "";
+            }
+        }
+        newHx = false;
+        return "/document/recoard_a_new_received_letter";
+    }
+
+    public String toEditANewReceivedLetter() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No File Selected");
+            return "";
+        }
+        if (selected.getInstitution() != null) {
+            if (!selected.getInstitution().equals(webUserController.getLoggedInstitution())) {
+                JsfUtil.addErrorMessage("You are NOT Autherized to edit this letter.");
+                return "";
+            }
+        }
+        newHx = false;
+        return "/document/unit_letter_edit";
     }
 
     public String toLetterEditMailBranch() {
