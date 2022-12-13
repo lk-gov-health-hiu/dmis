@@ -887,27 +887,45 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
-    public String saveAndViewRecordANewRecivedLetter() {
-        if (selected.getId() == null) {
-            newHx = true;
+    public String unitLetterAddSaveAndView() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Not selected");
+            return "";
         }
+        selected.setToInstitution(webUserController.getLoggedInstitution());
         save(selected);
-        if (newHx) {
-            if (selectedHistory == null) {
-                selectedHistory = new DocumentHistory();
-                selectedHistory.setHistoryType(HistoryType.Letter_Created);
-                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
 
-            }
-            selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
-            selectedHistory.setToUser(selected.getToWebUser());
-            selectedHistory.setCompleted(true);
-            selectedHistory.setCompletedAt(new Date());
-            selectedHistory.setCompletedBy(webUserController.getLoggedUser());
-            selectedHistory.setDocument(selected);
-            saveDocumentHx(selectedHistory);
+        selectedHistory = new DocumentHistory();
+        selectedHistory.setHistoryType(HistoryType.Letter_Created);
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
+
+        return "/document/unit_letter_view";
+    }
+    
+    public String unitLetterEditSaveAndView() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Not selected");
+            return "";
         }
+        selected.setToInstitution(webUserController.getLoggedInstitution());
+        save(selected);
+
+        selectedHistory = new DocumentHistory();
+        selectedHistory.setHistoryType(HistoryType.Letter_Created);
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setCompleted(true);
+        selectedHistory.setCompletedAt(new Date());
+        selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
+
         return "/document/unit_letter_view";
     }
 
@@ -1073,27 +1091,41 @@ public class LetterController implements Serializable {
         return menuController.toLetterAddNewReceivedLetter();
     }
 
-    public String saveAndNewRecordANewRecivedLetter() {
-        if (selected.getId() == null) {
-            newHx = true;
+    public String unitLetterEditSaveAndNew() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return "";
         }
+        selected.setToInstitution(webUserController.getLoggedInstitution());
         save(selected);
-        if (newHx) {
-            if (selectedHistory == null) {
-                selectedHistory = new DocumentHistory();
-                selectedHistory.setHistoryType(HistoryType.Letter_Created);
-                selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-            }
-            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
 
-            selectedHistory.setFromInstitution(selected.getFromInstitution());
-            selectedHistory.setFromUser(selected.getFromWebUser());
-            selectedHistory.setCompleted(false);
-            selectedHistory.setDocument(selected);
+        selectedHistory = new DocumentHistory();
+        selectedHistory.setHistoryType(HistoryType.Letter_Created);
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setCompleted(false);
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
 
-            selectedHistory.setDocument(selected);
-            saveDocumentHx(selectedHistory);
+        return menuController.toUnitLetterAdd();
+    }
+    
+    public String unitLetterAddSaveAndNew() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return "";
         }
+        selected.setToInstitution(webUserController.getLoggedInstitution());
+        save(selected);
+
+        selectedHistory = new DocumentHistory();
+        selectedHistory.setHistoryType(HistoryType.Letter_Created);
+        selectedHistory.setInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+        selectedHistory.setCompleted(false);
+        selectedHistory.setDocument(selected);
+        saveDocumentHx(selectedHistory);
+
         return menuController.toUnitLetterAdd();
     }
 

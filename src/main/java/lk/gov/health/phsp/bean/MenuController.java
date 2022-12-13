@@ -126,12 +126,6 @@ public class MenuController implements Serializable {
         nd.setCurrentOwner(webUserController.getLoggedUser());
         nd.setReceivedDate(new Date());
         letterController.setSelected(nd);
-
-        letterController.setNewHx(true);
-        DocumentHistory ndh = new DocumentHistory();
-        ndh.setHistoryType(HistoryType.Letter_Created);
-        ndh.setInstitution(webUserController.getLoggedInstitution());
-        ndh.setToInstitution(webUserController.getLoggedInstitution());
         return "/document/unit_letter_add";
     }
     
