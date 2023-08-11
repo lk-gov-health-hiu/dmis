@@ -306,9 +306,13 @@
                                     Assign to
                                 </f:facet>
                                 <h:outputLabel class="fs-6" value="Assign To:"></h:outputLabel>
+                                
                                 <p:selectOneMenu 
                                     value="#{letterController.webUser}" 
-                                    class="form-control">
+                                    class="form-control"
+                                    filter="true"
+                                    filterMatchMode="contains"
+                                    >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
                                                    itemLabel="#{u.person.name}" itemValue="#{u}"></f:selectItems>

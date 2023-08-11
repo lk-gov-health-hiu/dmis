@@ -352,7 +352,7 @@ public class LetterController implements Serializable {
         m.put("ins", webUserController.getLoggedInstitution());
         m.put("dt", DocumentType.Letter);
         if (searchUserOrIns instanceof WebUser) {
-            j += " and d.fromUser=:fu ";
+            j += " and d.fromWebUser=:fu ";
             m.put("fu", (WebUser) searchUserOrIns);
         } else if (searchUserOrIns instanceof Institution) {
             j += " and d.fromInstitution=:fu ";
