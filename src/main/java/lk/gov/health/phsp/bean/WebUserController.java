@@ -1027,6 +1027,7 @@ public class WebUserController implements Serializable {
         }
         switch (role) {
             case Institutional_Administrator:
+                wups.add(Privilege.Institution_Administration);
                 wups.add(Privilege.Manage_Institution_Users);
                 wups.add(Privilege.Manage_Authorised_Institutions);
             case Institutional_Super_User:
@@ -1037,6 +1038,13 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.User);
                 wups.add(Privilege.Search_File);
                 wups.add(Privilege.Retire_File);
+                wups.add(Privilege.Add_Actions_To_Letter);
+                wups.add(Privilege.Add_Letter);
+                wups.add(Privilege.Assign_Letter);
+                wups.add(Privilege.Edit_Letter);
+                wups.add(Privilege.Institutional_Mail_Management);
+                wups.add(Privilege.Receive_File);
+                wups.add(Privilege.Retire_Letter);
                 break;
             case System_Administrator:
             case Super_User:

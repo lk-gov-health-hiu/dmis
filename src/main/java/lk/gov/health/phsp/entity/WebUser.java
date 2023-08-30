@@ -309,7 +309,7 @@ public class WebUser implements Serializable, Nameable {
     public void setWebUserRole(WebUserRole webUserRole) {
         this.webUserRole = webUserRole;
     }
-    
+
     @Override
     public Boolean getInstitute() {
         return false;
@@ -490,6 +490,11 @@ public class WebUser implements Serializable, Nameable {
                 case Institutional_Administrator:
                 case Institutional_Super_User:
                 case Institutional_User:
+                    webUserRoleLevel = WebUserRoleLevel.Institutional;
+                    break;
+                case Postal_Branch_Administrator:
+                case Postal_Branch_Super_User:
+                case Postal_Branch_User:
                     webUserRoleLevel = WebUserRoleLevel.Institutional;
                     break;
             }

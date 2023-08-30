@@ -144,8 +144,6 @@ public class LetterController implements Serializable {
         });
     }
 
-    
-    
     public String removeUpload() {
         if (removingUpload == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
@@ -852,6 +850,37 @@ public class LetterController implements Serializable {
         return toLetterView();
     }
 
+    public String forwardOrCopyToForUnitLetter() {
+        if (webUserCopy == null) {
+            JsfUtil.addErrorMessage("Select a user to transfer ownership");
+            return "";
+        }
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Select a file");
+            return "";
+        }
+        save(selected);
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
+        docHx.setDocument(selected);
+        docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setToInsOrUser(webUserCopy);
+        docHx.setComments(comments);
+        docHx.setItem(minute);
+        docHx.setInstitution(webUserController.getLoggedInstitution());
+        saveDocumentHx(docHx);
+
+        selected.setCompleted(false);
+        documentFacade.edit(selected);
+
+        minute = null;
+        webUserCopy = null;
+        comments = "";
+
+        JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
+        return "/document/unit_letter_view";
+    }
+
     public String forwardOrCopyToAndNew() {
         if (webUserCopy == null) {
             JsfUtil.addErrorMessage("Select a user to transfer ownership");
@@ -882,6 +911,38 @@ public class LetterController implements Serializable {
 
         JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
         return menuController.toLetterAddNewReceivedLetter();
+    }
+
+    public String forwardOrCopyToAndNewUnitLetter() {
+        if (webUserCopy == null) {
+            JsfUtil.addErrorMessage("Select a user to transfer ownership");
+            return "";
+        }
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Select a file");
+            return "";
+        }
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
+        docHx.setDocument(selected);
+        docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setToInsOrUser(webUserCopy);
+        docHx.setComments(comments);
+        docHx.setItem(minute);
+        docHx.setInstitution(webUserController.getLoggedInstitution());
+
+        saveDocumentHx(docHx);
+
+        selected.setCompleted(false);
+        documentFacade.edit(selected);
+
+        minute = null;
+        webUserCopy = null;
+        comments = "";
+
+        JsfUtil.addSuccessMessage("Letter copied/forwarded successfully");
+        return menuController.toUnitLetterAdd();
     }
 
     public String recordActionTaken() {
@@ -951,7 +1012,7 @@ public class LetterController implements Serializable {
 
         return "/document/unit_letter_view";
     }
-    
+
     public String unitLetterEditSaveAndView() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Not selected");
@@ -1153,7 +1214,7 @@ public class LetterController implements Serializable {
 
         return menuController.toUnitLetterAdd();
     }
-    
+
     public String unitLetterAddSaveAndNew() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
@@ -1693,6 +1754,41 @@ public class LetterController implements Serializable {
         selectedUploads = uploadFacade.findByJpql(j, m);
         return "/document/letter_view";
     }
+    
+    
+    public String toInstitutionReceivedUnitLetterView() {
+        System.out.println("toInstitutionReceivedLetterView");
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and (h.institution=:ins or h.fromInstitution=:ins or h.toInstitution=:ins) "
+                + " order by h.id desc";
+        Map m = new HashMap();
+        m.put("doc", selected);
+        m.put("ins", webUserController.getLoggedInstitution());
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
+        System.out.println("selectedDocumentHistories = " + selectedDocumentHistories.size());
+
+        j = "select h "
+                + " from Upload h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " order by h.id";
+        m = new HashMap();
+        m.put("doc", selected);
+//        m.put("ins", webUserController.getLoggedInstitution());
+        //TODO: Need to allow only original upload
+//        if (selected.getFromInstitution() != null) {
+//            m.put("fins", selected.getFromInstitution());
+//        } else {
+//            m.put("fins", webUserController.getLoggedInstitution());
+//        }
+        selectedUploads = uploadFacade.findByJpql(j, m);
+        return "/document/unit_letter_view";
+    }
 
     public String toMailDepartmentReceivedLetterView() {
         System.out.println("toMailDepartmentReceivedLetterView");
@@ -1784,9 +1880,9 @@ public class LetterController implements Serializable {
                 return toMailDepartmentReceivedLetterView();
             case Other:
             case Received_by_institution:
-                return toInstitutionReceivedLetterView();
+                return toInstitutionReceivedUnitLetterView();
         }
-        return toInstitutionReceivedLetterView();
+        return toInstitutionReceivedUnitLetterView();
     }
 
     public String toLetterViewFromDocumentHistory() {

@@ -235,6 +235,7 @@ public class MenuController implements Serializable {
     }
 
     public String toAdministrationIndex() {
+        System.out.println("toAdministrationIndex");
         boolean privileged = false;
         for (UserPrivilege up : webUserController.getLoggedUserPrivileges()) {
             if (up.getPrivilege() == Privilege.Institution_Administration) {
@@ -244,10 +245,12 @@ public class MenuController implements Serializable {
                 privileged = true;
             }
         }
+        System.out.println("privileged = " + privileged);
         if (!privileged) {
             JsfUtil.addErrorMessage("You are NOT autherized");
             return "";
         }
+        System.out.println("webUserController.getLoggedUser().getWebUserRoleLevel() = " + webUserController.getLoggedUser().getWebUserRoleLevel());
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case National:
                 return "/national/admin/index";
