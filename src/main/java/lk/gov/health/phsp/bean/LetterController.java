@@ -42,6 +42,7 @@ import lk.gov.health.phsp.facade.DocumentHistoryFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
+import lk.gov.health.phsp.pojcs.DailyCount;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Nameable;
 import org.apache.commons.io.IOUtils;
@@ -119,9 +120,32 @@ public class LetterController implements Serializable {
 
     private boolean newHx;
 
+    private List<DailyCount> dailyCounts;
+
     public LetterController() {
     }
 
+    public void processDailyCounts() {
+        dailyCounts = new ArrayList<>();
+        String j = "select new lk.gov.health.phsp.pojcs.DailyCount(d.receivedDate, count(d)) "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt ";
+        j += " and (d.receivedDate between :fd and :td ) ";
+        j += " group by d.receivedDate "
+                + " order by d.receivedDate ";
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        List<Object> objss = documentFacade.findObjectByJpql(j, m, TemporalType.DATE);
+        objss.stream().filter(o -> (o instanceof DailyCount)).map(o -> (DailyCount) o).forEachOrdered(i -> {
+            dailyCounts.add(i);
+        });
+    }
+
+    
+    
     public String removeUpload() {
         if (removingUpload == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
@@ -418,6 +442,26 @@ public class LetterController implements Serializable {
         m.put("fd", CommonController.startOfYesterday());
         m.put("td", CommonController.endOfYear());
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP, numberToList);
+    }
+
+    public void listLettersCountsByInstitution() {
+        searchFilterType = SearchFilterType.SYSTEM_DATE;
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(d.institution, count(d)) "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt ";
+        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
+        j += " group by d.institution "
+                + " order by d.institution.name ";
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        List<Object> objss = documentFacade.findObjectByJpql(j, m, TemporalType.DATE);
+        institutionCounts = new ArrayList<>();
+        objss.stream().filter(o -> (o instanceof InstitutionCount)).map(o -> (InstitutionCount) o).forEachOrdered(i -> {
+            institutionCounts.add(i);
+        });
     }
 
     public void fillMyLettersToAccept() {
@@ -867,7 +911,7 @@ public class LetterController implements Serializable {
                 selectedHistory = new DocumentHistory();
                 selectedHistory.setHistoryType(HistoryType.Letter_Created);
                 selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-                
+
             }
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
@@ -2237,6 +2281,14 @@ public class LetterController implements Serializable {
 
     public void setThroughInsOrUserMap(Map<Long, Nameable> throughInsOrUserMap) {
         this.throughInsOrUserMap = throughInsOrUserMap;
+    }
+
+    public List<DailyCount> getDailyCounts() {
+        return dailyCounts;
+    }
+
+    public void setDailyCounts(List<DailyCount> dailyCounts) {
+        this.dailyCounts = dailyCounts;
     }
 
     @FacesConverter(forClass = Nameable.class)

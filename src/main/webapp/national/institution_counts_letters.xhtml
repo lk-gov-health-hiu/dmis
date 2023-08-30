@@ -9,7 +9,7 @@
 
     <h:body>
 
-        <ui:composition template="/institution/reports_index.xhtml">
+        <ui:composition template="/national/reports_index.xhtml">
             <ui:define name="title">
                 Institution Counts - Letters
             </ui:define>
@@ -25,12 +25,6 @@
                                 <div class="col">
                                     <h:panelGrid columns="2" >
                                         <p:panelGrid columns="2"  class="border border-light">
-
-                                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
-                                            <h:selectOneMenu value="#{letterController.searchFilterType}" class="form-select">
-                                                <f:selectItems value="#{commonController.searchFilterTypes}" var="c"
-                                                               itemLabel="#{c.label}" itemValue="#{c}"></f:selectItems>
-                                            </h:selectOneMenu>
 
                                             <h:outputLabel class="fs-6" value="From:"></h:outputLabel>
                                             <p:datePicker monthNavigator="true" yearNavigator="true" 
@@ -49,7 +43,7 @@
                                         </p:panelGrid>
 
                                         <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.listInstitutionCountLetters()}" class="btn btn-danger form-control"></h:commandButton>
+                                            <h:commandButton value="Process" action="#{letterController.listLettersCountsByInstitution()}" class="btn btn-danger form-control"></h:commandButton>
                                              <h:commandButton value="Print"  class="btn btn-success form-control">
                                                 <p:printer target="tbl" ></p:printer>
                                             </h:commandButton>
