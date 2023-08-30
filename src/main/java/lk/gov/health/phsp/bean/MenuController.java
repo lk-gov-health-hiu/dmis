@@ -112,6 +112,23 @@ public class MenuController implements Serializable {
         return "/document/letter";
     }
     
+    
+    public String toUnitLetterAdd() {
+        Document nd = new Document();
+        nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
+        nd.setDocumentDate(new Date());
+        nd.setReceivedDate(new Date());
+        nd.setInstitution(webUserController.getLoggedInstitution());
+        nd.setInstitutionUnit(webUserController.getLoggedInstitution());
+        nd.setOwner(webUserController.getLoggedUser());
+        nd.setCurrentInstitution(webUserController.getLoggedInstitution());
+        nd.setCurrentOwner(webUserController.getLoggedUser());
+        nd.setReceivedDate(new Date());
+        letterController.setSelected(nd);
+        return "/document/unit_letter_add";
+    }
+    
     public String toLetterMailBranchAddNew() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
