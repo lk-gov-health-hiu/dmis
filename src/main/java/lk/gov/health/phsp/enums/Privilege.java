@@ -13,14 +13,9 @@ public enum Privilege {
     File_Management("File Management"),
     Institutional_Mail_Management("Institutional Mail Management"),
     Mail_Branch_Mail_Management("Mail Branch Mail Management"),
-    Letter_Management("Letter Management"),
-    HR_Management("HR Management"),
-    Inventory_Management("Inventory Management"),
-    Finance_Management("Finance Management"),
-    Audit_Management("Audit Management"),
-    User("User"),
-    Institution_Administration("Institution Administration"),
     System_Administration("System Administration"),
+    Institution_Administration("Institution Administration"),
+    User("User"),
     //File Management
     Add_File("Add File"),
     Edit_File("Edit File"),
@@ -28,7 +23,7 @@ public enum Privilege {
     Receive_File("Receive File"),
     Search_File("Search File"),
     Retire_File("Retire File"),
-    //Letter Management
+    //Institutional Mail Management
     Add_Letter("Add Letter"),
     Edit_Letter("Edit Letter"),
     Assign_Letter("Assign Letter"),
@@ -58,7 +53,17 @@ public enum Privilege {
     Monitoring_and_evaluation_reports("Monitoring & Evaluation Reports"),
     View_individual_data("View Individual Data"),
     View_aggragate_date("View Aggregate Data"),
-    //Sample Management
+    //Deprecated
+    @Deprecated
+    Letter_Management("Letter Management"),
+    @Deprecated
+    HR_Management("HR Management"),
+    @Deprecated
+    Inventory_Management("Inventory Management"),
+    @Deprecated
+    Finance_Management("Finance Management"),
+    @Deprecated
+    Audit_Management("Audit Management"),
     ;
 
     public final String label;
