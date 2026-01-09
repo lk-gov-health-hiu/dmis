@@ -123,6 +123,14 @@ public class MenuController implements Serializable {
         return "/document/letter_search";
     }
 
+    public String toLetterSearchByDate() {
+        letterController.setItems(null);
+        letterController.setSelected(null);
+        letterController.setFromDate(CommonController.startOfTheMonth());
+        letterController.setToDate(CommonController.endOfTheMonth());
+        return "/document/letter_search_by_date";
+    }
+
     public String toFileLedger() {
         fileController.setItems(null);
         return "/document/file_ledger";

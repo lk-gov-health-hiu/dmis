@@ -365,6 +365,29 @@ public class LetterController implements Serializable {
 
     }
 
+    public void searchLetterByDate() {
+        if (fromDate == null || toDate == null) {
+            JsfUtil.addErrorMessage("Please select both From Date and To Date");
+            return;
+        }
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.DOCUMENT_DATE;
+        }
+        String j = "select d "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt "
+                + " and d.institution=:ins ";
+        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
+        j += " order by d." + searchFilterType.getCode() + " desc";
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
     public String toListLetters() {
         items = null;
         return "/document/letter_list";
