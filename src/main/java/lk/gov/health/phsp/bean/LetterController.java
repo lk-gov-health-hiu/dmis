@@ -878,7 +878,7 @@ public class LetterController implements Serializable {
         institutionCounts = null;
         return "/national/institution_counts_letters";
     }
-    
+
     public String toReportsDailyCountsLetters() {
         institutionCounts = null;
         return "/national/daily_counts_letters";
@@ -947,11 +947,10 @@ public class LetterController implements Serializable {
         m.put("td", toDate);
 
         List<DocumentHistory> tdhx = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-        
-        if(tdhx!=null){
+
+        if (tdhx != null) {
             documentHistories.addAll(tdhx);
         }
-        
 
     }
 
@@ -1624,9 +1623,19 @@ public class LetterController implements Serializable {
         }
 
         java.lang.Long getKey(String value) {
+            if (value == null) {
+                return 0l;
+            }
+            if (value.trim().equals("")) {
+                return 0l;
+            }
             java.lang.Long key;
-            key = Long.valueOf(value);
-            return key;
+            try {
+                key = Long.valueOf(value);
+                return key;
+            } catch (Exception e) {
+                return 0l;
+            }
         }
 
         String getStringKey(java.lang.Long value) {
