@@ -389,7 +389,7 @@ public class LetterController implements Serializable {
 
     public String toListLetters() {
         items = null;
-        return "/document/letter_list";
+        return "/document/letter_list?faces-redirect=true";
     }
 
     public void listLetters() {
@@ -857,37 +857,37 @@ public class LetterController implements Serializable {
             return "";
         }
         newHx = false;
-        return "/document/letter";
+        return "/document/letter?faces-redirect=true";
     }
 
     public String toReportsLetterCopyForwardActions() {
         documentHistories = null;
-        return "/institution/letter_copy_forward_register";
+        return "/institution/letter_copy_forward_register?faces-redirect=true";
     }
 
     public String toReportsLetterAcceptRegister() {
         documentHistories = null;
-        return "/institution/letter_accept_register";
+        return "/institution/letter_accept_register?faces-redirect=true";
     }
 
     public String toReportsLetterReceived() {
         documentHistories = null;
-        return "/institution/letter_receive_register";
+        return "/institution/letter_receive_register?faces-redirect=true";
     }
 
     public String toReportsInstitutionCountsLetters() {
         institutionCounts = null;
-        return "/national/institution_counts_letters";
+        return "/national/institution_counts_letters?faces-redirect=true";
     }
 
     public String toReportsDailyCountsLetters() {
         institutionCounts = null;
-        return "/national/daily_counts_letters";
+        return "/national/daily_counts_letters?faces-redirect=true";
     }
 
     public String toAssignMultipleLetters() {
         items = null;
-        return "/institution/assign_multiple_letters";
+        return "/institution/assign_multiple_letters?faces-redirect=true";
     }
 
     public void fillForwardCopyActions() {
@@ -957,7 +957,7 @@ public class LetterController implements Serializable {
 
     public String toAcceptForwardCopyLettersToReceive() {
         documentHistories = null;
-        return "/institution/accept_copy_forwards";
+        return "/institution/accept_copy_forwards?faces-redirect=true";
     }
 
     public String toAcceptMyAssignedLetters() {
@@ -965,22 +965,22 @@ public class LetterController implements Serializable {
         setFromDate(CommonController.startOfTheMonth());
         setToDate(CommonController.endOfTheMonth());
         fillMyLettersToAccept();
-        return "/institution/accept_my_assigned_letters";
+        return "/institution/accept_my_assigned_letters?faces-redirect=true";
     }
 
     public String toAcceptCopyForwardedLettersToMe() {
         documentHistories = null;
-        return "/institution/accept_my_copy_forwarded_letters";
+        return "/institution/accept_my_copy_forwarded_letters?faces-redirect=true";
     }
 
     public String toAcceptedMyAssignedLetters() {
         documentHistories = null;
-        return "/institution/accepted_my_assigned_letters";
+        return "/institution/accepted_my_assigned_letters?faces-redirect=true";
     }
 
     public String toAcceptedCopyForwardedLettersToMe() {
         documentHistories = null;
-        return "/institution/accepted_my_copy_forwarded_letters";
+        return "/institution/accepted_my_copy_forwarded_letters?faces-redirect=true";
     }
 
     public void acceptSelectedHistoryForCopyForward() {
@@ -1155,7 +1155,7 @@ public class LetterController implements Serializable {
 //        }
         selectedUploads = uploadFacade.findByJpql(j, m);
 
-        return "/document/letter_view";
+        return "/document/letter_view?faces-redirect=true";
     }
 
     public String toAcceptAssignedLetter() {

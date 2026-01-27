@@ -345,7 +345,7 @@ public class WebUserController implements Serializable {
                 }
             }
         }
-        return "/national/admin/multiple_user_privilages";
+        return "/national/admin/multiple_user_privilages?faces-redirect=true";
     }
 
     public boolean hasSelectedUsers() {
@@ -360,7 +360,7 @@ public class WebUserController implements Serializable {
         m.put("inss", getLoggableInstitutions());
         items = getFacade().findByJpql(j, m);
         userTransactionController.recordTransaction("To Manage Institution Users");
-        return "/insAdmin/user_list";
+        return "/insAdmin/user_list?faces-redirect=true";
     }
 
     public void prepareListingAllUsers() {
@@ -433,7 +433,7 @@ public class WebUserController implements Serializable {
         current = new WebUser();
         password = "";
         passwordReenter = "";
-        return "/insAdmin/user_new";
+        return "/insAdmin/user_new?faces-redirect=true";
     }
 
     public void prepareToAddNewUser() {
@@ -443,7 +443,7 @@ public class WebUserController implements Serializable {
     }
 
     public String toInsAdmin() {
-        return "/insAdmin/index";
+        return "/insAdmin/index?faces-redirect=true";
     }
 
     public String toAdministration() {
@@ -558,7 +558,7 @@ public class WebUserController implements Serializable {
             }
         }
         selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
-        return "/webUser/privileges";
+        return "/webUser/privileges?faces-redirect=true";
     }
 
     public String toManagePrivilegesIns() {
@@ -604,7 +604,7 @@ public class WebUserController implements Serializable {
         }
         selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
         userTransactionController.recordTransaction("Manage Privileges in user list By InsAdmin");
-        return "/insAdmin/user_privileges";
+        return "/insAdmin/user_privileges?faces-redirect=true";
     }
 
     public void prepareManagePrivileges(TreeNode privilegeRoot) {
@@ -660,7 +660,7 @@ public class WebUserController implements Serializable {
             return "";
         }
         current = loggedUser;
-        return "/change_my_details";
+        return "/change_my_details?faces-redirect=true";
     }
 
     public String toChangeMyInstitutionDetails() {
@@ -668,7 +668,7 @@ public class WebUserController implements Serializable {
             return "";
         }
         current = loggedUser;
-        return "/change_my_institution_details";
+        return "/change_my_institution_details?faces-redirect=true";
     }
 
     public String toChangeMyUsername() {

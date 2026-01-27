@@ -68,7 +68,7 @@ public class MenuController implements Serializable {
 
     public String toIndex() {
         dashboardController.preparePersonalDashboard();
-        return "/index";
+        return "/index?faces-redirect=true";
     }
 
     public String toFileAddNew() {
@@ -85,7 +85,7 @@ public class MenuController implements Serializable {
 
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.File_Created);
-        return "/document/file";
+        return "/document/file?faces-redirect=true";
     }
 
     public String toLetterAddNew() {
@@ -105,14 +105,14 @@ public class MenuController implements Serializable {
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.Letter_Created);
         ndh.setInstitution(webUserController.getLoggedInstitution());
-        return "/document/letter";
+        return "/document/letter?faces-redirect=true";
     }
 
     public String toFileSearch() {
         fileController.setItems(null);
         fileController.setSearchTerm("");
         fileController.setSelected(null);
-        return "/document/file_search";
+        return "/document/file_search?faces-redirect=true";
     }
 
     public String toLetterSearch() {
@@ -120,7 +120,7 @@ public class MenuController implements Serializable {
         letterController.setSearchTerm("");
         letterController.setSelected(null);
         letterController.listLastLettersReceived();
-        return "/document/letter_search";
+        return "/document/letter_search?faces-redirect=true";
     }
 
     public String toLetterSearchByDate() {
@@ -128,36 +128,36 @@ public class MenuController implements Serializable {
         letterController.setSelected(null);
         letterController.setFromDate(CommonController.startOfTheMonth());
         letterController.setToDate(CommonController.endOfTheMonth());
-        return "/document/letter_search_by_date";
+        return "/document/letter_search_by_date?faces-redirect=true";
     }
 
     public String toFileLedger() {
         fileController.setItems(null);
-        return "/document/file_ledger";
+        return "/document/file_ledger?faces-redirect=true";
     }
 
     public String toReceiveFile() {
-        return "/document/file_receive";
+        return "/document/file_receive?faces-redirect=true";
     }
 
     public String toViewRequest() {
-        return "/common/request_view";
+        return "/common/request_view?faces-redirect=true";
     }
 
     public String toViewPatient() {
-        return "/common/client_view";
+        return "/common/client_view?faces-redirect=true";
     }
 
     public String toViewResult() {
-        return "/common/result_view";
+        return "/common/result_view?faces-redirect=true";
     }
 
     public String toReportsIndex() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case National:
-                return "/national/reports_index";
+                return "/national/reports_index?faces-redirect=true";
             case Institutional:
-                return "/institution/reports_index";
+                return "/institution/reports_index?faces-redirect=true";
             default:
                 return "";
         }
@@ -166,9 +166,9 @@ public class MenuController implements Serializable {
     public String toSearch() {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case National:
-                return "/national/search";
+                return "/national/search?faces-redirect=true";
             case Institutional:
-                return "/institution/search";
+                return "/institution/search?faces-redirect=true";
             default:
                 return "";
         }
@@ -190,16 +190,16 @@ public class MenuController implements Serializable {
         }
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case National:
-                return "/national/admin/index";
+                return "/national/admin/index?faces-redirect=true";
             case Institutional:
-                return "/institution/admin/index";
+                return "/institution/admin/index?faces-redirect=true";
             default:
                 return "";
         }
     }
 
     public String toAdministrationIndexFirstLogin() {
-        return "/national/admin/index";
+        return "/national/admin/index?faces-redirect=true";
     }
 
     public String toPreferences() {
@@ -219,9 +219,9 @@ public class MenuController implements Serializable {
         preferenceController.preparePreferences();
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
-                return "/regional/institution/preferences";
+                return "/regional/institution/preferences?faces-redirect=true";
             case National:
-                return "/national/admin/preferences";
+                return "/national/admin/preferences?faces-redirect=true";
             default:
                 return "";
         }
@@ -244,9 +244,9 @@ public class MenuController implements Serializable {
         webUserController.prepareToAddNewUser();
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case National:
-                return "/national/admin/user_new";
+                return "/national/admin/user_new?faces-redirect=true";
             case Institutional:
-                return "/institution/admin/user_new";
+                return "/institution/admin/user_new?faces-redirect=true";
             default:
                 return "";
         }
@@ -269,9 +269,9 @@ public class MenuController implements Serializable {
         institutionController.prepareToAddNewInstitution();
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case National:
-                return "/national/admin/institution";
+                return "/national/admin/institution?faces-redirect=true";
             case Institutional:
-                return "/institution/admin/institution";
+                return "/institution/admin/institution?faces-redirect=true";
             default:
                 return "";
         }
@@ -279,12 +279,12 @@ public class MenuController implements Serializable {
 
     public String toAddNewInstitutionAtLetterEntry() {
         institutionController.prepareToAddNewInstitution();
-        return "/institution/institution_at_letter_entry";
+        return "/institution/institution_at_letter_entry?faces-redirect=true";
     }
 
     public String toListUsersFirstLogin() {
         webUserController.prepareListingAllUsers();
-        return "/national/admin/user_list";
+        return "/national/admin/user_list?faces-redirect=true";
     }
 
     public String toListUsers() {
@@ -310,9 +310,9 @@ public class MenuController implements Serializable {
         }
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
-                return "/institution/admin/user_list";
+                return "/institution/admin/user_list?faces-redirect=true";
             case National:
-                return "/national/admin/user_list";
+                return "/national/admin/user_list?faces-redirect=true";
             default:
                 return "";
         }
@@ -338,9 +338,9 @@ public class MenuController implements Serializable {
         System.out.println("webUserController.getLoggedUser().getWebUserRoleLevel() = " + webUserController.getLoggedUser().getWebUserRoleLevel());
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
-                return "/institution/admin/institution_list";
+                return "/institution/admin/institution_list?faces-redirect=true";
             case National:
-                return "/national/admin/institution_list";
+                return "/national/admin/institution_list?faces-redirect=true";
             default:
                 return "";
         }
@@ -365,9 +365,9 @@ public class MenuController implements Serializable {
         institutionController.prepareToListInstitution();
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
-                return "/institution/admin/institution_list_with_users";
+                return "/institution/admin/institution_list_with_users?faces-redirect=true";
             case National:
-                return "/national/admin/institution_list_with_users";
+                return "/national/admin/institution_list_with_users?faces-redirect=true";
             default:
                 return "";
         }
@@ -392,10 +392,10 @@ public class MenuController implements Serializable {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
                 webUserController.preparePrivileges(webUserApplicationController.getRegionalPrivilegeRoot());
-                return "/institution/admin/privileges";
+                return "/institution/admin/privileges?faces-redirect=true";
             case National:
                 webUserController.preparePrivileges(webUserApplicationController.getAllPrivilegeRoot());
-                return "/national/admin/privileges";
+                return "/national/admin/privileges?faces-redirect=true";
             default:
                 return "";
         }
@@ -403,7 +403,7 @@ public class MenuController implements Serializable {
 
     public String toPrivilegesFirstLogin() {
         webUserController.preparePrivileges(webUserApplicationController.getAllPrivilegeRoot());
-        return "/national/admin/privileges";
+        return "/national/admin/privileges?faces-redirect=true";
     }
 
     public String toEditUser() {
@@ -422,9 +422,9 @@ public class MenuController implements Serializable {
         }
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
-                return "/institution/admin/user_edit";
+                return "/institution/admin/user_edit?faces-redirect=true";
             case National:
-                return "/national/admin/user_edit";
+                return "/national/admin/user_edit?faces-redirect=true";
             default:
                 return "";
         }
@@ -446,9 +446,9 @@ public class MenuController implements Serializable {
         }
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
-                return "/institution/admin/institution";
+                return "/institution/admin/institution?faces-redirect=true";
             case National:
-                return "/national/admin/institution";
+                return "/national/admin/institution?faces-redirect=true";
             default:
                 return "";
         }
@@ -471,9 +471,9 @@ public class MenuController implements Serializable {
         webUserController.prepareEditPassword();
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
-                return "/institution/admin/user_password";
+                return "/institution/admin/user_password?faces-redirect=true";
             case National:
-                return "/national/admin/user_password";
+                return "/national/admin/user_password?faces-redirect=true";
             default:
                 return "";
         }
@@ -497,10 +497,10 @@ public class MenuController implements Serializable {
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:
                 webUserController.prepareManagePrivileges(webUserApplicationController.getRegionalPrivilegeRoot());
-                return "/regional/admin/user_privileges";
+                return "/regional/admin/user_privileges?faces-redirect=true";
             case National:
                 webUserController.prepareManagePrivileges(webUserApplicationController.getAllPrivilegeRoot());
-                return "/national/admin/user_privileges";
+                return "/national/admin/user_privileges?faces-redirect=true";
             default:
                 return "";
         }

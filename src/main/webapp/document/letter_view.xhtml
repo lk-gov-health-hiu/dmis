@@ -122,20 +122,20 @@
                                 <f:facet name="header" >
                                     <h:outputText value="History" ></h:outputText>
                                 </f:facet>
-                                <p:column headerText="Date" style="width:90px;">
-                                    <h:outputText value="#{h.createdAt}" style="font-size:0.85em;">
+                                <p:column headerText="Date" style="width:90px; color:#333;">
+                                    <h:outputText value="#{h.createdAt}" style="font-size:0.85em; color:#333;">
                                         <f:convertDateTime pattern="dd MMM yy" ></f:convertDateTime>
                                     </h:outputText>
                                 </p:column>
-                                <p:column headerText="Action" style="width:80px;">
-                                    <h:outputText value="#{h.historyType.label}" style="font-size:0.85em;"></h:outputText>
+                                <p:column headerText="Action" style="width:80px; color:#333;">
+                                    <h:outputText value="#{h.historyType.label}" style="font-size:0.85em; color:#333;"></h:outputText>
                                 </p:column>
-                                <p:column headerText="Details">
+                                <p:column headerText="Details" style="color:#333;">
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Created'}" >
-                                        <h:outputText value="By #{h.createdBy.person.name}" style="font-size:0.85em;"></h:outputText>
+                                        <h:outputText value="By #{h.createdBy.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Assigned'}" >
-                                        <h:outputText value="To #{h.toUser.person.name}" style="font-size:0.85em;"></h:outputText>
+                                        <h:outputText value="To #{h.toUser.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
                                         <h:panelGroup rendered="#{h.completed}" >
                                             <span class="badge bg-success ms-1" style="font-size:0.7em;">Received</span>
                                         </h:panelGroup>
@@ -145,14 +145,14 @@
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Action_Taken'}" >
-                                        <h:outputText value="By #{h.createdBy.person.name}" style="font-size:0.85em;"></h:outputText>
+                                        <h:outputText value="By #{h.createdBy.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Copy_or_Forward'}" >
                                         <h:panelGroup rendered="#{h.item ne null}" >
-                                            <h:outputText value="(#{h.item.name}) " style="font-size:0.85em;"></h:outputText>
+                                            <h:outputText value="(#{h.item.name}) " style="font-size:0.85em; color:#333;"></h:outputText>
                                         </h:panelGroup>
-                                        <h:outputText value="To #{h.toInsOrUser.name}" style="font-size:0.85em;"></h:outputText>
+                                        <h:outputText value="To #{h.toInsOrUser.name}" style="font-size:0.85em; color:#333;"></h:outputText>
                                         <h:panelGroup rendered="#{h.completed}" >
                                             <span class="badge bg-success ms-1" style="font-size:0.7em;">Received</span>
                                         </h:panelGroup>
@@ -162,7 +162,7 @@
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Sent'}" >
-                                        <h:outputText value="From #{h.fromInstitution.name} to #{h.toInstitution.name}" style="font-size:0.85em;"></h:outputText>
+                                        <h:outputText value="From #{h.fromInstitution.name} to #{h.toInstitution.name}" style="font-size:0.85em; color:#333;"></h:outputText>
                                         <h:panelGroup rendered="#{h.completed}" >
                                             <span class="badge bg-success ms-1" style="font-size:0.7em;">Received</span>
                                         </h:panelGroup>
@@ -171,8 +171,8 @@
                                         </h:panelGroup>
                                     </h:panelGroup>
                                 </p:column>
-                                <p:column headerText="Comments">
-                                    <h:outputText value="#{h.comments}" style="font-size:0.85em;"></h:outputText>
+                                <p:column headerText="Comments" style="color:#333;">
+                                    <h:outputText value="#{h.comments}" style="font-size:0.85em; color:#333;"></h:outputText>
                                 </p:column>
                             </p:dataTable>
 
