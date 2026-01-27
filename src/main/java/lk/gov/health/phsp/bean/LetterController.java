@@ -6,7 +6,6 @@ import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.DocumentFacade;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
