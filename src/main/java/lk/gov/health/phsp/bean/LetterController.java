@@ -104,6 +104,7 @@ public class LetterController implements Serializable {
     private Upload removingUpload;
 
     private boolean newHx;
+    private Item previousLetterStatus;
 
     public LetterController() {
     }
@@ -814,8 +815,44 @@ public class LetterController implements Serializable {
             selectedHistory.setCompletedBy(webUserController.getLoggedUser());
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
+        } else {
+            // Check if status changed and create history entry
+            if (hasStatusChanged()) {
+                DocumentHistory docHx = new DocumentHistory();
+                docHx.setHistoryType(HistoryType.Letter_Status_Changed);
+                docHx.setDocument(selected);
+                docHx.setItem(selected.getLetterStatus());
+                docHx.setInstitution(webUserController.getLoggedInstitution());
+                docHx.setCompleted(true);
+                docHx.setCompletedAt(new Date());
+                docHx.setCompletedBy(webUserController.getLoggedUser());
+                String comment = "";
+                if (previousLetterStatus != null) {
+                    comment = "From " + previousLetterStatus.getName();
+                }
+                if (selected.getLetterStatus() != null) {
+                    if (!comment.isEmpty()) {
+                        comment += " to " + selected.getLetterStatus().getName();
+                    } else {
+                        comment = "To " + selected.getLetterStatus().getName();
+                    }
+                }
+                docHx.setComments(comment);
+                saveDocumentHx(docHx);
+                previousLetterStatus = selected.getLetterStatus();
+            }
         }
         return toLetterView();
+    }
+
+    private boolean hasStatusChanged() {
+        if (previousLetterStatus == null && selected.getLetterStatus() == null) {
+            return false;
+        }
+        if (previousLetterStatus == null || selected.getLetterStatus() == null) {
+            return true;
+        }
+        return !previousLetterStatus.getId().equals(selected.getLetterStatus().getId());
     }
 
     public String saveAndNew() {
@@ -857,6 +894,7 @@ public class LetterController implements Serializable {
             return "";
         }
         newHx = false;
+        previousLetterStatus = selected.getLetterStatus();
         return "/document/letter?faces-redirect=true";
     }
 

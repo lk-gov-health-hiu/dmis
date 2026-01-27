@@ -148,6 +148,13 @@
                                         <h:outputText value="By #{h.createdBy.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
                                     </h:panelGroup>
 
+                                    <h:panelGroup rendered="#{h.historyType eq 'Letter_Status_Changed'}" >
+                                        <h:outputText value="By #{h.createdBy.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
+                                        <h:panelGroup rendered="#{h.item ne null}" >
+                                            <h:outputText value=" - #{h.item.name}" style="font-size:0.85em; font-weight:bold; color:#333;"></h:outputText>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Copy_or_Forward'}" >
                                         <h:panelGroup rendered="#{h.item ne null}" >
                                             <h:outputText value="(#{h.item.name}) " style="font-size:0.85em; color:#333;"></h:outputText>

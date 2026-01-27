@@ -41,7 +41,8 @@ public enum HistoryType {
     Letter_Assigning_Accepted("Letter Assigning Accepted"),
     Letter_Received("Letter Received"),
     Letter_Sent("Letter Send"),
-    Letter_Action_Taken("Letter Action Taken");
+    Letter_Action_Taken("Letter Action Taken"),
+    Letter_Status_Changed("Status Changed");
     
     private final String label;    
     private HistoryType(String label){
