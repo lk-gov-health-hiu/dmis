@@ -223,7 +223,7 @@ public class FileController implements Serializable {
             JsfUtil.addErrorMessage("No File Selected");
             return "";
         }
-        return "/document/file";
+        return "/document/file?faces-redirect=true";
     }
 
     public String toFileView() {
@@ -239,7 +239,7 @@ public class FileController implements Serializable {
         Map m = new HashMap();
         m.put("doc", selected);
         selectedDocumentHistories = documentHxFacade.findByJpql(j, m);
-        return "/document/file_view";
+        return "/document/file_view?faces-redirect=true";
     }
 
     public void save(Document e) {

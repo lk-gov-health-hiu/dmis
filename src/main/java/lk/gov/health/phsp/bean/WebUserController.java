@@ -676,7 +676,7 @@ public class WebUserController implements Serializable {
             return "";
         }
         current = loggedUser;
-        return "/change_my_username";
+        return "/change_my_username?faces-redirect=true";
     }
 
     public String toChangeMyPassword() {
@@ -686,7 +686,7 @@ public class WebUserController implements Serializable {
         password = "";
         passwordReenter = "";
         current = loggedUser;
-        return "/change_my_password";
+        return "/change_my_password?faces-redirect=true";
     }
 
     public String viewMedia() {
@@ -695,9 +695,9 @@ public class WebUserController implements Serializable {
             return "";
         }
         if (currentUpload.getFileType().contains("image")) {
-            return "/view_image";
+            return "/view_image?faces-redirect=true";
         } else if (currentUpload.getFileType().contains("pdf")) {
-            return "/view_pdf";
+            return "/view_pdf?faces-redirect=true";
         } else {
             JsfUtil.addErrorMessage("NOT an image of a pdf file. ");
             return "";
@@ -705,7 +705,7 @@ public class WebUserController implements Serializable {
     }
 
     public String toSubmitClientRequest() {
-        return "/finalize_client_request";
+        return "/finalize_client_request?faces-redirect=true";
     }
 
     public void sendSubmitClientRequestConfirmationEmail() {
@@ -747,14 +747,14 @@ public class WebUserController implements Serializable {
 
         setLoggedUser(current);
         JsfUtil.addSuccessMessage("Your Details Added as an institution user. Please contact us for changes");
-        return "/index";
+        return "/index?faces-redirect=true";
     }
 
     public String logOut() {
         userTransactionController.recordTransaction("Logout");
         loggedUser = null;
         loggedInstitution = null;
-        return "/index";
+        return "/index?faces-redirect=true";
     }
 
     public String login() {
@@ -789,7 +789,7 @@ public class WebUserController implements Serializable {
         }
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
-        return "/index";
+        return "/index?faces-redirect=true";
     }
 
     public String loginNew() {
@@ -820,7 +820,7 @@ public class WebUserController implements Serializable {
         fillUsersForMyInstitute();
         executeSuccessfulLoginActions();
 
-        return "/index";
+        return "/index?faces-redirect=true";
     }
 
     private void executeSuccessfulLoginActions() {
@@ -836,12 +836,12 @@ public class WebUserController implements Serializable {
     }
 
     public String toChangeLoggedInstitution() {
-        return "/webUser/change_logged_institute";
+        return "/webUser/change_logged_institute?faces-redirect=true";
     }
 
     public String changeLoggedInstitution() {
         executeSuccessfulLoginActions();
-        return "/index";
+        return "/index?faces-redirect=true";
     }
 
     private void fillUsersForMyInstitute() {
@@ -883,24 +883,24 @@ public class WebUserController implements Serializable {
 
     public String toHome() {
         userTransactionController.recordTransaction("To Home");
-        return "/index";
+        return "/index?faces-redirect=true";
     }
 
     public String loginForMobile() {
         loginRequestResponse = "";
         if (userName == null || userName.trim().equals("")) {
             loginRequestResponse += "Wrong Isername. Please go back to settings and update.";
-            return "/mobile/login_failure";
+            return "/mobile/login_failure?faces-redirect=true";
         }
         if (password == null || password.trim().equals("")) {
             loginRequestResponse += "Wrong Isername. Please go back to settings and update.";
-            return "/mobile/login_failure";
+            return "/mobile/login_failure?faces-redirect=true";
         }
         if (!checkLogin(false)) {
             loginRequestResponse += "Wrong Isername. Please go back to settings and update.";
-            return "/mobile/login_failure";
+            return "/mobile/login_failure?faces-redirect=true";
         }
-        return "/mobile/index";
+        return "/mobile/index?faces-redirect=true";
     }
 
     public List<WebUser> completeUsers(String qry) {
@@ -1159,7 +1159,7 @@ public class WebUserController implements Serializable {
     }
 
     public String prepareView() {
-        return "/webUser/View";
+        return "/webUser/View?faces-redirect=true";
     }
 
     public String toCreateNewUserBySysAdmin() {
@@ -1167,7 +1167,7 @@ public class WebUserController implements Serializable {
         password = "";
         passwordReenter = "";
         userTransactionController.recordTransaction("Create New User By SysAdmin");
-        return "/webUser/create_new_user";
+        return "/webUser/create_new_user?faces-redirect=true";
     }
 
     public String create() {
@@ -1287,12 +1287,12 @@ public class WebUserController implements Serializable {
     }
 
     public String prepareEdit() {
-        return "/webUser/Edit";
+        return "/webUser/Edit?faces-redirect=true";
     }
 
     public String prepareEditIns() {
         userTransactionController.recordTransaction("Edit user list By InsAdmin");
-        return "/insAdmin/user_edit";
+        return "/insAdmin/user_edit?faces-redirect=true";
     }
 
     public void prepareEditPassword() {
@@ -1304,7 +1304,7 @@ public class WebUserController implements Serializable {
         password = "";
         passwordReenter = "";
         userTransactionController.recordTransaction("Edit Password user list By InsAdmin");
-        return "/insAdmin/user_password";
+        return "/insAdmin/user_password?faces-redirect=true";
     }
 
     public String deleteUser() {
@@ -1618,7 +1618,7 @@ public class WebUserController implements Serializable {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(("Your details Updated."));
             userTransactionController.recordTransaction("Updated My Details");
-            return "/index";
+            return "/index?faces-redirect=true";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
             return null;
@@ -1630,7 +1630,7 @@ public class WebUserController implements Serializable {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(("Your details Updated."));
             userTransactionController.recordTransaction("Updated My Details");
-            return "/index";
+            return "/index?faces-redirect=true";
         } catch (Exception e) {
             JsfUtil.addErrorMessage("Username already exists. Please select another.");
             return "";
@@ -1641,7 +1641,7 @@ public class WebUserController implements Serializable {
         try {
             getInstitutionFacade().edit(current.getInstitution());
             userTransactionController.recordTransaction("Update My Institution Details");
-            return "/index";
+            return "/index?faces-redirect=true";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
             return null;
@@ -1667,7 +1667,7 @@ public class WebUserController implements Serializable {
             password = "";
             passwordReenter = "";
             userTransactionController.recordTransaction("My Password Updated");
-            return "/index";
+            return "/index?faces-redirect=true";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
             return "";
