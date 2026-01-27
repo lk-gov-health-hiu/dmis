@@ -36,10 +36,10 @@
                 <p:menuitem class="text-white" ajax="false" value="Reports" action="#{menuController.toReportsIndex()}" />
                 <p:menuitem class="text-white" ajax="false" value="Administration" action="#{menuController.toAdministrationIndex()}" />
                 <p:submenu class="submenu mx-2" label="Help" >
-                    <p:menuitem value="User Manual" action="/wiki"   ajax="false" />
-                    <p:menuitem value="Feedback" action="/feedback"   ajax="false" />
-                    <p:menuitem value="Contact us" action="/contact"   ajax="false" />
-                    <p:menuitem value="About" action="/about_us"   ajax="false" />
+                    <p:menuitem value="User Manual" action="/wiki?faces-redirect=true"   ajax="false" />
+                    <p:menuitem value="Feedback" action="/feedback?faces-redirect=true"   ajax="false" />
+                    <p:menuitem value="Contact us" action="/contact?faces-redirect=true"   ajax="false" />
+                    <p:menuitem value="About" action="/about_us?faces-redirect=true"   ajax="false" />
                 </p:submenu>
             </p:menubar>
         </h:form>

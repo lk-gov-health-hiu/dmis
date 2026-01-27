@@ -115,12 +115,12 @@ public class PreferenceController implements Serializable {
 
     public String toManagePreferences() {
         loadPreferences();
-        return "/systemAdmin/preferences";
+        return "/systemAdmin/preferences?faces-redirect=true";
     }
 
     public String toManagePreferencesInstitution() {
         loadPreferencesInstitution();
-        return "/insAdmin/preferences";
+        return "/insAdmin/preferences?faces-redirect=true";
     }
 
     public void preparePreferences() {

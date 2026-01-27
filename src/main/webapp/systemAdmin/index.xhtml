@@ -14,7 +14,7 @@
                                          />
                         <p:commandButton value="View Users" action="#{webUserController.toManageAllUsers()}" ajax="false"
                                          />
-                        <p:commandButton value="Add Multiple Users" action="/webUser/adding_Multiple_users" ajax="false"
+                        <p:commandButton value="Add Multiple Users" action="/webUser/adding_Multiple_users?faces-redirect=true" ajax="false"
                                          />
                         <p:commandButton value="Set User Privilages" action="#{webUserController.toSetUserPrivilages()}" ajax="false"
                                          />
@@ -28,7 +28,7 @@
                                     />
                         <p:commandButton value="List Institutions" action="#{institutionController.toListInstitutions()}" ajax="false"
                                     />
-                        <p:commandButton value="Add Multiple new Institutions and Users" action="/systemAdmin/adding_Multiple_institutions_and_users" ajax="false"
+                        <p:commandButton value="Add Multiple new Institutions and Users" action="/systemAdmin/adding_Multiple_institutions_and_users?faces-redirect=true" ajax="false"
                                     />
                         <p:commandButton value="Relod Institutions" action="#{institutionController.resetAllInstitutions()}" ajax="false"
                                     />
@@ -37,13 +37,13 @@
                                     />
                         <p:commandButton value="List Area" action="#{areaController.toListAreasForSysAdmin()}" ajax="false"
                                     />
-                        <p:commandButton value="Adding MOH with Users" action="/area/moh_adding" ajax="false"
+                        <p:commandButton value="Adding MOH with Users" action="/area/moh_adding?faces-redirect=true" ajax="false"
                                     />
                         <p:commandButton value="Reload Areas" action="#{areaApplicationController.invalidateItems()}" ajax="false"
                                     />
                         <hr/>
-                        <p:commandButton value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />
-                        <p:commandButton value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
+                        <p:commandButton value="Manage Metadata" action="/systemAdmin/manage_metadata_index?faces-redirect=true"    ajax="false" />
+                        <p:commandButton value="Manage Data" action="/systemAdmin/manage_data_index?faces-redirect=true"    ajax="false" />
                          </h:panelGrid>
 
 
