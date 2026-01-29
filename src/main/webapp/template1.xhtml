@@ -50,6 +50,17 @@
             <ui:insert name="timeout">
             </ui:insert>
 
+            <p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException"
+                                    update="exceptionDialog"
+                                    onexception="PF('exceptionDialog').show();" />
+            <p:dialog id="exceptionDialog" header="Session Expired" widgetVar="exceptionDialog"
+                      modal="true" closable="false" draggable="false" resizable="false">
+                <h:form>
+                    <p class="mb-3">Your session has expired. Please login again.</p>
+                    <p:commandButton value="Login" ajax="false" action="/index?faces-redirect=true" styleClass="btn btn-primary"/>
+                </h:form>
+            </p:dialog>
+
             <!--<ez:footer/>-->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js" integrity="sha512-PqRelaJGXVuQ81N6wjUrRQelCDR7z8RvKGiR9SbSxKHPIt15eJDmIVv9EJgwq0XvgylszsjzvQ0+VyI2WtIshQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <h:outputScript library="js" name="jquery.easing.min.js"></h:outputScript>

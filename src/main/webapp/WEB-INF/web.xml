@@ -83,17 +83,10 @@
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
 
-    <!--
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
         <location>/app/timeout.xhtml</location>
     </error-page>
-
-    <error-page>
-        <error-code>500</error-code>
-        <location>/app/error.xhtml</location>
-    </error-page>
-    -->
 
 
 </web-app>
