@@ -137,7 +137,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toCommunityRandomNational() {
@@ -169,7 +169,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toForeign() {
@@ -201,7 +201,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toHospital() {
@@ -234,7 +234,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toOtherOrderingCategory() {
@@ -266,7 +266,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public void prepareMohDashboard() {
@@ -681,7 +681,7 @@ public class DashboardController implements Serializable {
     }
 
     public String toCalculateNumbers() {
-        return "/systemAdmin/calculate_numbers";
+        return "/systemAdmin/calculate_numbers?faces-redirect=true";
     }
 
     /**
