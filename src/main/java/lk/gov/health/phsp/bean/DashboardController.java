@@ -75,6 +75,13 @@ public class DashboardController implements Serializable {
     private Long lettersToReceive;
     private Long lettersEntered;
     private Long lettersAccepted;
+
+    // New dashboard counts
+    private Long myLettersToAcceptAll;
+    private Long myLettersAcceptedToday;
+    private Long copyForwardsToMyInstitutionToReceive;
+    private Long copyForwardsReceivedToday;
+    private Long copyForwardsSentByMyInstitutionLast7Days;
     private Long yesterdayRat;
     private Long yesterdayPositivePcr;
     private Long yesterdayPositiveRat;
@@ -358,14 +365,24 @@ public class DashboardController implements Serializable {
     }
 
     public void preparePersonalDashboard() {
-        Calendar c = Calendar.getInstance();
-        Date now = c.getTime();
-        Date todayStart = CommonController.startOfTheDate();
+        // Letters assigned to me - all pending (no date filter)
+        myLettersToAcceptAll = letterController.countMyLettersToAcceptAll();
 
-        c.add(Calendar.DATE, -1);
+        // Letters assigned to me and accepted today
+        myLettersAcceptedToday = letterController.countMyLettersAcceptedToday();
 
-        myLettersToAccept = letterController.countMyLettersToAccept(CommonController.startOfTheMonth(), CommonController.endOfTheMonth());
-        lettersAccepted = letterController.countMyLettersAccepted(CommonController.startOfTheMonth(), CommonController.endOfTheMonth());
+        // Copy/forwards to my institution - pending to receive
+        copyForwardsToMyInstitutionToReceive = letterController.countCopyForwardsToMyInstitutionToReceive();
+
+        // Copy/forwards received today
+        copyForwardsReceivedToday = letterController.countCopyForwardsReceivedToday();
+
+        // Copy/forwards sent by my institution in last 7 days
+        copyForwardsSentByMyInstitutionLast7Days = letterController.countCopyForwardsSentByMyInstitutionLast7Days();
+
+        // Keep old counts for backward compatibility
+        myLettersToAccept = myLettersToAcceptAll;
+        lettersAccepted = myLettersAcceptedToday;
     }
 
     public void prepareRegionalDashboard() {
@@ -1018,6 +1035,26 @@ public class DashboardController implements Serializable {
 
     public void setOrderingCategories(List<InstitutionCount> orderingCategories) {
         this.orderingCategories = orderingCategories;
+    }
+
+    public Long getMyLettersToAcceptAll() {
+        return myLettersToAcceptAll;
+    }
+
+    public Long getMyLettersAcceptedToday() {
+        return myLettersAcceptedToday;
+    }
+
+    public Long getCopyForwardsToMyInstitutionToReceive() {
+        return copyForwardsToMyInstitutionToReceive;
+    }
+
+    public Long getCopyForwardsReceivedToday() {
+        return copyForwardsReceivedToday;
+    }
+
+    public Long getCopyForwardsSentByMyInstitutionLast7Days() {
+        return copyForwardsSentByMyInstitutionLast7Days;
     }
 
 }
