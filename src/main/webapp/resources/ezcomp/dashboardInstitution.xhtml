@@ -12,88 +12,539 @@
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
+        <style>
+            .dashboard-container {
+                padding: 1.5rem;
+                background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+                min-height: calc(100vh - 150px);
+            }
+
+            .dashboard-header {
+                margin-bottom: 2rem;
+            }
+
+            .dashboard-title {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #2c3e50;
+                margin-bottom: 0.5rem;
+            }
+
+            .dashboard-subtitle {
+                font-size: 0.95rem;
+                color: #6c757d;
+            }
+
+            .dashboard-card {
+                background: #ffffff;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                overflow: hidden;
+                transition: all 0.3s ease;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            }
+
+            .card-header-gradient {
+                padding: 1.5rem;
+                color: white;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .card-header-gradient::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 100%;
+                height: 200%;
+                background: rgba(255, 255, 255, 0.1);
+                transform: rotate(30deg);
+            }
+
+            .gradient-success {
+                background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            }
+
+            .gradient-primary {
+                background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+            }
+
+            .gradient-info {
+                background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            }
+
+            .gradient-warning {
+                background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 100%);
+            }
+
+            .card-icon {
+                width: 50px;
+                height: 50px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .card-institution {
+                font-size: 0.8rem;
+                opacity: 0.9;
+                position: relative;
+                z-index: 1;
+            }
+
+            .card-body-content {
+                padding: 1.5rem;
+                flex-grow: 1;
+            }
+
+            .stat-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem;
+                background: #f8f9fa;
+                border-radius: 10px;
+                margin-bottom: 0.75rem;
+                transition: background 0.2s ease;
+            }
+
+            .stat-item:hover {
+                background: #e9ecef;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+                color: #495057;
+                font-weight: 500;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #2c3e50;
+            }
+
+            .stat-value-success {
+                color: #00b894;
+            }
+
+            .stat-value-primary {
+                color: #0984e3;
+            }
+
+            .stat-value-info {
+                color: #6c5ce7;
+            }
+
+            .stat-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .stat-badge i {
+                font-size: 1rem;
+            }
+
+            .card-footer-actions {
+                padding: 1rem 1.5rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn-action {
+                padding: 0.75rem 1.25rem;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                text-decoration: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .btn-action i {
+                font-size: 1rem;
+            }
+
+            .btn-primary-solid {
+                background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+                color: white;
+            }
+
+            .btn-primary-solid:hover {
+                background: linear-gradient(135deg, #0773c8 0%, #5ba8ee 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+            }
+
+            .btn-success-solid {
+                background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+                color: white;
+            }
+
+            .btn-success-solid:hover {
+                background: linear-gradient(135deg, #00a383 0%, #00b8b3 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);
+            }
+
+            .btn-info-solid {
+                background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+                color: white;
+            }
+
+            .btn-info-solid:hover {
+                background: linear-gradient(135deg, #5b4cdb 0%, #908aed 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+            }
+
+            .btn-outline-light {
+                background: transparent;
+                border: 2px solid #dee2e6;
+                color: #495057;
+            }
+
+            .btn-outline-light:hover {
+                background: #f8f9fa;
+                border-color: #adb5bd;
+            }
+
+            .quick-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .quick-stat-card {
+                background: white;
+                border-radius: 12px;
+                padding: 1.25rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            }
+
+            .quick-stat-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25rem;
+                color: white;
+            }
+
+            .quick-stat-icon.bg-success { background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); }
+            .quick-stat-icon.bg-primary { background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%); }
+            .quick-stat-icon.bg-info { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); }
+
+            .quick-stat-content {
+                flex-grow: 1;
+            }
+
+            .quick-stat-value {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #2c3e50;
+                line-height: 1.2;
+            }
+
+            .quick-stat-label {
+                font-size: 0.8rem;
+                color: #6c757d;
+                margin-top: 0.25rem;
+            }
+
+            @media (max-width: 991.98px) {
+                .dashboard-container {
+                    padding: 1rem;
+                }
+
+                .dashboard-title {
+                    font-size: 1.5rem;
+                }
+
+                .quick-stats {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 575.98px) {
+                .dashboard-container {
+                    padding: 0.75rem;
+                }
+
+                .quick-stats {
+                    grid-template-columns: 1fr;
+                }
+
+                .stat-value {
+                    font-size: 1.25rem;
+                }
+
+                .card-header-gradient {
+                    padding: 1.25rem;
+                }
+
+                .card-body-content {
+                    padding: 1rem;
+                }
+
+                .card-footer-actions {
+                    padding: 1rem;
+                }
+            }
+
+            /* Animation for numbers */
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-fade-in {
+                animation: fadeInUp 0.5s ease forwards;
+            }
+
+            .delay-1 { animation-delay: 0.1s; }
+            .delay-2 { animation-delay: 0.2s; }
+            .delay-3 { animation-delay: 0.3s; }
+        </style>
+
         <h:form>
-            <div class="container">
-                <div class="row gx-4 my-2">
-                    <div class="col">
-                        <div class="d-flex bg-success px-3 py-2 align-items-center">
-                            <div class="flex-grow-1 text-white">
-                                <h4 class="fw-bold mb-4">
-                                    <i class="bi mx-2 bi-info-circle-fill"></i>
-                                    Letters assigned to me
-                                </h4>
-                                <div class="d-flex">
-                                    <div class="p-2 flex-grow-1">
-                                        <h5 class="fw-bold">To Accept</h5>
-                                    </div>
-                                    <div class="px-2 flex-shrink-1 fw-semi-bold">
-                                        <h5>
-                                            <h:outputLabel value="#{dashboardController.myLettersToAccept}" ></h:outputLabel>
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="d-flex">
-                                    <div class="p-2 flex-grow-1">
-                                        <h5 class="fw-bold">Accepted today</h5>
-                                    </div>
-                                    <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                        <h5>
-                                            <h:outputLabel value="#{dashboardController.lettersAccepted}" ></h:outputLabel>
-                                        </h5>
-                                    </div>
-                                </div>
-                                <hr/>
-                                <div class="flex-grow-1 text-white text-center">
-                                    <small>For this month.<br/><br/></small>
-                                </div>
-                            </div>
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{dashboardController.preparePersonalDashboard()}" />
+            </f:metadata>
+
+            <div class="dashboard-container">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle">
+                        Welcome back! Here's your document management overview.
+                    </p>
+                </div>
+
+                <!-- Quick Stats Row -->
+                <div class="quick-stats">
+                    <div class="quick-stat-card animate-fade-in delay-1">
+                        <div class="quick-stat-icon bg-success">
+                            <i class="bi bi-envelope-exclamation"></i>
                         </div>
-                        <div class="d-grid gap-2">
-                            <h:commandButton value="To accept"
-                                             class="btn text-white btn-small btn-dark-success border-none" 
-                                             action="#{letterController.toAcceptMyAssignedLetters()}">
-                            </h:commandButton>
+                        <div class="quick-stat-content">
+                            <div class="quick-stat-value">
+                                <h:outputText value="#{dashboardController.myLettersToAcceptAll}" />
+                            </div>
+                            <div class="quick-stat-label">Letters Pending</div>
                         </div>
                     </div>
-                    
-                    <div class="col">
-                        <div class="d-flex bg-success px-3 py-2 align-items-center">
-                            <div class="flex-grow-1 text-white">
-                                <h4 class="fw-bold mb-4">
-                                    <i class="bi mx-2 bi-info-circle-fill"></i>
-                                    Letters sent to #{webUserController.loggedInstitution.name}
-                                </h4>
-                                <div class="d-flex">
-                                    <div class="p-2 flex-grow-1">
-                                        <h5 class="fw-bold">To Accept</h5>
+
+                    <div class="quick-stat-card animate-fade-in delay-2">
+                        <div class="quick-stat-icon bg-primary">
+                            <i class="bi bi-inbox"></i>
+                        </div>
+                        <div class="quick-stat-content">
+                            <div class="quick-stat-value">
+                                <h:outputText value="#{dashboardController.copyForwardsToMyInstitutionToReceive}" />
+                            </div>
+                            <div class="quick-stat-label">To Receive</div>
+                        </div>
+                    </div>
+
+                    <div class="quick-stat-card animate-fade-in delay-3">
+                        <div class="quick-stat-icon bg-info">
+                            <i class="bi bi-send-check"></i>
+                        </div>
+                        <div class="quick-stat-content">
+                            <div class="quick-stat-value">
+                                <h:outputText value="#{dashboardController.copyForwardsSentByMyInstitutionLast7Days}" />
+                            </div>
+                            <div class="quick-stat-label">Sent (7 Days)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Dashboard Cards -->
+                <div class="row g-4">
+                    <!-- Letters Assigned to Me Section -->
+                    <div class="col-12 col-lg-4">
+                        <div class="dashboard-card">
+                            <div class="card-header-gradient gradient-success">
+                                <div class="card-icon">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </div>
+                                <h3 class="card-title">Letters Assigned to Me</h3>
+                                <p class="card-institution mb-0">Personal assignments</p>
+                            </div>
+
+                            <div class="card-body-content">
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-hourglass-split me-2 text-warning"></i>
+                                        To Accept
                                     </div>
-                                    <div class="px-2 flex-shrink-1 fw-semi-bold">
-                                        <h5>
-                                            <h:outputLabel value="#{dashboardController.myLettersToAccept}" ></h:outputLabel>
-                                        </h5>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-success">
+                                            <h:outputText value="#{dashboardController.myLettersToAcceptAll}" />
+                                        </span>
                                     </div>
                                 </div>
-                                <div class="d-flex">
-                                    <div class="p-2 flex-grow-1">
-                                        <h5 class="fw-bold">Accepted today</h5>
+
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-check-circle me-2 text-success"></i>
+                                        Accepted Today
                                     </div>
-                                    <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                        <h5>
-                                            <h:outputLabel value="#{dashboardController.lettersAccepted}" ></h:outputLabel>
-                                        </h5>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-success">
+                                            <h:outputText value="#{dashboardController.myLettersAcceptedToday}" />
+                                        </span>
                                     </div>
-                                </div>
-                                <hr/>
-                                <div class="flex-grow-1 text-white text-center">
-                                    <small>For this month.<br/><br/></small>
                                 </div>
                             </div>
+
+                            <div class="card-footer-actions">
+                                <h:commandButton value="View Letters to Accept"
+                                                 styleClass="btn-action btn-success-solid"
+                                                 action="#{letterController.toMyLettersToAcceptAll()}">
+                                    <i class="bi bi-arrow-right-circle"></i>
+                                </h:commandButton>
+                                <h:commandButton value="View Accepted Today"
+                                                 styleClass="btn-action btn-outline-light"
+                                                 action="#{letterController.toMyLettersAcceptedToday()}">
+                                </h:commandButton>
+                            </div>
                         </div>
-                        <div class="d-grid gap-2">
-                            <h:commandButton value="To accept"
-                                             class="btn text-white btn-small btn-dark-success border-none" 
-                                             action="#{letterController.toAcceptMyAssignedLetters()}">
-                            </h:commandButton>
+                    </div>
+
+                    <!-- Copy/Forward Letters Section -->
+                    <div class="col-12 col-lg-4">
+                        <div class="dashboard-card">
+                            <div class="card-header-gradient gradient-primary">
+                                <div class="card-icon">
+                                    <i class="bi bi-forward-fill"></i>
+                                </div>
+                                <h3 class="card-title">Copy/Forward Letters</h3>
+                                <p class="card-institution mb-0">#{webUserController.loggedInstitution.name}</p>
+                            </div>
+
+                            <div class="card-body-content">
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-inbox-fill me-2 text-primary"></i>
+                                        To Receive
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-primary">
+                                            <h:outputText value="#{dashboardController.copyForwardsToMyInstitutionToReceive}" />
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-check2-circle me-2 text-success"></i>
+                                        Received Today
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-primary">
+                                            <h:outputText value="#{dashboardController.copyForwardsReceivedToday}" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer-actions">
+                                <h:commandButton value="View Letters to Receive"
+                                                 styleClass="btn-action btn-primary-solid"
+                                                 action="#{letterController.toCopyForwardsToMyInstitutionToReceive()}">
+                                    <i class="bi bi-arrow-right-circle"></i>
+                                </h:commandButton>
+                                <h:commandButton value="View Received Today"
+                                                 styleClass="btn-action btn-outline-light"
+                                                 action="#{letterController.toCopyForwardsReceivedToday()}">
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Copy/Forward Sent Section -->
+                    <div class="col-12 col-lg-4">
+                        <div class="dashboard-card">
+                            <div class="card-header-gradient gradient-info">
+                                <div class="card-icon">
+                                    <i class="bi bi-send-fill"></i>
+                                </div>
+                                <h3 class="card-title">Copy/Forward Sent</h3>
+                                <p class="card-institution mb-0">Outgoing documents</p>
+                            </div>
+
+                            <div class="card-body-content">
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-calendar-week me-2 text-info"></i>
+                                        Sent (Last 7 Days)
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-info">
+                                            <h:outputText value="#{dashboardController.copyForwardsSentByMyInstitutionLast7Days}" />
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="stat-item" style="visibility: hidden;">
+                                    <div class="stat-label">Placeholder</div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value">0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer-actions">
+                                <h:commandButton value="View Sent Copy/Forwards"
+                                                 styleClass="btn-action btn-info-solid"
+                                                 action="#{letterController.toCopyForwardsSentByMyInstitutionLast7Days()}">
+                                    <i class="bi bi-arrow-right-circle"></i>
+                                </h:commandButton>
+                                <div style="height: 42px;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
