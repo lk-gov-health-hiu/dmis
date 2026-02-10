@@ -1032,7 +1032,7 @@ public class WebUserController implements Serializable {
             case System_Administrator:
                 //Menu
                 wups.add(Privilege.Manage_Users);
-                
+                wups.add(Privilege.System_Administration);
                 break;
             case Super_User:
 
