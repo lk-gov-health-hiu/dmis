@@ -118,9 +118,10 @@
                                          rowKey="#{h.id}"
                                          size="small"
                                          rowStyleClass="#{!h.completed ? 'table-warning' : ''}"
+                                         style="font-size:0.8em;"
                                          >
                                 <f:facet name="header" >
-                                    <h:outputText value="History" ></h:outputText>
+                                    <h:outputText value="History" style="font-size:0.85em;"></h:outputText>
                                 </f:facet>
                                 <p:column headerText="Date" style="width:90px; color:#333;">
                                     <h:outputText value="#{h.createdAt}" style="font-size:0.85em; color:#333;">
@@ -142,6 +143,14 @@
                                         <h:panelGroup rendered="#{!h.completed}" >
                                             <span class="badge bg-warning text-dark ms-1" style="font-size:0.7em;">Pending</span>
                                         </h:panelGroup>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{h.historyType eq 'Letter_Assignment_Removed'}" >
+                                        <h:outputText value="#{h.toUser.person.name} by #{h.createdBy.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{h.historyType eq 'Letter_Copy_or_Forward_Removed'}" >
+                                        <h:outputText value="#{h.toInsOrUser.name} by #{h.createdBy.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{h.historyType eq 'Letter_Action_Taken'}" >
@@ -183,6 +192,90 @@
                                 </p:column>
                             </p:dataTable>
 
+                        </h:form>
+
+                        <h:form>
+                            <p:dataTable value="#{letterController.selectedAssignments}"
+                                         var="a"
+                                         rowKey="#{a.id}"
+                                         size="small"
+                                         rendered="#{not empty letterController.selectedAssignments}"
+                                         rowStyleClass="#{!a.completed ? 'table-warning' : 'table-success'}"
+                                         style="font-size:0.8em;"
+                                         >
+                                <f:facet name="header">
+                                    <h:outputText value="Assigned Users" style="font-size:0.85em;"></h:outputText>
+                                </f:facet>
+                                <p:column headerText="Assigned To" style="color:#333;">
+                                    <h:outputText value="#{a.toUser.person.name}" style="color:#333;"></h:outputText>
+                                </p:column>
+                                <p:column headerText="Date" style="width:80px; color:#333;">
+                                    <h:outputText value="#{a.createdAt}" style="color:#333;">
+                                        <f:convertDateTime pattern="dd MMM yy"></f:convertDateTime>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Status" style="width:70px; color:#333;">
+                                    <h:panelGroup rendered="#{a.completed}">
+                                        <span class="badge bg-success" style="font-size:0.75em;">Accepted</span>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{!a.completed}">
+                                        <span class="badge bg-warning text-dark" style="font-size:0.75em;">Pending</span>
+                                    </h:panelGroup>
+                                </p:column>
+                                <p:column headerText="" style="width:80px;">
+                                    <h:commandButton value="Remove" class="btn btn-danger btn-sm py-0 px-1"
+                                                     style="font-size:0.8em;"
+                                                     rendered="#{a.toUser eq webUserController.loggedUser}"
+                                                     action="#{letterController.removeAssignment()}">
+                                        <f:setPropertyActionListener target="#{letterController.removingAssignment}"
+                                                                     value="#{a}">
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+
+                        <h:form>
+                            <p:dataTable value="#{letterController.selectedCopyForwards}"
+                                         var="cf"
+                                         rowKey="#{cf.id}"
+                                         size="small"
+                                         rendered="#{not empty letterController.selectedCopyForwards}"
+                                         rowStyleClass="#{!cf.completed ? 'table-warning' : 'table-success'}"
+                                         style="font-size:0.8em;"
+                                         >
+                                <f:facet name="header">
+                                    <h:outputText value="Copy / Forwarded" style="font-size:0.85em;"></h:outputText>
+                                </f:facet>
+                                <p:column headerText="To" style="color:#333;">
+                                    <h:outputText value="#{cf.toInsOrUser.name}" style="color:#333;"></h:outputText>
+                                </p:column>
+                                <p:column headerText="Minute" style="color:#333;">
+                                    <h:outputText value="#{cf.item.name}" rendered="#{cf.item ne null}" style="color:#333;"></h:outputText>
+                                </p:column>
+                                <p:column headerText="Date" style="width:80px; color:#333;">
+                                    <h:outputText value="#{cf.createdAt}" style="color:#333;">
+                                        <f:convertDateTime pattern="dd MMM yy"></f:convertDateTime>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Status" style="width:70px; color:#333;">
+                                    <h:panelGroup rendered="#{cf.completed}">
+                                        <span class="badge bg-success" style="font-size:0.75em;">Received</span>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{!cf.completed}">
+                                        <span class="badge bg-warning text-dark" style="font-size:0.75em;">Pending</span>
+                                    </h:panelGroup>
+                                </p:column>
+                                <p:column headerText="" style="width:80px;">
+                                    <h:commandButton value="Remove" class="btn btn-danger btn-sm py-0 px-1"
+                                                     style="font-size:0.8em;"
+                                                     action="#{letterController.removeCopyForward()}">
+                                        <f:setPropertyActionListener target="#{letterController.removingCopyForward}"
+                                                                     value="#{cf}">
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                </p:column>
+                            </p:dataTable>
                         </h:form>
 
 
@@ -255,44 +348,6 @@
                                 <h:commandButton class="form-control btn btn-primary" value="Assign" 
                                                  action="#{letterController.assignTo()}" ></h:commandButton>
                             </p:panelGrid>
-                        </h:form>
-
-                        <h:form>
-                            <p:dataTable value="#{letterController.selectedAssignments}"
-                                         var="a"
-                                         rowKey="#{a.id}"
-                                         size="small"
-                                         rendered="#{not empty letterController.selectedAssignments}"
-                                         rowStyleClass="#{!a.completed ? 'table-warning' : 'table-success'}"
-                                         >
-                                <f:facet name="header">
-                                    <h:outputText value="Assigned Users"></h:outputText>
-                                </f:facet>
-                                <p:column headerText="Assigned To" style="color:#333;">
-                                    <h:outputText value="#{a.toUser.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
-                                </p:column>
-                                <p:column headerText="Date" style="width:90px; color:#333;">
-                                    <h:outputText value="#{a.createdAt}" style="font-size:0.85em; color:#333;">
-                                        <f:convertDateTime pattern="dd MMM yy"></f:convertDateTime>
-                                    </h:outputText>
-                                </p:column>
-                                <p:column headerText="Status" style="width:80px; color:#333;">
-                                    <h:panelGroup rendered="#{a.completed}">
-                                        <span class="badge bg-success" style="font-size:0.7em;">Accepted</span>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{!a.completed}">
-                                        <span class="badge bg-warning text-dark" style="font-size:0.7em;">Pending</span>
-                                    </h:panelGroup>
-                                </p:column>
-                                <p:column headerText="" style="width:60px;">
-                                    <h:commandButton value="Remove" class="btn btn-danger btn-sm"
-                                                     action="#{letterController.removeAssignment()}">
-                                        <f:setPropertyActionListener target="#{letterController.removingAssignment}"
-                                                                     value="#{a}">
-                                        </f:setPropertyActionListener>
-                                    </h:commandButton>
-                                </p:column>
-                            </p:dataTable>
                         </h:form>
 
                         <h:form>

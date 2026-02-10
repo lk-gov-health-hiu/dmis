@@ -140,8 +140,9 @@
                         </div>
                         <div class="card-footer bg-white">
                             <p:commandButton action="#{webUserController.saveNewWebUserByInsAdmin()}"
-                                             class="btn btn-success w-25 "  
-                                             value="#{bundleClinical.Save}" /> 
+                                             ajax="false"
+                                             class="btn btn-success w-25 "
+                                             value="#{bundleClinical.Save}" />
                         </div>
                     </div>
                     <p:messages></p:messages>
