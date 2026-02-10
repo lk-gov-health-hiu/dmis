@@ -33,9 +33,10 @@ body {
         background: white !important;
         margin: 0;
         padding: 0;
+        font-size: 9pt !important;
     }
 
-    .navbar, .sidebar, .d-print-none, nav, header, .card-header,
+    .navbar, .sidebar, .d-print-none, nav, header,
     .ui-paginator, .ui-datatable-header {
         display: none !important;
     }
@@ -49,35 +50,21 @@ body {
         padding: 0 !important;
     }
 
-    .print-table {
-        width: 100% !important;
+    table {
         border-collapse: collapse !important;
-        font-size: 10pt !important;
+        font-size: 8pt !important;
     }
 
-    .print-table th,
-    .print-table td {
+    th, td {
         border: 1px solid #333 !important;
         padding: 2px 4px !important;
         background: white !important;
         color: black !important;
+        font-size: 8pt !important;
     }
 
-    .print-table th {
+    th {
         font-weight: bold !important;
         background: #f0f0f0 !important;
-    }
-
-    .ui-datatable table {
-        border-collapse: collapse !important;
-    }
-
-    .ui-datatable th,
-    .ui-datatable td {
-        border: 1px solid #333 !important;
-    }
-
-    .d-print-block {
-        display: block !important;
     }
 }
