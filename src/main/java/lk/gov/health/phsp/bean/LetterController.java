@@ -106,6 +106,8 @@ public class LetterController implements Serializable {
 
     private List<DocumentHistory> selectedAssignments;
     private DocumentHistory removingAssignment;
+    private List<DocumentHistory> selectedCopyForwards;
+    private DocumentHistory removingCopyForward;
 
     private boolean newHx;
     private Item previousLetterStatus;
@@ -232,7 +234,36 @@ public class LetterController implements Serializable {
         removingAssignment.setRetiredAt(new Date());
         removingAssignment.setRetiredBy(webUserController.getLoggedUser());
         saveDocumentHx(removingAssignment);
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Assignment_Removed);
+        docHx.setDocument(removingAssignment.getDocument());
+        docHx.setToUser(removingAssignment.getToUser());
+        docHx.setInstitution(webUserController.getLoggedInstitution());
+        saveDocumentHx(docHx);
+
         JsfUtil.addSuccessMessage("Assignment removed successfully");
+        return toLetterView();
+    }
+
+    public String removeCopyForward() {
+        if (removingCopyForward == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return "";
+        }
+        removingCopyForward.setRetired(true);
+        removingCopyForward.setRetiredAt(new Date());
+        removingCopyForward.setRetiredBy(webUserController.getLoggedUser());
+        saveDocumentHx(removingCopyForward);
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward_Removed);
+        docHx.setDocument(removingCopyForward.getDocument());
+        docHx.setToInsOrUser(removingCopyForward.getToInsOrUser());
+        docHx.setInstitution(webUserController.getLoggedInstitution());
+        saveDocumentHx(docHx);
+
+        JsfUtil.addSuccessMessage("Copy/Forward removed successfully");
         return toLetterView();
     }
 
@@ -1634,6 +1665,19 @@ public class LetterController implements Serializable {
         m.put("ins", webUserController.getLoggedInstitution());
         selectedAssignments = documentHxFacade.findByJpql(j, m);
 
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and h.historyType=:ht "
+                + " and h.institution=:ins "
+                + " order by h.id desc";
+        m = new HashMap();
+        m.put("doc", selected);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("ins", webUserController.getLoggedInstitution());
+        selectedCopyForwards = documentHxFacade.findByJpql(j, m);
+
         return "/document/letter_view?faces-redirect=true";
     }
 
@@ -2047,6 +2091,22 @@ public class LetterController implements Serializable {
 
     public void setRemovingAssignment(DocumentHistory removingAssignment) {
         this.removingAssignment = removingAssignment;
+    }
+
+    public List<DocumentHistory> getSelectedCopyForwards() {
+        return selectedCopyForwards;
+    }
+
+    public void setSelectedCopyForwards(List<DocumentHistory> selectedCopyForwards) {
+        this.selectedCopyForwards = selectedCopyForwards;
+    }
+
+    public DocumentHistory getRemovingCopyForward() {
+        return removingCopyForward;
+    }
+
+    public void setRemovingCopyForward(DocumentHistory removingCopyForward) {
+        this.removingCopyForward = removingCopyForward;
     }
 
     public List<DocumentHistory> getListedToAcceptCopyForwards() {

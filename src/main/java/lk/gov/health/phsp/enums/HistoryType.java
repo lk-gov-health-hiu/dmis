@@ -42,6 +42,8 @@ public enum HistoryType {
     Letter_Received("Letter Received"),
     Letter_Sent("Letter Send"),
     Letter_Action_Taken("Letter Action Taken"),
+    Letter_Assignment_Removed("Assignment Removed"),
+    Letter_Copy_or_Forward_Removed("Copy/Forward Removed"),
     Letter_Status_Changed("Status Changed");
     
     private final String label;    
