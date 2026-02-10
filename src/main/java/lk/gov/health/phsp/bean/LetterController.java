@@ -104,6 +104,9 @@ public class LetterController implements Serializable {
 
     private Upload removingUpload;
 
+    private List<DocumentHistory> selectedAssignments;
+    private DocumentHistory removingAssignment;
+
     private boolean newHx;
     private Item previousLetterStatus;
 
@@ -217,6 +220,19 @@ public class LetterController implements Serializable {
         deletingHistory.setRetiredAt(new Date());
         deletingHistory.setRetiredBy(webUserController.getLoggedUser());
         saveDocumentHx(deletingHistory);
+        return toLetterView();
+    }
+
+    public String removeAssignment() {
+        if (removingAssignment == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return "";
+        }
+        removingAssignment.setRetired(true);
+        removingAssignment.setRetiredAt(new Date());
+        removingAssignment.setRetiredBy(webUserController.getLoggedUser());
+        saveDocumentHx(removingAssignment);
+        JsfUtil.addSuccessMessage("Assignment removed successfully");
         return toLetterView();
     }
 
@@ -1605,6 +1621,19 @@ public class LetterController implements Serializable {
 //        }
         selectedUploads = uploadFacade.findByJpql(j, m);
 
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and h.historyType=:ht "
+                + " and h.institution=:ins "
+                + " order by h.id desc";
+        m = new HashMap();
+        m.put("doc", selected);
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("ins", webUserController.getLoggedInstitution());
+        selectedAssignments = documentHxFacade.findByJpql(j, m);
+
         return "/document/letter_view?faces-redirect=true";
     }
 
@@ -2002,6 +2031,22 @@ public class LetterController implements Serializable {
 
     public void setDeletingHistory(DocumentHistory deletingHistory) {
         this.deletingHistory = deletingHistory;
+    }
+
+    public List<DocumentHistory> getSelectedAssignments() {
+        return selectedAssignments;
+    }
+
+    public void setSelectedAssignments(List<DocumentHistory> selectedAssignments) {
+        this.selectedAssignments = selectedAssignments;
+    }
+
+    public DocumentHistory getRemovingAssignment() {
+        return removingAssignment;
+    }
+
+    public void setRemovingAssignment(DocumentHistory removingAssignment) {
+        this.removingAssignment = removingAssignment;
     }
 
     public List<DocumentHistory> getListedToAcceptCopyForwards() {
