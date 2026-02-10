@@ -38,9 +38,19 @@ import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import org.json.JSONObject;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.bar.BarChartDataSet;
+import org.primefaces.model.charts.bar.BarChartModel;
+import org.primefaces.model.charts.bar.BarChartOptions;
+import org.primefaces.model.charts.optionconfig.legend.Legend;
+import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
+import org.primefaces.model.charts.optionconfig.title.Title;
 
 /**
  *
@@ -114,6 +124,8 @@ public class DashboardController implements Serializable {
     DecimalFormat df = new DecimalFormat("0.00");
 
     private List<InstitutionCount> orderingCategories;
+
+    private BarChartModel copyForwardsSentChart;
 
     public String toContactNational() {
         orderingCategories = new ArrayList<>();
@@ -383,6 +395,85 @@ public class DashboardController implements Serializable {
         // Keep old counts for backward compatibility
         myLettersToAccept = myLettersToAcceptAll;
         lettersAccepted = myLettersAcceptedToday;
+
+        // Prepare chart for top institutions copy-forwards sent to
+        createCopyForwardsSentChart();
+    }
+
+    private void createCopyForwardsSentChart() {
+        copyForwardsSentChart = new BarChartModel();
+        ChartData data = new ChartData();
+
+        BarChartDataSet acceptedDataSet = new BarChartDataSet();
+        acceptedDataSet.setLabel("Accepted");
+        acceptedDataSet.setBackgroundColor("rgba(0, 184, 148, 0.8)");
+        acceptedDataSet.setBorderColor("rgb(0, 184, 148)");
+        acceptedDataSet.setBorderWidth(1);
+
+        BarChartDataSet pendingDataSet = new BarChartDataSet();
+        pendingDataSet.setLabel("Pending");
+        pendingDataSet.setBackgroundColor("rgba(253, 203, 110, 0.8)");
+        pendingDataSet.setBorderColor("rgb(253, 203, 110)");
+        pendingDataSet.setBorderWidth(1);
+
+        List<Number> acceptedValues = new ArrayList<>();
+        List<Number> pendingValues = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        List<Object[]> topInstitutions = letterController.getTopInstitutionsCopyForwardsSentByMyInstitution(10);
+
+        if (topInstitutions != null) {
+            for (Object[] row : topInstitutions) {
+                Institution inst = (Institution) row[0];
+                Long accepted = (Long) row[1];
+                Long pending = (Long) row[2];
+
+                String instName = inst.getName();
+                if (instName != null && instName.length() > 20) {
+                    instName = instName.substring(0, 17) + "...";
+                }
+                labels.add(instName != null ? instName : "Unknown");
+                acceptedValues.add(accepted != null ? accepted : 0);
+                pendingValues.add(pending != null ? pending : 0);
+            }
+        }
+
+        acceptedDataSet.setData(acceptedValues);
+        pendingDataSet.setData(pendingValues);
+
+        data.addChartDataSet(acceptedDataSet);
+        data.addChartDataSet(pendingDataSet);
+        data.setLabels(labels);
+
+        copyForwardsSentChart.setData(data);
+
+        // Options
+        BarChartOptions options = new BarChartOptions();
+
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxesX = new CartesianLinearAxes();
+        linearAxesX.setStacked(true);
+        cScales.addXAxesData(linearAxesX);
+
+        CartesianLinearAxes linearAxesY = new CartesianLinearAxes();
+        linearAxesY.setStacked(true);
+        cScales.addYAxesData(linearAxesY);
+        options.setScales(cScales);
+
+        Title title = new Title();
+        title.setDisplay(true);
+        title.setText("Top 10 Institutions - Copy/Forwards Sent");
+        options.setTitle(title);
+
+        Legend legend = new Legend();
+        legend.setDisplay(true);
+        legend.setPosition("top");
+        LegendLabel legendLabels = new LegendLabel();
+        legendLabels.setFontColor("#495057");
+        legend.setLabels(legendLabels);
+        options.setLegend(legend);
+
+        copyForwardsSentChart.setOptions(options);
     }
 
     public void prepareRegionalDashboard() {
@@ -1055,6 +1146,13 @@ public class DashboardController implements Serializable {
 
     public Long getCopyForwardsSentByMyInstitutionLast7Days() {
         return copyForwardsSentByMyInstitutionLast7Days;
+    }
+
+    public BarChartModel getCopyForwardsSentChart() {
+        if (copyForwardsSentChart == null) {
+            createCopyForwardsSentChart();
+        }
+        return copyForwardsSentChart;
     }
 
 }

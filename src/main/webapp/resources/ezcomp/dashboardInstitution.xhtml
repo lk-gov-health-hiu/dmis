@@ -344,6 +344,31 @@
             .delay-1 { animation-delay: 0.1s; }
             .delay-2 { animation-delay: 0.2s; }
             .delay-3 { animation-delay: 0.3s; }
+
+            .chart-card {
+                background: #ffffff;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                overflow: hidden;
+                margin-top: 2rem;
+            }
+
+            .chart-card-header {
+                padding: 1.25rem 1.5rem;
+                background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+                color: white;
+            }
+
+            .chart-card-header h4 {
+                margin: 0;
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+
+            .chart-card-body {
+                padding: 1.5rem;
+                min-height: 350px;
+            }
         </style>
 
         <h:form>
@@ -544,6 +569,29 @@
                                     <i class="bi bi-arrow-right-circle"></i>
                                 </h:commandButton>
                                 <div style="height: 42px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="row g-4 mt-2">
+                    <div class="col-12">
+                        <div class="chart-card">
+                            <div class="chart-card-header">
+                                <h4><i class="bi bi-bar-chart-fill me-2"></i>Top 10 Institutions - Copy/Forwards Sent</h4>
+                            </div>
+                            <div class="chart-card-body">
+                                <h:panelGroup rendered="#{not empty dashboardController.copyForwardsSentChart.data.labels}">
+                                    <p:barChart model="#{dashboardController.copyForwardsSentChart}" style="width: 100%; height: 320px;" />
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{empty dashboardController.copyForwardsSentChart.data.labels}" styleClass="text-center p-5">
+                                    <div style="color: #6c757d; padding: 50px;">
+                                        <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
+                                        <p>No copy/forward data available yet.</p>
+                                        <p class="small">Start sending copy/forwards to see the distribution chart.</p>
+                                    </div>
+                                </h:panelGroup>
                             </div>
                         </div>
                     </div>

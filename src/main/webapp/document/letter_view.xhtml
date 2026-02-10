@@ -258,6 +258,44 @@
                         </h:form>
 
                         <h:form>
+                            <p:dataTable value="#{letterController.selectedAssignments}"
+                                         var="a"
+                                         rowKey="#{a.id}"
+                                         size="small"
+                                         rendered="#{not empty letterController.selectedAssignments}"
+                                         rowStyleClass="#{!a.completed ? 'table-warning' : 'table-success'}"
+                                         >
+                                <f:facet name="header">
+                                    <h:outputText value="Assigned Users"></h:outputText>
+                                </f:facet>
+                                <p:column headerText="Assigned To" style="color:#333;">
+                                    <h:outputText value="#{a.toUser.person.name}" style="font-size:0.85em; color:#333;"></h:outputText>
+                                </p:column>
+                                <p:column headerText="Date" style="width:90px; color:#333;">
+                                    <h:outputText value="#{a.createdAt}" style="font-size:0.85em; color:#333;">
+                                        <f:convertDateTime pattern="dd MMM yy"></f:convertDateTime>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Status" style="width:80px; color:#333;">
+                                    <h:panelGroup rendered="#{a.completed}">
+                                        <span class="badge bg-success" style="font-size:0.7em;">Accepted</span>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{!a.completed}">
+                                        <span class="badge bg-warning text-dark" style="font-size:0.7em;">Pending</span>
+                                    </h:panelGroup>
+                                </p:column>
+                                <p:column headerText="" style="width:60px;">
+                                    <h:commandButton value="Remove" class="btn btn-danger btn-sm"
+                                                     action="#{letterController.removeAssignment()}">
+                                        <f:setPropertyActionListener target="#{letterController.removingAssignment}"
+                                                                     value="#{a}">
+                                        </f:setPropertyActionListener>
+                                    </h:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+
+                        <h:form>
                             <p:panelGrid columns="2"  class="w-100 border border-light">
                                 <f:facet name="header" >
                                     Add Actions

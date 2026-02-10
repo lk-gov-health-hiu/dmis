@@ -104,6 +104,9 @@ public class LetterController implements Serializable {
 
     private Upload removingUpload;
 
+    private List<DocumentHistory> selectedAssignments;
+    private DocumentHistory removingAssignment;
+
     private boolean newHx;
     private Item previousLetterStatus;
 
@@ -217,6 +220,19 @@ public class LetterController implements Serializable {
         deletingHistory.setRetiredAt(new Date());
         deletingHistory.setRetiredBy(webUserController.getLoggedUser());
         saveDocumentHx(deletingHistory);
+        return toLetterView();
+    }
+
+    public String removeAssignment() {
+        if (removingAssignment == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return "";
+        }
+        removingAssignment.setRetired(true);
+        removingAssignment.setRetiredAt(new Date());
+        removingAssignment.setRetiredBy(webUserController.getLoggedUser());
+        saveDocumentHx(removingAssignment);
+        JsfUtil.addSuccessMessage("Assignment removed successfully");
         return toLetterView();
     }
 
@@ -663,6 +679,97 @@ public class LetterController implements Serializable {
             }
         }
         return c;
+    }
+
+    public List<Object[]> getTopInstitutionsCopyForwardsSentByMyInstitution(int limit) {
+        Institution loggedInstitution = webUserController.getLoggedInstitution();
+        List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
+
+        Map<Long, Object[]> institutionDataMap = new HashMap<>();
+
+        Map m = new HashMap();
+        String j = "select h.toInstitution, h.completed, count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.fromInstitution=:fi "
+                + " and h.toInstitution is not null "
+                + " group by h.toInstitution, h.completed "
+                + " order by count(h) desc";
+        m.put("fi", loggedInstitution);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+
+        List<Object[]> results = documentHxFacade.findObjectsArrayByJpql(j, m, TemporalType.DATE);
+
+        if (results != null) {
+            for (Object[] row : results) {
+                Institution inst = (Institution) row[0];
+                Boolean completed = (Boolean) row[1];
+                Long count = (Long) row[2];
+
+                if (inst != null && inst.getId() != null) {
+                    Object[] data = institutionDataMap.get(inst.getId());
+                    if (data == null) {
+                        data = new Object[]{inst, 0L, 0L};
+                        institutionDataMap.put(inst.getId(), data);
+                    }
+                    if (completed != null && completed) {
+                        data[1] = ((Long) data[1]) + count;
+                    } else {
+                        data[2] = ((Long) data[2]) + count;
+                    }
+                }
+            }
+        }
+
+        if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
+            m = new HashMap();
+            j = "select h.toInstitution, h.completed, count(h) "
+                    + " from DocumentHistory h "
+                    + " where h.retired=false "
+                    + " and h.historyType =:ht "
+                    + " and h.fromUser in :us "
+                    + " and h.fromInstitution is null "
+                    + " and h.toInstitution is not null "
+                    + " group by h.toInstitution, h.completed "
+                    + " order by count(h) desc";
+            m.put("us", usersForMyInstitute);
+            m.put("ht", HistoryType.Letter_Copy_or_Forward);
+
+            List<Object[]> userResults = documentHxFacade.findObjectsArrayByJpql(j, m, TemporalType.DATE);
+            if (userResults != null) {
+                for (Object[] row : userResults) {
+                    Institution inst = (Institution) row[0];
+                    Boolean completed = (Boolean) row[1];
+                    Long count = (Long) row[2];
+
+                    if (inst != null && inst.getId() != null) {
+                        Object[] data = institutionDataMap.get(inst.getId());
+                        if (data == null) {
+                            data = new Object[]{inst, 0L, 0L};
+                            institutionDataMap.put(inst.getId(), data);
+                        }
+                        if (completed != null && completed) {
+                            data[1] = ((Long) data[1]) + count;
+                        } else {
+                            data[2] = ((Long) data[2]) + count;
+                        }
+                    }
+                }
+            }
+        }
+
+        List<Object[]> sortedList = new ArrayList<>(institutionDataMap.values());
+        sortedList.sort((a, b) -> {
+            Long totalA = ((Long) a[1]) + ((Long) a[2]);
+            Long totalB = ((Long) b[1]) + ((Long) b[2]);
+            return totalB.compareTo(totalA);
+        });
+
+        if (sortedList.size() > limit) {
+            return sortedList.subList(0, limit);
+        }
+        return sortedList;
     }
 
     public String toMyLettersToAcceptAll() {
@@ -1514,6 +1621,19 @@ public class LetterController implements Serializable {
 //        }
         selectedUploads = uploadFacade.findByJpql(j, m);
 
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and h.historyType=:ht "
+                + " and h.institution=:ins "
+                + " order by h.id desc";
+        m = new HashMap();
+        m.put("doc", selected);
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("ins", webUserController.getLoggedInstitution());
+        selectedAssignments = documentHxFacade.findByJpql(j, m);
+
         return "/document/letter_view?faces-redirect=true";
     }
 
@@ -1911,6 +2031,22 @@ public class LetterController implements Serializable {
 
     public void setDeletingHistory(DocumentHistory deletingHistory) {
         this.deletingHistory = deletingHistory;
+    }
+
+    public List<DocumentHistory> getSelectedAssignments() {
+        return selectedAssignments;
+    }
+
+    public void setSelectedAssignments(List<DocumentHistory> selectedAssignments) {
+        this.selectedAssignments = selectedAssignments;
+    }
+
+    public DocumentHistory getRemovingAssignment() {
+        return removingAssignment;
+    }
+
+    public void setRemovingAssignment(DocumentHistory removingAssignment) {
+        this.removingAssignment = removingAssignment;
     }
 
     public List<DocumentHistory> getListedToAcceptCopyForwards() {
