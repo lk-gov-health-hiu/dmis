@@ -16,214 +16,250 @@
             <ui:define name="reports">
                 <p:growl ></p:growl>
                 <h:form >
-                    <div class="card my-3">
-                        <h5 class="card-header bg-success">
-                            <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Letters Entered by the Unit Register" ></p:outputLabel>
-                        </h5>
-                        <div class="card-body">
+
+                    <style>
+                        .reg-filter-panel td { font-size: 0.75rem; padding: 2px 4px; }
+                        .reg-filter-panel .form-select,
+                        .reg-filter-panel .form-control,
+                        .reg-filter-panel input { font-size: 0.75rem !important; }
+                        .reg-filter-panel .ui-selectonemenu { font-size: 0.75rem !important; }
+                        .reg-filter-panel .ui-selectonemenu .ui-selectonemenu-label { font-size: 0.75rem !important; padding: 4px 8px !important; }
+                        .reg-filter-panel .ui-selectonemenu-panel .ui-selectonemenu-items li { font-size: 0.75rem !important; padding: 4px 8px !important; }
+                        .reg-table .ui-datatable-tablewrapper table { font-size: 0.7rem !important; }
+                        .reg-table .ui-datatable-tablewrapper th { font-size: 0.7rem !important; padding: 3px 5px !important; }
+                        .reg-table .ui-datatable-tablewrapper td { font-size: 0.7rem !important; padding: 3px 5px !important; }
+                        .reg-table .ui-paginator { font-size: 0.7rem !important; }
+                        .reg-table .ui-paginator .ui-paginator-rpp-options { font-size: 0.7rem !important; }
+                    </style>
+
+                    <div class="card my-2">
+                        <div class="card-header bg-primary py-1">
+                            <span class="text-white fw-bold" style="font-size: 0.8rem;">Letters Entered by the Unit Register</span>
+                        </div>
+                        <div class="card-body p-2">
                             <div class="row">
                                 <div class="col">
-                                    <h:panelGrid columns="2" >
-                                        <p:panelGrid columns="2"  class="border border-light">
+                                    <h:panelGrid columns="2" class="reg-filter-panel">
+                                        <p:panelGrid columns="2" class="border border-light">
 
-                                            <h:outputLabel class="h6 fw-bold" value="Filter output"></h:outputLabel>
-                                            <h:selectOneMenu value="#{letterController.searchFilterType}" class="form-select">
+                                            <h:outputLabel class="fw-bold" style="font-size: 0.75rem;" value="Filter output"></h:outputLabel>
+                                            <h:selectOneMenu value="#{letterController.searchFilterType}" class="form-select form-select-sm">
                                                 <f:selectItems value="#{commonController.searchFilterTypes}" var="c"
                                                                itemLabel="#{c.label}" itemValue="#{c}"></f:selectItems>
                                             </h:selectOneMenu>
 
-                                            <h:outputLabel class="fs-6" value="From:"></h:outputLabel>
-                                            <p:datePicker monthNavigator="true" yearNavigator="true" 
-                                                          class="fs-6 fw-bold"   
+                                            <h:outputLabel style="font-size: 0.75rem;" value="From:"></h:outputLabel>
+                                            <p:datePicker monthNavigator="true" yearNavigator="true"
                                                           showTime="true"
                                                           pattern="dd MMMM yyyy hh:mm a"
                                                           value="#{letterController.fromDate}">
                                             </p:datePicker>
-                                            <h:outputLabel class="fs-6" value="To:"></h:outputLabel>
-                                            <p:datePicker class="fs-6 fw-bold"  
-                                                          monthNavigator="true" yearNavigator="true" 
+                                            <h:outputLabel style="font-size: 0.75rem;" value="To:"></h:outputLabel>
+                                            <p:datePicker monthNavigator="true" yearNavigator="true"
                                                           showTime="true"
                                                           pattern="dd MMMM yyyy hh:mm a"
                                                           value="#{letterController.toDate}">
                                             </p:datePicker>
+
+                                            <h:outputLabel style="font-size: 0.75rem;" value="Received Method:"></h:outputLabel>
+                                            <p:selectOneMenu value="#{letterController.receivedMethodFilter}" class="form-select form-select-sm">
+                                                <f:selectItem itemLabel="All" itemValue="" />
+                                                <f:selectItems value="#{itemApplicationController.letterReceiveCategories}"
+                                                               var="i"
+                                                               itemLabel="#{i.name}"
+                                                               itemValue="#{i}" />
+                                            </p:selectOneMenu>
                                         </p:panelGrid>
 
                                         <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.listLettersReceived()}" class="btn btn-danger form-control"></h:commandButton>
-                                             <h:commandButton value="Print"  class="btn btn-success form-control">
-                                                <p:printer target="tblPrint" ></p:printer>
+                                            <h:commandButton value="Process" action="#{letterController.listLettersReceived()}" class="btn btn-primary btn-sm form-control" style="font-size: 0.75rem;"></h:commandButton>
+                                            <h:commandButton value="Print" class="btn btn-secondary btn-sm form-control" style="font-size: 0.75rem;">
+                                                <p:printer target="gridPrint" ></p:printer>
                                             </h:commandButton>
-                                            <h:commandButton value="Download"  class="btn btn-warning form-control">
+                                            <h:commandButton value="Download" class="btn btn-outline-primary btn-sm form-control" style="font-size: 0.75rem;">
                                                 <p:dataExporter target="tbl" type="xls" fileName="List of Letters" ></p:dataExporter>
                                             </h:commandButton>
-                                           
                                         </h:panelGrid>
 
                                     </h:panelGrid>
 
+                                    <div class="reg-table">
+                                        <p:dataTable value="#{letterController.items}"
+                                                     var="h"
+                                                     rowKey="#{h.id}"
+                                                     id="tbl"
+                                                     rowIndexVar="rowIndex"
+                                                     style="width: 100%;"
+                                                     rows="10"
+                                                     paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                                     rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                                     >
 
-
-
-                                    <p:dataTable value="#{letterController.items}"
-                                                 var="h" 
-                                                 rowKey="#{h.id}"
-                                                 id="tbl"
-
-                                                 style="width: 100%;"
-
-                                                 rows="10"
-                                                 paginator="true"
-                                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                                 rowsPerPageTemplate="5,10,{ShowAll|'All'}"
-
-                                                 >
-
-
-                                        <p:column headerText="Letter ID">
-                                            <h:outputText value="#{h.id}" >
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Letter Date">
-                                            <h:outputText value="#{h.documentDate}" >
-                                                <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Received Date">
-                                            <h:outputText value="#{h.receivedDate}" >
-                                                <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Receive Method">
-                                            <h:outputText value="#{h.receivedAs.name}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Number">
-                                            <h:outputText value="#{h.documentNumber}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Title">
-                                            <h:outputText value="#{h.documentName}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Sent From">
-                                            <h:panelGroup rendered="#{h.fromInstitution.name eq 'Personal'}" >
-                                                <h:outputLabel value="#{h.senderName}"></h:outputLabel>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{h.fromInstitution.name ne 'Personal'}" >
-                                                <h:outputLabel value="#{h.fromInstitution.name}"></h:outputLabel>
-                                            </h:panelGroup>
-                                            <h:outputLabel value="#{h.fromWebUser.person.nameWithTitle}"></h:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Assigned to">
-                                            <h:outputText value="#{h.currentOwner.person.name}" ></h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Actions" exportable="false" styleClass="d-print-none">
-                                            <h:commandButton value="View" action="#{letterController.toLetterView()}"  class="btn btn-success fw-bold m-2 ">
-                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
-                                            </h:commandButton>
-                                            <h:commandButton value="Accept" 
-                                                             rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed ne true}" 
-                                                             action="#{letterController.toAcceptAssignedLetter()}"  class="btn btn-success fw-bold m-2 ">
-                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
-                                            </h:commandButton>
-                                            <h:commandButton value="Mark as NOT Accepted" 
-                                                             rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed eq true}" 
-                                                             action="#{letterController.toReverseAcceptMyLetter()}"  class="btn btn-success fw-bold m-2 ">
-                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
-                                            </h:commandButton>
-                                            <h:commandButton value="Assign &amp; Accept"
-                                                             rendered="#{h.currentOwner ne webUserController.loggedUser}" 
-                                                             action="#{letterController.toAssignAndAcceptLetterMySelf()}"  class="btn btn-success fw-bold m-2 ">
-                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
-                                            </h:commandButton>
-                                        </p:column>
-                                    </p:dataTable>
+                                            <p:column headerText="No." style="width: 2.5em;">
+                                                <h:outputText value="#{rowIndex + 1}" />
+                                            </p:column>
+                                            <p:column headerText="Letter ID">
+                                                <h:outputText value="#{h.id}" />
+                                            </p:column>
+                                            <p:column headerText="Letter Date">
+                                                <h:outputText value="#{h.documentDate}" >
+                                                    <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Received Date">
+                                                <h:outputText value="#{h.receivedDate}" >
+                                                    <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Receive Method">
+                                                <h:outputText value="#{h.receivedAs.name}" />
+                                            </p:column>
+                                            <p:column headerText="Number">
+                                                <h:outputText value="#{h.documentNumber}" />
+                                            </p:column>
+                                            <p:column headerText="Title">
+                                                <h:outputText value="#{h.documentName}" />
+                                            </p:column>
+                                            <p:column headerText="Sent From">
+                                                <h:panelGroup rendered="#{h.fromInstitution.name eq 'Personal'}" >
+                                                    <h:outputLabel value="#{h.senderName}"></h:outputLabel>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{h.fromInstitution.name ne 'Personal'}" >
+                                                    <h:outputLabel value="#{h.fromInstitution.name}"></h:outputLabel>
+                                                </h:panelGroup>
+                                                <h:outputLabel value="#{h.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Assigned to">
+                                                <h:outputText value="#{h.currentOwner.person.name}" />
+                                            </p:column>
+                                            <p:column headerText="Actions" exportable="false" styleClass="d-print-none">
+                                                <h:commandButton value="View" action="#{letterController.toLetterView()}" class="btn btn-primary btn-sm fw-bold m-1" style="font-size: 0.65rem;">
+                                                    <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" />
+                                                </h:commandButton>
+                                                <h:commandButton value="Accept"
+                                                                 rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed ne true}"
+                                                                 action="#{letterController.toAcceptAssignedLetter()}" class="btn btn-primary btn-sm fw-bold m-1" style="font-size: 0.65rem;">
+                                                    <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" />
+                                                </h:commandButton>
+                                                <h:commandButton value="Mark as NOT Accepted"
+                                                                 rendered="#{h.currentOwner eq webUserController.loggedUser and h.completed eq true}"
+                                                                 action="#{letterController.toReverseAcceptMyLetter()}" class="btn btn-primary btn-sm fw-bold m-1" style="font-size: 0.65rem;">
+                                                    <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" />
+                                                </h:commandButton>
+                                                <h:commandButton value="Assign &amp; Accept"
+                                                                 rendered="#{h.currentOwner ne webUserController.loggedUser}"
+                                                                 action="#{letterController.toAssignAndAcceptLetterMySelf()}" class="btn btn-primary btn-sm fw-bold m-1" style="font-size: 0.65rem;">
+                                                    <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" />
+                                                </h:commandButton>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <h:panelGrid columns="1" 
-                                 styleClass="alignTop" 
-                                 id="gridPrint" 
+                    <!-- Print Section - hidden on screen, shown by p:printer -->
+                    <h:panelGrid columns="1"
+                                 styleClass="alignTop"
+                                 id="gridPrint"
                                  class="d-none d-print-block m-0 p-0 W-100" >
 
                         <h:panelGrid columns="1" class="d-none d-print-block m-0 p-0 W-100" >
-                            <h:outputText value="#{webUserController.loggedUser.institution.name}" ></h:outputText>
-                            <h:outputText value="#{webUserController.loggedUser.institution.address}" ></h:outputText>
-                            <h:outputText value="#{webUserController.loggedUser.institution.phone}" ></h:outputText>
+                            <h:outputText style="font-weight: bold; color: black; font-size: 12pt;" value="#{webUserController.loggedUser.institution.name}" />
+                            <h:outputText style="color: black; font-size: 9pt;" value="#{webUserController.loggedUser.institution.address}" />
+                            <h:outputText style="color: black; font-size: 9pt;" value="Tel. #{webUserController.loggedUser.institution.phone}" />
                         </h:panelGrid>
 
-                        <h:panelGrid columns="1" class="d-none d-print-block m-0 p-0 W-100"  rendered="#{letterController.webUserCopy ne null}">
-                            <h:outputText value="#{letterController.webUserCopy .person.name}" ></h:outputText>
+                        <h:panelGrid columns="5" class="d-none d-print-block m-0 p-0 W-100" >
+                            <h:outputText style="font-weight: bold; color: black; font-size: 10pt;" value="Letters Received Register" />
+                            <p:spacer />
+                            <h:outputText style="color: black; font-size: 9pt;" value="From : " />
+                            <h:outputText style="color: black; font-size: 9pt;" value="#{letterController.fromDate}">
+                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" />
+                            </h:outputText>
+                            <h:outputText style="color: black; font-size: 9pt;" value=" " />
                         </h:panelGrid>
 
+                        <h:panelGrid columns="3" class="d-none d-print-block m-0 p-0 W-100" >
+                            <h:outputText style="color: black; font-size: 9pt;" value=" " />
+                            <h:outputText style="color: black; font-size: 9pt;" value="To : " />
+                            <h:outputText style="color: black; font-size: 9pt;" value="#{letterController.toDate}">
+                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" />
+                            </h:outputText>
+                        </h:panelGrid>
 
                         <p:dataTable reflow="false" id="tblPrint" value="#{letterController.items}"
-                                     rendered="true" rowIndexVar="n" var="c" paginator="false" class=" m-0 p-0  W-100"
-                                     rowKey="#{c.id}"
-                                     >
-                            <p:column headerText="ID" style="width: 6em;">
-                                <f:facet name="header" >
-                                    <h:outputText value="ID" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                     rendered="true" rowIndexVar="n" var="c" paginator="false"
+                                     class="m-0 p-0 W-100"
+                                     rowKey="#{c.id}" >
+                            <p:column headerText="No." style="width: 3em;">
+                                <f:facet name="header">
+                                    <h:outputText value="No." style="font-weight: bold; color: black;" class="fw-bold" />
                                 </f:facet>
-                                <h:outputLabel value="#{c.id}"></h:outputLabel>
+                                <h:outputLabel style="color: black;" value="#{n + 1}" />
                             </p:column>
-                            <p:column headerText="Letter Date"  style="width: 7em;">
-                                <f:facet name="header" >
-                                    <h:outputText value="Letter Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                            <p:column headerText="ID" style="width: 4em;">
+                                <f:facet name="header">
+                                    <h:outputText value="ID" style="font-weight: bold; color: black;" class="fw-bold" />
                                 </f:facet>
-                                <h:outputLabel value="#{c.documentDate}">
-                                    <f:convertDateTime pattern="dd/MM/yy" ></f:convertDateTime>
+                                <h:outputLabel style="color: black;" value="#{c.id}" />
+                            </p:column>
+                            <p:column headerText="Letter Date" style="width: 6em;">
+                                <f:facet name="header">
+                                    <h:outputText value="Letter Date" style="font-weight: bold; color: black;" class="fw-bold" />
+                                </f:facet>
+                                <h:outputLabel style="color: black;" value="#{c.documentDate}">
+                                    <f:convertDateTime pattern="dd/MM/yy" />
                                 </h:outputLabel>
                             </p:column>
-                            <p:column headerText="Stamp Date"   style="width: 7em;">
-                                <f:facet name="header" >
-                                    <h:outputText value="Stamp Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                            <p:column headerText="Received Date" style="width: 6em;">
+                                <f:facet name="header">
+                                    <h:outputText value="Received Date" style="font-weight: bold; color: black;" class="fw-bold" />
                                 </f:facet>
-                                <h:outputLabel value="#{c.receivedDate}">
-                                    <f:convertDateTime pattern="dd/MM/yy" ></f:convertDateTime>
+                                <h:outputLabel style="color: black;" value="#{c.receivedDate}">
+                                    <f:convertDateTime pattern="dd/MM/yy" />
                                 </h:outputLabel>
                             </p:column>
-                            <p:column headerText="Method"   style="width: 6em; overflow: hidden;">
-                                <f:facet name="header" >
-                                    <h:outputText value="Method" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                            <p:column headerText="Method" style="width: 5em; overflow: hidden;">
+                                <f:facet name="header">
+                                    <h:outputText value="Method" style="font-weight: bold; color: black;" class="fw-bold" />
                                 </f:facet>
-                                <h:outputLabel value="#{c.receivedAs.name}"></h:outputLabel>
+                                <h:outputLabel style="color: black;" value="#{c.receivedAs.name}" />
                             </p:column>
-                            <p:column headerText="From"   style="width: 8em; overflow: hidden;">
-                                <f:facet name="header" >
-                                    <h:outputText value="From" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                            <p:column headerText="From" style="width: 8em; overflow: hidden;">
+                                <f:facet name="header">
+                                    <h:outputText value="From" style="font-weight: bold; color: black;" class="fw-bold" />
                                 </f:facet>
-                                <h:panelGroup rendered="#{c.fromInstitution.name eq 'Personal'}" >
-                                    <h:outputLabel value="#{c.senderName}"></h:outputLabel>
+                                <h:panelGroup rendered="#{c.fromInstitution.name eq 'Personal'}">
+                                    <h:outputLabel style="color: black;" value="#{c.senderName}" />
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{c.fromInstitution.name ne 'Personal'}" >
-                                    <h:outputLabel value="#{c.fromInstitution.name}"></h:outputLabel>
+                                <h:panelGroup rendered="#{c.fromInstitution.name ne 'Personal'}">
+                                    <h:outputLabel style="color: black;" value="#{c.fromInstitution.name}" />
                                 </h:panelGroup>
-                                <h:outputLabel value="#{c.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+                                <h:outputLabel style="color: black;" value="#{c.fromWebUser.person.nameWithTitle}" />
                             </p:column>
-                            <p:column headerText="Letter Number"   style="width: 8em; overflow: hidden;">
-                                <f:facet name="header" >
-                                    <h:outputText value="Letter Number" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                            <p:column headerText="Letter Number" style="width: 7em; overflow: hidden;">
+                                <f:facet name="header">
+                                    <h:outputText value="Letter Number" style="font-weight: bold; color: black;" class="fw-bold" />
                                 </f:facet>
-                                <h:outputLabel value="#{c.documentNumber }"></h:outputLabel>
+                                <h:outputLabel style="color: black;" value="#{c.documentNumber}" />
                             </p:column>
-                            <p:column headerText="Topic"   >
-                                <f:facet name="header" >
-                                    <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                            <p:column headerText="Topic">
+                                <f:facet name="header">
+                                    <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" />
                                 </f:facet>
-                                <h:outputLabel value="#{c.documentName}"></h:outputLabel>
+                                <h:outputLabel style="color: black;" value="#{c.documentName}" />
                             </p:column>
-                            <p:column headerText="Assigned To"
-                                      rendered="#{letterController.webUserCopy eq null}"
-                                      style="width: 8em; overflow: hidden;">
-                                <f:facet name="header" >
-                                    <h:outputText value="Assigned to" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                            <p:column headerText="Assigned To" style="width: 8em; overflow: hidden;">
+                                <f:facet name="header">
+                                    <h:outputText value="Assigned To" style="font-weight: bold; color: black;" class="fw-bold" />
                                 </f:facet>
-                                <h:outputLabel value="#{c.currentOwner.person.name}"></h:outputLabel>
+                                <h:outputLabel style="color: black;" value="#{c.currentOwner.person.name}" />
                             </p:column>
-
                         </p:dataTable>
-
 
                     </h:panelGrid>
 

@@ -111,6 +111,7 @@ public class LetterController implements Serializable {
 
     private boolean newHx;
     private Item previousLetterStatus;
+    private Item receivedMethodFilter;
 
     public LetterController() {
     }
@@ -469,6 +470,9 @@ public class LetterController implements Serializable {
                 + " where d.retired=false "
                 + " and d.documentType=:dt "
                 + " and d.institution=:ins ";
+        if (receivedMethodFilter != null) {
+            j += " and d.receivedAs=:rm ";
+        }
         j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
         j += " order by d." + searchFilterType.getCode();
         Map m = new HashMap();
@@ -476,6 +480,9 @@ public class LetterController implements Serializable {
         m.put("ins", webUserController.getLoggedInstitution());
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+        if (receivedMethodFilter != null) {
+            m.put("rm", receivedMethodFilter);
+        }
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
@@ -2035,6 +2042,14 @@ public class LetterController implements Serializable {
 
     public void setMinute(Item minute) {
         this.minute = minute;
+    }
+
+    public Item getReceivedMethodFilter() {
+        return receivedMethodFilter;
+    }
+
+    public void setReceivedMethodFilter(Item receivedMethodFilter) {
+        this.receivedMethodFilter = receivedMethodFilter;
     }
 
     public List<DocumentHistory> getDocumentHistories() {
