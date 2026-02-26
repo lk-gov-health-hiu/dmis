@@ -57,17 +57,15 @@
                             <h:panelGroup class="text-left" layout="block">
                                 <div class="row" >
                                     <div >
-                                        <p:selectOneMenu id="method"  value="#{letterController.selected.receivedAs}" 
+                                        <p:selectOneMenu id="method"  value="#{letterController.selected.receivedAs}"
                                                          class="form-control"
                                                          >
-                                            <f:ajax execute="method" render="regNo" event="blur" ></f:ajax>
                                             <f:ajax execute="method" render="regNo" event="change" ></f:ajax>
                                             <f:selectItem itemLabel="Select" ></f:selectItem>
                                             <f:selectItems value="#{itemApplicationController.letterReceiveCategories}"
                                                            var="i"
                                                            itemLabel="#{i.name}"
                                                            itemValue="#{i}" ></f:selectItems>
-                                            <p:ajax event="blur" process="@this" ></p:ajax>
                                         </p:selectOneMenu>
                                     </div>
                                     <div  >
@@ -134,7 +132,7 @@
                             </h:outputLabel>
 
                             <h:panelGroup layout="block" class="w-100" >
-                                <p:autoComplete id="from"  value="#{letterController.selected.fromInsOrUser}" 
+                                <p:autoComplete id="from"  value="#{letterController.selected.fromInsOrUser}"
                                                 class="form-control"
                                                 completeMethod="#{letterController.completeInsOrUsersByWords}"
                                                 var="insf"
@@ -145,8 +143,7 @@
                                                 itemLabel="#{insf.displayName}"
                                                 itemValue="#{insf}"
                                                 >
-                                    <f:ajax execute="method" render="fromPerson" event="blur" ></f:ajax>
-                                    <f:ajax execute="method" render="fromPerson" event="itemSelect" ></f:ajax>
+                                    <p:ajax event="itemSelect" process="from" update="fromPerson" ></p:ajax>
 
                                 </p:autoComplete>
                                 <h:panelGroup id="fromPerson" class="w-25 float-left" >

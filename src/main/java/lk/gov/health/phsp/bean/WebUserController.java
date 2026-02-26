@@ -193,7 +193,13 @@ public class WebUserController implements Serializable {
 
     @PreDestroy
     public void sessionDestroy() {
-        userTransactionController.recordTransaction("Invalidating the Session", this.toString());
+        try {
+            userTransactionController.recordTransaction("Invalidating the Session", this.toString());
+        } catch (Exception e) {
+            // Avoid ConcurrentModificationException during Weld session context destruction.
+            // Calling other session-scoped CDI beans from @PreDestroy is unsafe as Weld is
+            // already iterating over the session bean map at this point.
+        }
     }
 
     public void onResize(ColumnResizeEvent event) {
