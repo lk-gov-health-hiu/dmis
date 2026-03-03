@@ -6,11 +6,11 @@ import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.DocumentFacade;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -104,7 +104,14 @@ public class LetterController implements Serializable {
 
     private Upload removingUpload;
 
+    private List<DocumentHistory> selectedAssignments;
+    private DocumentHistory removingAssignment;
+    private List<DocumentHistory> selectedCopyForwards;
+    private DocumentHistory removingCopyForward;
+
     private boolean newHx;
+    private Item previousLetterStatus;
+    private Item receivedMethodFilter;
 
     public LetterController() {
     }
@@ -216,6 +223,48 @@ public class LetterController implements Serializable {
         deletingHistory.setRetiredAt(new Date());
         deletingHistory.setRetiredBy(webUserController.getLoggedUser());
         saveDocumentHx(deletingHistory);
+        return toLetterView();
+    }
+
+    public String removeAssignment() {
+        if (removingAssignment == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return "";
+        }
+        removingAssignment.setRetired(true);
+        removingAssignment.setRetiredAt(new Date());
+        removingAssignment.setRetiredBy(webUserController.getLoggedUser());
+        saveDocumentHx(removingAssignment);
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Assignment_Removed);
+        docHx.setDocument(removingAssignment.getDocument());
+        docHx.setToUser(removingAssignment.getToUser());
+        docHx.setInstitution(webUserController.getLoggedInstitution());
+        saveDocumentHx(docHx);
+
+        JsfUtil.addSuccessMessage("Assignment removed successfully");
+        return toLetterView();
+    }
+
+    public String removeCopyForward() {
+        if (removingCopyForward == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return "";
+        }
+        removingCopyForward.setRetired(true);
+        removingCopyForward.setRetiredAt(new Date());
+        removingCopyForward.setRetiredBy(webUserController.getLoggedUser());
+        saveDocumentHx(removingCopyForward);
+
+        DocumentHistory docHx = new DocumentHistory();
+        docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward_Removed);
+        docHx.setDocument(removingCopyForward.getDocument());
+        docHx.setToInsOrUser(removingCopyForward.getToInsOrUser());
+        docHx.setInstitution(webUserController.getLoggedInstitution());
+        saveDocumentHx(docHx);
+
+        JsfUtil.addSuccessMessage("Copy/Forward removed successfully");
         return toLetterView();
     }
 
@@ -365,9 +414,32 @@ public class LetterController implements Serializable {
 
     }
 
+    public void searchLetterByDate() {
+        if (fromDate == null || toDate == null) {
+            JsfUtil.addErrorMessage("Please select both From Date and To Date");
+            return;
+        }
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.DOCUMENT_DATE;
+        }
+        String j = "select d "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt "
+                + " and d.institution=:ins ";
+        j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
+        j += " order by d." + searchFilterType.getCode() + " desc";
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
     public String toListLetters() {
         items = null;
-        return "/document/letter_list";
+        return "/document/letter_list?faces-redirect=true";
     }
 
     public void listLetters() {
@@ -398,6 +470,9 @@ public class LetterController implements Serializable {
                 + " where d.retired=false "
                 + " and d.documentType=:dt "
                 + " and d.institution=:ins ";
+        if (receivedMethodFilter != null) {
+            j += " and d.receivedAs=:rm ";
+        }
         j += " and (d." + searchFilterType.getCode() + " between :fd and :td ) ";
         j += " order by d." + searchFilterType.getCode();
         Map m = new HashMap();
@@ -405,6 +480,9 @@ public class LetterController implements Serializable {
         m.put("ins", webUserController.getLoggedInstitution());
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+        if (receivedMethodFilter != null) {
+            m.put("rm", receivedMethodFilter);
+        }
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
@@ -482,6 +560,417 @@ public class LetterController implements Serializable {
         return c;
     }
 
+    public Long countMyLettersToAcceptAll() {
+        Long c = 0l;
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=:c ";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("c", false);
+        c = documentHxFacade.countByJpql(j, m);
+        return c;
+    }
+
+    public Long countMyLettersAcceptedToday() {
+        Long c = 0l;
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=:c "
+                + " and h.completedAt between :fd and :td ";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("fd", CommonController.startOfTheDate());
+        m.put("td", CommonController.endOfTheDate());
+        m.put("c", true);
+        c = documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+        return c;
+    }
+
+    public Long countCopyForwardsToMyInstitutionToReceive() {
+        Long c = 0l;
+        Institution loggedInstitution = webUserController.getLoggedInstitution();
+        List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
+
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toInstitution=:ti "
+                + " and h.completed=:c ";
+        m.put("ti", loggedInstitution);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("c", false);
+        c = documentHxFacade.countByJpql(j, m);
+
+        if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
+            m = new HashMap();
+            j = "select count(h) "
+                    + " from DocumentHistory h "
+                    + " where h.retired=false "
+                    + " and h.historyType =:ht "
+                    + " and h.toUser in :us "
+                    + " and h.completed=:c ";
+            m.put("us", usersForMyInstitute);
+            m.put("ht", HistoryType.Letter_Copy_or_Forward);
+            m.put("c", false);
+            Long c2 = documentHxFacade.countByJpql(j, m);
+            if (c2 != null) {
+                c += c2;
+            }
+        }
+        return c;
+    }
+
+    public Long countCopyForwardsReceivedToday() {
+        Long c = 0l;
+        Institution loggedInstitution = webUserController.getLoggedInstitution();
+        List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
+        Date todayStart = CommonController.startOfTheDate();
+        Date todayEnd = CommonController.endOfTheDate();
+
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toInstitution=:ti "
+                + " and h.completed=:c "
+                + " and h.completedAt between :fd and :td ";
+        m.put("ti", loggedInstitution);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("c", true);
+        m.put("fd", todayStart);
+        m.put("td", todayEnd);
+        c = documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+
+        if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
+            m = new HashMap();
+            j = "select count(h) "
+                    + " from DocumentHistory h "
+                    + " where h.retired=false "
+                    + " and h.historyType =:ht "
+                    + " and h.toUser in :us "
+                    + " and h.completed=:c "
+                    + " and h.completedAt between :fd and :td ";
+            m.put("us", usersForMyInstitute);
+            m.put("ht", HistoryType.Letter_Copy_or_Forward);
+            m.put("c", true);
+            m.put("fd", todayStart);
+            m.put("td", todayEnd);
+            Long c2 = documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+            if (c2 != null) {
+                c += c2;
+            }
+        }
+        return c;
+    }
+
+    public Long countCopyForwardsSentByMyInstitutionLast7Days() {
+        Long c = 0l;
+        Institution loggedInstitution = webUserController.getLoggedInstitution();
+        List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        Date sevenDaysAgo = CommonController.startOfTheDate(cal.getTime());
+        Date now = CommonController.endOfTheDate();
+
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.fromInstitution=:fi "
+                + " and h.createdAt between :fd and :td ";
+        m.put("fi", loggedInstitution);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", sevenDaysAgo);
+        m.put("td", now);
+        c = documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+
+        if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
+            m = new HashMap();
+            j = "select count(h) "
+                    + " from DocumentHistory h "
+                    + " where h.retired=false "
+                    + " and h.historyType =:ht "
+                    + " and h.fromUser in :us "
+                    + " and h.fromInstitution is null "
+                    + " and h.createdAt between :fd and :td ";
+            m.put("us", usersForMyInstitute);
+            m.put("ht", HistoryType.Letter_Copy_or_Forward);
+            m.put("fd", sevenDaysAgo);
+            m.put("td", now);
+            Long c2 = documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+            if (c2 != null) {
+                c += c2;
+            }
+        }
+        return c;
+    }
+
+    public List<Object[]> getTopInstitutionsCopyForwardsSentByMyInstitution(int limit) {
+        Institution loggedInstitution = webUserController.getLoggedInstitution();
+        List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
+
+        Map<Long, Object[]> institutionDataMap = new HashMap<>();
+
+        Map m = new HashMap();
+        String j = "select h.toInstitution, h.completed, count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.fromInstitution=:fi "
+                + " and h.toInstitution is not null "
+                + " group by h.toInstitution, h.completed "
+                + " order by count(h) desc";
+        m.put("fi", loggedInstitution);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+
+        List<Object[]> results = documentHxFacade.findObjectsArrayByJpql(j, m, TemporalType.DATE);
+
+        if (results != null) {
+            for (Object[] row : results) {
+                Institution inst = (Institution) row[0];
+                Boolean completed = (Boolean) row[1];
+                Long count = (Long) row[2];
+
+                if (inst != null && inst.getId() != null) {
+                    Object[] data = institutionDataMap.get(inst.getId());
+                    if (data == null) {
+                        data = new Object[]{inst, 0L, 0L};
+                        institutionDataMap.put(inst.getId(), data);
+                    }
+                    if (completed != null && completed) {
+                        data[1] = ((Long) data[1]) + count;
+                    } else {
+                        data[2] = ((Long) data[2]) + count;
+                    }
+                }
+            }
+        }
+
+        if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
+            m = new HashMap();
+            j = "select h.toInstitution, h.completed, count(h) "
+                    + " from DocumentHistory h "
+                    + " where h.retired=false "
+                    + " and h.historyType =:ht "
+                    + " and h.fromUser in :us "
+                    + " and h.fromInstitution is null "
+                    + " and h.toInstitution is not null "
+                    + " group by h.toInstitution, h.completed "
+                    + " order by count(h) desc";
+            m.put("us", usersForMyInstitute);
+            m.put("ht", HistoryType.Letter_Copy_or_Forward);
+
+            List<Object[]> userResults = documentHxFacade.findObjectsArrayByJpql(j, m, TemporalType.DATE);
+            if (userResults != null) {
+                for (Object[] row : userResults) {
+                    Institution inst = (Institution) row[0];
+                    Boolean completed = (Boolean) row[1];
+                    Long count = (Long) row[2];
+
+                    if (inst != null && inst.getId() != null) {
+                        Object[] data = institutionDataMap.get(inst.getId());
+                        if (data == null) {
+                            data = new Object[]{inst, 0L, 0L};
+                            institutionDataMap.put(inst.getId(), data);
+                        }
+                        if (completed != null && completed) {
+                            data[1] = ((Long) data[1]) + count;
+                        } else {
+                            data[2] = ((Long) data[2]) + count;
+                        }
+                    }
+                }
+            }
+        }
+
+        List<Object[]> sortedList = new ArrayList<>(institutionDataMap.values());
+        sortedList.sort((a, b) -> {
+            Long totalA = ((Long) a[1]) + ((Long) a[2]);
+            Long totalB = ((Long) b[1]) + ((Long) b[2]);
+            return totalB.compareTo(totalA);
+        });
+
+        if (sortedList.size() > limit) {
+            return sortedList.subList(0, limit);
+        }
+        return sortedList;
+    }
+
+    public String toMyLettersToAcceptAll() {
+        documentHistories = null;
+        fillMyLettersToAcceptAll();
+        return "/institution/accept_my_assigned_letters?faces-redirect=true";
+    }
+
+    public void fillMyLettersToAcceptAll() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=:c "
+                + " order by h.id desc";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("c", false);
+        documentHistories = documentHxFacade.findByJpql(j, m);
+    }
+
+    public String toMyLettersAcceptedToday() {
+        documentHistories = null;
+        fillMyLettersAcceptedToday();
+        return "/institution/accepted_my_assigned_letters?faces-redirect=true";
+    }
+
+    public void fillMyLettersAcceptedToday() {
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toUser=:tu "
+                + " and h.completed=:c "
+                + " and h.completedAt between :fd and :td "
+                + " order by h.id desc";
+        m.put("tu", webUserController.getLoggedUser());
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("fd", CommonController.startOfTheDate());
+        m.put("td", CommonController.endOfTheDate());
+        m.put("c", true);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
+
+    public String toCopyForwardsToMyInstitutionToReceive() {
+        documentHistories = null;
+        setFromDate(CommonController.startOfTheYear());
+        setToDate(CommonController.endOfTheDate());
+        fillForwardCopyLettersToReceive();
+        return "/institution/accept_copy_forwards?faces-redirect=true";
+    }
+
+    public String toCopyForwardsReceivedToday() {
+        documentHistories = null;
+        fillCopyForwardsReceivedToday();
+        return "/institution/accepted_my_copy_forwarded_letters?faces-redirect=true";
+    }
+
+    public void fillCopyForwardsReceivedToday() {
+        Institution loggedInstitution = webUserController.getLoggedInstitution();
+        List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
+        Date todayStart = CommonController.startOfTheDate();
+        Date todayEnd = CommonController.endOfTheDate();
+
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toInstitution=:ti "
+                + " and h.completed=:c "
+                + " and h.completedAt between :fd and :td "
+                + " order by h.id desc";
+        m.put("ti", loggedInstitution);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("c", true);
+        m.put("fd", todayStart);
+        m.put("td", todayEnd);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        if (documentHistories == null) {
+            documentHistories = new ArrayList<>();
+        }
+
+        if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
+            m = new HashMap();
+            j = "select h "
+                    + " from DocumentHistory h "
+                    + " where h.retired=false "
+                    + " and h.historyType =:ht "
+                    + " and h.toUser in :us "
+                    + " and h.completed=:c "
+                    + " and h.completedAt between :fd and :td "
+                    + " order by h.id desc";
+            m.put("us", usersForMyInstitute);
+            m.put("ht", HistoryType.Letter_Copy_or_Forward);
+            m.put("c", true);
+            m.put("fd", todayStart);
+            m.put("td", todayEnd);
+            List<DocumentHistory> additionalHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+            if (additionalHistories != null) {
+                documentHistories.addAll(additionalHistories);
+            }
+        }
+    }
+
+    public String toCopyForwardsSentByMyInstitutionLast7Days() {
+        documentHistories = null;
+        fillCopyForwardsSentByMyInstitutionLast7Days();
+        return "/institution/my_copy_forwards_sent?faces-redirect=true";
+    }
+
+    public void fillCopyForwardsSentByMyInstitutionLast7Days() {
+        Institution loggedInstitution = webUserController.getLoggedInstitution();
+        List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        Date sevenDaysAgo = CommonController.startOfTheDate(cal.getTime());
+        Date now = CommonController.endOfTheDate();
+
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.fromInstitution=:fi "
+                + " and h.createdAt between :fd and :td "
+                + " order by h.id desc";
+        m.put("fi", loggedInstitution);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", sevenDaysAgo);
+        m.put("td", now);
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        if (documentHistories == null) {
+            documentHistories = new ArrayList<>();
+        }
+
+        if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
+            m = new HashMap();
+            j = "select h "
+                    + " from DocumentHistory h "
+                    + " where h.retired=false "
+                    + " and h.historyType =:ht "
+                    + " and h.fromUser in :us "
+                    + " and h.fromInstitution is null "
+                    + " and h.createdAt between :fd and :td "
+                    + " order by h.id desc";
+            m.put("us", usersForMyInstitute);
+            m.put("ht", HistoryType.Letter_Copy_or_Forward);
+            m.put("fd", sevenDaysAgo);
+            m.put("td", now);
+            List<DocumentHistory> additionalHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+            if (additionalHistories != null) {
+                documentHistories.addAll(additionalHistories);
+            }
+        }
+    }
+
     public void fillLettersToAssign() {
         System.out.println("fillLettersToAssign");
         Map m = new HashMap();
@@ -517,11 +1006,12 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType =:ht "
-                + " and h.toUser=:tu "
+                + " and (h.toUser=:tu or h.toInstitution=:ti) "
                 + " and h.completed=false ";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
         m.put("tu", webUserController.getLoggedUser());
+        m.put("ti", webUserController.getLoggedInstitution());
         m.put("ht", HistoryType.Letter_Copy_or_Forward);
         m.put("fd", fromDate);
         m.put("td", toDate);
@@ -551,11 +1041,12 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType =:ht "
-                + " and h.toUser=:tu "
+                + " and (h.toUser=:tu or h.toInstitution=:ti) "
                 + " and h.completed=true ";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
         m.put("tu", webUserController.getLoggedUser());
+        m.put("ti", webUserController.getLoggedInstitution());
         m.put("ht", HistoryType.Letter_Copy_or_Forward);
         m.put("fd", fromDate);
         m.put("td", toDate);
@@ -790,8 +1281,44 @@ public class LetterController implements Serializable {
             selectedHistory.setCompletedBy(webUserController.getLoggedUser());
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
+        } else {
+            // Check if status changed and create history entry
+            if (hasStatusChanged()) {
+                DocumentHistory docHx = new DocumentHistory();
+                docHx.setHistoryType(HistoryType.Letter_Status_Changed);
+                docHx.setDocument(selected);
+                docHx.setItem(selected.getLetterStatus());
+                docHx.setInstitution(webUserController.getLoggedInstitution());
+                docHx.setCompleted(true);
+                docHx.setCompletedAt(new Date());
+                docHx.setCompletedBy(webUserController.getLoggedUser());
+                String comment = "";
+                if (previousLetterStatus != null) {
+                    comment = "From " + previousLetterStatus.getName();
+                }
+                if (selected.getLetterStatus() != null) {
+                    if (!comment.isEmpty()) {
+                        comment += " to " + selected.getLetterStatus().getName();
+                    } else {
+                        comment = "To " + selected.getLetterStatus().getName();
+                    }
+                }
+                docHx.setComments(comment);
+                saveDocumentHx(docHx);
+                previousLetterStatus = selected.getLetterStatus();
+            }
         }
         return toLetterView();
+    }
+
+    private boolean hasStatusChanged() {
+        if (previousLetterStatus == null && selected.getLetterStatus() == null) {
+            return false;
+        }
+        if (previousLetterStatus == null || selected.getLetterStatus() == null) {
+            return true;
+        }
+        return !previousLetterStatus.getId().equals(selected.getLetterStatus().getId());
     }
 
     public String saveAndNew() {
@@ -833,37 +1360,38 @@ public class LetterController implements Serializable {
             return "";
         }
         newHx = false;
-        return "/document/letter";
+        previousLetterStatus = selected.getLetterStatus();
+        return "/document/letter?faces-redirect=true";
     }
 
     public String toReportsLetterCopyForwardActions() {
         documentHistories = null;
-        return "/institution/letter_copy_forward_register";
+        return "/institution/letter_copy_forward_register?faces-redirect=true";
     }
 
     public String toReportsLetterAcceptRegister() {
         documentHistories = null;
-        return "/institution/letter_accept_register";
+        return "/institution/letter_accept_register?faces-redirect=true";
     }
 
     public String toReportsLetterReceived() {
         documentHistories = null;
-        return "/institution/letter_receive_register";
+        return "/institution/letter_receive_register?faces-redirect=true";
     }
 
     public String toReportsInstitutionCountsLetters() {
         institutionCounts = null;
-        return "/national/institution_counts_letters";
+        return "/national/institution_counts_letters?faces-redirect=true";
     }
-    
+
     public String toReportsDailyCountsLetters() {
         institutionCounts = null;
-        return "/national/daily_counts_letters";
+        return "/national/daily_counts_letters?faces-redirect=true";
     }
 
     public String toAssignMultipleLetters() {
         items = null;
-        return "/institution/assign_multiple_letters";
+        return "/institution/assign_multiple_letters?faces-redirect=true";
     }
 
     public void fillForwardCopyActions() {
@@ -924,17 +1452,16 @@ public class LetterController implements Serializable {
         m.put("td", toDate);
 
         List<DocumentHistory> tdhx = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-        
-        if(tdhx!=null){
+
+        if (tdhx != null) {
             documentHistories.addAll(tdhx);
         }
-        
 
     }
 
     public String toAcceptForwardCopyLettersToReceive() {
         documentHistories = null;
-        return "/institution/accept_copy_forwards";
+        return "/institution/accept_copy_forwards?faces-redirect=true";
     }
 
     public String toAcceptMyAssignedLetters() {
@@ -942,22 +1469,22 @@ public class LetterController implements Serializable {
         setFromDate(CommonController.startOfTheMonth());
         setToDate(CommonController.endOfTheMonth());
         fillMyLettersToAccept();
-        return "/institution/accept_my_assigned_letters";
+        return "/institution/accept_my_assigned_letters?faces-redirect=true";
     }
 
     public String toAcceptCopyForwardedLettersToMe() {
         documentHistories = null;
-        return "/institution/accept_my_copy_forwarded_letters";
+        return "/institution/accept_my_copy_forwarded_letters?faces-redirect=true";
     }
 
     public String toAcceptedMyAssignedLetters() {
         documentHistories = null;
-        return "/institution/accepted_my_assigned_letters";
+        return "/institution/accepted_my_assigned_letters?faces-redirect=true";
     }
 
     public String toAcceptedCopyForwardedLettersToMe() {
         documentHistories = null;
-        return "/institution/accepted_my_copy_forwarded_letters";
+        return "/institution/accepted_my_copy_forwarded_letters?faces-redirect=true";
     }
 
     public void acceptSelectedHistoryForCopyForward() {
@@ -1132,7 +1659,33 @@ public class LetterController implements Serializable {
 //        }
         selectedUploads = uploadFacade.findByJpql(j, m);
 
-        return "/document/letter_view";
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and h.historyType=:ht "
+                + " and h.institution=:ins "
+                + " order by h.id desc";
+        m = new HashMap();
+        m.put("doc", selected);
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("ins", webUserController.getLoggedInstitution());
+        selectedAssignments = documentHxFacade.findByJpql(j, m);
+
+        j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.document=:doc "
+                + " and h.historyType=:ht "
+                + " and h.institution=:ins "
+                + " order by h.id desc";
+        m = new HashMap();
+        m.put("doc", selected);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("ins", webUserController.getLoggedInstitution());
+        selectedCopyForwards = documentHxFacade.findByJpql(j, m);
+
+        return "/document/letter_view?faces-redirect=true";
     }
 
     public String toAcceptAssignedLetter() {
@@ -1491,6 +2044,14 @@ public class LetterController implements Serializable {
         this.minute = minute;
     }
 
+    public Item getReceivedMethodFilter() {
+        return receivedMethodFilter;
+    }
+
+    public void setReceivedMethodFilter(Item receivedMethodFilter) {
+        this.receivedMethodFilter = receivedMethodFilter;
+    }
+
     public List<DocumentHistory> getDocumentHistories() {
         return documentHistories;
     }
@@ -1529,6 +2090,38 @@ public class LetterController implements Serializable {
 
     public void setDeletingHistory(DocumentHistory deletingHistory) {
         this.deletingHistory = deletingHistory;
+    }
+
+    public List<DocumentHistory> getSelectedAssignments() {
+        return selectedAssignments;
+    }
+
+    public void setSelectedAssignments(List<DocumentHistory> selectedAssignments) {
+        this.selectedAssignments = selectedAssignments;
+    }
+
+    public DocumentHistory getRemovingAssignment() {
+        return removingAssignment;
+    }
+
+    public void setRemovingAssignment(DocumentHistory removingAssignment) {
+        this.removingAssignment = removingAssignment;
+    }
+
+    public List<DocumentHistory> getSelectedCopyForwards() {
+        return selectedCopyForwards;
+    }
+
+    public void setSelectedCopyForwards(List<DocumentHistory> selectedCopyForwards) {
+        this.selectedCopyForwards = selectedCopyForwards;
+    }
+
+    public DocumentHistory getRemovingCopyForward() {
+        return removingCopyForward;
+    }
+
+    public void setRemovingCopyForward(DocumentHistory removingCopyForward) {
+        this.removingCopyForward = removingCopyForward;
     }
 
     public List<DocumentHistory> getListedToAcceptCopyForwards() {
@@ -1601,9 +2194,19 @@ public class LetterController implements Serializable {
         }
 
         java.lang.Long getKey(String value) {
+            if (value == null) {
+                return 0l;
+            }
+            if (value.trim().equals("")) {
+                return 0l;
+            }
             java.lang.Long key;
-            key = Long.valueOf(value);
-            return key;
+            try {
+                key = Long.valueOf(value);
+                return key;
+            } catch (Exception e) {
+                return 0l;
+            }
         }
 
         String getStringKey(java.lang.Long value) {

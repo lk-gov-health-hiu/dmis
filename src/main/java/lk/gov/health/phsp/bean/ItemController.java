@@ -92,32 +92,32 @@ public class ItemController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toManageVtms() {
         vtms = itemApplicationController.findVtms();
-        return "/item/vtms";
+        return "/item/vtms?faces-redirect=true";
     }
 
     public String toManageVmps() {
         vmps = itemApplicationController.findVmps();
-        return "/item/vmps";
+        return "/item/vmps?faces-redirect=true";
     }
 
     public String toManageAmps() {
         amps = itemApplicationController.findAmps();
-        return "/item/amps";
+        return "/item/amps?faces-redirect=true";
     }
 
     public String toManageUnits() {
         units = itemApplicationController.findUnits();
-        return "/item/units";
+        return "/item/units?faces-redirect=true";
     }
 
     public String toManageDictionary() {
         items = itemApplicationController.findDictionaryItems();
-        return "/item/List";
+        return "/item/List?faces-redirect=true";
     }
 
     public String toAddDictionaryItem() {
         selected = new Item();
-        return "/item/item";
+        return "/item/item?faces-redirect=true";
     }
 
     public String toEditDictionaryItem() {
@@ -125,7 +125,7 @@ public class ItemController implements Serializable {
             JsfUtil.addErrorMessage("Please select an item to edit");
             return "";
         }
-        return "/item/item";
+        return "/item/item?faces-redirect=true";
     }
 
     public String toEditVtm() {
@@ -133,7 +133,7 @@ public class ItemController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
         }
-        return "/item/vtm";
+        return "/item/vtm?faces-redirect=true";
     }
 
     public String toEditVmp() {
@@ -141,7 +141,7 @@ public class ItemController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
         }
-        return "/item/vmp";
+        return "/item/vmp?faces-redirect=true";
     }
 
     public String toEditAmp() {
@@ -149,7 +149,7 @@ public class ItemController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
         }
-        return "/item/amp";
+        return "/item/amp?faces-redirect=true";
     }
 
     public String toEditUnit() {
@@ -157,30 +157,30 @@ public class ItemController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
         }
-        return "/item/unit";
+        return "/item/unit?faces-redirect=true";
     }
 
     public String toAddVtm() {
         vtm = new Item();
         vtm.setItemType(ItemType.Vtm);
-        return "/item/vtm";
+        return "/item/vtm?faces-redirect=true";
     }
 
     public String toAddVmp() {
         vmp = new Item();
         vmp.setItemType(ItemType.Vmp);
-        return "/item/vmp";
+        return "/item/vmp?faces-redirect=true";
     }
 
     public String toAddAmp() {
         amp = new Item();
         amp.setItemType(ItemType.Amp);
-        return "/item/amp";
+        return "/item/amp?faces-redirect=true";
     }
 
     public String toAddUnit() {
         unit = new Item();
-        return "/item/unit";
+        return "/item/unit?faces-redirect=true";
     }
 
     public void saveVtm() {

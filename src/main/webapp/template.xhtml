@@ -17,7 +17,16 @@
     </h:head>
 
     <h:body class="w3-light-grey">
-        <f:view locale="#{webUserController.locale}" >
+
+        <h:panelGroup rendered="true" >
+            <div class="col-12 text-danger h1" >
+                Server will be down for 8 hours from 5:00 pm. Extremely sorry
+                0715812399
+            </div>
+        </h:panelGroup>
+
+
+        <f:view locale="#{webUserController.locale}" rendered="false" >
             <div class="w3-row w3-blue w3-large w3-padding w3-center">
                 Document Management Information System
             </div>
@@ -38,13 +47,11 @@
 
             <div class="w3-row w3-theme-l5">
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
-                    
-                    
-                        <div class="col-12 text-danger h1" >
-                            Server will be down for 5 minutes from 6:30 pm. Extremely sorry
-                        </div>
-                   
-                    
+
+
+
+
+
                     <ui:insert name="content">
                         Contents
                     </ui:insert>

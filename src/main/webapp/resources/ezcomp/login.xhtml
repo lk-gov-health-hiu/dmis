@@ -1,46 +1,104 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:cc="http://xmlns.jcp.org/jsf/composite"
-      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <cc:interface>
     </cc:interface>
     <cc:implementation>
-        <h:form>
-            <p:focus for="username"></p:focus>
-            <div class="container-fluid w-50 ">
-                <div class="row">
-                    <div class="col px-4 py-3 bg-white text-center">
-                        <div class="my-2 d-flex justify-content-center">
-                            <h:graphicImage style="height: 18em;" library="image" name="login.png"></h:graphicImage>
-                        </div>
-                        <h4 class="fw-bold">Document Management Information System</h4>
-                        <div class="my-2">
-                            <p:inputText id="username" placeholder="Username" required="true" requiredMessage="Username is required." autocomplete="off"
-                                         value="#{webUserController.userName}" class="form-control">
-                            </p:inputText>
-                        </div>
-                        <div class="my-2">
-                            <p:password id="password" placeholder="Password" required="true" requiredMessage="Password is required." autocomplete="off"
-                                        value="#{webUserController.password}" class="form-control"></p:password>
-                        </div>
-                        <div class="d-grid">
-                            <h:commandButton class="btn fw-bold btn-primary" value="Login"
-                                             action="#{webUserController.loginNew()}"></h:commandButton>
-                        </div>
-                        <div class="text-muted">
-                            &copy; Health Information Unit, Ministry of Health
-                            <h:outputText value="#{session.lastAccessedTime}">
-                                <f:convertDateTime pattern="yyyy" type="date" />
-                            </h:outputText>
-                        </div>
-                        <div class="my-2">
-                            <p:messages></p:messages>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <style>
+            .login-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
+            .login-card {
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                width: 100%;
+                max-width: 380px;
+            }
+            .login-logo {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .login-logo img {
+                height: 120px;
+            }
+            .login-title {
+                text-align: center;
+                font-weight: bold;
+                font-size: 18px;
+                margin-bottom: 25px;
+            }
+            .login-btn {
+                width: 100%;
+                padding: 12px;
+                background: #2c3e50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            .login-btn:hover {
+                background: #1a252f;
+            }
+            .login-footer {
+                text-align: center;
+                color: #888;
+                font-size: 12px;
+                margin-top: 20px;
+            }
+        </style>
+
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-logo">
+                    <h:graphicImage library="image" name="login.png" />
+                </div>
+                <div class="login-title">
+                    Document Management Information System
+                </div>
+                <h:form>
+                    <div class="row">
+                        <div class="col-12 m-1">
+                            <p:inputText id="username" value="#{webUserController.userName}"
+                                         placeholder="Username" required="true"
+                                         requiredMessage="Username is required." autocomplete="off" />
                         </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-12 m-1">
+                            <p:password id="password" value="#{webUserController.password}"
+                                           placeholder="Password" required="true"
+                                           toggleMask="true" feedback="false"
+                                           requiredMessage="Password is required." autocomplete="off" styleClass="w-100" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 m-1" >
+                            <h:commandButton value="Login" styleClass="login-btn"
+                                             action="#{webUserController.loginNew()}" />
+                        </div>
+                    </div>
+                    <div class="login-footer">
+                        © Health Information Unit, Ministry of Health
+                        <h:outputText value="#{session.lastAccessedTime}">
+                            <f:convertDateTime pattern="yyyy" type="date" />
+                        </h:outputText>
+                    </div>
+                    <p:messages />
+                </h:form>
             </div>
-        </h:form>
-    </cc:implementation>
+        </div>
 
+    </cc:implementation>
 </html>

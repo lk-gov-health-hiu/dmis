@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn clean compile:*)",
+      "Bash(git fetch:*)",
+      "Bash(git stash:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(find:*)",
+      "Bash(git branch:*)",
+      "Bash(mysql:*)",
+      "Bash(git:*)",
+      "Bash(sudo apt:*)",
+      "Bash(snap install:*)",
+      "Bash(/home/buddhika/.local/bin/gh auth:*)"
+    ]
+  }
+}

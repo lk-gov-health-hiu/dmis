@@ -3,7 +3,7 @@
   <persistence-unit name="hmisPU" transaction-type="JTA">
     <jta-data-source>jdbc/dmis</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <shared-cache-mode>ALL</shared-cache-mode>
+    <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
     <properties>
       <!--      <property name="eclipselink.connection-pool.default.initial" value="128"/>
             <property name="eclipselink.connection-pool.default.min" value="128"/>

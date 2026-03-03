@@ -140,13 +140,13 @@ public class InstitutionController implements Serializable {
         selected = new Institution();
         userTransactionController.recordTransaction("To Add Institution");
         fillItems();
-        return "/institution/institution";
+        return "/institution/institution?faces-redirect=true";
     }
 
     public String toImportInstitution() {
         selected = new Institution();
         userTransactionController.recordTransaction("To Add Institution");
-        return "/institution/import";
+        return "/institution/import?faces-redirect=true";
     }
 
     public String toEditInstitution() {
@@ -154,7 +154,7 @@ public class InstitutionController implements Serializable {
             JsfUtil.addErrorMessage("Please select");
             return "";
         }
-        return "/institution/institution";
+        return "/institution/institution?faces-redirect=true";
     }
 
     public boolean thisIsAParentInstitution(Institution checkingInstitution) {
@@ -187,16 +187,16 @@ public class InstitutionController implements Serializable {
         JsfUtil.addSuccessMessage("Deleted");
         institutionApplicationController.getInstitutions().remove(deleting);
         fillItems();
-        return "/institution/list";
+        return "/institution/list?faces-redirect=true";
     }
 
     public String toListInstitutions() {
         userTransactionController.recordTransaction("To List Institutions");
-        return "/institution/list";
+        return "/institution/list?faces-redirect=true";
     }
 
     public String toSearchInstitutions() {
-        return "/institution/search";
+        return "/institution/search?faces-redirect=true";
     }
 
     public void removeGnFromPmc() {

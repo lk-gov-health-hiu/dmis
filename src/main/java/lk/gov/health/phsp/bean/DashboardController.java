@@ -38,9 +38,19 @@ import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import org.json.JSONObject;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.bar.BarChartDataSet;
+import org.primefaces.model.charts.bar.BarChartModel;
+import org.primefaces.model.charts.bar.BarChartOptions;
+import org.primefaces.model.charts.optionconfig.legend.Legend;
+import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
+import org.primefaces.model.charts.optionconfig.title.Title;
 
 /**
  *
@@ -75,6 +85,13 @@ public class DashboardController implements Serializable {
     private Long lettersToReceive;
     private Long lettersEntered;
     private Long lettersAccepted;
+
+    // New dashboard counts
+    private Long myLettersToAcceptAll;
+    private Long myLettersAcceptedToday;
+    private Long copyForwardsToMyInstitutionToReceive;
+    private Long copyForwardsReceivedToday;
+    private Long copyForwardsSentByMyInstitutionLast7Days;
     private Long yesterdayRat;
     private Long yesterdayPositivePcr;
     private Long yesterdayPositiveRat;
@@ -108,6 +125,8 @@ public class DashboardController implements Serializable {
 
     private List<InstitutionCount> orderingCategories;
 
+    private BarChartModel copyForwardsSentChart;
+
     public String toContactNational() {
         orderingCategories = new ArrayList<>();
         for (InstitutionCount oc : dashboardApplicationController.getOrderingCounts()) {
@@ -137,7 +156,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toCommunityRandomNational() {
@@ -169,7 +188,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toForeign() {
@@ -201,7 +220,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toHospital() {
@@ -234,7 +253,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toOtherOrderingCategory() {
@@ -266,7 +285,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public void prepareMohDashboard() {
@@ -358,14 +377,103 @@ public class DashboardController implements Serializable {
     }
 
     public void preparePersonalDashboard() {
-        Calendar c = Calendar.getInstance();
-        Date now = c.getTime();
-        Date todayStart = CommonController.startOfTheDate();
+        // Letters assigned to me - all pending (no date filter)
+        myLettersToAcceptAll = letterController.countMyLettersToAcceptAll();
 
-        c.add(Calendar.DATE, -1);
+        // Letters assigned to me and accepted today
+        myLettersAcceptedToday = letterController.countMyLettersAcceptedToday();
 
-        myLettersToAccept = letterController.countMyLettersToAccept(CommonController.startOfTheMonth(), CommonController.endOfTheMonth());
-        lettersAccepted = letterController.countMyLettersAccepted(CommonController.startOfTheMonth(), CommonController.endOfTheMonth());
+        // Copy/forwards to my institution - pending to receive
+        copyForwardsToMyInstitutionToReceive = letterController.countCopyForwardsToMyInstitutionToReceive();
+
+        // Copy/forwards received today
+        copyForwardsReceivedToday = letterController.countCopyForwardsReceivedToday();
+
+        // Copy/forwards sent by my institution in last 7 days
+        copyForwardsSentByMyInstitutionLast7Days = letterController.countCopyForwardsSentByMyInstitutionLast7Days();
+
+        // Keep old counts for backward compatibility
+        myLettersToAccept = myLettersToAcceptAll;
+        lettersAccepted = myLettersAcceptedToday;
+
+        // Prepare chart for top institutions copy-forwards sent to
+        createCopyForwardsSentChart();
+    }
+
+    private void createCopyForwardsSentChart() {
+        copyForwardsSentChart = new BarChartModel();
+        ChartData data = new ChartData();
+
+        BarChartDataSet acceptedDataSet = new BarChartDataSet();
+        acceptedDataSet.setLabel("Accepted");
+        acceptedDataSet.setBackgroundColor("rgba(0, 184, 148, 0.8)");
+        acceptedDataSet.setBorderColor("rgb(0, 184, 148)");
+        acceptedDataSet.setBorderWidth(1);
+
+        BarChartDataSet pendingDataSet = new BarChartDataSet();
+        pendingDataSet.setLabel("Pending");
+        pendingDataSet.setBackgroundColor("rgba(253, 203, 110, 0.8)");
+        pendingDataSet.setBorderColor("rgb(253, 203, 110)");
+        pendingDataSet.setBorderWidth(1);
+
+        List<Number> acceptedValues = new ArrayList<>();
+        List<Number> pendingValues = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        List<Object[]> topInstitutions = letterController.getTopInstitutionsCopyForwardsSentByMyInstitution(10);
+
+        if (topInstitutions != null) {
+            for (Object[] row : topInstitutions) {
+                Institution inst = (Institution) row[0];
+                Long accepted = (Long) row[1];
+                Long pending = (Long) row[2];
+
+                String instName = inst.getName();
+                if (instName != null && instName.length() > 20) {
+                    instName = instName.substring(0, 17) + "...";
+                }
+                labels.add(instName != null ? instName : "Unknown");
+                acceptedValues.add(accepted != null ? accepted : 0);
+                pendingValues.add(pending != null ? pending : 0);
+            }
+        }
+
+        acceptedDataSet.setData(acceptedValues);
+        pendingDataSet.setData(pendingValues);
+
+        data.addChartDataSet(acceptedDataSet);
+        data.addChartDataSet(pendingDataSet);
+        data.setLabels(labels);
+
+        copyForwardsSentChart.setData(data);
+
+        // Options
+        BarChartOptions options = new BarChartOptions();
+
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxesX = new CartesianLinearAxes();
+        linearAxesX.setStacked(true);
+        cScales.addXAxesData(linearAxesX);
+
+        CartesianLinearAxes linearAxesY = new CartesianLinearAxes();
+        linearAxesY.setStacked(true);
+        cScales.addYAxesData(linearAxesY);
+        options.setScales(cScales);
+
+        Title title = new Title();
+        title.setDisplay(true);
+        title.setText("Top 10 Institutions - Copy/Forwards Sent");
+        options.setTitle(title);
+
+        Legend legend = new Legend();
+        legend.setDisplay(true);
+        legend.setPosition("top");
+        LegendLabel legendLabels = new LegendLabel();
+        legendLabels.setFontColor("#495057");
+        legend.setLabels(legendLabels);
+        options.setLegend(legend);
+
+        copyForwardsSentChart.setOptions(options);
     }
 
     public void prepareRegionalDashboard() {
@@ -681,7 +789,7 @@ public class DashboardController implements Serializable {
     }
 
     public String toCalculateNumbers() {
-        return "/systemAdmin/calculate_numbers";
+        return "/systemAdmin/calculate_numbers?faces-redirect=true";
     }
 
     /**
@@ -1018,6 +1126,33 @@ public class DashboardController implements Serializable {
 
     public void setOrderingCategories(List<InstitutionCount> orderingCategories) {
         this.orderingCategories = orderingCategories;
+    }
+
+    public Long getMyLettersToAcceptAll() {
+        return myLettersToAcceptAll;
+    }
+
+    public Long getMyLettersAcceptedToday() {
+        return myLettersAcceptedToday;
+    }
+
+    public Long getCopyForwardsToMyInstitutionToReceive() {
+        return copyForwardsToMyInstitutionToReceive;
+    }
+
+    public Long getCopyForwardsReceivedToday() {
+        return copyForwardsReceivedToday;
+    }
+
+    public Long getCopyForwardsSentByMyInstitutionLast7Days() {
+        return copyForwardsSentByMyInstitutionLast7Days;
+    }
+
+    public BarChartModel getCopyForwardsSentChart() {
+        if (copyForwardsSentChart == null) {
+            createCopyForwardsSentChart();
+        }
+        return copyForwardsSentChart;
     }
 
 }

@@ -13,7 +13,7 @@
         <h:form>  
             <h:outputStylesheet library="css" name="tem1.css"/>
             <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"   styleClass="horizontalmenu">
-                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
+                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index?faces-redirect=true" />
                 <p:submenu label="Patient" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
                     <p:menuitem ajax="false" value="Add New PCR/RAT Request" action="#{clientController.toAddNewClientForTestEnrollment()}"  />
                     <p:menuitem ajax="false" value="Register New Case" action="#{clientController.toAddNewClientForCaseEnrollment()}"  />
@@ -55,7 +55,7 @@
                 <p:submenu label="Reports"  rendered="#{webUserController.hasPrivilege('Monitoring_and_evaluation')}"  >
                     <p:menuitem ajax="false" value="Case List" action="#{clientController.toListCases()}" />
                     <p:menuitem ajax="false" value="Test List" action="#{clientController.toListTests()}" />
-                    <p:menuitem ajax="false" value="SMS" action="/sms/index" />
+                    <p:menuitem ajax="false" value="SMS" action="/sms/index?faces-redirect=true" />
                     <p:menuitem ajax="false" value="Analysis" 
                                 action="#{reportController.toViewReports()}" ></p:menuitem>
                 </p:submenu>
@@ -64,28 +64,28 @@
                     <p:menuitem value="Manage Users" 
                                 action="#{webUserController.toManageInstitutionUsers()}" ajax="false"
                                 rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Institutions" action="/insAdmin/institution_index" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Areas" action="/insAdmin/area_index" ajax="false" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Institutions" action="/insAdmin/institution_index?faces-redirect=true" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Areas" action="/insAdmin/area_index?faces-redirect=true" ajax="false" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
                     <p:menuitem value="Manage Preferences"  action="#{preferenceController.toManagePreferencesInstitution()}"    ajax="false" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
                 </p:submenu>
                 <p:submenu label="System Administration"  rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
                     <p:menuitem value="Manage Users" action="#{webUserController.toManageUserIndexForSystemAdmin()}"  ajax="false" />
-                    <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
-                    <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />
-                    <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />
-                    <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
+                    <p:menuitem value="Manage Institutions" action="/institution/index?faces-redirect=true"     ajax="false" />
+                    <p:menuitem value="Manage Areas" action="/area/index?faces-redirect=true" ajax="false"    />
+                    <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index?faces-redirect=true"    ajax="false" />
+                    <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index?faces-redirect=true"    ajax="false" />
                     <p:menuitem value="Manage Preferences" action="#{preferenceController.toManagePreferences()}"    ajax="false" />
-                    <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
+                    <p:menuitem value="Manage Analysis"  action="/queryComponent/index?faces-redirect=true"     ajax="false" />
                 </p:submenu>
                 <p:submenu label="Settings"  rendered="#{webUserController.hasPrivilege('User')}" >
                     <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"    ajax="false" />
                     <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"    ajax="false" />
                 </p:submenu>
                 <p:submenu label="Help" >
-                    <p:menuitem value="User Manual" action="/wiki"   ajax="false" />
-                    <p:menuitem value="Feedback" action="/feedback"   ajax="false" />
-                    <p:menuitem value="Contact us" action="/contact"   ajax="false" />
-                    <p:menuitem value="About" action="/about_us"   ajax="false" />
+                    <p:menuitem value="User Manual" action="/wiki?faces-redirect=true"   ajax="false" />
+                    <p:menuitem value="Feedback" action="/feedback?faces-redirect=true"   ajax="false" />
+                    <p:menuitem value="Contact us" action="/contact?faces-redirect=true"   ajax="false" />
+                    <p:menuitem value="About" action="/about_us?faces-redirect=true"   ajax="false" />
                 </p:submenu>
                 <f:facet name="options">
                     <p:inputText autocomplete="off"

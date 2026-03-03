@@ -4,7 +4,7 @@
 
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Production</param-value>
+        <param-value>Development</param-value>
     </context-param>
 
     <context-param>
@@ -87,11 +87,10 @@
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
         <location>/app/timeout.xhtml</location>
     </error-page>
-    
-    <error-page>
-        <error-code>500</error-code>
-        <location>/app/error.xhtml</location>
-    </error-page>
 
+    <mime-mapping>
+        <extension>webp</extension>
+        <mime-type>image/webp</mime-type>
+    </mime-mapping>
 
 </web-app>

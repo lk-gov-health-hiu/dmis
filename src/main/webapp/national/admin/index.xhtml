@@ -22,7 +22,7 @@
                                     <h:commandButton value="Reload" action="#{webUserApplicationController.resetWebUsers()}"
                                                      class="list-group-item list-group-item-action"></h:commandButton>
 
-                                    <h:commandButton value="Add Multiple Users" action="/national/admin/add_multiple_users"
+                                    <h:commandButton value="Add Multiple Users" action="/national/admin/add_multiple_users?faces-redirect=true"
                                                      class="list-group-item list-group-item-action"></h:commandButton>
                                     <h:commandButton value="Set User Privilages" action="#{webUserController.toSetUserPrivilages()}"
                                                      class="list-group-item list-group-item-action"></h:commandButton>
@@ -44,7 +44,7 @@
                                                      action="#{menuController.toListInstitutionsWithUsers()}"
                                                      class="list-group-item list-group-item-action"></h:commandButton>
                                     <h:commandButton value="Add Multiple new Institutions and Users"
-                                                     action="/national/admin/add_multiple_institutions_with_a_user"
+                                                     action="/national/admin/add_multiple_institutions_with_a_user?faces-redirect=true"
                                                      class="list-group-item list-group-item-action"></h:commandButton>
                                     <h:commandButton value="Relod Institutions"
                                                      action="#{institutionController.resetAllInstitutions()}"
@@ -56,7 +56,7 @@
                                     <h:commandButton value="List Area" action="#{areaController.toListAreasForSysAdmin()}"
                                                      class="list-group-item list-group-item-action"></h:commandButton>
                                     <h:commandButton value="Adding MOH with Users"
-                                                     action="/national/admin/add_multiple_moh_areas_with_users"
+                                                     action="/national/admin/add_multiple_moh_areas_with_users?faces-redirect=true"
                                                      class="list-group-item list-group-item-action"></h:commandButton>
                                     <h:commandButton value="Reload Areas"
                                                      action="#{areaApplicationController.invalidateItems()}"
@@ -64,9 +64,9 @@
                                 </div>
                                 <div class="list-group mt-3">
                                     <h:commandButton value="Manage Metadata" class="list-group-item list-group-item-action"
-                                                     action="/systemAdmin/manage_metadata_index"></h:commandButton>
+                                                     action="/systemAdmin/manage_metadata_index?faces-redirect=true"></h:commandButton>
                                     <h:commandButton value="Manage Data" class="list-group-item list-group-item-action"
-                                                     action="/systemAdmin/manage_data_index"></h:commandButton>
+                                                     action="/systemAdmin/manage_data_index?faces-redirect=true"></h:commandButton>
                                     <h:commandButton value="Manage Preferences"
                                                      class="list-group-item list-group-item-action"
                                                      action="#{preferenceController.toManagePreferences()}"></h:commandButton>

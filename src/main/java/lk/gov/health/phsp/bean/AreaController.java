@@ -106,13 +106,13 @@ public class AreaController implements Serializable {
 
     public String listGnAreas() {
         items = getAreas(AreaType.GN, null);
-        return "/area/gn_list";
+        return "/area/gn_list?faces-redirect=true";
     }
 
     public String toAddArea() {
         selected = new Area();
         userTransactionController.recordTransaction("Add Area By SysAdmin");
-        return "/area/area";
+        return "/area/area?faces-redirect=true";
     }
 
     public String toEditAreaForSysAdmin() {
@@ -120,7 +120,7 @@ public class AreaController implements Serializable {
             JsfUtil.addErrorMessage("Please select an Area to Edit");
             return "";
         }
-        return "/area/area";
+        return "/area/area?faces-redirect=true";
     }
 
     public String deleteAreaForSysAdmin() {
@@ -188,22 +188,22 @@ public class AreaController implements Serializable {
         m.put("ret", false);
         items = getFacade().findByJpql(j, m);
         userTransactionController.recordTransaction("List Areas By SysAdmin");
-        return "/area/list";
+        return "/area/list?faces-redirect=true";
     }
     
     public String toListPhiAreasForInsAdmin() {
         items = areaApplicationController.listPhiAreasOfMoh(webUserController.getLoggedInstitution().getMohArea());
-        return "/area/list_phi";
+        return "/area/list_phi?faces-redirect=true";
     }
 
     public String toBrowseAreasForSysAdmin() {
         userTransactionController.recordTransaction("Browse Areas By SysAdmin");
-        return "/area/browse";
+        return "/area/browse?faces-redirect=true";
     }
 
     public String toSearchAreasForSysAdmin() {
         userTransactionController.recordTransaction("Search Areas By SysAdmin");
-        return "/area/search";
+        return "/area/search?faces-redirect=true";
     }
 
   
@@ -399,30 +399,30 @@ public class AreaController implements Serializable {
     public String toAddProvince() {
         selected = new Area();
         selected.setType(AreaType.Province);
-        return "/area/add_province";
+        return "/area/add_province?faces-redirect=true";
     }
 
     public String toAddDistrict() {
         selected = new Area();
         selected.setType(AreaType.District);
-        return "/area/add_district";
+        return "/area/add_district?faces-redirect=true";
     }
 
     public String toAddMhoArea() {
         selected = new Area();
         selected.setType(AreaType.MOH);
-        return "/area/add_moh";
+        return "/area/add_moh?faces-redirect=true";
     }
 
     public String toEducationalZones() {
         selected = new Area();
-        return "/area/add_educational_zones";
+        return "/area/add_educational_zones?faces-redirect=true";
     }
 
     public String toAddPhiArea() {
         selected = new Area();
         selected.setType(AreaType.PHI);
-        return "/area/add_phi";
+        return "/area/add_phi?faces-redirect=true";
     }
     
     public String toAddPhiAreaForInsAdmin() {
@@ -434,13 +434,13 @@ public class AreaController implements Serializable {
         selected.setRdhsArea(webUserController.getLoggedInstitution().getRdhsArea());
         selected.setProvince(webUserController.getLoggedInstitution().getProvince());
         selected.setPdhsArea(webUserController.getLoggedInstitution().getProvince());
-        return "/area/area_phi_ins";
+        return "/area/area_phi_ins?faces-redirect=true";
     }
 
     public String toAddGnArea() {
         selected = new Area();
         selected.setType(AreaType.GN);
-        return "/area/add_gn";
+        return "/area/add_gn?faces-redirect=true";
     }
 
     public String saveNewProvince() {
@@ -449,7 +449,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New Province Saved");
-        return "/area/index";
+        return "/area/index?faces-redirect=true";
     }
 
     public String saveNewDistrict() {
@@ -458,7 +458,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New District Saved");
-        return "/area/index";
+        return "/area/index?faces-redirect=true";
     }
 
     public String saveNewMoh() {
@@ -468,7 +468,7 @@ public class AreaController implements Serializable {
         items = null;
 
         JsfUtil.addSuccessMessage("New MOH Area Saved");
-        return "/area/index";
+        return "/area/index?faces-redirect=true";
     }
 
     public String saveNewEducationalZone() {
@@ -477,7 +477,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New Educational Zone Saved");
-        return "/area/index";
+        return "/area/index?faces-redirect=true";
     }
 
     public String saveNewPhi() {
@@ -486,7 +486,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New PHI Area Saved");
-        return "/area/index";
+        return "/area/index?faces-redirect=true";
     }
 
     public String saveNewGn() {
@@ -495,7 +495,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New GN Area Saved");
-        return "/area/index";
+        return "/area/index?faces-redirect=true";
     }
 
     public List<Area> getAreas(Area superArea) {

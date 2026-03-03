@@ -72,7 +72,7 @@ public class SmsController implements Serializable {
             m.put("ins", institution);
         }
         smses = smsFacade.findByJpql(j, m);
-        return "/sms/sent_successfully";
+        return "/sms/sent_successfully?faces-redirect=true";
     }
 
     public static String executePost(String targetURL, Map<String, Object> parameters) {
