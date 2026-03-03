@@ -54,7 +54,7 @@ public class InstitutionApplicationController {
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
-    private List<Institution> institutions;
+    private volatile List<Institution> institutions;
     List<Institution> hospitals;
     private List<InstitutionType> hospitalTypes;
     private List<InstitutionType> covidDataHirachiInstitutions;

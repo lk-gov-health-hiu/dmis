@@ -105,10 +105,11 @@
                                              autocomplete="off"
                                              value="#{letterController.selected.documentNumber}" class="form-control"
                                              >
-                                    <p:ajax event="blur" 
+                                    <p:ajax event="blur"
                                             listener="#{letterController.saveCurrentDocumentAjax}"
-                                            process="@this" 
-                                            update="letterId" ></p:ajax>
+                                            process="@this"
+                                            update="letterId"
+                                            global="false" ></p:ajax>
                                 </p:inputText>
                             </h:panelGroup>
                             <h:message class="text-danger small" for="title"></h:message>
@@ -120,10 +121,11 @@
                                                  a:maxlength="255"
                                                  value="#{letterController.selected.documentName}" class="form-control"
                                                  required="true" requiredMessage="Need a Title">
-                                    <p:ajax event="blur" 
+                                    <p:ajax event="blur"
                                             listener="#{letterController.saveCurrentDocumentAjax}"
-                                            process="@this" 
-                                            update="letterId" ></p:ajax>
+                                            process="@this"
+                                            update="letterId"
+                                            global="false" ></p:ajax>
                                 </p:inputTextarea>
                             </h:panelGroup>
                             <h:message class="text-danger small" for="topic"></h:message>
