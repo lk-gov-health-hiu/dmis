@@ -208,7 +208,15 @@ public class LetterController implements Serializable {
 
         }
 
-        resIns.sort(Comparator.comparing(Nameable::getName));
+        resIns.sort((a, b) -> {
+            boolean aTop = "Personal".equalsIgnoreCase(a.getName()) || "Other".equalsIgnoreCase(a.getName());
+            boolean bTop = "Personal".equalsIgnoreCase(b.getName()) || "Other".equalsIgnoreCase(b.getName());
+            if (aTop && !bTop) return -1;
+            if (!aTop && bTop) return 1;
+            if (a.getName() == null) return 1;
+            if (b.getName() == null) return -1;
+            return a.getName().compareToIgnoreCase(b.getName());
+        });
 
         return resIns;
 
