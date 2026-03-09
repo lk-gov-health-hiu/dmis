@@ -39,7 +39,7 @@
                                     <h:outputLabel class="fs-6"  value="Institute/Unit:"></h:outputLabel>
                                     <h:outputLabel class="fs-6 fw-bold" value="#{fileController.selected.institution.name}"></h:outputLabel>
                                     <h:outputLabel class="fs-6"  value="Owner:"></h:outputLabel>
-                                    <h:outputLabel class="fs-6 fw-bold" value="#{fileController.selected.owner.name}"></h:outputLabel>
+                                    <h:outputLabel class="fs-6 fw-bold" value="#{fileController.selected.owner.person.name}"></h:outputLabel>
                                 </p:panelGrid>
                                 <p:dataTable value="#{fileController.selectedDocumentHistories}"
                                              var="h" 

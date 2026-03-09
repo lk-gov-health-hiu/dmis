@@ -44,3 +44,6 @@ package-lock.json
 .idea
 .metadata
 .vscode
+
+# Temporary files
+tmp/
