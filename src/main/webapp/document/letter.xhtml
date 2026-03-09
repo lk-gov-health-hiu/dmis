@@ -101,14 +101,12 @@
 
                             <h:outputLabel for="title"  >Letter Number </h:outputLabel>
                             <h:panelGroup layout="block" class="w-75" >
-                                <p:inputText id="title" 
+                                <p:inputText id="title"
                                              autocomplete="off"
                                              value="#{letterController.selected.documentNumber}" class="form-control"
                                              >
                                     <p:ajax event="blur"
-                                            listener="#{letterController.saveCurrentDocumentAjax}"
                                             process="@this"
-                                            update="letterId"
                                             global="false" ></p:ajax>
                                 </p:inputText>
                             </h:panelGroup>
@@ -117,14 +115,12 @@
                             <h:outputLabel for="topic"  >Letter Title 
                                 <small class="px-2 text-muted">Required</small></h:outputLabel>
                             <h:panelGroup layout="block" class="w-100" >
-                                <p:inputTextarea id="topic" 
+                                <p:inputTextarea id="topic"
                                                  a:maxlength="255"
                                                  value="#{letterController.selected.documentName}" class="form-control"
                                                  required="true" requiredMessage="Need a Title">
                                     <p:ajax event="blur"
-                                            listener="#{letterController.saveCurrentDocumentAjax}"
                                             process="@this"
-                                            update="letterId"
                                             global="false" ></p:ajax>
                                 </p:inputTextarea>
                             </h:panelGroup>
@@ -145,7 +141,11 @@
                                                 itemLabel="#{insf.displayName}"
                                                 itemValue="#{insf}"
                                                 >
-                                    <p:ajax event="itemSelect" process="from" update="fromPerson" ></p:ajax>
+                                    <p:ajax event="itemSelect"
+                                            listener="#{letterController.saveCurrentDocumentAjax}"
+                                            process="from"
+                                            update="letterId fromPerson"
+                                            global="false" ></p:ajax>
 
                                 </p:autoComplete>
                                 <h:panelGroup id="fromPerson" class="w-25 float-left" >
