@@ -1010,12 +1010,13 @@ public class LetterController implements Serializable {
         Map m = new HashMap();
         String j = "select h "
                 + " from DocumentHistory h "
+                + " left join h.toUser tu "
                 + " where h.retired=false "
                 + " and "
                 + " ("
                 + " (h.institution=:ins and h.historyType=:lc) "
                 + " or "
-                + " ((h.toInstitution=:ins or h.toUser.institution=:ins) and h.historyType=:lr) "
+                + " ((h.toInstitution=:ins or tu.institution=:ins) and h.historyType=:lr) "
                 + " )";
         j += " and h.createdAt between :fd and :td "
                 + " order by h.id";
