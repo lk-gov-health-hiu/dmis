@@ -13,7 +13,11 @@
       "Bash(git:*)",
       "Bash(sudo apt:*)",
       "Bash(snap install:*)",
-      "Bash(/home/buddhika/.local/bin/gh auth:*)"
+      "Bash(/home/buddhika/.local/bin/gh auth:*)",
+      "Bash(chmod 600:*)",
+      "Bash(journalctl:*)",
+      "Bash(echo DISPLAY=$DISPLAY:*)",
+      "Bash(systemctl:*)"
     ]
   }
 }
