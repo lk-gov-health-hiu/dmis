@@ -105,6 +105,7 @@ public class MenuController implements Serializable {
         DocumentHistory ndh = new DocumentHistory();
         ndh.setHistoryType(HistoryType.Letter_Created);
         ndh.setInstitution(webUserController.getLoggedInstitution());
+        letterController.setSelectedHistory(ndh);
         return "/document/letter?faces-redirect=true";
     }
 
