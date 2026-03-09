@@ -919,18 +919,39 @@ public class LetterController implements Serializable {
 
     public String toCopyForwardsSentByMyInstitutionLast7Days() {
         documentHistories = null;
-        fillCopyForwardsSentByMyInstitutionLast7Days();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        fromDate = CommonController.startOfTheDate(cal.getTime());
+        toDate = CommonController.endOfTheDate();
+        fillCopyForwardsSentByMyInstitution();
         return "/institution/my_copy_forwards_sent?faces-redirect=true";
     }
 
+    public void searchCopyForwardsSent() {
+        System.out.println("searchCopyForwardsSent called");
+        System.out.println("fromDate = " + fromDate);
+        System.out.println("toDate = " + toDate);
+        documentHistories = null;
+        fillCopyForwardsSentByMyInstitution();
+    }
+
     public void fillCopyForwardsSentByMyInstitutionLast7Days() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -7);
+        fromDate = CommonController.startOfTheDate(cal.getTime());
+        toDate = CommonController.endOfTheDate();
+        fillCopyForwardsSentByMyInstitution();
+    }
+
+    public void fillCopyForwardsSentByMyInstitution() {
         Institution loggedInstitution = webUserController.getLoggedInstitution();
         List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
 
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, -7);
-        Date sevenDaysAgo = CommonController.startOfTheDate(cal.getTime());
-        Date now = CommonController.endOfTheDate();
+        System.out.println("fillCopyForwardsSentByMyInstitution called");
+        System.out.println("loggedInstitution = " + loggedInstitution);
+        System.out.println("fromDate = " + fromDate);
+        System.out.println("toDate = " + toDate);
+        System.out.println("usersForMyInstitute = " + usersForMyInstitute);
 
         Map m = new HashMap();
         String j = "select h "
@@ -942,9 +963,11 @@ public class LetterController implements Serializable {
                 + " order by h.id desc";
         m.put("fi", loggedInstitution);
         m.put("ht", HistoryType.Letter_Copy_or_Forward);
-        m.put("fd", sevenDaysAgo);
-        m.put("td", now);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        System.out.println("Query 1 (by institution): " + j);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        System.out.println("Query 1 result count = " + (documentHistories == null ? "null" : documentHistories.size()));
 
         if (documentHistories == null) {
             documentHistories = new ArrayList<>();
@@ -962,13 +985,16 @@ public class LetterController implements Serializable {
                     + " order by h.id desc";
             m.put("us", usersForMyInstitute);
             m.put("ht", HistoryType.Letter_Copy_or_Forward);
-            m.put("fd", sevenDaysAgo);
-            m.put("td", now);
+            m.put("fd", fromDate);
+            m.put("td", toDate);
+            System.out.println("Query 2 (by users): " + j);
             List<DocumentHistory> additionalHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+            System.out.println("Query 2 result count = " + (additionalHistories == null ? "null" : additionalHistories.size()));
             if (additionalHistories != null) {
                 documentHistories.addAll(additionalHistories);
             }
         }
+        System.out.println("Total documentHistories = " + documentHistories.size());
     }
 
     public void fillLettersToAssign() {
@@ -1191,11 +1217,18 @@ public class LetterController implements Serializable {
         docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setFromInstitution(webUserController.getLoggedInstitution());
         docHx.setToInsOrUser(webUserCopy);
         docHx.setComments(comments);
         docHx.setItem(minute);
         docHx.setInstitution(webUserController.getLoggedInstitution());
+        System.out.println("forwardOrCopyTo - saving DocumentHistory");
+        System.out.println("  fromInstitution = " + docHx.getFromInstitution());
+        System.out.println("  fromUser = " + docHx.getFromUser());
+        System.out.println("  toInsOrUser = " + docHx.getToInsOrUser());
+        System.out.println("  historyType = " + docHx.getHistoryType());
         saveDocumentHx(docHx);
+        System.out.println("  saved id = " + docHx.getId());
 
         selected.setCompleted(false);
         documentFacade.edit(selected);
@@ -1222,6 +1255,7 @@ public class LetterController implements Serializable {
         docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setFromInstitution(webUserController.getLoggedInstitution());
         docHx.setToInsOrUser(webUserCopy);
         docHx.setComments(comments);
         docHx.setItem(minute);

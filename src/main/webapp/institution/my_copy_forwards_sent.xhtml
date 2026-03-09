@@ -25,8 +25,14 @@
                             <div class="row">
                                 <div class="col">
                                     <h:panelGrid columns="1" >
+                                        <h:panelGrid columns="2" >
+                                            <h:outputLabel value="From Date:" class="fw-bold"></h:outputLabel>
+                                            <p:datePicker value="#{letterController.fromDate}" pattern="dd-MMM-yyyy" class="form-control" showIcon="true" />
+                                            <h:outputLabel value="To Date:" class="fw-bold"></h:outputLabel>
+                                            <p:datePicker value="#{letterController.toDate}" pattern="dd-MMM-yyyy" class="form-control" showIcon="true" />
+                                        </h:panelGrid>
                                         <h:panelGrid columns="1" >
-                                            <h:commandButton value="Refresh" action="#{letterController.toCopyForwardsSentByMyInstitutionLast7Days()}" class="btn btn-primary form-control"></h:commandButton>
+                                            <h:commandButton value="Search" action="#{letterController.searchCopyForwardsSent()}" class="btn btn-primary form-control"></h:commandButton>
                                             <h:commandButton value="Print"  class="btn btn-success form-control">
                                                 <p:printer target="tbl" ></p:printer>
                                             </h:commandButton>
@@ -47,17 +53,11 @@
                                                       filterMatchMode="contains">
                                                 <h:outputLabel value="#{c.document.id}"></h:outputLabel>
                                             </p:column>
-                                            <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.document.documentDate}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Sent Date" sortBy="#{c.createdAt}"
+                                            <p:column headerText="Copy/Forward Date" sortBy="#{c.createdAt}"
                                                       filterBy="#{c.createdAt}"
                                                       filterMatchMode="contains">
                                                 <h:outputLabel value="#{c.createdAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy hh:mm a" ></f:convertDateTime>
+                                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" ></f:convertDateTime>
                                                 </h:outputLabel>
                                             </p:column>
                                             <p:column headerText="Sent To" sortBy="#{c.toInstitution.name}" filterBy="#{c.toInstitution.name}"
