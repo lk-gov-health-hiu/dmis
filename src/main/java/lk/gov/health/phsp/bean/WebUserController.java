@@ -373,6 +373,17 @@ public class WebUserController implements Serializable {
         items = webUserApplicationController.getItems();
     }
 
+    public void prepareListingInstitutionUsers() {
+        items = new ArrayList<>();
+        if (loggedUser == null || loggedUser.getInstitution() == null) {
+            return;
+        }
+        String j = "select u from WebUser u where u.retired=false and u.institution=:ins";
+        Map m = new HashMap();
+        m.put("ins", loggedUser.getInstitution());
+        items = ejbFacade.findByJpql(j, m);
+    }
+
     public void prepareListingUsersUnderMe() {
         items = new ArrayList<>();
         if (loggedUser == null) {

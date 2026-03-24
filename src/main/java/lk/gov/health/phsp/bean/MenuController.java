@@ -306,7 +306,7 @@ public class MenuController implements Serializable {
         if (national) {
             webUserController.prepareListingAllUsers();
         } else {
-            webUserController.prepareListingUsersUnderMe();
+            webUserController.prepareListingInstitutionUsers();
         }
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case Institutional:

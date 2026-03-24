@@ -10,6 +10,7 @@
 
         <ui:composition template="/institution/admin/index.xhtml">
             <ui:define name="admin">
+                <f:event type="preRenderView" listener="#{webUserController.prepareListingInstitutionUsers()}" />
                 <h:form >
                     <p:panelGrid columns="1" class="h-100 w-100 border border-light text-center my-2  ">
                         <f:facet name="header" >
