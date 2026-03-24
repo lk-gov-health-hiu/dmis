@@ -494,6 +494,36 @@ public class LetterController implements Serializable {
         items = documentFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
+    public void listInstitutionCountLetters() {
+        if (fromDate == null || toDate == null) {
+            JsfUtil.addErrorMessage("Please select both From Date and To Date");
+            return;
+        }
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.SYSTEM_DATE;
+        }
+        String dateField = searchFilterType.getCode();
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount("
+                + "COALESCE(d.institution, d.createdBy.institution), count(d)) "
+                + "from Document d "
+                + "where d.retired=false "
+                + "and d.documentType=:dt "
+                + "and (d." + dateField + " between :fd and :td) "
+                + "group by COALESCE(d.institution, d.createdBy.institution) "
+                + "order by count(d) desc";
+        Map m = new HashMap();
+        m.put("dt", DocumentType.Letter);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        List<Object> objs = documentFacade.findObjectByJpql(j, m, TemporalType.TIMESTAMP);
+        institutionCounts = new ArrayList<>();
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                institutionCounts.add((InstitutionCount) o);
+            }
+        }
+    }
+
     public void listLastLettersReceived() {
         int numberToList = 100;
         searchFilterType = SearchFilterType.SYSTEM_DATE;
