@@ -225,7 +225,6 @@
                                 <p:column headerText="" style="width:80px;">
                                     <h:commandButton value="Remove" class="btn btn-danger btn-sm py-0 px-1"
                                                      style="font-size:0.8em;"
-                                                     rendered="#{a.toUser eq webUserController.loggedUser}"
                                                      action="#{letterController.removeAssignment()}">
                                         <f:setPropertyActionListener target="#{letterController.removingAssignment}"
                                                                      value="#{a}">
