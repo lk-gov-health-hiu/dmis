@@ -499,37 +499,10 @@ public class DashboardController implements Serializable {
         createNationalCopyForwardsByInstitutionChart(thirtyDaysAgo, now);
         createNationalWeeklyLettersChart();
 
-        nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
-
-        // Print report institution data (last 30 days, all institutions up to 100)
-        List<Object[]> rawLetterRows = letterController.getTopInstitutionsByLetterCount(100, thirtyDaysAgo, now);
-        nationalPrintLetterRows = new ArrayList<>();
-        if (rawLetterRows != null) {
-            for (Object[] row : rawLetterRows) {
-                InstitutionCount ic = new InstitutionCount();
-                ic.setInstitution((Institution) row[0]);
-                ic.setCount((Long) row[1]);
-                nationalPrintLetterRows.add(ic);
-            }
-        }
-        List<Object[]> rawCfRows = letterController.getTopInstitutionsByCopyForwards(100, thirtyDaysAgo, now);
-        nationalPrintCopyForwardRows = new ArrayList<>();
-        if (rawCfRows != null) {
-            for (Object[] row : rawCfRows) {
-                InstitutionCount ic = new InstitutionCount();
-                ic.setInstitution((Institution) row[0]);
-                ic.setReceivedCount((Long) row[1]);
-                ic.setPendingCount((Long) row[2]);
-                long total = ((Long) row[1]) + ((Long) row[2]);
-                ic.setCount(total);
-                if (total > 0) {
-                    ic.setPositiveRate(df.format(((double) (Long) row[1] / total) * 100) + "%");
-                } else {
-                    ic.setPositiveRate("0.00%");
-                }
-                nationalPrintCopyForwardRows.add(ic);
-            }
-        }
+        // Reset print report data so it is refreshed on next access
+        nationalPrintLetterRows = null;
+        nationalPrintCopyForwardRows = null;
+        nationalReportGeneratedAt = null;
     }
 
     private void createNationalLettersByInstitutionChart(Date fd, Date td) {
@@ -1525,15 +1498,65 @@ public class DashboardController implements Serializable {
         return nationalWeeklyLettersChart;
     }
 
+    public void prepareNationalPrintReport() {
+        Calendar cal30 = Calendar.getInstance();
+        cal30.add(Calendar.DAY_OF_MONTH, -30);
+        Date thirtyDaysAgo = CommonController.startOfTheDate(cal30.getTime());
+        Date now = CommonController.endOfTheDate();
+
+        nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
+
+        List<Object[]> rawLetterRows = letterController.getTopInstitutionsByLetterCount(100, thirtyDaysAgo, now);
+        nationalPrintLetterRows = new ArrayList<>();
+        if (rawLetterRows != null) {
+            for (Object[] row : rawLetterRows) {
+                InstitutionCount ic = new InstitutionCount();
+                ic.setInstitution((Institution) row[0]);
+                ic.setCount((Long) row[1]);
+                nationalPrintLetterRows.add(ic);
+            }
+        }
+
+        List<Object[]> rawCfRows = letterController.getTopInstitutionsByCopyForwards(100, thirtyDaysAgo, now);
+        nationalPrintCopyForwardRows = new ArrayList<>();
+        if (rawCfRows != null) {
+            for (Object[] row : rawCfRows) {
+                InstitutionCount ic = new InstitutionCount();
+                ic.setInstitution((Institution) row[0]);
+                Long received = row[1] != null ? (Long) row[1] : 0L;
+                Long pending = row[2] != null ? (Long) row[2] : 0L;
+                ic.setReceivedCount(received);
+                ic.setPendingCount(pending);
+                long total = received + pending;
+                ic.setCount(total);
+                if (total > 0) {
+                    ic.setPositiveRate(df.format(((double) received / total) * 100) + "%");
+                } else {
+                    ic.setPositiveRate("0.00%");
+                }
+                nationalPrintCopyForwardRows.add(ic);
+            }
+        }
+    }
+
     public List<InstitutionCount> getNationalPrintLetterRows() {
+        if (nationalPrintLetterRows == null) {
+            prepareNationalPrintReport();
+        }
         return nationalPrintLetterRows;
     }
 
     public List<InstitutionCount> getNationalPrintCopyForwardRows() {
+        if (nationalPrintCopyForwardRows == null) {
+            prepareNationalPrintReport();
+        }
         return nationalPrintCopyForwardRows;
     }
 
     public String getNationalReportGeneratedAt() {
+        if (nationalReportGeneratedAt == null) {
+            nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
+        }
         return nationalReportGeneratedAt;
     }
 
