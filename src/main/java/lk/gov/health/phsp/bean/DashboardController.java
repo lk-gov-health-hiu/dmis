@@ -1506,6 +1506,25 @@ public class DashboardController implements Serializable {
 
         nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
 
+        // Summary totals (last 30 days)
+        nationalLettersLast30Days = letterController.countNationalLetters(thirtyDaysAgo, now);
+        nationalCopyForwardsLast30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, null);
+        nationalCopyForwardsPending30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, false);
+        nationalCopyForwardsReceived30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, true);
+        nationalAssignmentsLast30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, null);
+        nationalAssignmentsPending30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, false);
+        nationalAssignmentsAccepted30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, true);
+        if (nationalAssignmentsLast30Days != null && nationalAssignmentsLast30Days > 0) {
+            nationalAssignedAcceptedPercentage30Days = df.format(((double) nationalAssignmentsAccepted30Days / nationalAssignmentsLast30Days) * 100) + "%";
+        } else {
+            nationalAssignedAcceptedPercentage30Days = "0.00%";
+        }
+        if (nationalCopyForwardsLast30Days != null && nationalCopyForwardsLast30Days > 0) {
+            nationalCopyForwardsReceivedPercentage30Days = df.format(((double) nationalCopyForwardsReceived30Days / nationalCopyForwardsLast30Days) * 100) + "%";
+        } else {
+            nationalCopyForwardsReceivedPercentage30Days = "0.00%";
+        }
+
         List<Object[]> rawLetterRows = letterController.getTopInstitutionsByLetterCount(100, thirtyDaysAgo, now);
         nationalPrintLetterRows = new ArrayList<>();
         if (rawLetterRows != null) {
@@ -1539,24 +1558,20 @@ public class DashboardController implements Serializable {
         }
     }
 
+    public String toNationalPerformanceReport() {
+        prepareNationalPrintReport();
+        return "/national/performance_report?faces-redirect=true";
+    }
+
     public List<InstitutionCount> getNationalPrintLetterRows() {
-        if (nationalPrintLetterRows == null) {
-            prepareNationalPrintReport();
-        }
         return nationalPrintLetterRows;
     }
 
     public List<InstitutionCount> getNationalPrintCopyForwardRows() {
-        if (nationalPrintCopyForwardRows == null) {
-            prepareNationalPrintReport();
-        }
         return nationalPrintCopyForwardRows;
     }
 
     public String getNationalReportGeneratedAt() {
-        if (nationalReportGeneratedAt == null) {
-            nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
-        }
         return nationalReportGeneratedAt;
     }
 
