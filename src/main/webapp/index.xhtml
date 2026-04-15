@@ -13,9 +13,14 @@
     <h:body>
         <ui:composition template="./template1.xhtml">
             <ui:define name="content" >
-                <ez:dashboardInstitution ></ez:dashboardInstitution>
-
-
+                <p:tabView>
+                    <p:tab title="Institution Dashboard">
+                        <ez:dashboardInstitution />
+                    </p:tab>
+                    <p:tab title="National Dashboard">
+                        <ez:dashboardNational />
+                    </p:tab>
+                </p:tabView>
             </ui:define>
         </ui:composition>
     </h:body>

@@ -75,6 +75,7 @@ public class LetterController implements Serializable {
     private List<DocumentHistory> documentHistories;
     private List<DocumentHistory> listedToAcceptCopyForwards;
     private List<InstitutionCount> institutionCounts;
+    private List<InstitutionCount> copyForwardInstitutionCounts;
     DocumentHistory selectedToAcceptCopyForwards;
     @Inject
     private WebUserController webUserController;
@@ -791,6 +792,229 @@ public class LetterController implements Serializable {
         }
         return c;
     }
+
+    // ===================== National Dashboard Methods =====================
+
+    public Long countNationalLetters(Date fd, Date td) {
+        Map m = new HashMap();
+        String j = "select count(d) "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt ";
+        m.put("dt", DocumentType.Letter);
+        if (fd != null && td != null) {
+            j += " and d.createdAt between :fd and :td ";
+            m.put("fd", fd);
+            m.put("td", td);
+            return documentFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+        }
+        return documentFacade.countByJpql(j, m);
+    }
+
+    public Long countNationalCopyForwards(Date fd, Date td, Boolean completed) {
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht ";
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        if (completed != null) {
+            j += " and h.completed=:c ";
+            m.put("c", completed);
+        }
+        if (fd != null && td != null) {
+            j += " and h.createdAt between :fd and :td ";
+            m.put("fd", fd);
+            m.put("td", td);
+            return documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+        }
+        return documentHxFacade.countByJpql(j, m);
+    }
+
+    public Long countNationalAssignments(Date fd, Date td, Boolean completed) {
+        Map m = new HashMap();
+        String j = "select count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht ";
+        m.put("ht", HistoryType.Letter_Assigned);
+        if (completed != null) {
+            j += " and h.completed=:c ";
+            m.put("c", completed);
+        }
+        if (fd != null && td != null) {
+            j += " and h.createdAt between :fd and :td ";
+            m.put("fd", fd);
+            m.put("td", td);
+            return documentHxFacade.countByJpql(j, m, TemporalType.TIMESTAMP);
+        }
+        return documentHxFacade.countByJpql(j, m);
+    }
+
+    public List<Object[]> getTopInstitutionsByLetterCount(int limit, Date fd, Date td) {
+        Map m = new HashMap();
+        String j = "select d.institution, count(d) "
+                + " from Document d "
+                + " where d.retired=false "
+                + " and d.documentType=:dt "
+                + " and d.institution is not null ";
+        m.put("dt", DocumentType.Letter);
+        if (fd != null && td != null) {
+            j += " and d.createdAt between :fd and :td ";
+            m.put("fd", fd);
+            m.put("td", td);
+        }
+        j += " group by d.institution "
+                + " order by count(d) desc ";
+        List<Object[]> results = documentFacade.findObjectsArrayByJpql(j, m, TemporalType.TIMESTAMP);
+        if (results != null && results.size() > limit) {
+            return results.subList(0, limit);
+        }
+        return results;
+    }
+
+    public List<Object[]> getTopInstitutionsByCopyForwards(int limit, Date fd, Date td) {
+        Map m = new HashMap();
+        String j = "select h.toInstitution, h.completed, count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toInstitution is not null ";
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        if (fd != null && td != null) {
+            j += " and h.createdAt between :fd and :td ";
+            m.put("fd", fd);
+            m.put("td", td);
+        }
+        j += " group by h.toInstitution, h.completed "
+                + " order by count(h) desc ";
+
+        List<Object[]> results = documentHxFacade.findObjectsArrayByJpql(j, m, TemporalType.TIMESTAMP);
+
+        Map<Long, Object[]> institutionDataMap = new HashMap<>();
+        if (results != null) {
+            for (Object[] row : results) {
+                Institution inst = (Institution) row[0];
+                Boolean completed = (Boolean) row[1];
+                Long count = (Long) row[2];
+
+                if (inst != null && inst.getId() != null) {
+                    Object[] data = institutionDataMap.get(inst.getId());
+                    if (data == null) {
+                        data = new Object[]{inst, 0L, 0L};
+                        institutionDataMap.put(inst.getId(), data);
+                    }
+                    if (completed != null && completed) {
+                        data[1] = ((Long) data[1]) + count;
+                    } else {
+                        data[2] = ((Long) data[2]) + count;
+                    }
+                }
+            }
+        }
+
+        List<Object[]> sortedList = new ArrayList<>(institutionDataMap.values());
+        sortedList.sort((a, b) -> {
+            Long totalA = ((Long) a[1]) + ((Long) a[2]);
+            Long totalB = ((Long) b[1]) + ((Long) b[2]);
+            return totalB.compareTo(totalA);
+        });
+
+        if (sortedList.size() > limit) {
+            return sortedList.subList(0, limit);
+        }
+        return sortedList;
+    }
+
+    public List<InstitutionCount> getWeeklyLetterCounts(int weeks) {
+        List<InstitutionCount> weeklyCounts = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        Date weekEnd = CommonController.endOfTheDate(cal.getTime());
+
+        for (int i = 0; i < weeks; i++) {
+            cal.setTime(weekEnd);
+            cal.add(Calendar.DAY_OF_MONTH, -6);
+            Date weekStart = CommonController.startOfTheDate(cal.getTime());
+
+            Long count = countNationalLetters(weekStart, weekEnd);
+            InstitutionCount ic = new InstitutionCount();
+            ic.setDate(weekStart);
+            ic.setCount(count != null ? count : 0L);
+            weeklyCounts.add(0, ic);
+
+            cal.setTime(weekStart);
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            weekEnd = CommonController.endOfTheDate(cal.getTime());
+        }
+        return weeklyCounts;
+    }
+
+    public void listCopyForwardInstitutionCounts() {
+        if (fromDate == null || toDate == null) {
+            JsfUtil.addErrorMessage("Please select both From Date and To Date");
+            return;
+        }
+
+        Map m = new HashMap();
+        String j = "select h.toInstitution, h.completed, count(h) "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and h.toInstitution is not null "
+                + " and h.createdAt between :fd and :td "
+                + " group by h.toInstitution, h.completed "
+                + " order by count(h) desc ";
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        List<Object[]> results = documentHxFacade.findObjectsArrayByJpql(j, m, TemporalType.TIMESTAMP);
+
+        Map<Long, InstitutionCount> dataMap = new HashMap<>();
+        if (results != null) {
+            for (Object[] row : results) {
+                Institution inst = (Institution) row[0];
+                Boolean completed = (Boolean) row[1];
+                Long count = (Long) row[2];
+
+                if (inst != null && inst.getId() != null) {
+                    InstitutionCount ic = dataMap.get(inst.getId());
+                    if (ic == null) {
+                        ic = new InstitutionCount();
+                        ic.setInstitution(inst);
+                        ic.setCount(0L);
+                        ic.setReceivedCount(0L);
+                        ic.setPendingCount(0L);
+                        dataMap.put(inst.getId(), ic);
+                    }
+                    if (completed != null && completed) {
+                        ic.setReceivedCount(ic.getReceivedCount() + count);
+                    } else {
+                        ic.setPendingCount(ic.getPendingCount() + count);
+                    }
+                    ic.setCount(ic.getReceivedCount() + ic.getPendingCount());
+                }
+            }
+        }
+
+        copyForwardInstitutionCounts = new ArrayList<>(dataMap.values());
+        copyForwardInstitutionCounts.sort((a, b) -> Long.compare(b.getCount(), a.getCount()));
+    }
+
+    public String toReportsCopyForwardInstitutionCounts() {
+        copyForwardInstitutionCounts = null;
+        return "/national/institution_counts_copy_forwards?faces-redirect=true";
+    }
+
+    public List<InstitutionCount> getCopyForwardInstitutionCounts() {
+        return copyForwardInstitutionCounts;
+    }
+
+    public void setCopyForwardInstitutionCounts(List<InstitutionCount> copyForwardInstitutionCounts) {
+        this.copyForwardInstitutionCounts = copyForwardInstitutionCounts;
+    }
+
+    // ===================== End National Dashboard Methods =====================
 
     public List<Object[]> getTopInstitutionsCopyForwardsSentByMyInstitution(int limit) {
         Institution loggedInstitution = webUserController.getLoggedInstitution();

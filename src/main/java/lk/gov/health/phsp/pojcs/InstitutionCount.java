@@ -45,6 +45,8 @@ public class InstitutionCount {
     private Item itemValue;
     private Long id;
     private String positiveRate;
+    private Long receivedCount;
+    private Long pendingCount;
 
     public InstitutionCount(Long count, Institution institution, Date date, DocumentType encounerType) {
         this.institution = institution;
@@ -192,6 +194,22 @@ public class InstitutionCount {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getReceivedCount() {
+        return receivedCount;
+    }
+
+    public void setReceivedCount(Long receivedCount) {
+        this.receivedCount = receivedCount;
+    }
+
+    public Long getPendingCount() {
+        return pendingCount;
+    }
+
+    public void setPendingCount(Long pendingCount) {
+        this.pendingCount = pendingCount;
     }
 
 }

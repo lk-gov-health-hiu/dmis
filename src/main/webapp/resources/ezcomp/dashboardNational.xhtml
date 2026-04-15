@@ -1,386 +1,609 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:cc="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
-<!-- INTERFACE -->
-<cc:interface>
-</cc:interface>
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
 
-<!-- IMPLEMENTATION -->
-<cc:implementation>
-    <h:form>
-        <div class="container">
-            <div class="row gx-4 my-2">
-                <div class="col">
-                    <div class="d-flex bg-success px-3 py-2 align-items-center">
-                        <div class="flex-grow-1 text-white">
-                            <h4 class="fw-bold text-center text-cente mb-4">
-                                <i class="bi mx-2 bi-info-circle-fill"></i>
-                                PCR SAMPLES
-                            </h4>
-                            <h5 class="text-center"></h5>
-                            <div class="d-flex">
-                                <div class="p-2 flex-grow-1">
-                                    <h5 class="fw-bold">Today</h5>
-                                </div>
-                                <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                    <h5>
-                                        <h:outputLabel value="#{dashboardApplicationController.todayPcr}">
-                                        </h:outputLabel>
-                                    </h5>
-                                </div>
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <style>
+            .dashboard-container {
+                padding: 1.5rem;
+                background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+                min-height: calc(100vh - 150px);
+            }
+
+            .dashboard-header {
+                margin-bottom: 2rem;
+            }
+
+            .dashboard-title {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: #2c3e50;
+                margin-bottom: 0.5rem;
+            }
+
+            .dashboard-subtitle {
+                font-size: 0.95rem;
+                color: #6c757d;
+            }
+
+            .dashboard-card {
+                background: #ffffff;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                overflow: hidden;
+                transition: all 0.3s ease;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            }
+
+            .card-header-gradient {
+                padding: 1.5rem;
+                color: white;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .card-header-gradient::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 100%;
+                height: 200%;
+                background: rgba(255, 255, 255, 0.1);
+                transform: rotate(30deg);
+            }
+
+            .gradient-success { background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); }
+            .gradient-primary { background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%); }
+            .gradient-info { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); }
+
+            .card-icon {
+                width: 50px;
+                height: 50px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .card-institution {
+                font-size: 0.8rem;
+                opacity: 0.9;
+                position: relative;
+                z-index: 1;
+            }
+
+            .card-body-content {
+                padding: 1.5rem;
+                flex-grow: 1;
+            }
+
+            .stat-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.85rem 1rem;
+                background: #f8f9fa;
+                border-radius: 10px;
+                margin-bottom: 0.6rem;
+                transition: background 0.2s ease;
+            }
+
+            .stat-item:hover { background: #e9ecef; }
+
+            .stat-label {
+                font-size: 0.9rem;
+                color: #495057;
+                font-weight: 500;
+            }
+
+            .stat-value {
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: #2c3e50;
+            }
+
+            .stat-value-success { color: #00b894; }
+            .stat-value-primary { color: #0984e3; }
+            .stat-value-info { color: #6c5ce7; }
+            .stat-value-warning { color: #f39c12; }
+
+            .stat-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .section-divider {
+                border: none;
+                border-top: 1px dashed #dee2e6;
+                margin: 0.5rem 0;
+            }
+
+            .section-label {
+                font-size: 0.75rem;
+                color: #adb5bd;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 600;
+                padding: 0.25rem 0;
+            }
+
+            .card-footer-actions {
+                padding: 1rem 1.5rem 1.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn-action {
+                padding: 0.75rem 1.25rem;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                text-decoration: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .btn-primary-solid {
+                background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+                color: white;
+            }
+            .btn-primary-solid:hover {
+                background: linear-gradient(135deg, #0773c8 0%, #5ba8ee 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+            }
+
+            .btn-outline-light {
+                background: transparent;
+                border: 2px solid #dee2e6;
+                color: #495057;
+            }
+            .btn-outline-light:hover {
+                background: #f8f9fa;
+                border-color: #adb5bd;
+            }
+
+            .percentage-display {
+                font-size: 1.8rem;
+                font-weight: 700;
+                text-align: center;
+                padding: 0.5rem 0 0.1rem;
+            }
+
+            .percentage-label {
+                font-size: 0.8rem;
+                color: #6c757d;
+                text-align: center;
+                margin-bottom: 0.3rem;
+            }
+
+            .chart-card {
+                background: #ffffff;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                overflow: hidden;
+            }
+
+            .chart-card-header {
+                padding: 1.25rem 1.5rem;
+                color: white;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .chart-card-header h4 {
+                margin: 0;
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+
+            .chart-card-body {
+                padding: 1.5rem;
+                min-height: 350px;
+            }
+
+            .view-all-link {
+                color: rgba(255,255,255,0.9);
+                font-size: 0.85rem;
+                font-weight: 500;
+                text-decoration: none;
+                border: 1px solid rgba(255,255,255,0.4);
+                padding: 0.3rem 0.8rem;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+            }
+
+            .view-all-link:hover {
+                background: rgba(255,255,255,0.15);
+                color: white;
+                border-color: rgba(255,255,255,0.7);
+            }
+
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .animate-fade-in { animation: fadeInUp 0.5s ease forwards; }
+            .delay-1 { animation-delay: 0.1s; }
+            .delay-2 { animation-delay: 0.2s; }
+
+            @media (max-width: 991.98px) {
+                .dashboard-container { padding: 1rem; }
+                .dashboard-title { font-size: 1.5rem; }
+            }
+
+            @media (max-width: 575.98px) {
+                .dashboard-container { padding: 0.75rem; }
+                .stat-value { font-size: 1.15rem; }
+                .card-header-gradient { padding: 1.25rem; }
+                .card-body-content { padding: 1rem; }
+                .card-footer-actions { padding: 1rem; }
+            }
+        </style>
+
+        <h:form>
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{dashboardController.prepareNationalDashboard()}" />
+            </f:metadata>
+
+            <div class="dashboard-container">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">
+                        <i class="bi bi-globe me-2"></i>National Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle">
+                        System-wide document management overview across all institutions.
+                    </p>
+                </div>
+
+                <!-- ROW 1: Top 10 Institution Charts -->
+                <div class="row g-4 mb-4">
+                    <div class="col-12 col-lg-6 animate-fade-in delay-1">
+                        <div class="chart-card">
+                            <div class="chart-card-header" style="background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);">
+                                <h4><i class="bi bi-bar-chart-fill me-2"></i>Top 10 Institutions - Letters Added</h4>
+                                <h:commandLink action="#{letterController.toReportsInstitutionCountsLetters()}" styleClass="view-all-link">
+                                    View All
+                                </h:commandLink>
                             </div>
-                            <div class="d-flex">
-                                <div class="p-2 flex-grow-1">
-                                    <h5 class="fw-bold">Yesterday</h5>
-                                </div>
-                                <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                    <h5>
-                                        <h:outputLabel value="#{dashboardApplicationController.yesterdayPcr}">
-                                        </h:outputLabel>
-                                    </h5>
-                                </div>
-                            </div>
-                            <hr/>
-                            <div class="flex-grow-1 text-white text-center">
-                                <small> Not a complete denominator<br/><br/></small>
+                            <div class="chart-card-body">
+                                <h:panelGroup rendered="#{not empty dashboardController.nationalLettersByInstitutionChart.data.labels}">
+                                    <p:barChart model="#{dashboardController.nationalLettersByInstitutionChart}" style="width: 100%; height: 320px;" />
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{empty dashboardController.nationalLettersByInstitutionChart.data.labels}" styleClass="text-center p-5">
+                                    <div style="color: #6c757d; padding: 50px;">
+                                        <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
+                                        <p>No letter data available for the last 30 days.</p>
+                                    </div>
+                                </h:panelGroup>
                             </div>
                         </div>
                     </div>
-                    <div class="d-grid gap-2">
-                        <h:commandButton value="More Information"
-                            class="btn text-white btn-small btn-dark-success border-none" type="button">
-                        </h:commandButton>
+
+                    <div class="col-12 col-lg-6 animate-fade-in delay-2">
+                        <div class="chart-card">
+                            <div class="chart-card-header" style="background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);">
+                                <h4><i class="bi bi-bar-chart-fill me-2"></i>Top 10 Institutions - Copy/Forwards</h4>
+                                <h:commandLink action="#{letterController.toReportsCopyForwardInstitutionCounts()}" styleClass="view-all-link">
+                                    View All
+                                </h:commandLink>
+                            </div>
+                            <div class="chart-card-body">
+                                <h:panelGroup rendered="#{not empty dashboardController.nationalCopyForwardsByInstitutionChart.data.labels}">
+                                    <p:barChart model="#{dashboardController.nationalCopyForwardsByInstitutionChart}" style="width: 100%; height: 320px;" />
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{empty dashboardController.nationalCopyForwardsByInstitutionChart.data.labels}" styleClass="text-center p-5">
+                                    <div style="color: #6c757d; padding: 50px;">
+                                        <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
+                                        <p>No copy/forward data available for the last 30 days.</p>
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="d-flex bg-success px-3 py-2 align-items-center">
-                        <div class="flex-grow-1 text-white">
-                            <h4 class="fw-bold text-center text-cente mb-4">
-                                <i class="bi mx-2 bi-info-circle-fill"></i>
-                                RAT SAMPLES
-                            </h4>
-                            <h5 class="text-center"></h5>
-                            <div class="d-flex">
-                                <div class="p-2 flex-grow-1">
-                                    <h5 class="fw-bold">Today</h5>
-                                </div>
-                                <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                    <h5>
-                                        <h:outputLabel value="#{dashboardApplicationController.todayRat}">
-                                        </h:outputLabel>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="d-flex">
-                                <div class="p-2 flex-grow-1">
-                                    <h5 class="fw-bold">Yesterday</h5>
-                                </div>
-                                <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                    <h5>
-                                        <h:outputLabel value="#{dashboardApplicationController.yesterdayRat}">
-                                        </h:outputLabel>
-                                    </h5>
-                                </div>
-                            </div>
-                            <hr/>
-                            <div class="flex-grow-1 text-white text-center">
-                                <small>Not a complete denominator<br/><br/></small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <h:commandButton value="More Information"
-                            class="btn text-white btn-small btn-dark-success border-none"></h:commandButton>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="d-flex bg-danger px-3 py-2 align-items-center">
-                        <div class="flex-grow-1 text-white">
-                            <h4 class="fw-bold text-center text-cente mb-1">
-                                <i class="bi bi-exclamation-circle-fill"></i>
-                                PCR POSITIVES
-                            </h4>
-                            <div class="flex-grow-1 text-white text-center">
-                                <small>Reported</small>
-                            </div>
-                            <div class="d-flex">
-                                <div class="p-2 flex-grow-1">
-                                    <h5 class="fw-bold">Today</h5>
-                                </div>
-                                <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                    <h5>
-                                        #{dashboardApplicationController.todayPositivePcr}
-                                        <small>
-                                        	(#{dashboardApplicationController.todayPcrPositiveRate})
-                                        </small>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="d-flex">
-                                <div class="p-2 flex-grow-1">
-                                    <h5 class="fw-bold">Yesterday</h5>
-                                </div>
-                                <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                    <h5>
-                                        #{dashboardApplicationController.yesterdayPositivePcr}
-                                       	<small>
-                                            (#{dashboardApplicationController.yesterdayPcrPositiveRate})
-                                        </small>
-                                    </h5>
-                                </div>
-                            </div>
-                            <hr/>
-                            <div class="flex-grow-1 text-white text-center">
-                                <small>Positives could be from samples collected on a prior date</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <h:commandButton value="More Information"
-                            class="btn text-white btn-small btn-dark-danger border-none" type="button">
-                        </h:commandButton>
-                    </div>
-                </div>
-                <div class="col">
 
-                    <div class="d-flex bg-danger px-3 py-2 align-items-center">
-                           <div class="flex-grow-1 text-white">
-                            <h4 class="fw-bold text-center mb-1">
-                                <i class="bi bi-exclamation-circle-fill"></i>
-                                RAT POSITIVES
-                            </h4>
-                            <div class="flex-grow-1 text-white text-center">
-                                <small>Reported</small>
+                <!-- ROW 2: Weekly Letters Line Chart -->
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <div class="chart-card">
+                            <div class="chart-card-header" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);">
+                                <h4><i class="bi bi-graph-up me-2"></i>Weekly Letters Added (Last 12 Weeks)</h4>
                             </div>
-                            <div class="d-flex">
-                                <div class="p-2 flex-grow-1">
-                                    <h5 class="fw-bold">Today</h5>
-                                </div>
-                                <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                    <h5>
-                                        #{dashboardApplicationController.todayPositiveRat}
-                                        <small>
-                                            (#{dashboardApplicationController.todayRatPositiveRate})
-                                        </small>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="d-flex">
-                                <div class="p-2 flex-grow-1">
-                                    <h5 class="fw-bold">Yesterday</h5>
-                                </div>
-                                <div class="p-2 flex-shrink-1 fw-semi-bold">
-                                    <h5>
-                                        #{dashboardApplicationController.yesterdayPositiveRat}
-                                        <small>
-                                        	(#{dashboardApplicationController.yesterdayRatPositiveRate})
-                                        </small>
-                                    </h5>
-                                </div>
-                            </div>
-                            <hr/>
-                            <div class="flex-grow-1 text-white text-center">
-                                <small>Positives could be from samples collected on a prior date</small>
+                            <div class="chart-card-body">
+                                <h:panelGroup rendered="#{not empty dashboardController.nationalWeeklyLettersChart.data.labels}">
+                                    <p:lineChart model="#{dashboardController.nationalWeeklyLettersChart}" style="width: 100%; height: 300px;" />
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{empty dashboardController.nationalWeeklyLettersChart.data.labels}" styleClass="text-center p-5">
+                                    <div style="color: #6c757d; padding: 50px;">
+                                        <i class="bi bi-graph-up" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
+                                        <p>No weekly data available.</p>
+                                    </div>
+                                </h:panelGroup>
                             </div>
                         </div>
                     </div>
-                    <div class="d-grid gap-2">
-                        <h:commandButton value="More Information"
-                            class="btn btn-small text-white btn-dark-danger border-none" type="button">
-                        </h:commandButton>
+                </div>
+
+                <!-- ROW 3: Detail Cards -->
+                <div class="row g-4">
+                    <!-- Letters Added -->
+                    <div class="col-12 col-lg-4">
+                        <div class="dashboard-card">
+                            <div class="card-header-gradient gradient-primary">
+                                <div class="card-icon">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </div>
+                                <h3 class="card-title">Letters Added</h3>
+                                <p class="card-institution mb-0">All institutions</p>
+                            </div>
+
+                            <div class="card-body-content">
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-calendar-range me-2 text-primary"></i>
+                                        Last 30 Days
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-primary">
+                                            <h:outputText value="#{dashboardController.nationalLettersLast30Days}" />
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-calendar-event me-2 text-info"></i>
+                                        Last Year
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-info">
+                                            <h:outputText value="#{dashboardController.nationalLettersLastYear}" />
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-stack me-2 text-success"></i>
+                                        All Time
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-success">
+                                            <h:outputText value="#{dashboardController.nationalLettersAllTime}" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer-actions">
+                                <h:commandButton value="View by Institution"
+                                                 styleClass="btn-action btn-primary-solid"
+                                                 action="#{letterController.toReportsInstitutionCountsLetters()}">
+                                </h:commandButton>
+                                <h:commandButton value="View by Date"
+                                                 styleClass="btn-action btn-outline-light"
+                                                 action="#{letterController.toReportsDailyCountsLetters()}">
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Letter Assignments -->
+                    <div class="col-12 col-lg-4">
+                        <div class="dashboard-card">
+                            <div class="card-header-gradient gradient-success">
+                                <div class="card-icon">
+                                    <i class="bi bi-person-check-fill"></i>
+                                </div>
+                                <h3 class="card-title">Letter Assignments</h3>
+                                <p class="card-institution mb-0">Assigned and accepted</p>
+                            </div>
+
+                            <div class="card-body-content">
+                                <div class="section-label">Last 30 Days</div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-people me-2 text-primary"></i>
+                                        Assigned
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-primary">
+                                            <h:outputText value="#{dashboardController.nationalAssignmentsLast30Days}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-check-circle me-2 text-success"></i>
+                                        Accepted
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-success">
+                                            <h:outputText value="#{dashboardController.nationalAssignmentsAccepted30Days}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-hourglass-split me-2 text-warning"></i>
+                                        Pending
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-warning">
+                                            <h:outputText value="#{dashboardController.nationalAssignmentsPending30Days}" />
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div style="text-align: center; padding: 0.3rem 0;">
+                                    <div class="percentage-display stat-value-success">
+                                        <h:outputText value="#{dashboardController.nationalAssignedAcceptedPercentage30Days}" />
+                                    </div>
+                                    <div class="percentage-label">Acceptance Rate (30 Days)</div>
+                                </div>
+
+                                <hr class="section-divider" />
+                                <div class="section-label">All Time</div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-people me-2"></i>
+                                        Assigned
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value" style="font-size:1.1rem;">
+                                            <h:outputText value="#{dashboardController.nationalAssignmentsAllTime}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        Accepted
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value" style="font-size:1.1rem;">
+                                            <h:outputText value="#{dashboardController.nationalAssignmentsAcceptedAllTime}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="text-align: center; padding: 0.2rem 0;">
+                                    <div class="percentage-display" style="font-size:1.3rem; color: #6c757d;">
+                                        <h:outputText value="#{dashboardController.nationalAssignedAcceptedPercentageAllTime}" />
+                                    </div>
+                                    <div class="percentage-label">Acceptance Rate (All Time)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Copy/Forward Letters -->
+                    <div class="col-12 col-lg-4">
+                        <div class="dashboard-card">
+                            <div class="card-header-gradient gradient-info">
+                                <div class="card-icon">
+                                    <i class="bi bi-forward-fill"></i>
+                                </div>
+                                <h3 class="card-title">Copy/Forward Letters</h3>
+                                <p class="card-institution mb-0">Received marked percentage</p>
+                            </div>
+
+                            <div class="card-body-content">
+                                <div class="section-label">Last 30 Days</div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-send me-2 text-info"></i>
+                                        Forwarded
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-info">
+                                            <h:outputText value="#{dashboardController.nationalCopyForwardsLast30Days}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-check2-circle me-2 text-success"></i>
+                                        Received
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-success">
+                                            <h:outputText value="#{dashboardController.nationalCopyForwardsReceived30Days}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-clock-history me-2 text-warning"></i>
+                                        Pending
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value stat-value-warning">
+                                            <h:outputText value="#{dashboardController.nationalCopyForwardsPending30Days}" />
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div style="text-align: center; padding: 0.3rem 0;">
+                                    <div class="percentage-display stat-value-info">
+                                        <h:outputText value="#{dashboardController.nationalCopyForwardsReceivedPercentage30Days}" />
+                                    </div>
+                                    <div class="percentage-label">Received Rate (30 Days)</div>
+                                </div>
+
+                                <hr class="section-divider" />
+                                <div class="section-label">All Time</div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-send me-2"></i>
+                                        Forwarded
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value" style="font-size:1.1rem;">
+                                            <h:outputText value="#{dashboardController.nationalCopyForwardsAllTime}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">
+                                        <i class="bi bi-check2-circle me-2"></i>
+                                        Received
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-value" style="font-size:1.1rem;">
+                                            <h:outputText value="#{dashboardController.nationalCopyForwardsReceivedAllTime}" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="text-align: center; padding: 0.2rem 0;">
+                                    <div class="percentage-display" style="font-size:1.3rem; color: #6c757d;">
+                                        <h:outputText value="#{dashboardController.nationalCopyForwardsReceivedPercentageAllTime}" />
+                                    </div>
+                                    <div class="percentage-label">Received Rate (All Time)</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row my-2 gx-4">
-                <div class="col">
-                    <ol class="list-group">
-                        <li class="list-group-item active">Test By Category</li>
-                        <h:commandLink action="#{dashboardController.toContactNational()}" class="list-group-item list-group-action-item d-flex justify-content-between align-items-start">
-                          <div class="ms-2 me-auto">
-                                First Contacts
-                          </div>
-                          <span class="badge bg-primary rounded-pill">
-                            #{dashboardApplicationController.firstContactCount}
-                          </span>
-                        </h:commandLink>
-                        <h:commandLink action="#{dashboardController.toCommunityRandomNational()}" class="list-group-item d-flex justify-content-between align-items-start list-group-action-item">
-                          <div class="ms-2 me-auto">
-                                Community Random
-                          </div>
-                          <span class="badge bg-primary rounded-pill">
-                                #{dashboardApplicationController.communityRandomCount}
-                          </span>
-                        </h:commandLink>
-                        <h:commandLink action="#{dashboardController.toForeign()}" class="list-group-item d-flex justify-content-between align-items-start list-group-action-item">
-                          <div class="ms-2 me-auto">
-                                Foreign returnees and tourists
-                          </div>
-                          <span class="badge bg-primary rounded-pill">
-                            #{dashboardApplicationController.foreignCount}
-                          </span>
-                        </h:commandLink>
-                        <h:commandLink action="#{dashboardController.toHospital()}" class="list-group-item d-flex justify-content-between align-items-start list-group-action-item">
-                            <div class="ms-2 me-auto">
-                                Hospitals
-                            </div>
-                            <span class="badge bg-primary rounded-pill">
-                                #{dashboardApplicationController.hospitalCount}
-                            </span>
-                        </h:commandLink>
-                        <h:commandLink action="#{dashboardController.toOtherOrderingCategory()}" class="list-group-item d-flex jusify-content-between align-items-start list-group-action-item">
-                           <div class="ms-2 me-auto">
-                               Other
-                            </div>
-                            <span class="badge bg-primary rounded-pill">
-                                #{dashboardApplicationController.otherCount}
-                            </span>
-                        </h:commandLink>
-                        <h:commandLink action="#{mohController.toDistrictViceTestListForOrderingCategories()}" class="list-group-item d-flex justify-content-betweeen align-items-start list-group-action-item">
-                            <div class="ms-2 me-auto">
-                                Other
-                            </div>
-                            <span class="badge bg-primary rounded-pill">
-                                #{dashboardApplicationController.otherCount}
-                            </span>
-                        </h:commandLink>
-                        <h:commandLink class="list-group-item list-group-item-action" action="#{nationalController.toTestPositiveRateByRdhs()}">
-                            Test Positivity Rates By Districts
-                        </h:commandLink>
-                        <h:commandLink action="#{mohController.toDistrictViceTestListForOrderingCategories()}" class="list-group-item d-flex list-group-action-item">
-                            More details
-                        </h:commandLink>
-                      </ol>
-                </div>
-                <div class="col">
-                </div>
-                <div class="col">
-
-                </div>
-                <div class="col"></div>
-            </div>
-
-            <div class="row my-3">
-                <div class="accordion" id="accordionPanelsStayOpenExample">
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                           <strong>Last 14 Day Positive Cases Trend</strong> <small class="px-3"><a href="#" onclick="window.location.reload()">Refresh the chart</a></small> <small class="text-danger">Beta</small>
-                        </button>
-                      </h2>
-                      <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                        <div class="accordion-body">
-                            <h3 class="text-muted fw-bold" id="chartLoading">Chart loading, please refresh</h3>
-                            <canvas id="chart"></canvas>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-            </div>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-            <script>
-                const pcrDataJson = '#{dashboardApplicationController.pcrPositiveCasesJSON}'
-                const ratDataJson = '#{dashboardApplicationController.ratPositiveCasesJSON}'
-
-                document.addEventListener('readystatechange', event => {
-                    if (event.target.readyState === 'interactive') {
-                        if (pcrDataJson !== '' || ratDataJson !== '') drawChart();
-                    }
-                })
-
-                function parseDate(date) {
-                    var date = new Date(date.replace('IST', ''));
-                    let day = date.getDate();
-                    let month = date.getMonth()+1;
-                    let year = date.getFullYear();
-
-                    return year+"/"+month+"/"+day
-                }
-
-                function drawChart() {
-                    const parsePcrData = JSON.parse(pcrDataJson)
-                    const parseRatData = JSON.parse(ratDataJson)
-
-                    const arrayPcrData = Object.entries(parsePcrData)
-                    const arrayRatData = Object.entries(parseRatData)
-
-                    arrayPcrData.sort((a,b) => {
-                        var aDate = new Date(a[0].replace('IST', ''));
-                        var bDate = new Date(b[0].replace('IST', ''));
-                        return aDate-bDate
-                    })
-
-                    arrayRatData.sort((a,b) => {
-                        var aDate = new Date(a[0].replace('IST', ''));
-                        var bDate = new Date(b[0].replace('IST', ''));
-                        return aDate-bDate
-                    })
-
-                    const ratDataLabels = Object.keys(parseRatData)
-                    const pcrDataLabels = Object.keys(parsePcrData)
-
-                    const ratDataset = {
-                        label: "RAT",
-                        backgroundColor: "#ffd166",
-                        borderColor: "#ffd166",
-                        fill: false,
-                        data: []
-                    }
-
-                    const pcrDataset = {
-                        label: "PCR",
-                        backgroundColor: "#ef476f",
-                        borderColor: "#ef476f",
-                        fill: false,
-                        data: []
-                    }
-
-                    const totalDataset = {
-                        label: "Total Cases",
-                        backgroundColor: "#118ab2",
-                        borderColor: "#118ab2",
-                        fill: false,
-                        data: []
-                    }
-
-                    var parsedDates = []
-
-                    arrayRatData.forEach(element => {
-                        var tempDate = parseDate(element[0])
-                        parsedDates.push(tempDate)
-                        ratDataset.data.push(element[1])
-                    })
-
-                    arrayPcrData.forEach(element => {
-                        pcrDataset.data.push(element[1])
-                    })
-
-                    arrayRatData.map((value, index) => {
-                        totalDataset.data.push(parseInt(value[1])+parseInt(arrayPcrData[index][1]))
-                    })
-
-                    const data = {
-                        labels: parsedDates,
-                        datasets: [
-                            ratDataset, pcrDataset,totalDataset
-                        ]
-                    }
-
-                    const chart = document.querySelector("#chart").getContext('2d')
-                    const myChart = new Chart(chart, {
-                            type: 'line',
-                            data: data
-                        }
-                    )
-                    document.querySelector("#chartLoading").classList.add('d-none')
-                }
-            </script>
-        </div>
-
-    </h:form>
-</cc:implementation>
-
+        </h:form>
+    </cc:implementation>
 </html>
