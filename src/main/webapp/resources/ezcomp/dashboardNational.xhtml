@@ -295,12 +295,11 @@
                         </p>
                     </div>
                     <div style="padding-top:4px;">
-                        <h:outputLink value="#{request.contextPath}/national/performance_report.xhtml"
-                                      target="_blank"
-                                      styleClass="btn btn-outline-secondary btn-sm"
-                                      style="text-decoration:none; white-space:nowrap;">
+                        <h:commandLink action="#{dashboardController.toNationalPerformanceReport()}"
+                                       styleClass="btn btn-outline-secondary btn-sm"
+                                       style="text-decoration:none; white-space:nowrap;">
                             <i class="bi bi-printer me-1"></i> Print Performance Report
-                        </h:outputLink>
+                        </h:commandLink>
                     </div>
                 </div>
 
