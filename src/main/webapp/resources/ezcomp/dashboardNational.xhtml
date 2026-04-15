@@ -285,13 +285,23 @@
 
             <div class="dashboard-container">
                 <!-- Dashboard Header -->
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">
-                        <i class="bi bi-globe me-2"></i>National Dashboard
-                    </h1>
-                    <p class="dashboard-subtitle">
-                        System-wide document management overview across all institutions.
-                    </p>
+                <div class="dashboard-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h1 class="dashboard-title">
+                            <i class="bi bi-globe me-2"></i>National Dashboard
+                        </h1>
+                        <p class="dashboard-subtitle">
+                            System-wide document management overview across all institutions.
+                        </p>
+                    </div>
+                    <div style="padding-top:4px;">
+                        <h:outputLink value="#{request.contextPath}/national/performance_report.xhtml"
+                                      target="_blank"
+                                      styleClass="btn btn-outline-secondary btn-sm"
+                                      style="text-decoration:none; white-space:nowrap;">
+                            <i class="bi bi-printer me-1"></i> Print Performance Report
+                        </h:outputLink>
+                    </div>
                 </div>
 
                 <!-- ROW 1: Top 10 Institution Charts -->

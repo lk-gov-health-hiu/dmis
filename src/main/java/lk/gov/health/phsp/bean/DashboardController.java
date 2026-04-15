@@ -157,6 +157,10 @@ public class DashboardController implements Serializable {
     private BarChartModel nationalLettersByInstitutionChart;
     private BarChartModel nationalCopyForwardsByInstitutionChart;
     private LineChartModel nationalWeeklyLettersChart;
+    // Print report data (per institution, last 30 days)
+    private List<InstitutionCount> nationalPrintLetterRows;
+    private List<InstitutionCount> nationalPrintCopyForwardRows;
+    private String nationalReportGeneratedAt;
 
     public String toContactNational() {
         orderingCategories = new ArrayList<>();
@@ -494,6 +498,38 @@ public class DashboardController implements Serializable {
         createNationalLettersByInstitutionChart(thirtyDaysAgo, now);
         createNationalCopyForwardsByInstitutionChart(thirtyDaysAgo, now);
         createNationalWeeklyLettersChart();
+
+        nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
+
+        // Print report institution data (last 30 days, all institutions up to 100)
+        List<Object[]> rawLetterRows = letterController.getTopInstitutionsByLetterCount(100, thirtyDaysAgo, now);
+        nationalPrintLetterRows = new ArrayList<>();
+        if (rawLetterRows != null) {
+            for (Object[] row : rawLetterRows) {
+                InstitutionCount ic = new InstitutionCount();
+                ic.setInstitution((Institution) row[0]);
+                ic.setCount((Long) row[1]);
+                nationalPrintLetterRows.add(ic);
+            }
+        }
+        List<Object[]> rawCfRows = letterController.getTopInstitutionsByCopyForwards(100, thirtyDaysAgo, now);
+        nationalPrintCopyForwardRows = new ArrayList<>();
+        if (rawCfRows != null) {
+            for (Object[] row : rawCfRows) {
+                InstitutionCount ic = new InstitutionCount();
+                ic.setInstitution((Institution) row[0]);
+                ic.setReceivedCount((Long) row[1]);
+                ic.setPendingCount((Long) row[2]);
+                long total = ((Long) row[1]) + ((Long) row[2]);
+                ic.setCount(total);
+                if (total > 0) {
+                    ic.setPositiveRate(df.format(((double) (Long) row[1] / total) * 100) + "%");
+                } else {
+                    ic.setPositiveRate("0.00%");
+                }
+                nationalPrintCopyForwardRows.add(ic);
+            }
+        }
     }
 
     private void createNationalLettersByInstitutionChart(Date fd, Date td) {
@@ -1487,6 +1523,18 @@ public class DashboardController implements Serializable {
 
     public LineChartModel getNationalWeeklyLettersChart() {
         return nationalWeeklyLettersChart;
+    }
+
+    public List<InstitutionCount> getNationalPrintLetterRows() {
+        return nationalPrintLetterRows;
+    }
+
+    public List<InstitutionCount> getNationalPrintCopyForwardRows() {
+        return nationalPrintCopyForwardRows;
+    }
+
+    public String getNationalReportGeneratedAt() {
+        return nationalReportGeneratedAt;
     }
 
 }
