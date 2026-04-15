@@ -13,7 +13,58 @@
     <h:body>
         <ui:composition template="./template1.xhtml">
             <ui:define name="content" >
-                <p:tabView>
+
+                <!-- Dashboard Selector -->
+                <div class="container-fluid mt-3 mb-1">
+                    <div class="row justify-content-center">
+                        <div class="col-12 text-center mb-2">
+                            <span class="text-muted" style="font-size:0.95rem; letter-spacing:0.03em;">
+                                <i class="bi bi-grid-1x2-fill me-1"></i>
+                                Select a dashboard to view
+                            </span>
+                        </div>
+                        <!-- Institution Dashboard Card -->
+                        <div class="col-sm-6 col-md-4 mb-2">
+                            <div id="cardInstitution"
+                                 class="card border-primary shadow-sm h-100"
+                                 style="cursor:pointer; transition: box-shadow 0.2s, transform 0.1s;"
+                                 onmouseover="this.style.boxShadow='0 4px 16px rgba(13,110,253,0.25)'; this.style.transform='translateY(-2px)';"
+                                 onmouseout="restoreCardStyle(0);"
+                                 onclick="selectDashboard(0);">
+                                <div class="card-body text-center py-3 px-3">
+                                    <i class="bi bi-hospital" style="font-size:2.2rem;" id="iconInstitution"></i>
+                                    <h5 class="card-title mt-2 mb-1 fw-bold" id="labelInstitution">Institution Dashboard</h5>
+                                    <p class="card-text text-muted small mb-0">Documents and statistics for your institution</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- National Dashboard Card -->
+                        <div class="col-sm-6 col-md-4 mb-2">
+                            <div id="cardNational"
+                                 class="card border-secondary shadow-sm h-100"
+                                 style="cursor:pointer; transition: box-shadow 0.2s, transform 0.1s;"
+                                 onmouseover="this.style.boxShadow='0 4px 16px rgba(108,117,125,0.25)'; this.style.transform='translateY(-2px)';"
+                                 onmouseout="restoreCardStyle(1);"
+                                 onclick="selectDashboard(1);">
+                                <div class="card-body text-center py-3 px-3">
+                                    <i class="bi bi-globe2" style="font-size:2.2rem;" id="iconNational"></i>
+                                    <h5 class="card-title mt-2 mb-1 fw-bold" id="labelNational">National Dashboard</h5>
+                                    <p class="card-text text-muted small mb-0">Nationwide aggregated statistics and data</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Active indicator bar -->
+                    <div class="row justify-content-center">
+                        <div class="col-sm-6 col-md-4 offset-sm-0 offset-md-0" id="activeBarWrap">
+                            <div id="activeBar" class="rounded-bottom" style="height:4px; background:#0d6efd; transition: background 0.3s;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="mt-0 mb-2"/>
+
+                <p:tabView widgetVar="mainDashTabView" style="border:none;">
                     <p:tab title="Institution Dashboard">
                         <ez:dashboardInstitution />
                     </p:tab>
@@ -21,6 +72,59 @@
                         <ez:dashboardNational />
                     </p:tab>
                 </p:tabView>
+
+                <script>
+                    var _activeDashboard = 0;
+
+                    function selectDashboard(index) {
+                        _activeDashboard = index;
+                        PF('mainDashTabView').select(index);
+                        applyCardStyles();
+                    }
+
+                    function applyCardStyles() {
+                        var ci = document.getElementById('cardInstitution');
+                        var cn = document.getElementById('cardNational');
+                        var ii = document.getElementById('iconInstitution');
+                        var iN = document.getElementById('iconNational');
+                        var bar = document.getElementById('activeBar');
+
+                        if (_activeDashboard === 0) {
+                            ci.className = 'card border-primary shadow h-100';
+                            ci.style.background = '#e8f0fe';
+                            ci.style.transform = '';
+                            ii.style.color = '#0d6efd';
+                            cn.className = 'card border-secondary shadow-sm h-100';
+                            cn.style.background = '';
+                            cn.style.transform = '';
+                            iN.style.color = '#6c757d';
+                            bar.style.background = '#0d6efd';
+                        } else {
+                            cn.className = 'card border-success shadow h-100';
+                            cn.style.background = '#e9f7ef';
+                            cn.style.transform = '';
+                            iN.style.color = '#198754';
+                            ci.className = 'card border-secondary shadow-sm h-100';
+                            ci.style.background = '';
+                            ci.style.transform = '';
+                            ii.style.color = '#6c757d';
+                            bar.style.background = '#198754';
+                        }
+                    }
+
+                    function restoreCardStyle(index) {
+                        var card = index === 0
+                            ? document.getElementById('cardInstitution')
+                            : document.getElementById('cardNational');
+                        card.style.boxShadow = '';
+                        card.style.transform = (_activeDashboard === index) ? '' : '';
+                        applyCardStyles();
+                    }
+
+                    // Apply styles on initial page load
+                    applyCardStyles();
+                </script>
+
             </ui:define>
         </ui:composition>
     </h:body>
