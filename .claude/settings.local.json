@@ -14,7 +14,17 @@
       "Bash(sudo apt:*)",
       "Bash(snap install:*)",
       "Bash(/home/buddhika/.local/bin/gh auth:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "WebSearch",
+      "WebFetch(domain:support.claude.com)",
+      "Bash(python -c \"import sys; print\\(sys.version\\)\")",
+      "Bash(python -c \"import PIL; print\\('PIL ok'\\)\")",
+      "Bash(python -c \"import docx; print\\('docx ok'\\)\")",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(py *)",
+      "Bash(ls D:/Dev/dmis/tmp/docscreens/*.png)",
+      "Bash(ls *)"
     ]
   }
 }
