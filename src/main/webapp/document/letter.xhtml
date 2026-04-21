@@ -140,11 +140,14 @@
                                                 maxResults="10" inputStyle="color:red;"
                                                 itemLabel="#{insf.displayName}"
                                                 itemValue="#{insf}"
+                                                delay="500"
+                                                minQueryLength="3"
+                                                cache="false"
                                                 >
                                     <p:ajax event="itemSelect"
                                             listener="#{letterController.saveCurrentDocumentAjax}"
                                             process="from"
-                                            update="letterId fromPerson"
+                                            update="letterId fromPerson from"
                                             global="false" ></p:ajax>
 
                                 </p:autoComplete>
