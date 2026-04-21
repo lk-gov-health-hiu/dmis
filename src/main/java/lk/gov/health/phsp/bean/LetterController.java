@@ -1727,7 +1727,70 @@ public class LetterController implements Serializable {
     }
 
     public void fillForwardCopyActions() {
-        documentHistories = findDocumentHistories(fromDate, toDate, HistoryType.Letter_Copy_or_Forward, webUserController.getLoggedInstitution(), webUserCopy);
+        Institution loggedInstitution = webUserController.getLoggedInstitution();
+        List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
+
+        Map m = new HashMap();
+        // Include letters entered by own institution OR forwarded by own institution
+        String j = "select distinct h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType =:ht "
+                + " and (h.document.institution=:i or h.fromInstitution=:i) ";
+        if (webUserCopy != null) {
+            if (webUserCopy instanceof WebUser) {
+                j += " and h.toUser=:u ";
+                m.put("u", webUserCopy);
+            } else if (webUserCopy instanceof Institution) {
+                j += " and h.toInstitution=:ti ";
+                m.put("ti", webUserCopy);
+            }
+        }
+        j += " and h.createdAt between :fd and :td "
+                + " order by h.id";
+        m.put("i", loggedInstitution);
+        m.put("ht", HistoryType.Letter_Copy_or_Forward);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        if (documentHistories == null) {
+            documentHistories = new ArrayList<>();
+        }
+
+        // Also pick up forwards done by users of this institution where fromInstitution was not set
+        if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
+            m = new HashMap();
+            j = "select h "
+                    + " from DocumentHistory h "
+                    + " where h.retired=false "
+                    + " and h.historyType =:ht "
+                    + " and h.fromUser in :us "
+                    + " and h.fromInstitution is null "
+                    + " and h.document.institution !=:i ";
+            if (webUserCopy != null) {
+                if (webUserCopy instanceof WebUser) {
+                    j += " and h.toUser=:u ";
+                    m.put("u", webUserCopy);
+                } else if (webUserCopy instanceof Institution) {
+                    j += " and h.toInstitution=:ti ";
+                    m.put("ti", webUserCopy);
+                }
+            }
+            j += " and h.createdAt between :fd and :td "
+                    + " order by h.id";
+            m.put("us", usersForMyInstitute);
+            m.put("i", loggedInstitution);
+            m.put("ht", HistoryType.Letter_Copy_or_Forward);
+            m.put("fd", fromDate);
+            m.put("td", toDate);
+
+            List<DocumentHistory> additionalHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+            if (additionalHistories != null) {
+                documentHistories.addAll(additionalHistories);
+            }
+        }
     }
 
     public void fillLetterAcceptRegister() {
