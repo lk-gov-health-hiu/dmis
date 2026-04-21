@@ -14,7 +14,8 @@
       "Bash(sudo apt:*)",
       "Bash(snap install:*)",
       "Bash(/home/buddhika/.local/bin/gh auth:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(gh pr *)"
     ]
   }
 }
