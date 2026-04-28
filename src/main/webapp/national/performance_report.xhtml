@@ -1,308 +1,321 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:p="http://primefaces.org/ui">
-    <f:view contentType="text/html">
-        <h:head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            <title>National Performance Report - DMIS</title>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"/>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"/>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    font-size: 13px;
-                    background: #f8f9fa;
-                }
+    <h:head>
+        <ui:define name="title">
+            <title>National Performance Report</title>
+        </ui:define>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
 
-                .report-wrapper {
-                    max-width: 900px;
-                    margin: 20px auto;
-                    background: #fff;
-                    border: 1px solid #dee2e6;
-                    border-radius: 6px;
-                    padding: 30px 36px;
-                }
-
-                .report-header {
-                    border-bottom: 3px solid #0d6efd;
-                    padding-bottom: 14px;
-                    margin-bottom: 22px;
-                }
-
-                .report-title {
-                    font-size: 1.4rem;
-                    font-weight: 700;
-                    color: #1a3a6b;
-                    margin: 0 0 2px 0;
-                }
-
-                .report-subtitle {
-                    font-size: 0.85rem;
-                    color: #6c757d;
-                }
-
-                .report-meta {
-                    font-size: 0.82rem;
-                    color: #495057;
-                    margin-top: 6px;
-                }
-
-                .section-title {
-                    font-size: 0.78rem;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    letter-spacing: 0.06em;
-                    color: #fff;
-                    background: #1a3a6b;
-                    padding: 5px 10px;
-                    margin: 22px 0 0 0;
-                    border-radius: 3px 3px 0 0;
-                }
-
-                .report-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    font-size: 12.5px;
-                    margin-bottom: 0;
-                }
-
-                .report-table th {
-                    background: #e8eef6;
-                    color: #1a3a6b;
-                    font-weight: 700;
-                    padding: 7px 10px;
-                    border: 1px solid #c8d8ea;
-                    text-align: left;
-                }
-
-                .report-table td {
-                    padding: 6px 10px;
-                    border: 1px solid #dee2e6;
-                    vertical-align: middle;
-                }
-
-                .report-table tr:nth-child(even) td {
-                    background: #f4f7fb;
-                }
-
-                .report-table td.num {
-                    text-align: right;
-                    font-weight: 600;
-                    color: #1a3a6b;
-                }
-
-                .report-table td.pct {
-                    text-align: right;
-                    font-weight: 700;
-                }
-
-                .pct-good  { color: #198754; }
-                .pct-warn  { color: #e67e22; }
-                .pct-poor  { color: #dc3545; }
-
-                .summary-table td:first-child {
-                    font-weight: 600;
-                    width: 55%;
-                }
-
-                .summary-table td:last-child {
-                    font-weight: 700;
-                    font-size: 1.05rem;
-                    color: #1a3a6b;
-                    text-align: right;
-                }
-
-                .no-print {
-                    /* shown on screen, hidden when printing */
-                }
-
-                .footer-note {
-                    font-size: 0.75rem;
-                    color: #adb5bd;
-                    text-align: center;
-                    margin-top: 28px;
-                    padding-top: 10px;
-                    border-top: 1px solid #dee2e6;
-                }
-
-                @media print {
-                    body { background: white; margin: 0; font-size: 11px; }
-                    .no-print { display: none !important; }
-                    .report-wrapper {
-                        max-width: 100%;
-                        margin: 0;
-                        border: none;
-                        padding: 10px 15px;
-                        border-radius: 0;
+                <style>
+                    .rpt-wrapper {
+                        max-width: 860px;
+                        margin: 18px auto;
+                        background: #fff;
+                        border: 1px solid #dee2e6;
+                        border-radius: 6px;
+                        padding: 28px 32px;
                     }
-                    .report-table { font-size: 11px; }
-                    .section-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                    .report-table th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                    .report-table tr:nth-child(even) td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                    a { text-decoration: none; color: inherit; }
-                }
-            </style>
-        </h:head>
-        <h:body>
+                    .rpt-header {
+                        border-bottom: 3px solid #0d6efd;
+                        padding-bottom: 12px;
+                        margin-bottom: 20px;
+                    }
+                    .rpt-title {
+                        font-size: 1.35rem;
+                        font-weight: 700;
+                        color: #1a3a6b;
+                        margin: 0 0 2px 0;
+                    }
+                    .rpt-sub {
+                        font-size: 0.85rem;
+                        color: #6c757d;
+                    }
+                    .rpt-meta {
+                        font-size: 0.82rem;
+                        color: #495057;
+                        margin-top: 5px;
+                    }
+                    .rpt-section {
+                        font-size: 0.75rem;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        letter-spacing: 0.06em;
+                        color: #fff;
+                        background: #1a3a6b;
+                        padding: 5px 10px;
+                        margin: 20px 0 0 0;
+                        border-radius: 3px 3px 0 0;
+                    }
+                    .rpt-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 12.5px;
+                    }
+                    .rpt-table th {
+                        background: #e8eef6;
+                        color: #1a3a6b;
+                        font-weight: 700;
+                        padding: 7px 10px;
+                        border: 1px solid #c8d8ea;
+                        text-align: left;
+                    }
+                    .rpt-table td {
+                        padding: 6px 10px;
+                        border: 1px solid #dee2e6;
+                    }
+                    .rpt-table tr:nth-child(even) td { background: #f4f7fb; }
+                    .rpt-table td.num {
+                        text-align: right;
+                        font-weight: 600;
+                        color: #1a3a6b;
+                    }
+                    .rpt-table td.pct {
+                        text-align: right;
+                        font-weight: 700;
+                        color: #198754;
+                    }
+                    .rpt-table td.seq {
+                        text-align: center;
+                        color: #adb5bd;
+                        width: 36px;
+                    }
+                    .sum-label { font-weight: 600; }
+                    .sum-indent { padding-left: 28px !important; color: #555; }
+                    .rpt-footer {
+                        font-size: 0.75rem;
+                        color: #adb5bd;
+                        text-align: center;
+                        margin-top: 26px;
+                        padding-top: 10px;
+                        border-top: 1px solid #dee2e6;
+                    }
+                    .no-print { }
 
-            <!-- Screen-only action bar -->
-            <div class="no-print" style="background:#1a3a6b; padding:10px 20px; display:flex; align-items:center; gap:12px;">
-                <span style="color:#fff; font-weight:700; font-size:1rem;">
-                    <i class="bi bi-file-earmark-text me-2"></i>National Performance Report
-                </span>
-                <span style="flex:1;"></span>
-                <button class="btn btn-light btn-sm" onclick="window.print();">
-                    <i class="bi bi-printer me-1"></i>Print
-                </button>
-                <button class="btn btn-outline-light btn-sm" onclick="window.history.back();">
-                    <i class="bi bi-arrow-left me-1"></i>Back
-                </button>
-            </div>
+                    @media print {
+                        body { background: white !important; }
+                        .no-print { display: none !important; }
+                        /* hide app header row and nav menu */
+                        .container-fluid > .row.bg-primary { display: none !important; }
+                        .rpt-wrapper {
+                            max-width: 100%;
+                            margin: 0;
+                            border: none;
+                            padding: 8px 12px;
+                            border-radius: 0;
+                        }
+                        .rpt-table { font-size: 11px; }
+                        .rpt-section {
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+                        .rpt-table th {
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+                        .rpt-table tr:nth-child(even) td {
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+                    }
+                </style>
 
-            <div class="report-wrapper">
-
-                <!-- Report Header -->
-                <div class="report-header">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div>
-                            <p class="report-title">
-                                <i class="bi bi-globe2 me-2" style="color:#0d6efd;"></i>
-                                National Performance Report
-                            </p>
-                            <p class="report-subtitle">Document Management Information System (DMIS)</p>
-                            <p class="report-meta">
-                                <i class="bi bi-calendar3 me-1"></i>
-                                <strong>Period:</strong> Last 30 Days &#160;&#160;
-                                <i class="bi bi-clock me-1"></i>
-                                <strong>Generated:</strong>
-                                <h:outputText value="#{dashboardController.nationalReportGeneratedAt}"/>
-                            </p>
-                        </div>
-                        <div style="text-align:right; color:#6c757d; font-size:0.78rem; line-height:1.6;">
-                            <div><strong>Ministry of Health</strong></div>
-                            <div>Sri Lanka</div>
-                        </div>
-                    </div>
+                <!-- Screen action bar (hidden when printing) -->
+                <div class="no-print d-flex align-items-center gap-2 px-2 py-2 mb-2"
+                     style="background:#f0f4f8; border-bottom:1px solid #dee2e6;">
+                    <h:form>
+                        <h:commandLink action="#{dashboardController.toNationalPerformanceReport()}"
+                                       styleClass="btn btn-sm btn-outline-primary me-1"
+                                       title="Reload with fresh data">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Refresh Data
+                        </h:commandLink>
+                    </h:form>
+                    <button class="btn btn-sm btn-primary" onclick="window.print(); return false;">
+                        <i class="bi bi-printer me-1"></i>Print
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="window.history.back(); return false;">
+                        <i class="bi bi-arrow-left me-1"></i>Back
+                    </button>
+                    <span class="text-muted ms-2" style="font-size:0.82rem;">
+                        <h:panelGroup rendered="#{dashboardController.nationalReportGeneratedAt ne null}">
+                            Generated: <h:outputText value="#{dashboardController.nationalReportGeneratedAt}"/>
+                        </h:panelGroup>
+                    </span>
                 </div>
 
-                <!-- National Summary -->
-                <p class="section-title"><i class="bi bi-clipboard-data me-1"></i>National Summary — Last 30 Days</p>
-                <table class="report-table summary-table">
-                    <tbody>
-                        <tr>
-                            <td><i class="bi bi-envelope me-2" style="color:#0d6efd;"></i>Letters Added</td>
-                            <td class="num"><h:outputText value="#{dashboardController.nationalLettersLast30Days}"/></td>
-                        </tr>
-                        <tr>
-                            <td><i class="bi bi-people me-2" style="color:#6c5ce7;"></i>Assignments Issued</td>
-                            <td class="num"><h:outputText value="#{dashboardController.nationalAssignmentsLast30Days}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:28px; color:#555;">Accepted</td>
-                            <td class="num"><h:outputText value="#{dashboardController.nationalAssignmentsAccepted30Days}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:28px; color:#555;">Pending</td>
-                            <td class="num"><h:outputText value="#{dashboardController.nationalAssignmentsPending30Days}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:28px; color:#555;">Acceptance Rate</td>
-                            <td class="num pct pct-good"><h:outputText value="#{dashboardController.nationalAssignedAcceptedPercentage30Days}"/></td>
-                        </tr>
-                        <tr>
-                            <td><i class="bi bi-forward me-2" style="color:#00b894;"></i>Copy / Forwards Sent</td>
-                            <td class="num"><h:outputText value="#{dashboardController.nationalCopyForwardsLast30Days}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:28px; color:#555;">Received by Recipient</td>
-                            <td class="num"><h:outputText value="#{dashboardController.nationalCopyForwardsReceived30Days}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:28px; color:#555;">Pending Receipt</td>
-                            <td class="num"><h:outputText value="#{dashboardController.nationalCopyForwardsPending30Days}"/></td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left:28px; color:#555;">Receipt Rate</td>
-                            <td class="num pct pct-good"><h:outputText value="#{dashboardController.nationalCopyForwardsReceivedPercentage30Days}"/></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="rpt-wrapper" id="nationalPrintReport">
 
-                <!-- Letters by Institution -->
-                <p class="section-title"><i class="bi bi-envelope-fill me-1"></i>Letters Added by Institution — Last 30 Days</p>
-                <h:panelGroup rendered="#{not empty dashboardController.nationalPrintLetterRows}">
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th style="width:40px;">#</th>
-                                <th>Institution</th>
-                                <th style="width:100px; text-align:right;">Letters Added</th>
-                            </tr>
-                        </thead>
+                    <!-- Header -->
+                    <div class="rpt-header">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <p class="rpt-title">
+                                    <i class="bi bi-globe2 me-2" style="color:#0d6efd;"></i>
+                                    National Performance Report
+                                </p>
+                                <p class="rpt-sub">Document Management Information System (DMIS)</p>
+                                <p class="rpt-meta">
+                                    <strong>Period:</strong> Last 30 Days
+                                    &#160;&#160;
+                                    <strong>Generated:</strong>
+                                    <h:outputText value="#{dashboardController.nationalReportGeneratedAt}"/>
+                                </p>
+                            </div>
+                            <div style="text-align:right; color:#6c757d; font-size:0.78rem; line-height:1.7;">
+                                <strong>Ministry of Health</strong><br/>
+                                Sri Lanka
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- National Summary -->
+                    <p class="rpt-section">
+                        <i class="bi bi-clipboard-data me-1"></i>National Summary — Last 30 Days
+                    </p>
+                    <table class="rpt-table">
                         <tbody>
-                            <ui:repeat value="#{dashboardController.nationalPrintLetterRows}" var="row" varStatus="vs">
-                                <tr>
-                                    <td style="text-align:center; color:#adb5bd;">#{vs.index + 1}</td>
-                                    <td><h:outputText value="#{row.institution.name}"/></td>
-                                    <td class="num"><h:outputText value="#{row.count}"/></td>
-                                </tr>
-                            </ui:repeat>
+                            <tr>
+                                <td class="sum-label">
+                                    <i class="bi bi-envelope me-2" style="color:#0d6efd;"></i>Letters Added
+                                </td>
+                                <td class="num">
+                                    <h:outputText value="#{dashboardController.nationalLettersLast30Days}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sum-label">
+                                    <i class="bi bi-people me-2" style="color:#6c5ce7;"></i>Assignments Issued
+                                </td>
+                                <td class="num">
+                                    <h:outputText value="#{dashboardController.nationalAssignmentsLast30Days}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sum-indent">Accepted</td>
+                                <td class="num">
+                                    <h:outputText value="#{dashboardController.nationalAssignmentsAccepted30Days}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sum-indent">Pending</td>
+                                <td class="num">
+                                    <h:outputText value="#{dashboardController.nationalAssignmentsPending30Days}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sum-indent">Acceptance Rate</td>
+                                <td class="num pct">
+                                    <h:outputText value="#{dashboardController.nationalAssignedAcceptedPercentage30Days}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sum-label">
+                                    <i class="bi bi-forward me-2" style="color:#00b894;"></i>Copy / Forwards Sent
+                                </td>
+                                <td class="num">
+                                    <h:outputText value="#{dashboardController.nationalCopyForwardsLast30Days}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sum-indent">Received by Recipient</td>
+                                <td class="num">
+                                    <h:outputText value="#{dashboardController.nationalCopyForwardsReceived30Days}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sum-indent">Pending Receipt</td>
+                                <td class="num">
+                                    <h:outputText value="#{dashboardController.nationalCopyForwardsPending30Days}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="sum-indent">Receipt Rate</td>
+                                <td class="num pct">
+                                    <h:outputText value="#{dashboardController.nationalCopyForwardsReceivedPercentage30Days}"/>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{empty dashboardController.nationalPrintLetterRows}">
-                    <p style="color:#adb5bd; padding:10px; text-align:center; border:1px solid #dee2e6;">
-                        No letter data available for the last 30 days.
-                    </p>
-                </h:panelGroup>
 
-                <!-- Copy/Forwards by Institution -->
-                <p class="section-title"><i class="bi bi-forward-fill me-1"></i>Copy / Forwards by Institution — Last 30 Days</p>
-                <h:panelGroup rendered="#{not empty dashboardController.nationalPrintCopyForwardRows}">
-                    <table class="report-table">
-                        <thead>
-                            <tr>
-                                <th style="width:40px;">#</th>
-                                <th>Institution</th>
-                                <th style="width:80px; text-align:right;">Total Sent</th>
-                                <th style="width:80px; text-align:right;">Received</th>
-                                <th style="width:80px; text-align:right;">Pending</th>
-                                <th style="width:90px; text-align:right;">Receipt Rate</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ui:repeat value="#{dashboardController.nationalPrintCopyForwardRows}" var="row" varStatus="vs">
+                    <!-- Letters by Institution -->
+                    <p class="rpt-section">
+                        <i class="bi bi-envelope-fill me-1"></i>Letters Added by Institution — Last 30 Days
+                    </p>
+                    <h:panelGroup rendered="#{not empty dashboardController.nationalPrintLetterRows}">
+                        <table class="rpt-table">
+                            <thead>
                                 <tr>
-                                    <td style="text-align:center; color:#adb5bd;">#{vs.index + 1}</td>
-                                    <td><h:outputText value="#{row.institution.name}"/></td>
-                                    <td class="num"><h:outputText value="#{row.count}"/></td>
-                                    <td class="num"><h:outputText value="#{row.receivedCount}"/></td>
-                                    <td class="num"><h:outputText value="#{row.pendingCount}"/></td>
-                                    <td class="pct pct-good"><h:outputText value="#{row.positiveRate}"/></td>
+                                    <th style="width:36px;">#</th>
+                                    <th>Institution</th>
+                                    <th style="width:110px; text-align:right;">Letters Added</th>
                                 </tr>
-                            </ui:repeat>
-                        </tbody>
-                    </table>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{empty dashboardController.nationalPrintCopyForwardRows}">
-                    <p style="color:#adb5bd; padding:10px; text-align:center; border:1px solid #dee2e6;">
-                        No copy/forward data available for the last 30 days.
+                            </thead>
+                            <tbody>
+                                <ui:repeat value="#{dashboardController.nationalPrintLetterRows}" var="row" varStatus="vs">
+                                    <tr>
+                                        <td class="seq">#{vs.index + 1}</td>
+                                        <td><h:outputText value="#{row.institution.name}"/></td>
+                                        <td class="num"><h:outputText value="#{row.count}"/></td>
+                                    </tr>
+                                </ui:repeat>
+                            </tbody>
+                        </table>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{empty dashboardController.nationalPrintLetterRows}">
+                        <p class="text-muted text-center p-3 border">No letter data for the last 30 days.</p>
+                    </h:panelGroup>
+
+                    <!-- Copy/Forwards by Institution -->
+                    <p class="rpt-section">
+                        <i class="bi bi-forward-fill me-1"></i>Copy / Forwards by Institution — Last 30 Days
                     </p>
-                </h:panelGroup>
+                    <h:panelGroup rendered="#{not empty dashboardController.nationalPrintCopyForwardRows}">
+                        <table class="rpt-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:36px;">#</th>
+                                    <th>From Institution</th>
+                                    <th>To Institution</th>
+                                    <th style="width:70px; text-align:right;">Total Sent</th>
+                                    <th style="width:70px; text-align:right;">Received</th>
+                                    <th style="width:70px; text-align:right;">Pending</th>
+                                    <th style="width:80px; text-align:right;">Receipt Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ui:repeat value="#{dashboardController.nationalPrintCopyForwardRows}" var="row" varStatus="vs">
+                                    <tr>
+                                        <td class="seq">#{vs.index + 1}</td>
+                                        <td><h:outputText value="#{row.referralInstitution.name}"/></td>
+                                        <td><h:outputText value="#{row.institution.name}"/></td>
+                                        <td class="num"><h:outputText value="#{row.count}"/></td>
+                                        <td class="num"><h:outputText value="#{row.receivedCount}"/></td>
+                                        <td class="num"><h:outputText value="#{row.pendingCount}"/></td>
+                                        <td class="pct"><h:outputText value="#{row.positiveRate}"/></td>
+                                    </tr>
+                                </ui:repeat>
+                            </tbody>
+                        </table>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{empty dashboardController.nationalPrintCopyForwardRows}">
+                        <p class="text-muted text-center p-3 border">No copy/forward data for the last 30 days.</p>
+                    </h:panelGroup>
 
-                <!-- Footer -->
-                <p class="footer-note">
-                    This report was generated from the Document Management Information System (DMIS).
-                    Data reflects activity within the last 30 days. For queries, contact the system administrator.
-                </p>
+                    <p class="rpt-footer">
+                        Generated from the Document Management Information System (DMIS).
+                        Data covers the last 30 days. For queries contact the system administrator.
+                    </p>
 
-            </div>
-        </h:body>
-    </f:view>
+                </div>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
 </html>

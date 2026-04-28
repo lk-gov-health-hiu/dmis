@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -569,9 +570,33 @@ public class DashboardController implements Serializable {
         List<Number> pendingValues = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
-        List<Object[]> topInstitutions = letterController.getTopInstitutionsByCopyForwards(10, fd, td);
+        List<Object[]> topInstitutions = letterController.getTopInstitutionsByCopyForwards(1000, fd, td);
         if (topInstitutions != null) {
+            Map<Long, Object[]> byReceiver = new LinkedHashMap<>();
             for (Object[] row : topInstitutions) {
+                Institution toInst = (Institution) row[1];
+                Long accepted = row[2] != null ? (Long) row[2] : 0L;
+                Long pending = row[3] != null ? (Long) row[3] : 0L;
+                if (toInst == null || toInst.getId() == null) {
+                    continue;
+                }
+                Object[] agg = byReceiver.get(toInst.getId());
+                if (agg == null) {
+                    agg = new Object[]{toInst, 0L, 0L};
+                    byReceiver.put(toInst.getId(), agg);
+                }
+                agg[1] = ((Long) agg[1]) + accepted;
+                agg[2] = ((Long) agg[2]) + pending;
+            }
+            List<Object[]> aggregated = new ArrayList<>(byReceiver.values());
+            aggregated.sort((a, b) -> {
+                Long totalA = ((Long) a[1]) + ((Long) a[2]);
+                Long totalB = ((Long) b[1]) + ((Long) b[2]);
+                return totalB.compareTo(totalA);
+            });
+            int chartLimit = Math.min(10, aggregated.size());
+            for (int i = 0; i < chartLimit; i++) {
+                Object[] row = aggregated.get(i);
                 Institution inst = (Institution) row[0];
                 Long accepted = (Long) row[1];
                 Long pending = (Long) row[2];
@@ -1506,6 +1531,25 @@ public class DashboardController implements Serializable {
 
         nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
 
+        // Summary totals (last 30 days)
+        nationalLettersLast30Days = letterController.countNationalLetters(thirtyDaysAgo, now);
+        nationalCopyForwardsLast30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, null);
+        nationalCopyForwardsPending30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, false);
+        nationalCopyForwardsReceived30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, true);
+        nationalAssignmentsLast30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, null);
+        nationalAssignmentsPending30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, false);
+        nationalAssignmentsAccepted30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, true);
+        if (nationalAssignmentsLast30Days != null && nationalAssignmentsLast30Days > 0) {
+            nationalAssignedAcceptedPercentage30Days = df.format(((double) nationalAssignmentsAccepted30Days / nationalAssignmentsLast30Days) * 100) + "%";
+        } else {
+            nationalAssignedAcceptedPercentage30Days = "0.00%";
+        }
+        if (nationalCopyForwardsLast30Days != null && nationalCopyForwardsLast30Days > 0) {
+            nationalCopyForwardsReceivedPercentage30Days = df.format(((double) nationalCopyForwardsReceived30Days / nationalCopyForwardsLast30Days) * 100) + "%";
+        } else {
+            nationalCopyForwardsReceivedPercentage30Days = "0.00%";
+        }
+
         List<Object[]> rawLetterRows = letterController.getTopInstitutionsByLetterCount(100, thirtyDaysAgo, now);
         nationalPrintLetterRows = new ArrayList<>();
         if (rawLetterRows != null) {
@@ -1522,9 +1566,10 @@ public class DashboardController implements Serializable {
         if (rawCfRows != null) {
             for (Object[] row : rawCfRows) {
                 InstitutionCount ic = new InstitutionCount();
-                ic.setInstitution((Institution) row[0]);
-                Long received = row[1] != null ? (Long) row[1] : 0L;
-                Long pending = row[2] != null ? (Long) row[2] : 0L;
+                ic.setReferralInstitution((Institution) row[0]);
+                ic.setInstitution((Institution) row[1]);
+                Long received = row[2] != null ? (Long) row[2] : 0L;
+                Long pending = row[3] != null ? (Long) row[3] : 0L;
                 ic.setReceivedCount(received);
                 ic.setPendingCount(pending);
                 long total = received + pending;
@@ -1539,24 +1584,20 @@ public class DashboardController implements Serializable {
         }
     }
 
+    public String toNationalPerformanceReport() {
+        prepareNationalPrintReport();
+        return "/national/performance_report?faces-redirect=true";
+    }
+
     public List<InstitutionCount> getNationalPrintLetterRows() {
-        if (nationalPrintLetterRows == null) {
-            prepareNationalPrintReport();
-        }
         return nationalPrintLetterRows;
     }
 
     public List<InstitutionCount> getNationalPrintCopyForwardRows() {
-        if (nationalPrintCopyForwardRows == null) {
-            prepareNationalPrintReport();
-        }
         return nationalPrintCopyForwardRows;
     }
 
     public String getNationalReportGeneratedAt() {
-        if (nationalReportGeneratedAt == null) {
-            nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
-        }
         return nationalReportGeneratedAt;
     }
 
