@@ -73,6 +73,7 @@ public class LetterController implements Serializable {
     private List<DocumentHistory> selectedDocumentHistories;
     private List<Upload> selectedUploads;
     private List<DocumentHistory> documentHistories;
+    private List<DocumentHistory> selectedHistoriesForReceive;
     private List<DocumentHistory> listedToAcceptCopyForwards;
     private List<InstitutionCount> institutionCounts;
     private List<InstitutionCount> copyForwardInstitutionCounts;
@@ -1960,6 +1961,63 @@ public class LetterController implements Serializable {
         documentHistories.remove(selectedHistory);
 
         selectedHistory = null;
+    }
+
+    public String acceptAndViewSelectedHistoryForCopyForward() {
+        if (selectedHistory == null) {
+            JsfUtil.addErrorMessage("Nothing to accept");
+            return "";
+        }
+        selected = selectedHistory.getDocument();
+        acceptSelectedHistoryForCopyForward();
+        JsfUtil.addSuccessMessage("Letter received");
+        return toLetterView();
+    }
+
+    public void receiveAllSelectedHistoriesForCopyForward() {
+        if (selectedHistoriesForReceive == null || selectedHistoriesForReceive.isEmpty()) {
+            JsfUtil.addErrorMessage("Please select one or more letters to receive");
+            return;
+        }
+        int processed = 0;
+        for (DocumentHistory dh : new ArrayList<>(selectedHistoriesForReceive)) {
+            if (dh == null) {
+                continue;
+            }
+            dh.setCompleted(true);
+            dh.setCompletedAt(new Date());
+            dh.setCompletedBy(webUserController.getLoggedUser());
+            saveDocumentHx(dh);
+
+            DocumentHistory ndh = new DocumentHistory();
+            ndh.setDocument(dh.getDocument());
+            ndh.setHistoryType(HistoryType.Letter_Copy_or_Forward_Accepted);
+            ndh.setInstitution(webUserController.getLoggedInstitution());
+            ndh.setToInstitution(webUserController.getLoggedInstitution());
+            ndh.setFromInstitution(dh.getFromInstitution());
+            ndh.setCompleted(true);
+            ndh.setCompletedAt(new Date());
+            ndh.setCompletedBy(webUserController.getLoggedUser());
+            saveDocumentHx(ndh);
+
+            if (documentHistories != null) {
+                documentHistories.remove(dh);
+            }
+            processed++;
+        }
+        selectedHistoriesForReceive = new ArrayList<>();
+        JsfUtil.addSuccessMessage(processed + " letter(s) received");
+    }
+
+    public List<DocumentHistory> getSelectedHistoriesForReceive() {
+        if (selectedHistoriesForReceive == null) {
+            selectedHistoriesForReceive = new ArrayList<>();
+        }
+        return selectedHistoriesForReceive;
+    }
+
+    public void setSelectedHistoriesForReceive(List<DocumentHistory> selectedHistoriesForReceive) {
+        this.selectedHistoriesForReceive = selectedHistoriesForReceive;
     }
 
     public void fillForwardCopyLettersToReceive() {
