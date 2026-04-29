@@ -12,71 +12,189 @@
                 Accept Copied/Forwarded Letters
             </ui:define>
             <ui:define name="content">
-                <h:panelGrid columns="1" styleClass="alignTop" class="w-100">
-                    <f:facet name="header">
-                        <p:outputLabel value="Accept Copied/Forwarded Letters (Those Received withint the system)"></p:outputLabel>
-                    </f:facet>
+
+                <style>
+                    .acf-container {
+                        padding: 1.5rem;
+                        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+                        min-height: calc(100vh - 150px);
+                    }
+                    .acf-card {
+                        background: #ffffff;
+                        border-radius: 16px;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                        overflow: hidden;
+                        margin-bottom: 1.5rem;
+                    }
+                    .acf-card-header {
+                        padding: 1rem 1.5rem;
+                        color: #fff;
+                        font-weight: 600;
+                        font-size: 1.05rem;
+                        background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+                        display: flex;
+                        align-items: center;
+                        gap: 0.6rem;
+                    }
+                    .acf-card-header.success {
+                        background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+                    }
+                    .acf-card-body {
+                        padding: 1.25rem 1.5rem;
+                    }
+                    .acf-btn {
+                        padding: 0.55rem 1.1rem;
+                        border-radius: 10px;
+                        font-weight: 600;
+                        font-size: 0.9rem;
+                        border: none;
+                        color: #fff;
+                        transition: all 0.25s ease;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.4rem;
+                    }
+                    .acf-btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        color: #fff;
+                    }
+                    .acf-btn-primary { background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%); }
+                    .acf-btn-success { background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); }
+                    .acf-btn-info    { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); }
+                    .acf-btn-warn    { background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 100%); color:#3a2c00; }
+                    .acf-btn-warn:hover { color:#3a2c00; }
+                    .acf-btn-danger  { background: linear-gradient(135deg, #ff7675 0%, #d63031 100%); }
+                    .acf-btn-outline {
+                        background: transparent;
+                        border: 2px solid #dee2e6;
+                        color: #495057;
+                    }
+                    .acf-btn-outline:hover {
+                        background: #f8f9fa;
+                        border-color: #adb5bd;
+                        color: #212529;
+                    }
+                    .acf-btn-sm {
+                        padding: 0.35rem 0.75rem;
+                        font-size: 0.8rem;
+                        border-radius: 8px;
+                    }
+                    .acf-table-wrap .ui-datatable {
+                        border: none;
+                    }
+                    .acf-table-wrap .ui-datatable-header {
+                        background: transparent;
+                        border: none;
+                        padding: 0.5rem 0;
+                    }
+                    .acf-table-wrap .ui-datatable thead th {
+                        background: #f1f5f9 !important;
+                        color: #1a3a6b !important;
+                        font-weight: 700;
+                        border-bottom: 2px solid #cbd5e0;
+                    }
+                    .acf-table-wrap .ui-datatable tbody tr:nth-child(even) td {
+                        background: #fafbfc;
+                    }
+                    .acf-table-wrap .ui-datatable tbody tr:hover td {
+                        background: #eef4fb !important;
+                    }
+                    .acf-toolbar {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 0.5rem;
+                        align-items: center;
+                        padding: 0.75rem 1.25rem;
+                        background: #f8fafc;
+                        border-bottom: 1px solid #e2e8f0;
+                    }
+                    .acf-counter {
+                        font-size: 0.85rem;
+                        color: #475569;
+                        margin-left: auto;
+                    }
+                    .acf-counter strong { color: #0984e3; }
+                </style>
+
+                <div class="acf-container">
 
                     <h:form>
 
-                        <div class="row" >
-                            <div class="col" >
-                                <h:panelGrid columns="2" class="w-100" border="0">
-
-                                    <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
-                                    <p:datePicker value="#{letterController.fromDate}" pattern="dd MMMM yyyy hh:mm" showTime="true">
-                                    </p:datePicker><!-- comment -->
-
-                                    <h:outputLabel class="h6 fw-bold" value="To"></h:outputLabel>
-                                    <p:datePicker value="#{letterController.toDate}" pattern="dd MMMM yyyy hh:mm" showTime="true"></p:datePicker>
-
-                                    <h:outputLabel class="h6 fw-bold" value="From"></h:outputLabel>
-                                    <p:autoComplete id="from"  value="#{letterController.webUserCopy}" 
-                                                    class="form-control"
-                                                    completeMethod="#{letterController.completeInsOrUsersByWords}"
-                                                    var="insf"
-                                                    forceSelection="true"
-                                                    maxResults="10" 
-                                                    itemLabel="#{insf.displayName}"
-                                                    itemValue="#{insf}"
-                                                    >
-                                    </p:autoComplete>
-                                </h:panelGrid>
+                        <div class="acf-card">
+                            <div class="acf-card-header">
+                                <i class="bi bi-funnel-fill"></i>
+                                <span>Filter Pending Copy / Forward Letters</span>
                             </div>
-                            <div class="col" >
-                                <h:panelGrid columns="1"  class="w-100">
-                                    <h:commandButton value="Process" class="btn btn-danger form-control"
-                                                     action="#{letterController.fillForwardCopyLettersToReceive}">
+                            <div class="acf-card-body">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold mb-1">
+                                            <i class="bi bi-calendar-event me-1"></i>From Date
+                                        </label>
+                                        <p:datePicker value="#{letterController.fromDate}" pattern="dd MMMM yyyy hh:mm" showTime="true" styleClass="w-100"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold mb-1">
+                                            <i class="bi bi-calendar-check me-1"></i>To Date
+                                        </label>
+                                        <p:datePicker value="#{letterController.toDate}" pattern="dd MMMM yyyy hh:mm" showTime="true" styleClass="w-100"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold mb-1">
+                                            <i class="bi bi-person-lines-fill me-1"></i>From (Sender — optional)
+                                        </label>
+                                        <p:autoComplete id="from" value="#{letterController.webUserCopy}"
+                                                        styleClass="w-100"
+                                                        completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                        var="insf"
+                                                        forceSelection="true"
+                                                        maxResults="10"
+                                                        itemLabel="#{insf.displayName}"
+                                                        itemValue="#{insf}"/>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2 mt-3 pt-3 border-top">
+                                    <h:commandButton value="Process" styleClass="acf-btn acf-btn-primary"
+                                                     action="#{letterController.fillForwardCopyLettersToReceive}"/>
+                                    <h:commandButton value="Print" styleClass="acf-btn acf-btn-outline">
+                                        <p:printer target="gridPrint"/>
                                     </h:commandButton>
-                                    <h:commandButton value="Print" class="btn btn-warning form-control"
-                                                     >
-                                        <p:printer target="gridPrint" ></p:printer>
-                                    </h:commandButton>
-
-                                    <h:commandButton value="Download" class="btn btn-success form-control">
+                                    <h:commandButton value="Download" styleClass="acf-btn acf-btn-outline">
                                         <p:dataExporter target="tbl" type="xlsx"
-                                                        fileName="forward copy action list"></p:dataExporter>
+                                                        fileName="forward copy action list"/>
                                     </h:commandButton>
-
-                                </h:panelGrid>
+                                </div>
                             </div>
                         </div>
 
 
 
 
-
-
-
-                        <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
+                        <div class="acf-card acf-table-wrap">
+                            <div class="acf-card-header success">
+                                <i class="bi bi-inbox-fill"></i>
+                                <span>Pending Copy / Forward Letters</span>
+                            </div>
+                            <div class="acf-toolbar">
+                                <h:commandButton value="Receive Selected"
+                                                 title="Mark all selected rows as received"
+                                                 styleClass="acf-btn acf-btn-success"
+                                                 action="#{letterController.receiveAllSelectedHistoriesForCopyForward}"/>
+                                <span class="acf-counter">
+                                    Total: <strong>#{fn:length(letterController.documentHistories)}</strong>
+                                </span>
+                            </div>
                             <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
                                          rendered="true" rowIndexVar="n" var="c" paginator="true"
                                          rowKey="#{c.id}"
+                                         selection="#{letterController.selectedHistoriesForReceive}"
                                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                          rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
                                 <p:columnGroup type="header">
                                     <p:row>
+                                        <p:column selectionMode="multiple" style="width:2.5em; text-align:center;"/>
                                         <p:column headerText="ID" sortBy="#{c.document.id}" filterBy="#{c.document.id}"
                                                   filterMatchMode="contains">
                                         </p:column>
@@ -102,21 +220,18 @@
                                         </p:column>
                                         <p:column headerText="Copied/Forwarded From"
                                                   rendered="#{letterController.webUserCopy eq null}"
-                                                  sortBy="#{c.fromInsOrUser.insName}" 
+                                                  sortBy="#{c.fromInsOrUser.insName}"
                                                   filterBy="#{c.fromInsOrUser.insName}"
                                                   filterMatchMode="contains">
                                         </p:column>
-                                        
-                                        
-                                         <p:column headerText="Copied/Forwarded From"
-                                                  rendered="#{letterController.webUserCopy eq null}"
-                                                  sortBy="#{c.fromInsOrUser.insName}" 
-                                                  filterBy="#{c.fromInsOrUser.insName}"
+
+                                        <p:column headerText="Copied/Forwarded To"
+                                                  sortBy="#{c.toInstitution.name}"
+                                                  filterBy="#{c.toInstitution.name}"
                                                   filterMatchMode="contains">
                                         </p:column>
-                                        
-                                        
-                                        <p:column headerText="Minute" sortBy="#{c.item.name}" 
+
+                                        <p:column headerText="Minute" sortBy="#{c.item.name}"
                                                   filterBy="#{c.item.name}"
                                                   filterMatchMode="contains">
                                         </p:column>
@@ -129,6 +244,7 @@
                                     </p:row>
                                 </p:columnGroup>
 
+                                <p:column selectionMode="multiple" style="width:2.5em; text-align:center;"/>
                                 <p:column >
                                     <h:outputLabel value="#{c.document.id}"></h:outputLabel>
                                 </p:column>
@@ -164,21 +280,21 @@
                                           filterMatchMode="contains">
                                     <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
                                 </p:column>
-                                <p:column headerText="Copied/Forwarded To"
+                                <p:column headerText="Copied/Forwarded From"
                                           rendered="#{letterController.webUserCopy eq null}"
-                                          sortBy="#{c.fromInsOrUser.insName}" 
+                                          sortBy="#{c.fromInsOrUser.insName}"
                                           filterBy="#{c.fromInsOrUser.insName}"
                                           filterMatchMode="contains">
                                     <h:outputLabel value="#{c.fromInsOrUser.insName}"></h:outputLabel>
                                 </p:column>
-                                
-                                 <p:column headerText="Copied/Forwarded From"
-                                           sortBy="#{c.toInstitution.name}" 
-                                           filterBy="#{c.toInstitution.name}"
+
+                                <p:column headerText="Copied/Forwarded To"
+                                          sortBy="#{c.toInstitution.name}"
+                                          filterBy="#{c.toInstitution.name}"
                                           filterMatchMode="contains">
-                                     <h:outputLabel value="#{c.toInstitution.name}"></h:outputLabel>
-                                     ||
-                                     <h:outputLabel value="#{c.toUser.institution.name}"></h:outputLabel>
+                                    <h:outputLabel value="#{c.toInstitution.name}"></h:outputLabel>
+                                    <h:outputLabel rendered="#{c.toInstitution eq null and c.toUser ne null}"
+                                                   value="#{c.toUser.institution.name}"></h:outputLabel>
                                 </p:column>
                                 
                                 <p:column headerText="Minute" sortBy="#{c.item.name}" 
@@ -192,28 +308,33 @@
                                     <h:outputLabel value="#{c.comments}"></h:outputLabel>
                                 </p:column>
                                 <p:column headerText="Actions" >
-                                    <h:commandButton value="View" action="#{letterController.toLetterView()}" class="mx-2 btn btn-success" >
-                                        <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" ></f:setPropertyActionListener>
-                                    </h:commandButton>
-                                     <h:commandButton value="Receive" 
-                                                       class="btn btn-danger mx-2"
-                                                      action="#{letterController.acceptSelectedHistoryForCopyForward}" >
-                                         <f:setPropertyActionListener target="#{letterController.selectedHistory}" 
-                                                                     value="#{c}" ></f:setPropertyActionListener>
-                                    </h:commandButton>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <h:commandButton value="Receive and View"
+                                                         title="Mark this copy/forward as received and open the letter"
+                                                         action="#{letterController.acceptAndViewSelectedHistoryForCopyForward()}"
+                                                         styleClass="acf-btn acf-btn-success acf-btn-sm">
+                                            <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}"/>
+                                        </h:commandButton>
+                                        <h:commandButton value="Receive"
+                                                         title="Mark as received without opening the letter"
+                                                         styleClass="acf-btn acf-btn-outline acf-btn-sm"
+                                                         action="#{letterController.acceptSelectedHistoryForCopyForward}">
+                                            <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}"/>
+                                        </h:commandButton>
+                                    </div>
                                 </p:column>
                                 <p:columnGroup type="footer">
                                     <p:row>
-                                        <p:column 
-                                            colspan="9" rendered="#{letterController.webUserCopy ne null}"
+                                        <p:column
+                                            colspan="11" rendered="#{letterController.webUserCopy ne null}"
                                             >
                                             <h:outputText value="Report generated by #{webUserController.loggedUser.person.nameWithTitle} of #{webUserController.loggedUser.institution.name}" ></h:outputText>
                                             <h:outputText value="#{session.lastAccessedTime}">
                                                 <f:convertDateTime pattern="dd MMMM yyyy hh:mm a"  />
                                             </h:outputText>
                                         </p:column>
-                                        <p:column 
-                                            colspan="10" rendered="#{letterController.webUserCopy eq null}"
+                                        <p:column
+                                            colspan="12" rendered="#{letterController.webUserCopy eq null}"
                                             >
                                             <h:outputText value="Report generated by #{webUserController.loggedUser.person.nameWithTitle} of #{webUserController.loggedUser.institution.name}" ></h:outputText>
                                             <h:outputText value="#{session.lastAccessedTime}">
@@ -225,10 +346,10 @@
                                     </p:row>
                                 </p:columnGroup>
                             </p:dataTable>
-                        </h:panelGrid>
+                        </div>
 
 
-                        <h:panelGrid columns="1" 
+                        <h:panelGrid columns="1"
                                      styleClass="alignTop" 
                                      id="gridPrint" 
                                      class="d-none d-print-block m-0 p-0 W-100" >
@@ -360,7 +481,7 @@
                         </h:panelGrid>
 
                     </h:form>
-                </h:panelGrid>
+                </div>
             </ui:define>
         </ui:composition>
     </h:body>
