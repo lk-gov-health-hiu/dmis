@@ -1,9 +1,7 @@
-package lk.gov.health.phsp.bean;
+﻿package lk.gov.health.phsp.bean;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -232,7 +230,7 @@ public class LetterController implements Serializable {
             return "";
         }
         deletingHistory.setRetired(true);
-        deletingHistory.setRetiredAt(LocalDateTime.now());
+        deletingHistory.setRetiredAt(new Date());
         deletingHistory.setRetiredBy(webUserController.getLoggedUser());
         saveDocumentHx(deletingHistory);
         return toLetterView();
@@ -244,7 +242,7 @@ public class LetterController implements Serializable {
             return "";
         }
         removingAssignment.setRetired(true);
-        removingAssignment.setRetiredAt(LocalDateTime.now());
+        removingAssignment.setRetiredAt(new Date());
         removingAssignment.setRetiredBy(webUserController.getLoggedUser());
         saveDocumentHx(removingAssignment);
 
@@ -265,7 +263,7 @@ public class LetterController implements Serializable {
             return "";
         }
         removingCopyForward.setRetired(true);
-        removingCopyForward.setRetiredAt(LocalDateTime.now());
+        removingCopyForward.setRetiredAt(new Date());
         removingCopyForward.setRetiredBy(webUserController.getLoggedUser());
         saveDocumentHx(removingCopyForward);
 
@@ -531,7 +529,7 @@ public class LetterController implements Serializable {
             }
         }
 
-        // Query 2: letters without institution — fall back to createdBy.institution
+        // Query 2: letters without institution â€” fall back to createdBy.institution
         String j2 = "select new lk.gov.health.phsp.pojcs.InstitutionCount(d.createdBy.institution, count(d)) "
                 + "from Document d "
                 + "where d.retired=false "
@@ -1160,10 +1158,12 @@ public class LetterController implements Serializable {
 
     public String toCopyForwardsToMyInstitutionToReceive() {
         documentHistories = null;
-        LocalDateTime earliestPending = findEarliestPendingCopyForwardCreatedAt();
+        Date earliestPending = findEarliestPendingCopyForwardCreatedAt();
         if (earliestPending != null) {
-            Date oneDayBefore = Date.from(earliestPending.minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-            setFromDate(CommonController.startOfTheDate(oneDayBefore));
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(earliestPending);
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            setFromDate(CommonController.startOfTheDate(cal.getTime()));
         } else {
             setFromDate(CommonController.startOfTheYear());
         }
@@ -1172,10 +1172,10 @@ public class LetterController implements Serializable {
         return "/institution/accept_copy_forwards?faces-redirect=true";
     }
 
-    private LocalDateTime findEarliestPendingCopyForwardCreatedAt() {
+    private Date findEarliestPendingCopyForwardCreatedAt() {
         Institution loggedInstitution = webUserController.getLoggedInstitution();
         List<WebUser> usersForMyInstitute = webUserController.getUsersForMyInstitute();
-        LocalDateTime earliest = null;
+        Date earliest = null;
 
         Map<String, Object> m = new HashMap<>();
         String j = "select min(h.createdAt) "
@@ -1188,8 +1188,8 @@ public class LetterController implements Serializable {
         m.put("ht", HistoryType.Letter_Copy_or_Forward);
         m.put("c", false);
         Object instMin = documentHxFacade.findFirstObjectByJpql(j, m, TemporalType.TIMESTAMP);
-        if (instMin instanceof LocalDateTime) {
-            earliest = (LocalDateTime) instMin;
+        if (instMin instanceof Date) {
+            earliest = (Date) instMin;
         }
 
         if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
@@ -1204,9 +1204,9 @@ public class LetterController implements Serializable {
             m.put("ht", HistoryType.Letter_Copy_or_Forward);
             m.put("c", false);
             Object userMin = documentHxFacade.findFirstObjectByJpql(j, m, TemporalType.TIMESTAMP);
-            if (userMin instanceof LocalDateTime) {
-                LocalDateTime d = (LocalDateTime) userMin;
-                if (earliest == null || d.isBefore(earliest)) {
+            if (userMin instanceof Date) {
+                Date d = (Date) userMin;
+                if (earliest == null || d.before(earliest)) {
                     earliest = d;
                 }
             }
@@ -1663,7 +1663,7 @@ public class LetterController implements Serializable {
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             selectedHistory.setToInstitution(selected.getCurrentInstitution());
             selectedHistory.setCompleted(true);
-            selectedHistory.setCompletedAt(LocalDateTime.now());
+            selectedHistory.setCompletedAt(new Date());
             selectedHistory.setCompletedBy(webUserController.getLoggedUser());
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
@@ -1676,7 +1676,7 @@ public class LetterController implements Serializable {
                 docHx.setItem(selected.getLetterStatus());
                 docHx.setInstitution(webUserController.getLoggedInstitution());
                 docHx.setCompleted(true);
-                docHx.setCompletedAt(LocalDateTime.now());
+                docHx.setCompletedAt(new Date());
                 docHx.setCompletedBy(webUserController.getLoggedUser());
                 String comment = "";
                 if (previousLetterStatus != null) {
@@ -1719,7 +1719,7 @@ public class LetterController implements Serializable {
             }
             selectedHistory.setToInstitution(selected.getCurrentInstitution());
             selectedHistory.setCompleted(true);
-            selectedHistory.setCompletedAt(LocalDateTime.now());
+            selectedHistory.setCompletedAt(new Date());
             selectedHistory.setCompletedBy(webUserController.getLoggedUser());
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
@@ -1732,7 +1732,7 @@ public class LetterController implements Serializable {
             return;
         }
         if (hx.getId() == null) {
-            hx.setCreatedAt(LocalDateTime.now());
+            hx.setCreatedAt(new Date());
             hx.setCreatedBy(webUserController.getLoggedUser());
             documentHxFacade.create(hx);
         } else {
@@ -1942,7 +1942,7 @@ public class LetterController implements Serializable {
             return;
         }
         selectedHistory.setCompleted(true);
-        selectedHistory.setCompletedAt(LocalDateTime.now());
+        selectedHistory.setCompletedAt(new Date());
         selectedHistory.setCompletedBy(webUserController.getLoggedUser());
         saveDocumentHx(selectedHistory);
 
@@ -1953,7 +1953,7 @@ public class LetterController implements Serializable {
         ndh.setToInstitution(webUserController.getLoggedInstitution());
         ndh.setFromInstitution(selectedHistory.getFromInstitution());
         ndh.setCompleted(true);
-        ndh.setCompletedAt(LocalDateTime.now());
+        ndh.setCompletedAt(new Date());
         ndh.setCompletedBy(webUserController.getLoggedUser());
         ndh.setDocument(selected);
         saveDocumentHx(ndh);
@@ -1985,7 +1985,7 @@ public class LetterController implements Serializable {
                 continue;
             }
             dh.setCompleted(true);
-            dh.setCompletedAt(LocalDateTime.now());
+            dh.setCompletedAt(new Date());
             dh.setCompletedBy(webUserController.getLoggedUser());
             saveDocumentHx(dh);
 
@@ -1996,7 +1996,7 @@ public class LetterController implements Serializable {
             ndh.setToInstitution(webUserController.getLoggedInstitution());
             ndh.setFromInstitution(dh.getFromInstitution());
             ndh.setCompleted(true);
-            ndh.setCompletedAt(LocalDateTime.now());
+            ndh.setCompletedAt(new Date());
             ndh.setCompletedBy(webUserController.getLoggedUser());
             saveDocumentHx(ndh);
 
@@ -2213,7 +2213,7 @@ public class LetterController implements Serializable {
         DocumentHistory dh = documentHxFacade.findFirstByJpql(j, m);
         if (dh != null) {
             dh.setCompleted(true);
-            dh.setCompletedAt(LocalDateTime.now());
+            dh.setCompletedAt(new Date());
             dh.setCompletedBy(webUserController.getLoggedUser());
             saveDocumentHx(dh);
             JsfUtil.addSuccessMessage("Letter Accepted.");
@@ -2252,7 +2252,7 @@ public class LetterController implements Serializable {
         }
 
         selectedToAcceptCopyForwards.setCompleted(true);
-        selectedToAcceptCopyForwards.setCompletedAt(LocalDateTime.now());
+        selectedToAcceptCopyForwards.setCompletedAt(new Date());
         selectedToAcceptCopyForwards.setCompletedBy(webUserController.getLoggedUser());
         saveDocumentHx(selectedToAcceptCopyForwards);
 
@@ -2267,7 +2267,7 @@ public class LetterController implements Serializable {
         }
 
         selectedHistory.setCompleted(true);
-        selectedHistory.setCompletedAt(LocalDateTime.now());
+        selectedHistory.setCompletedAt(new Date());
         selectedHistory.setCompletedBy(webUserController.getLoggedUser());
         saveDocumentHx(selectedHistory);
 
@@ -2284,7 +2284,7 @@ public class LetterController implements Serializable {
         }
 
         selectedHistory.setCompleted(true);
-        selectedHistory.setCompletedAt(LocalDateTime.now());
+        selectedHistory.setCompletedAt(new Date());
         selectedHistory.setCompletedBy(webUserController.getLoggedUser());
         saveDocumentHx(selectedHistory);
 
@@ -2336,7 +2336,7 @@ public class LetterController implements Serializable {
         saveDocumentHx(dh);
         dh.setCompletedBy(webUserController.getLoggedUser());
         dh.setCompleted(true);
-        dh.setCompletedAt(LocalDateTime.now());
+        dh.setCompletedAt(new Date());
         JsfUtil.addSuccessMessage("Letter Accepted.");
         saveDocumentHx(dh);
         return toLetterView();
@@ -2738,3 +2738,4 @@ public class LetterController implements Serializable {
     }
 
 }
+
