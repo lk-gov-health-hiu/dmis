@@ -1,4 +1,4 @@
-﻿package lk.gov.health.phsp.bean;
+package lk.gov.health.phsp.bean;
 
 import java.io.IOException;
 import java.io.InputStream;

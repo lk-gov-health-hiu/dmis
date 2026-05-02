@@ -1,4 +1,4 @@
-﻿package lk.gov.health.phsp.bean;
+package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.bean.util.JsfUtil;
