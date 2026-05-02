@@ -56,7 +56,8 @@
       "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -pw 'NcHiS987650' user@192.168.1.72 \"echo TUNNEL_HOST_OK\")",
       "Bash(/c/Program Files/PuTTY/plink.exe *)",
       "Bash(\"D:/Payara_Server_2025/bin/asadmin.bat\" ping-connection-pool *)",
-      "Bash(ssh *)"
+      "Bash(ssh *)",
+      "Bash(python3 *)"
     ]
   }
 }
