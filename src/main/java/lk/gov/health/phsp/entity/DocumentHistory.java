@@ -6,8 +6,6 @@
 package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.HistoryType;
@@ -73,24 +72,28 @@ public class DocumentHistory implements Serializable {
      */
     @ManyToOne
     private WebUser createdBy;
-    private LocalDateTime createdAt;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createdAt;
     /*
     Last Edit Properties
      */
     @ManyToOne
     private WebUser acceptedBy;
-    private LocalDateTime acceptedAt;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date acceptedAt;
     /*
     Retire Properties
      */
     private boolean retired;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
-    private LocalDateTime retiredAt;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredAt;
     private String retireComments;
 
     private boolean completed;
-    private LocalDateTime completedAt;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date completedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser completedBy;
 
@@ -218,18 +221,12 @@ public class DocumentHistory implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    @Transient
-    public Date getCreatedAtDate() {
-        if (createdAt == null) return null;
-        return Date.from(createdAt.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public WebUser getAcceptedBy() {
@@ -240,11 +237,11 @@ public class DocumentHistory implements Serializable {
         this.acceptedBy = acceptedBy;
     }
 
-    public LocalDateTime getAcceptedAt() {
+    public Date getAcceptedAt() {
         return acceptedAt;
     }
 
-    public void setAcceptedAt(LocalDateTime acceptedAt) {
+    public void setAcceptedAt(Date acceptedAt) {
         this.acceptedAt = acceptedAt;
     }
 
@@ -264,11 +261,11 @@ public class DocumentHistory implements Serializable {
         this.retiredBy = retiredBy;
     }
 
-    public LocalDateTime getRetiredAt() {
+    public Date getRetiredAt() {
         return retiredAt;
     }
 
-    public void setRetiredAt(LocalDateTime retiredAt) {
+    public void setRetiredAt(Date retiredAt) {
         this.retiredAt = retiredAt;
     }
 
@@ -288,11 +285,11 @@ public class DocumentHistory implements Serializable {
         this.completed = completed;
     }
 
-    public LocalDateTime getCompletedAt() {
+    public Date getCompletedAt() {
         return completedAt;
     }
 
-    public void setCompletedAt(LocalDateTime completedAt) {
+    public void setCompletedAt(Date completedAt) {
         this.completedAt = completedAt;
     }
 
