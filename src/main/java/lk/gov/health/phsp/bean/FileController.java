@@ -6,6 +6,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.DocumentFacade;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -197,7 +198,7 @@ public class FileController implements Serializable {
             selectedHistory.setToInstitution(selected.getCurrentInstitution());
             selectedHistory.setToUser(selected.getCurrentOwner());
             selectedHistory.setCompleted(true);
-            selectedHistory.setCompletedAt(new Date());
+            selectedHistory.setCompletedAt(LocalDateTime.now());
             selectedHistory.setCompletedBy(webUserController.getLoggedUser());
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
@@ -210,7 +211,7 @@ public class FileController implements Serializable {
             return;
         }
         if (hx.getId() == null) {
-            hx.setCreatedAt(new Date());
+            hx.setCreatedAt(LocalDateTime.now());
             hx.setCreatedBy(webUserController.getLoggedUser());
             documentHxFacade.create(hx);
         } else {
