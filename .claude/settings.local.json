@@ -57,7 +57,17 @@
       "Bash(/c/Program Files/PuTTY/plink.exe *)",
       "Bash(\"D:/Payara_Server_2025/bin/asadmin.bat\" ping-connection-pool *)",
       "Bash(ssh *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(openssl s_client -connect nchis.health.gov.lk:443 -servername nchis.health.gov.lk)",
+      "Bash(openssl x509 *)",
+      "Bash(openssl s_client -connect hims.health.gov.lk:443 -servername hims.health.gov.lk)",
+      "Bash(curl -Iv https://nchis.health.gov.lk/)",
+      "Bash(curl -Iv http://nchis.health.gov.lk/)",
+      "Bash(curl -Iv https://hims.health.gov.lk/)",
+      "Bash(openssl s_client -connect nchis.health.gov.lk:8181 -servername nchis.health.gov.lk)",
+      "Bash(openssl pkey *)",
+      "Bash(curl -v http://nchis.health.gov.lk/.well-known/acme-challenge/testexternalcheck)",
+      "Bash(curl -v http://nchis.health.gov.lk/.well-known/acme-challenge/livetest)"
     ]
   }
 }
