@@ -1178,34 +1178,34 @@ public class LetterController implements Serializable {
         Date earliest = null;
 
         Map<String, Object> m = new HashMap<>();
-        String j = "select min(h.createdAt) "
-                + " from DocumentHistory h "
+        String j = "select h from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType=:ht "
                 + " and h.completed=:c "
-                + " and h.toInstitution=:ti";
+                + " and h.toInstitution=:ti"
+                + " order by h.createdAt asc";
         m.put("ti", loggedInstitution);
         m.put("ht", HistoryType.Letter_Copy_or_Forward);
         m.put("c", false);
         Object instMin = documentHxFacade.findFirstObjectByJpql(j, m, TemporalType.TIMESTAMP);
-        if (instMin instanceof Date) {
-            earliest = (Date) instMin;
+        if (instMin instanceof DocumentHistory) {
+            earliest = ((DocumentHistory) instMin).getCreatedAt();
         }
 
         if (usersForMyInstitute != null && !usersForMyInstitute.isEmpty()) {
             m = new HashMap<>();
-            j = "select min(h.createdAt) "
-                    + " from DocumentHistory h "
+            j = "select h from DocumentHistory h "
                     + " where h.retired=false "
                     + " and h.historyType=:ht "
                     + " and h.completed=:c "
-                    + " and h.toUser in :us";
+                    + " and h.toUser in :us"
+                    + " order by h.createdAt asc";
             m.put("us", usersForMyInstitute);
             m.put("ht", HistoryType.Letter_Copy_or_Forward);
             m.put("c", false);
             Object userMin = documentHxFacade.findFirstObjectByJpql(j, m, TemporalType.TIMESTAMP);
-            if (userMin instanceof Date) {
-                Date d = (Date) userMin;
+            if (userMin instanceof DocumentHistory) {
+                Date d = ((DocumentHistory) userMin).getCreatedAt();
                 if (earliest == null || d.before(earliest)) {
                     earliest = d;
                 }
