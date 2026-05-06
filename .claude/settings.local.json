@@ -55,7 +55,28 @@
       "Bash(powershell *)",
       "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -pw 'NcHiS987650' user@192.168.1.72 \"echo TUNNEL_HOST_OK\")",
       "Bash(/c/Program Files/PuTTY/plink.exe *)",
-      "Bash(\"D:/Payara_Server_2025/bin/asadmin.bat\" ping-connection-pool *)"
+      "Bash(\"D:/Payara_Server_2025/bin/asadmin.bat\" ping-connection-pool *)",
+      "Bash(/c/Program Files/PuTTY/pscp.exe *)",
+      "Bash(\"/c/Program Files/PuTTY/pscp.exe\" -batch -pw 'NcHiS987650' D:/Dev/dmis/tmp/inspect_wildcard.sh user@192.168.1.72:/tmp/inspect_wildcard.sh)",
+      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/inspect_wildcard.sh\")",
+      "Bash(\"/c/Program Files/PuTTY/pscp.exe\" -batch -pw 'NcHiS987650' D:/Dev/dmis/tmp/probe_waf.sh user@192.168.1.72:/tmp/probe_waf.sh)",
+      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/probe_waf.sh\")",
+      "Bash(\"/c/Program Files/PuTTY/pscp.exe\" -batch -pw 'NcHiS987650' D:/Dev/dmis/tmp/probe_traffic.sh user@192.168.1.72:/tmp/probe_traffic.sh)",
+      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/probe_traffic.sh\")",
+      "Bash(\"/c/Program Files/PuTTY/pscp.exe\" -batch -pw 'NcHiS987650' D:/Dev/dmis/tmp/cleanup_certs_phase1.sh user@192.168.1.72:/tmp/cleanup_certs_phase1.sh)",
+      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/cleanup_certs_phase1.sh\")",
+      "Bash(\"/c/Program Files/PuTTY/pscp.exe\" -batch -pw 'NcHiS987650' D:/Dev/dmis/tmp/verify_public.sh user@192.168.1.72:/tmp/verify_public.sh)",
+      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/verify_public.sh\")",
+      "Bash(\"/c/Program Files/PuTTY/pscp.exe\" -batch -pw 'NcHiS987650' D:/Dev/dmis/tmp/cleanup_certs_phase2.sh user@192.168.1.72:/tmp/cleanup_certs_phase2.sh)",
+      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/cleanup_certs_phase2.sh\")",
+      "Bash(timeout 10 openssl s_client -servername nchis.health.gov.lk -connect 220.247.229.235:443)",
+      "Bash(openssl x509 *)",
+      "Bash(timeout 10 openssl s_client -servername nchis.health.gov.lk -connect nchis.health.gov.lk:443)",
+      "Bash(nslookup nchis.health.gov.lk)",
+      "Bash(nslookup health.gov.lk)",
+      "Bash(nslookup hims.health.gov.lk)",
+      "Bash(\"/c/Program Files/PuTTY/pscp.exe\" -batch -pw 'NcHiS987650' D:/Dev/dmis/tmp/verify_and_snap_remove.sh user@192.168.1.72:/tmp/verify_and_snap_remove.sh)",
+      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/verify_and_snap_remove.sh\")"
     ]
   }
 }
