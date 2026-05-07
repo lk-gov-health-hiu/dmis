@@ -76,7 +76,15 @@
       "Bash(nslookup health.gov.lk)",
       "Bash(nslookup hims.health.gov.lk)",
       "Bash(\"/c/Program Files/PuTTY/pscp.exe\" -batch -pw 'NcHiS987650' D:/Dev/dmis/tmp/verify_and_snap_remove.sh user@192.168.1.72:/tmp/verify_and_snap_remove.sh)",
-      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/verify_and_snap_remove.sh\")"
+      "Bash(\"/c/Program Files/PuTTY/plink.exe\" -ssh -batch -pw 'NcHiS987650' user@192.168.1.72 \"bash /tmp/verify_and_snap_remove.sh\")",
+      "WebFetch(domain:optimizesmart.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(curl -fsSL https://raw.githubusercontent.com/JuliusBrussee/caveman/main/caveman/SKILL.md -o /tmp/caveman-skill.md)",
+      "Read(//tmp/**)",
+      "Bash(mkdir -p /d/Dev/fmis/.claude/skills/caveman)",
+      "Bash(cp /tmp/caveman-skill.md /d/Dev/fmis/.claude/skills/caveman/SKILL.md)"
     ]
   }
 }
