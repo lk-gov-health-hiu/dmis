@@ -1790,7 +1790,7 @@ public class LetterController implements Serializable {
                 + " from DocumentHistory h "
                 + " where h.retired=false "
                 + " and h.historyType =:ht "
-                + " and (h.document.institution=:i or h.fromInstitution=:i) ";
+                + " and h.fromInstitution=:i ";
         if (webUserCopy != null) {
             if (webUserCopy instanceof WebUser) {
                 j += " and h.toUser=:u ";
