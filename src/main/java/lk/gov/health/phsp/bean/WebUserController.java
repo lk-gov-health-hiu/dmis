@@ -507,6 +507,9 @@ public class WebUserController implements Serializable {
         }
         List<TreeNode> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
+            if (wup.getPrivilege() == null) {
+                continue;
+            }
             for (TreeNode n : allPrevs.getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
@@ -552,6 +555,9 @@ public class WebUserController implements Serializable {
         }
         List<TreeNode> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
+            if (wup.getPrivilege() == null) {
+                continue;
+            }
             for (TreeNode n : getAllPrivilegeRoot().getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
@@ -597,6 +603,9 @@ public class WebUserController implements Serializable {
         }
         List<TreeNode> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
+            if (wup.getPrivilege() == null) {
+                continue;
+            }
             for (TreeNode n : getAllPrivilegeRoot().getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
@@ -647,6 +656,9 @@ public class WebUserController implements Serializable {
         }
         List<TreeNode> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
+            if (wup.getPrivilege() == null) {
+                continue;
+            }
             for (TreeNode n : privilegeRoot.getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
@@ -1129,7 +1141,7 @@ public class WebUserController implements Serializable {
     public boolean hasPrivilege(List<UserPrivilege> ups, Privilege p) {
         boolean f = false;
         for (UserPrivilege up : ups) {
-            if (up.getPrivilege().equals(p)) {
+            if (up.getPrivilege() != null && up.getPrivilege().equals(p)) {
                 f = true;
             }
         }

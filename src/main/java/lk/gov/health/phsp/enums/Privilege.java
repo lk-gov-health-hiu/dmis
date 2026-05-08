@@ -64,6 +64,58 @@ public enum Privilege {
     Finance_Management("Finance Management"),
     @Deprecated
     Audit_Management("Audit Management"),
+    @Deprecated
+    Client_Management("Patient Management"),
+    @Deprecated
+    Encounter_Management("Order Management"),
+    @Deprecated
+    Appointment_Management("Appointment Management"),
+    @Deprecated
+    Sample_Management("Sample Management"),
+    @Deprecated
+    Lab_Management("Lab Management"),
+    @Deprecated
+    Pharmacy_Management("Pharmacy Management"),
+    @Deprecated
+    Add_Client("Add Cases"),
+    @Deprecated
+    Add_Tests("Add Tests"),
+    @Deprecated
+    Mark_Tests("Mark Tests"),
+    @Deprecated
+    Submit_Returns("Submit Returns"),
+    @Deprecated
+    Search_any_Client_by_IDs("Search any Client by IDs"),
+    @Deprecated
+    Search_any_Client_by_Details("Search any Client by Details"),
+    @Deprecated
+    Search_any_client_by_ID_of_Authorised_Areas("Search any client by ID of Authorised Areas"),
+    @Deprecated
+    Search_any_client_by_Details_of_Authorised_Areas("Search any client by Details of Authorised Areas"),
+    @Deprecated
+    Search_any_client_by_ID_of_Authorised_Institutions("Search any client by ID of Authorised Institutions"),
+    @Deprecated
+    Search_any_client_by_Details_of_Authorised_Institutions("Search any client by Details of Authorised Institutions"),
+    @Deprecated
+    Manage_Institution_Metadata("Manage Institution Metadata"),
+    @Deprecated
+    Dispatch_Samples("Dispatch Samples"),
+    @Deprecated
+    Divert_Samples("Divert Samples"),
+    @Deprecated
+    View_Orders("View Orders"),
+    @Deprecated
+    Receive_Samples("Receive Samples"),
+    @Deprecated
+    Enter_Results("Enter Results"),
+    @Deprecated
+    Review_Results("Review Results"),
+    @Deprecated
+    Confirm_Results("Approve Results"),
+    @Deprecated
+    Print_Results("Approve Results"),
+    @Deprecated
+    Lab_Reports("Lab Reports"),
     ;
 
     public final String label;
