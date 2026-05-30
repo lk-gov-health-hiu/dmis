@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -49,6 +50,7 @@ import lk.gov.health.phsp.pojcs.Nameable;
 @Entity
 @Table
 @XmlRootElement
+@Cacheable(false)
 public class Document implements Serializable {
 
     private static final long serialVersionUID = 1L;

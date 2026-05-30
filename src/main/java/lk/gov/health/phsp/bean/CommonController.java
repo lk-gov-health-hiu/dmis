@@ -113,7 +113,7 @@ public class CommonController implements Serializable {
     }
 
     public String toViewClient() {
-        return "/common/client_view";
+        return "/common/client_view?faces-redirect=true";
     }
 
     public String toViewEncounter() {
@@ -140,7 +140,7 @@ public class CommonController implements Serializable {
             JsfUtil.addErrorMessage("No Encounter Selected");
             return "";
         }
-        return "/common/test_view";
+        return "/common/test_view?faces-redirect=true";
     }
 
     public String toViewCaseIx() {
@@ -148,7 +148,7 @@ public class CommonController implements Serializable {
             JsfUtil.addErrorMessage("No Encounter Selected");
             return "";
         }
-        return "/common/case_view";
+        return "/common/case_view?faces-redirect=true";
     }
 
     public static String formatDate() {

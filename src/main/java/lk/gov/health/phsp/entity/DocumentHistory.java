@@ -165,7 +165,7 @@ public class DocumentHistory implements Serializable {
             this.toUser = null;
         } else if (toInsOrUser instanceof WebUser) {
             this.toUser = (WebUser) toInsOrUser;
-            this.toInstitution = null;
+            this.toInstitution = ((WebUser) toInsOrUser).getInstitution();
         } else {
             this.toInstitution = null;
             this.toUser = null;

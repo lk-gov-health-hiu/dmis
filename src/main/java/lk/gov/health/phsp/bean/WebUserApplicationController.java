@@ -53,7 +53,7 @@ public class WebUserApplicationController {
 
     @Inject
     private UserTransactionController userTransactionController;
-    private List<WebUser> items = null;
+    private volatile List<WebUser> items = null;
 
     private TreeNode allPrivilegeRoot;
     private TreeNode hospitalPrivilegeRoot;

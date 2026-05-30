@@ -28,6 +28,13 @@
                             rowsPerPageTemplate="5,10,20,50,{ShowAll|'All'}"
                             >
 
+                            <p:column sortBy="#{item.code}" filterBy="#{item.code}" filterMatchMode="contains" >
+                                <f:facet name="header">
+                                    <h:outputText value="Code"/>
+                                </f:facet>
+                                <h:outputText value="#{item.code}"/>
+                            </p:column>
+
                             <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains" >
                                 <f:facet name="header">
                                     <h:outputText value="Name"/>

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -38,9 +39,22 @@ import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import org.json.JSONObject;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.bar.BarChartDataSet;
+import org.primefaces.model.charts.bar.BarChartModel;
+import org.primefaces.model.charts.bar.BarChartOptions;
+import org.primefaces.model.charts.optionconfig.legend.Legend;
+import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
+import org.primefaces.model.charts.line.LineChartDataSet;
+import org.primefaces.model.charts.line.LineChartModel;
+import org.primefaces.model.charts.line.LineChartOptions;
+import org.primefaces.model.charts.optionconfig.title.Title;
 
 /**
  *
@@ -75,6 +89,13 @@ public class DashboardController implements Serializable {
     private Long lettersToReceive;
     private Long lettersEntered;
     private Long lettersAccepted;
+
+    // New dashboard counts
+    private Long myLettersToAcceptAll;
+    private Long myLettersAcceptedToday;
+    private Long copyForwardsToMyInstitutionToReceive;
+    private Long copyForwardsReceivedToday;
+    private Long copyForwardsSentByMyInstitutionLast7Days;
     private Long yesterdayRat;
     private Long yesterdayPositivePcr;
     private Long yesterdayPositiveRat;
@@ -108,6 +129,40 @@ public class DashboardController implements Serializable {
 
     private List<InstitutionCount> orderingCategories;
 
+    private BarChartModel copyForwardsSentChart;
+
+    // National dashboard fields
+    // Letters added
+    private Long nationalLettersAllTime;
+    private Long nationalLettersLastYear;
+    private Long nationalLettersLast30Days;
+    // Copy/forwards
+    private Long nationalCopyForwardsAllTime;
+    private Long nationalCopyForwardsLast30Days;
+    private Long nationalCopyForwardsPendingAllTime;
+    private Long nationalCopyForwardsReceivedAllTime;
+    private Long nationalCopyForwardsPending30Days;
+    private Long nationalCopyForwardsReceived30Days;
+    private String nationalCopyForwardsReceivedPercentageAllTime;
+    private String nationalCopyForwardsReceivedPercentage30Days;
+    // Assignments
+    private Long nationalAssignmentsAllTime;
+    private Long nationalAssignmentsLast30Days;
+    private Long nationalAssignmentsPendingAllTime;
+    private Long nationalAssignmentsAcceptedAllTime;
+    private Long nationalAssignmentsPending30Days;
+    private Long nationalAssignmentsAccepted30Days;
+    private String nationalAssignedAcceptedPercentageAllTime;
+    private String nationalAssignedAcceptedPercentage30Days;
+    // Charts
+    private BarChartModel nationalLettersByInstitutionChart;
+    private BarChartModel nationalCopyForwardsByInstitutionChart;
+    private LineChartModel nationalWeeklyLettersChart;
+    // Print report data (per institution, last 30 days)
+    private List<InstitutionCount> nationalPrintLetterRows;
+    private List<InstitutionCount> nationalPrintCopyForwardRows;
+    private String nationalReportGeneratedAt;
+
     public String toContactNational() {
         orderingCategories = new ArrayList<>();
         for (InstitutionCount oc : dashboardApplicationController.getOrderingCounts()) {
@@ -137,7 +192,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toCommunityRandomNational() {
@@ -169,7 +224,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toForeign() {
@@ -201,7 +256,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toHospital() {
@@ -234,7 +289,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public String toOtherOrderingCategory() {
@@ -266,7 +321,7 @@ public class DashboardController implements Serializable {
                     break;
             }
         }
-        return "/national/ordering_categories";
+        return "/national/ordering_categories?faces-redirect=true";
     }
 
     public void prepareMohDashboard() {
@@ -358,14 +413,347 @@ public class DashboardController implements Serializable {
     }
 
     public void preparePersonalDashboard() {
-        Calendar c = Calendar.getInstance();
-        Date now = c.getTime();
-        Date todayStart = CommonController.startOfTheDate();
+        // Letters assigned to me - all pending (no date filter)
+        myLettersToAcceptAll = letterController.countMyLettersToAcceptAll();
 
-        c.add(Calendar.DATE, -1);
+        // Letters assigned to me and accepted today
+        myLettersAcceptedToday = letterController.countMyLettersAcceptedToday();
 
-        myLettersToAccept = letterController.countMyLettersToAccept(CommonController.startOfTheMonth(), CommonController.endOfTheMonth());
-        lettersAccepted = letterController.countMyLettersAccepted(CommonController.startOfTheMonth(), CommonController.endOfTheMonth());
+        // Copy/forwards to my institution - pending to receive
+        copyForwardsToMyInstitutionToReceive = letterController.countCopyForwardsToMyInstitutionToReceive();
+
+        // Copy/forwards received today
+        copyForwardsReceivedToday = letterController.countCopyForwardsReceivedToday();
+
+        // Copy/forwards sent by my institution in last 7 days
+        copyForwardsSentByMyInstitutionLast7Days = letterController.countCopyForwardsSentByMyInstitutionLast7Days();
+
+        // Keep old counts for backward compatibility
+        myLettersToAccept = myLettersToAcceptAll;
+        lettersAccepted = myLettersAcceptedToday;
+
+        // Prepare chart for top institutions copy-forwards sent to
+        createCopyForwardsSentChart();
+    }
+
+    public void prepareNationalDashboard() {
+        // Date boundaries
+        Calendar cal30 = Calendar.getInstance();
+        cal30.add(Calendar.DAY_OF_MONTH, -30);
+        Date thirtyDaysAgo = CommonController.startOfTheDate(cal30.getTime());
+
+        Calendar cal365 = Calendar.getInstance();
+        cal365.add(Calendar.DAY_OF_MONTH, -365);
+        Date oneYearAgo = CommonController.startOfTheDate(cal365.getTime());
+
+        Date now = CommonController.endOfTheDate();
+
+        // Letters added: all time, last year, last 30 days
+        nationalLettersAllTime = letterController.countNationalLetters(null, null);
+        nationalLettersLastYear = letterController.countNationalLetters(oneYearAgo, now);
+        nationalLettersLast30Days = letterController.countNationalLetters(thirtyDaysAgo, now);
+
+        // Copy/forwards: all time counts
+        nationalCopyForwardsAllTime = letterController.countNationalCopyForwards(null, null, null);
+        nationalCopyForwardsPendingAllTime = letterController.countNationalCopyForwards(null, null, false);
+        nationalCopyForwardsReceivedAllTime = letterController.countNationalCopyForwards(null, null, true);
+        // Copy/forwards: last 30 days
+        nationalCopyForwardsLast30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, null);
+        nationalCopyForwardsPending30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, false);
+        nationalCopyForwardsReceived30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, true);
+
+        // Assignments: all time counts
+        nationalAssignmentsAllTime = letterController.countNationalAssignments(null, null, null);
+        nationalAssignmentsPendingAllTime = letterController.countNationalAssignments(null, null, false);
+        nationalAssignmentsAcceptedAllTime = letterController.countNationalAssignments(null, null, true);
+        // Assignments: last 30 days
+        nationalAssignmentsLast30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, null);
+        nationalAssignmentsPending30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, false);
+        nationalAssignmentsAccepted30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, true);
+
+        // Percentages - all time
+        if (nationalAssignmentsAllTime != null && nationalAssignmentsAllTime > 0) {
+            nationalAssignedAcceptedPercentageAllTime = df.format(((double) nationalAssignmentsAcceptedAllTime / nationalAssignmentsAllTime) * 100) + "%";
+        } else {
+            nationalAssignedAcceptedPercentageAllTime = "0.00%";
+        }
+        if (nationalCopyForwardsAllTime != null && nationalCopyForwardsAllTime > 0) {
+            nationalCopyForwardsReceivedPercentageAllTime = df.format(((double) nationalCopyForwardsReceivedAllTime / nationalCopyForwardsAllTime) * 100) + "%";
+        } else {
+            nationalCopyForwardsReceivedPercentageAllTime = "0.00%";
+        }
+
+        // Percentages - last 30 days
+        if (nationalAssignmentsLast30Days != null && nationalAssignmentsLast30Days > 0) {
+            nationalAssignedAcceptedPercentage30Days = df.format(((double) nationalAssignmentsAccepted30Days / nationalAssignmentsLast30Days) * 100) + "%";
+        } else {
+            nationalAssignedAcceptedPercentage30Days = "0.00%";
+        }
+        if (nationalCopyForwardsLast30Days != null && nationalCopyForwardsLast30Days > 0) {
+            nationalCopyForwardsReceivedPercentage30Days = df.format(((double) nationalCopyForwardsReceived30Days / nationalCopyForwardsLast30Days) * 100) + "%";
+        } else {
+            nationalCopyForwardsReceivedPercentage30Days = "0.00%";
+        }
+
+        // Charts use last 30 days data
+        createNationalLettersByInstitutionChart(thirtyDaysAgo, now);
+        createNationalCopyForwardsByInstitutionChart(thirtyDaysAgo, now);
+        createNationalWeeklyLettersChart();
+
+        // Reset print report data so it is refreshed on next access
+        nationalPrintLetterRows = null;
+        nationalPrintCopyForwardRows = null;
+        nationalReportGeneratedAt = null;
+    }
+
+    private void createNationalLettersByInstitutionChart(Date fd, Date td) {
+        nationalLettersByInstitutionChart = new BarChartModel();
+        ChartData data = new ChartData();
+
+        BarChartDataSet dataSet = new BarChartDataSet();
+        dataSet.setLabel("Letters Added (Last 30 Days)");
+        dataSet.setBackgroundColor("rgba(9, 132, 227, 0.8)");
+        dataSet.setBorderColor("rgb(9, 132, 227)");
+        dataSet.setBorderWidth(1);
+
+        List<Number> values = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        List<Object[]> topInstitutions = letterController.getTopInstitutionsByLetterCount(10, fd, td);
+        if (topInstitutions != null) {
+            for (Object[] row : topInstitutions) {
+                Institution inst = (Institution) row[0];
+                Long count = (Long) row[1];
+                String instName = inst.getName();
+                if (instName != null && instName.length() > 25) {
+                    instName = instName.substring(0, 22) + "...";
+                }
+                labels.add(instName != null ? instName : "Unknown");
+                values.add(count != null ? count : 0);
+            }
+        }
+
+        dataSet.setData(values);
+        data.addChartDataSet(dataSet);
+        data.setLabels(labels);
+        nationalLettersByInstitutionChart.setData(data);
+
+        BarChartOptions options = new BarChartOptions();
+        Title title = new Title();
+        title.setDisplay(true);
+        title.setText("Top 10 Institutions - Letters Added (Last 30 Days)");
+        options.setTitle(title);
+        Legend legend = new Legend();
+        legend.setDisplay(true);
+        legend.setPosition("top");
+        options.setLegend(legend);
+        nationalLettersByInstitutionChart.setOptions(options);
+    }
+
+    private void createNationalCopyForwardsByInstitutionChart(Date fd, Date td) {
+        nationalCopyForwardsByInstitutionChart = new BarChartModel();
+        ChartData data = new ChartData();
+
+        BarChartDataSet acceptedDataSet = new BarChartDataSet();
+        acceptedDataSet.setLabel("Received");
+        acceptedDataSet.setBackgroundColor("rgba(0, 184, 148, 0.8)");
+        acceptedDataSet.setBorderColor("rgb(0, 184, 148)");
+        acceptedDataSet.setBorderWidth(1);
+
+        BarChartDataSet pendingDataSet = new BarChartDataSet();
+        pendingDataSet.setLabel("Pending");
+        pendingDataSet.setBackgroundColor("rgba(253, 203, 110, 0.8)");
+        pendingDataSet.setBorderColor("rgb(253, 203, 110)");
+        pendingDataSet.setBorderWidth(1);
+
+        List<Number> acceptedValues = new ArrayList<>();
+        List<Number> pendingValues = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        List<Object[]> topInstitutions = letterController.getTopInstitutionsByCopyForwards(1000, fd, td);
+        if (topInstitutions != null) {
+            Map<Long, Object[]> byReceiver = new LinkedHashMap<>();
+            for (Object[] row : topInstitutions) {
+                Institution toInst = (Institution) row[1];
+                Long accepted = row[2] != null ? (Long) row[2] : 0L;
+                Long pending = row[3] != null ? (Long) row[3] : 0L;
+                if (toInst == null || toInst.getId() == null) {
+                    continue;
+                }
+                Object[] agg = byReceiver.get(toInst.getId());
+                if (agg == null) {
+                    agg = new Object[]{toInst, 0L, 0L};
+                    byReceiver.put(toInst.getId(), agg);
+                }
+                agg[1] = ((Long) agg[1]) + accepted;
+                agg[2] = ((Long) agg[2]) + pending;
+            }
+            List<Object[]> aggregated = new ArrayList<>(byReceiver.values());
+            aggregated.sort((a, b) -> {
+                Long totalA = ((Long) a[1]) + ((Long) a[2]);
+                Long totalB = ((Long) b[1]) + ((Long) b[2]);
+                return totalB.compareTo(totalA);
+            });
+            int chartLimit = Math.min(10, aggregated.size());
+            for (int i = 0; i < chartLimit; i++) {
+                Object[] row = aggregated.get(i);
+                Institution inst = (Institution) row[0];
+                Long accepted = (Long) row[1];
+                Long pending = (Long) row[2];
+                String instName = inst.getName();
+                if (instName != null && instName.length() > 25) {
+                    instName = instName.substring(0, 22) + "...";
+                }
+                labels.add(instName != null ? instName : "Unknown");
+                acceptedValues.add(accepted != null ? accepted : 0);
+                pendingValues.add(pending != null ? pending : 0);
+            }
+        }
+
+        acceptedDataSet.setData(acceptedValues);
+        pendingDataSet.setData(pendingValues);
+        data.addChartDataSet(acceptedDataSet);
+        data.addChartDataSet(pendingDataSet);
+        data.setLabels(labels);
+        nationalCopyForwardsByInstitutionChart.setData(data);
+
+        BarChartOptions options = new BarChartOptions();
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxesX = new CartesianLinearAxes();
+        linearAxesX.setStacked(true);
+        cScales.addXAxesData(linearAxesX);
+        CartesianLinearAxes linearAxesY = new CartesianLinearAxes();
+        linearAxesY.setStacked(true);
+        cScales.addYAxesData(linearAxesY);
+        options.setScales(cScales);
+
+        Title title = new Title();
+        title.setDisplay(true);
+        title.setText("Top 10 Institutions - Copy/Forwards (Last 30 Days)");
+        options.setTitle(title);
+        Legend legend = new Legend();
+        legend.setDisplay(true);
+        legend.setPosition("top");
+        LegendLabel legendLabels = new LegendLabel();
+        legendLabels.setFontColor("#495057");
+        legend.setLabels(legendLabels);
+        options.setLegend(legend);
+        nationalCopyForwardsByInstitutionChart.setOptions(options);
+    }
+
+    private void createNationalWeeklyLettersChart() {
+        nationalWeeklyLettersChart = new LineChartModel();
+        ChartData data = new ChartData();
+
+        LineChartDataSet dataSet = new LineChartDataSet();
+        dataSet.setLabel("Letters Added");
+        dataSet.setBackgroundColor("rgba(9, 132, 227, 0.2)");
+        dataSet.setBorderColor("rgb(9, 132, 227)");
+        dataSet.setFill(true);
+
+        List<Object> values = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM");
+        List<InstitutionCount> weeklyCounts = letterController.getWeeklyLetterCounts(12);
+        if (weeklyCounts != null) {
+            for (InstitutionCount wc : weeklyCounts) {
+                labels.add(sdf.format(wc.getDate()));
+                values.add(wc.getCount());
+            }
+        }
+
+        dataSet.setData(values);
+        data.addChartDataSet(dataSet);
+        data.setLabels(labels);
+        nationalWeeklyLettersChart.setData(data);
+
+        LineChartOptions options = new LineChartOptions();
+        Title title = new Title();
+        title.setDisplay(true);
+        title.setText("Weekly Letters Added (Last 12 Weeks)");
+        options.setTitle(title);
+        Legend legend = new Legend();
+        legend.setDisplay(true);
+        legend.setPosition("top");
+        options.setLegend(legend);
+        nationalWeeklyLettersChart.setOptions(options);
+    }
+
+    private void createCopyForwardsSentChart() {
+        copyForwardsSentChart = new BarChartModel();
+        ChartData data = new ChartData();
+
+        BarChartDataSet acceptedDataSet = new BarChartDataSet();
+        acceptedDataSet.setLabel("Accepted");
+        acceptedDataSet.setBackgroundColor("rgba(0, 184, 148, 0.8)");
+        acceptedDataSet.setBorderColor("rgb(0, 184, 148)");
+        acceptedDataSet.setBorderWidth(1);
+
+        BarChartDataSet pendingDataSet = new BarChartDataSet();
+        pendingDataSet.setLabel("Pending");
+        pendingDataSet.setBackgroundColor("rgba(253, 203, 110, 0.8)");
+        pendingDataSet.setBorderColor("rgb(253, 203, 110)");
+        pendingDataSet.setBorderWidth(1);
+
+        List<Number> acceptedValues = new ArrayList<>();
+        List<Number> pendingValues = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        List<Object[]> topInstitutions = letterController.getTopInstitutionsCopyForwardsSentByMyInstitution(10);
+
+        if (topInstitutions != null) {
+            for (Object[] row : topInstitutions) {
+                Institution inst = (Institution) row[0];
+                Long accepted = (Long) row[1];
+                Long pending = (Long) row[2];
+
+                String instName = inst.getName();
+                if (instName != null && instName.length() > 20) {
+                    instName = instName.substring(0, 17) + "...";
+                }
+                labels.add(instName != null ? instName : "Unknown");
+                acceptedValues.add(accepted != null ? accepted : 0);
+                pendingValues.add(pending != null ? pending : 0);
+            }
+        }
+
+        acceptedDataSet.setData(acceptedValues);
+        pendingDataSet.setData(pendingValues);
+
+        data.addChartDataSet(acceptedDataSet);
+        data.addChartDataSet(pendingDataSet);
+        data.setLabels(labels);
+
+        copyForwardsSentChart.setData(data);
+
+        // Options
+        BarChartOptions options = new BarChartOptions();
+
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxesX = new CartesianLinearAxes();
+        linearAxesX.setStacked(true);
+        cScales.addXAxesData(linearAxesX);
+
+        CartesianLinearAxes linearAxesY = new CartesianLinearAxes();
+        linearAxesY.setStacked(true);
+        cScales.addYAxesData(linearAxesY);
+        options.setScales(cScales);
+
+        Title title = new Title();
+        title.setDisplay(true);
+        title.setText("Top 10 Institutions - Copy/Forwards Sent");
+        options.setTitle(title);
+
+        Legend legend = new Legend();
+        legend.setDisplay(true);
+        legend.setPosition("top");
+        LegendLabel legendLabels = new LegendLabel();
+        legendLabels.setFontColor("#495057");
+        legend.setLabels(legendLabels);
+        options.setLegend(legend);
+
+        copyForwardsSentChart.setOptions(options);
     }
 
     public void prepareRegionalDashboard() {
@@ -681,7 +1069,7 @@ public class DashboardController implements Serializable {
     }
 
     public String toCalculateNumbers() {
-        return "/systemAdmin/calculate_numbers";
+        return "/systemAdmin/calculate_numbers?faces-redirect=true";
     }
 
     /**
@@ -1018,6 +1406,199 @@ public class DashboardController implements Serializable {
 
     public void setOrderingCategories(List<InstitutionCount> orderingCategories) {
         this.orderingCategories = orderingCategories;
+    }
+
+    public Long getMyLettersToAcceptAll() {
+        return myLettersToAcceptAll;
+    }
+
+    public Long getMyLettersAcceptedToday() {
+        return myLettersAcceptedToday;
+    }
+
+    public Long getCopyForwardsToMyInstitutionToReceive() {
+        return copyForwardsToMyInstitutionToReceive;
+    }
+
+    public Long getCopyForwardsReceivedToday() {
+        return copyForwardsReceivedToday;
+    }
+
+    public Long getCopyForwardsSentByMyInstitutionLast7Days() {
+        return copyForwardsSentByMyInstitutionLast7Days;
+    }
+
+    public BarChartModel getCopyForwardsSentChart() {
+        if (copyForwardsSentChart == null) {
+            createCopyForwardsSentChart();
+        }
+        return copyForwardsSentChart;
+    }
+
+    public Long getNationalLettersAllTime() {
+        return nationalLettersAllTime;
+    }
+
+    public Long getNationalLettersLastYear() {
+        return nationalLettersLastYear;
+    }
+
+    public Long getNationalLettersLast30Days() {
+        return nationalLettersLast30Days;
+    }
+
+    public Long getNationalCopyForwardsAllTime() {
+        return nationalCopyForwardsAllTime;
+    }
+
+    public Long getNationalCopyForwardsLast30Days() {
+        return nationalCopyForwardsLast30Days;
+    }
+
+    public Long getNationalCopyForwardsPendingAllTime() {
+        return nationalCopyForwardsPendingAllTime;
+    }
+
+    public Long getNationalCopyForwardsReceivedAllTime() {
+        return nationalCopyForwardsReceivedAllTime;
+    }
+
+    public Long getNationalCopyForwardsPending30Days() {
+        return nationalCopyForwardsPending30Days;
+    }
+
+    public Long getNationalCopyForwardsReceived30Days() {
+        return nationalCopyForwardsReceived30Days;
+    }
+
+    public String getNationalCopyForwardsReceivedPercentageAllTime() {
+        return nationalCopyForwardsReceivedPercentageAllTime;
+    }
+
+    public String getNationalCopyForwardsReceivedPercentage30Days() {
+        return nationalCopyForwardsReceivedPercentage30Days;
+    }
+
+    public Long getNationalAssignmentsAllTime() {
+        return nationalAssignmentsAllTime;
+    }
+
+    public Long getNationalAssignmentsLast30Days() {
+        return nationalAssignmentsLast30Days;
+    }
+
+    public Long getNationalAssignmentsPendingAllTime() {
+        return nationalAssignmentsPendingAllTime;
+    }
+
+    public Long getNationalAssignmentsAcceptedAllTime() {
+        return nationalAssignmentsAcceptedAllTime;
+    }
+
+    public Long getNationalAssignmentsPending30Days() {
+        return nationalAssignmentsPending30Days;
+    }
+
+    public Long getNationalAssignmentsAccepted30Days() {
+        return nationalAssignmentsAccepted30Days;
+    }
+
+    public String getNationalAssignedAcceptedPercentageAllTime() {
+        return nationalAssignedAcceptedPercentageAllTime;
+    }
+
+    public String getNationalAssignedAcceptedPercentage30Days() {
+        return nationalAssignedAcceptedPercentage30Days;
+    }
+
+    public BarChartModel getNationalLettersByInstitutionChart() {
+        return nationalLettersByInstitutionChart;
+    }
+
+    public BarChartModel getNationalCopyForwardsByInstitutionChart() {
+        return nationalCopyForwardsByInstitutionChart;
+    }
+
+    public LineChartModel getNationalWeeklyLettersChart() {
+        return nationalWeeklyLettersChart;
+    }
+
+    public void prepareNationalPrintReport() {
+        Calendar cal30 = Calendar.getInstance();
+        cal30.add(Calendar.DAY_OF_MONTH, -30);
+        Date thirtyDaysAgo = CommonController.startOfTheDate(cal30.getTime());
+        Date now = CommonController.endOfTheDate();
+
+        nationalReportGeneratedAt = new java.text.SimpleDateFormat("dd MMMM yyyy, hh:mm a").format(new Date());
+
+        // Summary totals (last 30 days)
+        nationalLettersLast30Days = letterController.countNationalLetters(thirtyDaysAgo, now);
+        nationalCopyForwardsLast30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, null);
+        nationalCopyForwardsPending30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, false);
+        nationalCopyForwardsReceived30Days = letterController.countNationalCopyForwards(thirtyDaysAgo, now, true);
+        nationalAssignmentsLast30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, null);
+        nationalAssignmentsPending30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, false);
+        nationalAssignmentsAccepted30Days = letterController.countNationalAssignments(thirtyDaysAgo, now, true);
+        if (nationalAssignmentsLast30Days != null && nationalAssignmentsLast30Days > 0) {
+            nationalAssignedAcceptedPercentage30Days = df.format(((double) nationalAssignmentsAccepted30Days / nationalAssignmentsLast30Days) * 100) + "%";
+        } else {
+            nationalAssignedAcceptedPercentage30Days = "0.00%";
+        }
+        if (nationalCopyForwardsLast30Days != null && nationalCopyForwardsLast30Days > 0) {
+            nationalCopyForwardsReceivedPercentage30Days = df.format(((double) nationalCopyForwardsReceived30Days / nationalCopyForwardsLast30Days) * 100) + "%";
+        } else {
+            nationalCopyForwardsReceivedPercentage30Days = "0.00%";
+        }
+
+        List<Object[]> rawLetterRows = letterController.getTopInstitutionsByLetterCount(100, thirtyDaysAgo, now);
+        nationalPrintLetterRows = new ArrayList<>();
+        if (rawLetterRows != null) {
+            for (Object[] row : rawLetterRows) {
+                InstitutionCount ic = new InstitutionCount();
+                ic.setInstitution((Institution) row[0]);
+                ic.setCount((Long) row[1]);
+                nationalPrintLetterRows.add(ic);
+            }
+        }
+
+        List<Object[]> rawCfRows = letterController.getTopInstitutionsByCopyForwards(100, thirtyDaysAgo, now);
+        nationalPrintCopyForwardRows = new ArrayList<>();
+        if (rawCfRows != null) {
+            for (Object[] row : rawCfRows) {
+                InstitutionCount ic = new InstitutionCount();
+                ic.setReferralInstitution((Institution) row[0]);
+                ic.setInstitution((Institution) row[1]);
+                Long received = row[2] != null ? (Long) row[2] : 0L;
+                Long pending = row[3] != null ? (Long) row[3] : 0L;
+                ic.setReceivedCount(received);
+                ic.setPendingCount(pending);
+                long total = received + pending;
+                ic.setCount(total);
+                if (total > 0) {
+                    ic.setPositiveRate(df.format(((double) received / total) * 100) + "%");
+                } else {
+                    ic.setPositiveRate("0.00%");
+                }
+                nationalPrintCopyForwardRows.add(ic);
+            }
+        }
+    }
+
+    public String toNationalPerformanceReport() {
+        prepareNationalPrintReport();
+        return "/national/performance_report?faces-redirect=true";
+    }
+
+    public List<InstitutionCount> getNationalPrintLetterRows() {
+        return nationalPrintLetterRows;
+    }
+
+    public List<InstitutionCount> getNationalPrintCopyForwardRows() {
+        return nationalPrintCopyForwardRows;
+    }
+
+    public String getNationalReportGeneratedAt() {
+        return nationalReportGeneratedAt;
     }
 
 }

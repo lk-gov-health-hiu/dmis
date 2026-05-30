@@ -37,7 +37,6 @@ public enum WebUserRole {
     Institutional_Super_User("Institution Super User"),
     Institutional_User("Institution User"),
     //Mail Branch
-    //Institutional Level
     Postal_Branch_Administrator("Mail Branch Administrator"),
     Postal_Branch_Super_User("Mail Branch Super User"),
     Postal_Branch_User("Mail Branch User"),

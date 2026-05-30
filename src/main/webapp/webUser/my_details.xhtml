@@ -17,7 +17,7 @@
                         <p:panelGrid columns="2" rendered="#{webUserController.loggedUser != null}" style="margin: auto; text-align: left;">
                             <f:facet name="header" >
                                 <p:commandButton actionListener="#{webUserController.updateMyDetails()}" value="#{bundleClinical.Save}" />
-                                <p:commandButton value="Back" action="index"/>
+                                <p:commandButton value="Back" action="index?faces-redirect=true"/>
                             </f:facet>
 
 

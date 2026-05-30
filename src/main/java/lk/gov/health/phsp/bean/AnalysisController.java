@@ -73,7 +73,7 @@ public class AnalysisController {
 // <editor-fold defaultstate="collapsed" desc="Navigation Methods">
     public String toCountsForSystemAdmin() {
         userTransactionController.recordTransaction("To Counts For SystemAdmin");
-        return "/systemAdmin/all_counts";
+        return "/systemAdmin/all_counts?faces-redirect=true";
     }
 // </editor-fold>    
 

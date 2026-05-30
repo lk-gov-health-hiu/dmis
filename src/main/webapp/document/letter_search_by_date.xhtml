@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:body>
+
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                Search Letters by Date
+            </ui:define>
+            <ui:define name="content">
+                <p:growl class="card bg-danger form-control" ></p:growl>
+
+                <div class="card my-3 w-100">
+                    <h5 class="card-header bg-success">
+                        <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Search Letters by Date" ></p:outputLabel>
+                    </h5>
+                    <div class="card-body">
+
+                        <h:form >
+                            <!-- Search Criteria Section -->
+                            <div class="card mb-3 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 fw-bold text-dark">Search Criteria</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <!-- Date Type Selection -->
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Date Type:</label>
+                                            <h:selectOneRadio value="#{letterController.searchFilterType}"
+                                                              layout="pageDirection"
+                                                              styleClass="form-check">
+                                                <f:selectItems value="#{commonController.searchFilterTypes}" var="sft"
+                                                               itemLabel="#{sft.label}" itemValue="#{sft}" />
+                                            </h:selectOneRadio>
+                                        </div>
+
+                                        <!-- Date Range Selection -->
+                                        <div class="col-md-6">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">From Date:</label>
+                                                    <p:datePicker monthNavigator="true"
+                                                                  yearNavigator="true"
+                                                                  styleClass="w-100"
+                                                                  showTime="true"
+                                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                                  value="#{letterController.fromDate}"
+                                                                  placeholder="Select start date">
+                                                    </p:datePicker>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">To Date:</label>
+                                                    <p:datePicker monthNavigator="true"
+                                                                  yearNavigator="true"
+                                                                  styleClass="w-100"
+                                                                  showTime="true"
+                                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                                  value="#{letterController.toDate}"
+                                                                  placeholder="Select end date">
+                                                    </p:datePicker>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Buttons -->
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Actions:</label>
+                                            <div class="d-grid gap-2">
+                                                <h:commandButton value="Search"
+                                                                 icon="pi pi-search"
+                                                                 action="#{letterController.searchLetterByDate}"
+                                                                 class="btn btn-success fw-bold">
+                                                    <i class="bi bi-search me-1"></i>
+                                                </h:commandButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Export Buttons Section -->
+                            <div class="mb-3 d-flex gap-2" style="#{letterController.items == null or letterController.items.isEmpty() ? 'display:none !important' : ''}">
+                                <h:commandButton value="Print" class="btn btn-info">
+                                    <i class="bi bi-printer me-1"></i>
+                                    <p:printer target="tbl" ></p:printer>
+                                </h:commandButton>
+                                <h:commandButton value="Download Excel" class="btn btn-warning">
+                                    <i class="bi bi-download me-1"></i>
+                                    <p:dataExporter target="tbl" type="xls" fileName="Letters_by_Date" ></p:dataExporter>
+                                </h:commandButton>
+                            </div>
+
+                            <!-- Results Section -->
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 fw-bold text-dark">
+                                        Search Results
+                                        <span class="badge bg-primary ms-2" style="#{letterController.items != null and !letterController.items.isEmpty() ? '' : 'display:none'}">
+                                            #{letterController.items.size()} letters found
+                                        </span>
+                                    </h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <p:dataTable value="#{letterController.items}"
+                                                 var="h"
+                                                 rowKey="#{h.id}"
+                                                 id="tbl"
+                                                 class="w-100"
+                                                 rows="10"
+                                                 paginator="true"
+                                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                                 rowsPerPageTemplate="10,25,50,{ShowAll|'All'}"
+                                                 emptyMessage="No letters found. Please select criteria and click Search."
+                                                 styleClass="table table-striped table-hover"
+                                                 >
+
+                                        <p:column headerText="ID"
+                                                  sortBy="#{h.id}"
+                                                  filterBy="#{h.id}"
+                                                  filterMatchMode="contains"
+                                                  style="width: 80px;">
+                                            <h:outputText value="#{h.id}" styleClass="badge bg-secondary"/>
+                                        </p:column>
+
+                                        <p:column headerText="Letter Date"
+                                                  sortBy="#{h.documentDate}"
+                                                  style="width: 120px;">
+                                            <h:outputText value="#{h.documentDate}" >
+                                                <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="Stamp Date"
+                                                  sortBy="#{h.receivedDate}"
+                                                  style="width: 120px;">
+                                            <h:outputText value="#{h.receivedDate}" >
+                                                <f:convertDateTime pattern="dd MMM yyyy" ></f:convertDateTime>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="Receive Method"
+                                                  style="width: 120px;"
+                                                  sortBy="#{h.receivedAs.name}"
+                                                  filterBy="#{h.receivedAs.name}"
+                                                  filterMatchMode="contains">
+                                            <h:outputText value="#{h.receivedAs.name}" ></h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="Letter Number"
+                                                  style="width: 150px;"
+                                                  sortBy="#{h.documentNumber}"
+                                                  filterBy="#{h.documentNumber}"
+                                                  filterMatchMode="contains">
+                                            <h:outputText value="#{h.documentNumber}" styleClass="fw-bold text-primary"></h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="Title"
+                                                  sortBy="#{h.documentName}"
+                                                  filterBy="#{h.documentName}"
+                                                  filterMatchMode="contains">
+                                            <h:outputText value="#{h.documentName}" ></h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="From"
+                                                  sortBy="#{h.fromInstitution.name}"
+                                                  filterBy="#{h.fromInstitution.name}"
+                                                  filterMatchMode="contains"
+                                                  style="width: 200px;">
+                                            <h:panelGroup rendered="#{h.fromInstitution.name eq 'Personal'}" >
+                                                <div class="text-muted small">Personal</div>
+                                                <div class="fw-bold">#{h.senderName}</div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{h.fromInstitution.name ne 'Personal'}" >
+                                                <div class="fw-bold">#{h.fromInstitution.name}</div>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{h.fromWebUser != null and h.fromWebUser.person != null}">
+                                                <div class="text-muted small">#{h.fromWebUser.person.nameWithTitle}</div>
+                                            </h:panelGroup>
+                                        </p:column>
+
+                                        <p:column headerText="Actions"
+                                                  exportable="false"
+                                                  style="width: 100px; text-align: center;">
+                                            <h:commandButton value="View"
+                                                             action="#{letterController.toLetterView()}"
+                                                             class="btn btn-sm btn-success fw-bold">
+                                                <f:setPropertyActionListener value="#{h}" target="#{letterController.selected}" ></f:setPropertyActionListener>
+                                            </h:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </h:form>
+
+                    </div>
+                </div>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

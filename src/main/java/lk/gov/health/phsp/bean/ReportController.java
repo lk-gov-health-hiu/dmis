@@ -229,7 +229,7 @@ public class ReportController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toViewReports() {
         userTransactionController.recordTransaction("To View Reports");
-        return "/reports/index";
+        return "/reports/index?faces-redirect=true";
     }
 
    
@@ -237,13 +237,13 @@ public class ReportController implements Serializable {
     public String toViewClientRegistrationsByDistrict() {
         areaCounts = null;
         areaRepCount = null;
-        return "/reports/client_registrations/for_system_by_dis";
+        return "/reports/client_registrations/for_system_by_dis?faces-redirect=true";
     }
 
     public String toViewClientRegistrationsByProvince() {
         areaCounts = null;
         areaRepCount = null;
-        return "/reports/client_registrations/for_system_by_pro";
+        return "/reports/client_registrations/for_system_by_pro?faces-redirect=true";
     }
 
     
