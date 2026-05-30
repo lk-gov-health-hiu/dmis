@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application {
 
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(lk.gov.health.phsp.ws.auth.AuthResource.class);
+        resources.add(lk.gov.health.phsp.ws.institution.InstitutionResource.class);
         resources.add(lk.gov.health.phsp.ws.common.CorsResponseFilter.class);
     }
 
