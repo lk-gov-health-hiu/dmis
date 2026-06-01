@@ -105,7 +105,8 @@
       "PowerShell($cmd = 'grep -n -B1 -A8 poolDmis /home/buddhika/payara5/glassfish/domains/domain1/config/domain.xml')",
       "PowerShell($cmd = 'mysql -ucovid -pCovid123@ -e \"SHOW DATABASES; SELECT VERSION\\(\\);\" 2>&1 | grep -v \"Using a password\"')",
       "PowerShell($cmd = \"echo 'SHOW DATABASES; SELECT VERSION\\(\\);' | mysql -ucovid -pCovid123@ 2>&1 | grep -v 'Using a password'\")",
-      "PowerShell(Move-Item *)"
+      "PowerShell(Move-Item *)",
+      "Bash(gh repo *)"
     ]
   }
 }
