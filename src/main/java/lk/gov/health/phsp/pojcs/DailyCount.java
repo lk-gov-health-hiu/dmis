@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
+ * Copyright 2021 buddhika.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package lk.gov.health.phsp.pojcs;
 
-package lk.gov.health.phsp.enums;
+import java.util.Date;
 
 /**
  *
- * @author User
+ * @author buddhika
  */
-public enum DocumentType {
-    File("File"),
-    Letter("Letter"),
-    Internal_Memo("Internal Memo"),
-    Register("Register"),
-    Other("Other");
+public class DailyCount {
+    private Date date;
+    private Long dailyCount;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     
-    private final String label;    
-    private DocumentType(String label){
-        this.label = label;
+    public Long getDailyCount() {
+        return dailyCount;
+    }
+
+    public void setDailyCount(Long dailyCount) {
+        this.dailyCount = dailyCount;
+    }
+
+    public DailyCount() {
+    }
+
+    public DailyCount(Date date, Long dailyCount) {
+        this.date = date;
+        this.dailyCount = dailyCount;
     }
     
-    public String getLabel(){
-        return label;
-    }
     
-   
+    
+    
 }

@@ -57,15 +57,17 @@
                             <h:panelGroup class="text-left" layout="block">
                                 <div class="row" >
                                     <div >
-                                        <p:selectOneMenu id="method"  value="#{letterController.selected.receivedAs}"
+                                        <p:selectOneMenu id="method"  value="#{letterController.selected.receivedAs}" 
                                                          class="form-control"
                                                          >
+                                            <f:ajax execute="method" render="regNo" event="blur" ></f:ajax>
                                             <f:ajax execute="method" render="regNo" event="change" ></f:ajax>
                                             <f:selectItem itemLabel="Select" ></f:selectItem>
                                             <f:selectItems value="#{itemApplicationController.letterReceiveCategories}"
                                                            var="i"
                                                            itemLabel="#{i.name}"
                                                            itemValue="#{i}" ></f:selectItems>
+                                            <p:ajax event="blur" process="@this" ></p:ajax>
                                         </p:selectOneMenu>
                                     </div>
                                     <div  >
@@ -101,13 +103,14 @@
 
                             <h:outputLabel for="title"  >Letter Number </h:outputLabel>
                             <h:panelGroup layout="block" class="w-75" >
-                                <p:inputText id="title"
+                                <p:inputText id="title" 
                                              autocomplete="off"
                                              value="#{letterController.selected.documentNumber}" class="form-control"
                                              >
-                                    <p:ajax event="blur"
-                                            process="@this"
-                                            global="false" ></p:ajax>
+                                    <p:ajax event="blur" 
+                                            listener="#{letterController.saveCurrentDocumentAjax}"
+                                            process="@this" 
+                                            update="letterId" ></p:ajax>
                                 </p:inputText>
                             </h:panelGroup>
                             <h:message class="text-danger small" for="title"></h:message>
@@ -115,13 +118,14 @@
                             <h:outputLabel for="topic"  >Letter Title 
                                 <small class="px-2 text-muted">Required</small></h:outputLabel>
                             <h:panelGroup layout="block" class="w-100" >
-                                <p:inputTextarea id="topic"
+                                <p:inputTextarea id="topic" 
                                                  a:maxlength="255"
                                                  value="#{letterController.selected.documentName}" class="form-control"
                                                  required="true" requiredMessage="Need a Title">
-                                    <p:ajax event="blur"
-                                            process="@this"
-                                            global="false" ></p:ajax>
+                                    <p:ajax event="blur" 
+                                            listener="#{letterController.saveCurrentDocumentAjax}"
+                                            process="@this" 
+                                            update="letterId" ></p:ajax>
                                 </p:inputTextarea>
                             </h:panelGroup>
                             <h:message class="text-danger small" for="topic"></h:message>
@@ -130,7 +134,7 @@
                             </h:outputLabel>
 
                             <h:panelGroup layout="block" class="w-100" >
-                                <p:autoComplete id="from"  value="#{letterController.selected.fromInsOrUser}"
+                                <p:autoComplete id="from"  value="#{letterController.selected.fromInsOrUser}" 
                                                 class="form-control"
                                                 completeMethod="#{letterController.completeInsOrUsersByWords}"
                                                 var="insf"
@@ -140,15 +144,9 @@
                                                 maxResults="10" inputStyle="color:red;"
                                                 itemLabel="#{insf.displayName}"
                                                 itemValue="#{insf}"
-                                                delay="500"
-                                                minQueryLength="3"
-                                                cache="false"
                                                 >
-                                    <p:ajax event="itemSelect"
-                                            listener="#{letterController.saveCurrentDocumentAjax}"
-                                            process="from"
-                                            update="letterId fromPerson from"
-                                            global="false" ></p:ajax>
+                                    <f:ajax execute="method" render="fromPerson" event="blur" ></f:ajax>
+                                    <f:ajax execute="method" render="fromPerson" event="itemSelect" ></f:ajax>
 
                                 </p:autoComplete>
                                 <h:panelGroup id="fromPerson" class="w-25 float-left" >
@@ -174,20 +172,7 @@
                             <p:spacer></p:spacer>
                             
                             
-                            <h:outputLabel for="status"  >Status </h:outputLabel>
-                            <h:panelGroup layout="status" class="w-50"  >
-                                <p:selectOneMenu id="status"  
-                                                 value="#{letterController.selected.letterStatus}" 
-                                                 class="form-control"
-                                                 >
-                                    <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{itemApplicationController.letterStatuses}"
-                                                   var="s"
-                                                   itemLabel="#{s.name}"
-                                                   itemValue="#{s}" ></f:selectItems>
-                                    <p:ajax event="blur" process="@this" ></p:ajax>
-                                </p:selectOneMenu>
-                            </h:panelGroup>
+                            
                             <h:message class="text-danger small" for="status"></h:message>
                             
                             
@@ -195,11 +180,11 @@
                             <f:facet name="footer" class="m-2 p-2" >
 
                                 
-                                <h:commandButton id="btnSaveAdd" tabindex="10" class="btn btn-success fw-bold m-2 "
-                                                 action="#{letterController.saveAndViewReceivedLetter()}" value="SAVE &amp; View">
+                                <h:commandButton id="btnSaveAdd" tabindex="10" class="btn btn-primary fw-bold m-2 "
+                                                 action="#{letterController.unitLetterEditSaveAndView()}" value="SAVE &amp; View">
                                 </h:commandButton>
                                 <h:commandButton rendered="true" tabindex="10" class="btn btn-warning fw-bold m-2 "
-                                                 action="#{letterController.saveAndNewReceivedLetter()}" value="SAVE &amp; New">
+                                                 action="#{letterController.unitLetterEditSaveAndNew()}" value="SAVE &amp; New">
                                 </h:commandButton>
                                 <p:messages class="m-1 col"></p:messages>
                                 <p:defaultCommand target="btnSaveAdd" />

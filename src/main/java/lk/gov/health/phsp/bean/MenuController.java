@@ -26,12 +26,14 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Document;
 import lk.gov.health.phsp.entity.DocumentHistory;
 import lk.gov.health.phsp.entity.UserPrivilege;
+import lk.gov.health.phsp.enums.DocumentGenerationType;
 import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.HistoryType;
 import lk.gov.health.phsp.enums.Privilege;
@@ -88,9 +90,10 @@ public class MenuController implements Serializable {
         return "/document/file?faces-redirect=true";
     }
 
-    public String toLetterAddNew() {
+    public String toLetterAddNewReceivedLetter() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
         nd.setDocumentDate(new Date());
         nd.setReceivedDate(new Date());
         nd.setInstitution(webUserController.getLoggedInstitution());
@@ -107,6 +110,70 @@ public class MenuController implements Serializable {
         ndh.setInstitution(webUserController.getLoggedInstitution());
         letterController.setSelectedHistory(ndh);
         return "/document/letter?faces-redirect=true";
+    }
+    
+    
+    public String toUnitLetterAdd() {
+        Document nd = new Document();
+        nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
+        nd.setDocumentDate(new Date());
+        nd.setReceivedDate(new Date());
+        nd.setInstitution(webUserController.getLoggedInstitution());
+        nd.setInstitutionUnit(webUserController.getLoggedInstitution());
+        nd.setOwner(webUserController.getLoggedUser());
+        nd.setCurrentInstitution(webUserController.getLoggedInstitution());
+        nd.setCurrentOwner(webUserController.getLoggedUser());
+        nd.setReceivedDate(new Date());
+        letterController.setSelected(nd);
+        return "/document/unit_letter_add";
+    }
+    
+    public String toLetterMailBranchAddNew() {
+        Document nd = new Document();
+        nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentGenerationType(DocumentGenerationType.Received_by_mail_branch);
+        nd.setDocumentDate(new Date());
+        nd.setReceivedDate(new Date());
+        nd.setInstitution(webUserController.getLoggedInstitution());
+        nd.setInstitutionUnit(webUserController.getLoggedInstitution());
+        nd.setOwner(webUserController.getLoggedUser());
+        nd.setCurrentInstitution(webUserController.getLoggedInstitution());
+        nd.setCurrentOwner(webUserController.getLoggedUser());
+        nd.setReceivedDate(new Date());
+        letterController.setSelected(nd);
+
+        letterController.setNewHx(true);
+        DocumentHistory ndh = new DocumentHistory();
+        ndh.setHistoryType(HistoryType.Letter_added_by_mail_branch);
+        ndh.setInstitution(webUserController.getLoggedInstitution());
+        return "/document/letter_mail_branch";
+    }
+    
+    public String toLetterGenerateNew() {
+        Document nd = new Document();
+        nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentGenerationType(DocumentGenerationType.Generated_by_system);
+        nd.setDocumentDate(new Date());
+        nd.setReceivedDate(new Date());
+        nd.setInstitution(webUserController.getLoggedInstitution());
+        nd.setInstitutionUnit(webUserController.getLoggedInstitution());
+        nd.setFromInstitution(webUserController.getLoggedInstitution());
+        nd.setOwner(webUserController.getLoggedUser());
+        nd.setCurrentInstitution(webUserController.getLoggedInstitution());
+        nd.setCurrentOwner(webUserController.getLoggedUser());
+        nd.setReceivedDate(new Date());
+        letterController.setSelected(nd);
+
+        letterController.setNewHx(true);
+        DocumentHistory ndh = new DocumentHistory();
+        ndh.setHistoryType(HistoryType.Letter_Generated);
+        ndh.setInstitution(webUserController.getLoggedInstitution());
+        
+        letterController.setToInsOrUser(new ArrayList<>());
+        letterController.setSelectedDocumentHistories(new ArrayList<>());
+        
+        return "/document/letter_generate";
     }
 
     public String toFileSearch() {
@@ -176,6 +243,7 @@ public class MenuController implements Serializable {
     }
 
     public String toAdministrationIndex() {
+        System.out.println("toAdministrationIndex");
         boolean privileged = false;
         for (UserPrivilege up : webUserController.getLoggedUserPrivileges()) {
             if (up.getPrivilege() == Privilege.Institution_Administration) {
@@ -185,10 +253,12 @@ public class MenuController implements Serializable {
                 privileged = true;
             }
         }
+        System.out.println("privileged = " + privileged);
         if (!privileged) {
             JsfUtil.addErrorMessage("You are NOT autherized");
             return "";
         }
+        System.out.println("webUserController.getLoggedUser().getWebUserRoleLevel() = " + webUserController.getLoggedUser().getWebUserRoleLevel());
         switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
             case National:
                 return "/national/admin/index?faces-redirect=true";
