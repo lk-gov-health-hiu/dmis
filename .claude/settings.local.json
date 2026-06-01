@@ -106,7 +106,21 @@
       "PowerShell($cmd = 'mysql -ucovid -pCovid123@ -e \"SHOW DATABASES; SELECT VERSION\\(\\);\" 2>&1 | grep -v \"Using a password\"')",
       "PowerShell($cmd = \"echo 'SHOW DATABASES; SELECT VERSION\\(\\);' | mysql -ucovid -pCovid123@ 2>&1 | grep -v 'Using a password'\")",
       "PowerShell(Move-Item *)",
-      "Bash(gh repo *)"
+      "Bash(gh repo *)",
+      "Bash(javap -p -constants target/classes/lk/gov/health/phsp/enums/Privilege.class)",
+      "PowerShell(javap *)",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\('D:\\\\Dev\\\\dmis\\\\target\\\\classes\\\\lk\\\\gov\\\\health\\\\phsp\\\\enums\\\\Privilege.class'\\); $text = [System.Text.Encoding]::ASCII.GetString\\($bytes\\); \\($text -split '[^\\\\x20-\\\\x7e]' | Where-Object { $_.Length -gt 3 }\\) -join \"`n\")",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\('D:\\\\Dev\\\\dmis\\\\target\\\\classes\\\\lk\\\\gov\\\\health\\\\phsp\\\\entity\\\\UserPrivilege.class'\\); $text = [System.Text.Encoding]::ASCII.GetString\\($bytes\\); \\($text -split '[^\\\\x20-\\\\x7e]' | Where-Object { $_.Length -gt 3 -and \\($_ -match 'Convert|Enumerated|Privilege'\\) }\\) -join \"`n\")",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\('D:\\\\Dev\\\\dmis\\\\target\\\\dmis-0.1\\\\WEB-INF\\\\classes\\\\lk\\\\gov\\\\health\\\\phsp\\\\entity\\\\UserPrivilege.class'\\); $text = [System.Text.Encoding]::ASCII.GetString\\($bytes\\); \\($text -split '[^\\\\x20-\\\\x7e]' | Where-Object { $_.Length -gt 3 -and \\($_ -match 'Convert|Enumerated|Privilege|privilege'\\) }\\) -join \"`n\")",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\('D:\\\\Dev\\\\dmis\\\\target\\\\dmis-0.1\\\\WEB-INF\\\\classes\\\\lk\\\\gov\\\\health\\\\phsp\\\\entity\\\\UserPrivilege.class'\\); $text = [System.Text.Encoding]::ASCII.GetString\\($bytes\\); \\($text -split '[^\\\\x20-\\\\x7e]' | Where-Object { $_.Length -gt 3 -and $_ -match 'Enumerated|EnumType|STRING|ORDINAL|Convert' }\\) -join \"`n\")",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\('D:\\\\Dev\\\\dmis\\\\target\\\\dmis-0.1\\\\WEB-INF\\\\classes\\\\lk\\\\gov\\\\health\\\\phsp\\\\enums\\\\Privilege.class'\\); $text = [System.Text.Encoding]::ASCII.GetString\\($bytes\\); \\($text -split '[^\\\\x20-\\\\x7e]' | Where-Object { $_.Length -gt 3 -and $_ -match '^[A-Z][a-zA-Z_]+$' -and $_ -notmatch 'Ljava|Code|Local|Lk' }\\) | Sort-Object -Unique)",
+      "WebSearch",
+      "WebFetch(domain:www.eclipse.org)",
+      "WebFetch(domain:bugs.eclipse.org)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Test-Path *)",
+      "Read(//c/Credentials/**)",
+      "PowerShell($r1 = Test-NetConnection 192.168.1.72 -Port 22 -WarningAction SilentlyContinue; $r2 = Test-NetConnection 192.168.1.72 -Port 3306 -WarningAction SilentlyContinue; \"SSH\\(22\\)  : $\\($r1.TcpTestSucceeded\\)\"; \"MySQL\\(3306\\): $\\($r2.TcpTestSucceeded\\)\")"
     ]
   }
 }
