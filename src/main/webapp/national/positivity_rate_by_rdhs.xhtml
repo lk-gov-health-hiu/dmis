@@ -86,7 +86,7 @@
                                      >
                             <p:column headerText="RDHS" sortBy="#{c.area.name}"
                                       filterBy="#{c.area.name}" filterMatchMode="contains">
-                                <h:commandLink value="#{c.area.name}" ajax="false" action="#{nationalController.toCountOfTestsFromRdhsToMoh()}">
+                                <h:commandLink value="#{c.area.name}"action="#{nationalController.toCountOfTestsFromRdhsToMoh()}">
                                     <f:setPropertyActionListener value="#{c.area}" target="#{nationalController.rdhs}" ></f:setPropertyActionListener>
                                 </h:commandLink>
                             </p:column>

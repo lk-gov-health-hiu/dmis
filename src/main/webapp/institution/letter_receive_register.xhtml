@@ -72,7 +72,7 @@
                                         </p:panelGrid>
 
                                         <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.listLettersReceived()}" class="btn btn-primary btn-sm form-control" style="font-size: 0.75rem;"></h:commandButton>
+                                            <h:commandButton value="Process" action="#{letterController.fillLettersReceived()}" class="btn btn-primary btn-sm form-control" style="font-size: 0.75rem;"></h:commandButton>
                                             <h:commandButton value="Print" class="btn btn-secondary btn-sm form-control" style="font-size: 0.75rem;">
                                                 <p:printer target="gridPrint" ></p:printer>
                                             </h:commandButton>
@@ -96,6 +96,7 @@
                                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                                      rowsPerPageTemplate="5,10,{ShowAll|'All'}"
                                                      >
+
 
                                             <p:column headerText="No." style="width: 2.5em;">
                                                 <h:outputText value="#{rowIndex + 1}" />
@@ -260,6 +261,80 @@
                                 <h:outputLabel style="color: black;" value="#{c.currentOwner.person.name}" />
                             </p:column>
                         </p:dataTable>
+                        
+                        <h:panelGroup id="tblPrintC">
+                            <table >
+                                <tr>
+                                    <th>Test</th>
+                                </tr>
+                            </table>
+                        </h:panelGroup>
+                        
+                        <h:dataTable  value="#{letterController.items}"
+                                     rendered="true" 
+                                     >
+                            <h:column >
+                                <f:facet name="header" >
+                                    <h:outputText value="ID" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.id}"></h:outputLabel>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header" >
+                                    <h:outputText value="Letter Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.documentDate}">
+                                    <f:convertDateTime pattern="dd/MM/yy" ></f:convertDateTime>
+                                </h:outputLabel>
+                            </h:column>
+                            <h:column  >
+                                <f:facet name="header" >
+                                    <h:outputText value="Stamp Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.receivedDate}">
+                                    <f:convertDateTime pattern="dd/MM/yy" ></f:convertDateTime>
+                                </h:outputLabel>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header" >
+                                    <h:outputText value="Method" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.receivedAs.name}"></h:outputLabel>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header" >
+                                    <h:outputText value="From" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:panelGroup rendered="#{c.fromInstitution.name eq 'Personal'}" >
+                                    <h:outputLabel value="#{c.senderName}"></h:outputLabel>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{c.fromInstitution.name ne 'Personal'}" >
+                                    <h:outputLabel value="#{c.fromInstitution.name}"></h:outputLabel>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{c.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header" >
+                                    <h:outputText value="Letter Number" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.documentNumber }"></h:outputLabel>
+                            </h:column>
+                            <h:column  >
+                                <f:facet name="header" >
+                                    <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.documentName}"></h:outputLabel>
+                            </h:column>
+                            <h:column 
+                                      rendered="#{letterController.webUserCopy eq null}"
+                                      >
+                                <f:facet name="header" >
+                                    <h:outputText value="Assigned to" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
+                                </f:facet>
+                                <h:outputLabel value="#{c.currentOwner.person.name}"></h:outputLabel>
+                            </h:column>
+
+                        </h:dataTable>
 
                     </h:panelGrid>
 

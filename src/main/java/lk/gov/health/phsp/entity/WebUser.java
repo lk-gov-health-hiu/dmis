@@ -311,6 +311,16 @@ public class WebUser implements Serializable, Nameable {
     }
 
     @Override
+    public Boolean getInstitute() {
+        return false;
+    }
+
+    @Override
+    public Boolean getWebUser() {
+        return true;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
@@ -331,10 +341,10 @@ public class WebUser implements Serializable, Nameable {
 
     @Override
     public String toString() {
-        if (person != null) {
-            return person.getNameWithTitle();
+        if (id != null) {
+            return id.toString();
         } else {
-            return name;
+            return null;
         }
     }
 
@@ -482,6 +492,11 @@ public class WebUser implements Serializable, Nameable {
                 case Institutional_User:
                     webUserRoleLevel = WebUserRoleLevel.Institutional;
                     break;
+                case Postal_Branch_Administrator:
+                case Postal_Branch_Super_User:
+                case Postal_Branch_User:
+                    webUserRoleLevel = WebUserRoleLevel.Institutional;
+                    break;
             }
         }
         return webUserRoleLevel;
@@ -623,7 +638,7 @@ public class WebUser implements Serializable, Nameable {
         if (institution != null) {
             if (institution.getDisplayName() != null) {
                 insName = institution.getDisplayName();
-            }else if(institution.getName()!=null){
+            } else if (institution.getName() != null) {
                 insName = institution.getName();
             }
         }
