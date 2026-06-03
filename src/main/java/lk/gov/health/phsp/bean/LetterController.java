@@ -130,6 +130,7 @@ public class LetterController implements Serializable {
     public void saveCurrentDocument() {
         System.out.println("saveCurrentDocument = " + selected);
         if (selected == null) {
+            JsfUtil.addErrorMessage("Session expired. Please re-open the letter and try again.");
             return;
         }
         save(selected);
@@ -138,6 +139,7 @@ public class LetterController implements Serializable {
     public void saveCurrentDocumentAjax(AjaxBehaviorEvent event) {
         System.out.println("saveCurrentDocumentAjax = " + selected);
         if (selected == null) {
+            JsfUtil.addErrorMessage("Session expired. Please re-open the letter and try again.");
             return;
         }
         save(selected);
