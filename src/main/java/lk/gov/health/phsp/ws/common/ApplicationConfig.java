@@ -35,6 +35,7 @@ public class ApplicationConfig extends Application {
         resources.add(lk.gov.health.phsp.ws.common.CorsResponseFilter.class);
         resources.add(lk.gov.health.phsp.ws.document.DocumentResource.class);
         resources.add(lk.gov.health.phsp.ws.institution.InstitutionResource.class);
+        resources.add(lk.gov.health.phsp.ws.letter.LetterResource.class);
         resources.add(lk.gov.health.phsp.ws.user.UserResource.class);
     }
 
