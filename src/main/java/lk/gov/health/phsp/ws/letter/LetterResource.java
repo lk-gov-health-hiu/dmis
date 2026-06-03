@@ -312,6 +312,76 @@ public class LetterResource {
     }
 
     /**
+     * {@code POST /api/letters/{id}/unassign} — retire the most recent active
+     * assignment for the letter and restore {@code currentOwner} to whoever
+     * held it before that assignment. Mirrors
+     * {@code LetterController.removeAssignment()}.
+     */
+    @POST
+    @Path("{id}/unassign")
+    public Response unassignLetter(@HeaderParam("Api-Key") String apiKey,
+                                   @HeaderParam(ACTING_USER_HEADER) Long actingUserId,
+                                   @PathParam("id") Long id,
+                                   LetterActionDto dto) {
+        ApiKey key = apiKeyController.validateKey(apiKey);
+        if (key == null) {
+            return unauthorized();
+        }
+        WebUser actor = resolveActor(key, actingUserId);
+        if (actor == null) {
+            return badRequest("Cannot resolve acting user");
+        }
+        Document d = documentFacade.find(id);
+        if (d == null || d.isRetired() || !isLetter(d)) {
+            return notFound("Letter not found");
+        }
+
+        String jpql = "SELECT h FROM DocumentHistory h "
+                + "WHERE h.retired = false "
+                + "AND h.document = :doc "
+                + "AND h.historyType = :ht "
+                + "ORDER BY h.id DESC";
+        Map<String, Object> params = new HashMap<>();
+        params.put("doc", d);
+        params.put("ht", HistoryType.Letter_Assigned);
+        DocumentHistory assignment = documentHistoryFacade.findFirstByJpql(jpql, params);
+        if (assignment == null) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(ApiResponseDto.error(409, "No active assignment to remove"))
+                    .build();
+        }
+
+        String note = (dto != null && dto.getComments() != null)
+                ? dto.getComments()
+                : "Assignment removed via API";
+
+        assignment.setRetired(true);
+        assignment.setRetiredAt(new Date());
+        assignment.setRetiredBy(actor);
+        assignment.setRetireComments(note);
+        documentHistoryFacade.edit(assignment);
+
+        DocumentHistory hx = new DocumentHistory();
+        hx.setHistoryType(HistoryType.Letter_Assignment_Removed);
+        hx.setDocument(d);
+        hx.setToUser(assignment.getToUser());
+        hx.setFromUser(assignment.getFromUser());
+        hx.setInstitution(actor.getInstitution());
+        hx.setComments(note);
+        saveHistory(hx, actor);
+
+        d.setCurrentOwner(assignment.getFromUser());
+        d.setLastEditBy(actor);
+        d.setLastEditeAt(new Date());
+        documentFacade.edit(d);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("letter", toMap(d));
+        result.put("removedAssignmentId", assignment.getId());
+        return Response.ok(ApiResponseDto.success(result)).build();
+    }
+
+    /**
      * {@code POST /api/letters/assign} — bulk assign. Mirrors
      * {@code LetterController.assignMultipleLetters()}.
      */
