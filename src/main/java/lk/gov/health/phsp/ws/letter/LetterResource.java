@@ -1006,6 +1006,58 @@ public class LetterResource {
         return inboxByHistory(apiKey, actingUserId, null, true, true, size);
     }
 
+    /**
+     * {@code GET /api/letters/inbox/awaiting-institution} — letters
+     * copy-forwarded (or added by a mail branch) to an institution that have
+     * not yet been received. Mirrors
+     * {@code LetterController.fillLettersToReceive()}.
+     *
+     * <p>By default uses the acting user's institution; pass
+     * {@code ?institutionId=<id>} to scope to a different one.</p>
+     */
+    @GET
+    @Path("inbox/awaiting-institution")
+    public Response inboxAwaitingInstitution(@HeaderParam("Api-Key") String apiKey,
+                                             @HeaderParam(ACTING_USER_HEADER) Long actingUserId,
+                                             @QueryParam("institutionId") Long institutionId,
+                                             @QueryParam("size") Integer size) {
+        ApiKey key = apiKeyController.validateKey(apiKey);
+        if (key == null) {
+            return unauthorized();
+        }
+        Institution scope;
+        if (institutionId != null) {
+            scope = institutionFacade.find(institutionId);
+            if (scope == null || scope.isRetired()) {
+                return badRequest("Unknown institutionId: " + institutionId);
+            }
+        } else {
+            WebUser actor = resolveActor(key, actingUserId);
+            if (actor == null) {
+                return badRequest("Cannot resolve acting user; pass institutionId or "
+                        + ACTING_USER_HEADER + " header");
+            }
+            scope = actor.getInstitution();
+            if (scope == null) {
+                return badRequest("Acting user has no institution");
+            }
+        }
+
+        int pageSize = (size != null && size > 0 && size <= MAX_PAGE_SIZE) ? size : DEFAULT_PAGE_SIZE;
+        String jpql = "SELECT h FROM DocumentHistory h "
+                + "WHERE h.retired = false "
+                + "AND h.completed = false "
+                + "AND (h.historyType = :hc OR h.historyType = :hm) "
+                + "AND (h.toInstitution = :ins OR h.toUser.institution = :ins) "
+                + "ORDER BY h.id DESC";
+        Map<String, Object> params = new HashMap<>();
+        params.put("ins", scope);
+        params.put("hc", HistoryType.Letter_Copy_or_Forward);
+        params.put("hm", HistoryType.Letter_added_by_mail_branch);
+        List<DocumentHistory> hs = documentHistoryFacade.findByJpql(jpql, params, pageSize);
+        return Response.ok(ApiResponseDto.success(mapHistories(hs))).build();
+    }
+
     private Response inboxByHistory(String apiKey, Long actingUserId, HistoryType type,
                                     boolean completed, boolean anyType, Integer size) {
         ApiKey key = apiKeyController.validateKey(apiKey);
