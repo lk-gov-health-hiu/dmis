@@ -1058,6 +1058,7 @@ public class WebUserController implements Serializable {
             case Institutional_Administrator:
                 wups.add(Privilege.Institution_Administration);
                 wups.add(Privilege.Manage_Institution_Users);
+                wups.add(Privilege.Manage_Authorised_Areas);
                 wups.add(Privilege.Manage_Authorised_Institutions);
             case Institutional_Super_User:
             case Institutional_User:
