@@ -33,6 +33,7 @@ public enum Privilege {
     Search_Letter("Search Letter"),
     Add_Actions_To_Letter("Add Actions"),
     Remove_Actions_To_Letter("Remove Actions"),
+    Import_Letters("Import Letters from PDF"),
     //Mail Branch Mail Management
     Add_Letter_Postal_Branch("Add Letter"),
     Edit_Letter_Postal_Branch("Edit Letter"),

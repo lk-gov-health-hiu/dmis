@@ -76,6 +76,15 @@
             <type>jar</type>
         </dependency>
 
+        <!-- PDFBox 2.0.x: Java 8 compatible. Used to detect blank separator
+             pages, split a multi-letter PDF into per-letter sub-PDFs, and
+             rasterize pages to PNG for the letter-import feature. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>
+        </dependency>
+
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>
