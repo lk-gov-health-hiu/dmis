@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+
+                <h:form id="importForm" enctype="multipart/form-data">
+                    <p:growl id="msgs" showDetail="true" />
+
+                    <div class="pageCenter bg-white border border-light p-3">
+                        <div class="fs-5 fw-bold my-2">Import Letters from a PDF</div>
+                        <p class="text-muted small">
+                            Upload a single PDF containing several letters separated by blank pages.
+                            Each letter is OCR'd with your own Claude API key, then proposed for your review.
+                        </p>
+
+                        <!-- 1. Upload -->
+                        <h:panelGroup id="uploadPanel" layout="block"
+                                      rendered="#{empty letterImportController.batch}">
+                            <p:fileUpload listener="#{letterImportController.handleUpload}"
+                                          mode="advanced" auto="true" dragDropSupport="true"
+                                          accept=".pdf" sizeLimit="52428800"
+                                          label="Choose PDF" update="importForm" />
+                            <h:commandButton class="btn btn-success my-2"
+                                             action="#{letterImportController.startImport}"
+                                             value="Start Processing" />
+                        </h:panelGroup>
+
+                        <!-- 2. Processing -->
+                        <h:panelGroup id="processingPanel" layout="block"
+                                      rendered="#{letterImportController.processing}">
+                            <div class="my-2">Processing #{letterImportController.batch.originalFileName} …</div>
+                            <p:progressBar value="#{letterImportController.progressPercent}" labelTemplate="{value}%"
+                                           style="height:20px" />
+                            <div class="text-muted small my-1">
+                                #{letterImportController.batch.processedCount} of
+                                #{letterImportController.batch.letterCount} letters recognised
+                            </div>
+                            <p:poll interval="3" listener="#{letterImportController.refreshStatus}"
+                                    update="importForm" autoStart="true" />
+                        </h:panelGroup>
+
+                        <!-- failure -->
+                        <h:panelGroup layout="block" rendered="#{letterImportController.failed}">
+                            <div class="alert alert-danger my-2">
+                                Processing failed: #{letterImportController.batch.errorMessage}
+                            </div>
+                            <h:commandButton class="btn btn-secondary"
+                                             action="#{letterImportController.toLetterImport}"
+                                             value="Start over" />
+                        </h:panelGroup>
+                    </div>
+
+                    <!-- 3. Review wizard -->
+                    <h:panelGroup id="reviewPanel" layout="block"
+                                  rendered="#{not empty letterImportController.items}">
+                        <div class="pageCenter bg-white border border-light p-3 mt-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="fw-bold">
+                                    Letter #{letterImportController.currentIndex + 1} of #{letterImportController.itemCount}
+                                </div>
+                                <div class="text-muted small">
+                                    #{letterImportController.acceptedCount} accepted ·
+                                    #{letterImportController.pendingCount} pending
+                                </div>
+                            </div>
+
+                            <h:panelGroup rendered="#{not empty letterImportController.currentItem}">
+                                <div class="row">
+                                    <!-- preview -->
+                                    <div class="col-6">
+                                        <h:graphicImage value="#{letterImportController.currentPreviewDataUri}"
+                                                        style="max-width:100%;border:1px solid #ddd" />
+                                        <div class="text-muted small mt-1">
+                                            Pages #{letterImportController.currentItem.startPage + 1}–#{letterImportController.currentItem.endPage + 1}
+                                            · status: #{letterImportController.currentItem.status}
+                                            <h:outputText value=" · confidence: #{letterImportController.currentItem.confidence}"
+                                                          rendered="#{not empty letterImportController.currentItem.confidence}" />
+                                        </div>
+                                        <h:panelGroup rendered="#{not empty letterImportController.currentItem.errorMessage}">
+                                            <div class="alert alert-warning small mt-2">
+                                                #{letterImportController.currentItem.errorMessage}
+                                            </div>
+                                        </h:panelGroup>
+                                    </div>
+
+                                    <!-- editable proposal -->
+                                    <div class="col-6">
+                                        <p:panelGrid columns="2" layout="grid"
+                                                     columnClasses="ui-grid-col-4,ui-grid-col-8">
+                                            <p:outputLabel value="Subject" />
+                                            <p:inputText class="form-control"
+                                                         value="#{letterImportController.currentItem.subject}" />
+
+                                            <p:outputLabel value="Letter Date" />
+                                            <p:datePicker value="#{letterImportController.currentItem.letterDate}"
+                                                          pattern="yyyy-MM-dd" showIcon="true" />
+
+                                            <p:outputLabel value="Stamp / Received Date" />
+                                            <p:datePicker value="#{letterImportController.currentItem.receivedDate}"
+                                                          pattern="yyyy-MM-dd" showIcon="true" />
+
+                                            <p:outputLabel value="From Institution" />
+                                            <p:autoComplete value="#{letterImportController.currentItem.resolvedInstitution}"
+                                                            completeMethod="#{letterImportController.completeInstitution}"
+                                                            var="ins" itemLabel="#{ins.name}" itemValue="#{ins}"
+                                                            converter="nameableConverter1"
+                                                            forceSelection="true" minQueryLength="2"
+                                                            delay="400" cache="false" maxResults="20"
+                                                            class="form-control" />
+
+                                            <p:outputLabel value="Sender Name" />
+                                            <p:inputText class="form-control"
+                                                         value="#{letterImportController.currentItem.senderName}" />
+
+                                            <p:outputLabel value="Registration No" />
+                                            <p:inputText class="form-control"
+                                                         value="#{letterImportController.currentItem.registrationNo}" />
+
+                                            <p:outputLabel value="Reference No" />
+                                            <p:inputText class="form-control"
+                                                         value="#{letterImportController.currentItem.referenceNo}" />
+                                        </p:panelGrid>
+
+                                        <div class="mt-3">
+                                            <h:commandButton class="btn btn-success me-2"
+                                                             action="#{letterImportController.acceptCurrent}"
+                                                             value="Accept &amp; Create"
+                                                             disabled="#{letterImportController.currentItem.status == 'ACCEPTED'}">
+                                                <f:ajax execute="@form" render="@form" />
+                                            </h:commandButton>
+                                            <h:commandButton class="btn btn-outline-primary me-2"
+                                                             action="#{letterImportController.saveCurrentEdits}"
+                                                             value="Save Edits">
+                                                <f:ajax execute="@form" render="@form" />
+                                            </h:commandButton>
+                                            <h:commandButton class="btn btn-outline-danger me-2"
+                                                             action="#{letterImportController.discardCurrent}"
+                                                             value="Discard">
+                                                <f:ajax execute="@form" render="@form" />
+                                            </h:commandButton>
+                                        </div>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <h:commandButton class="btn btn-secondary"
+                                                 action="#{letterImportController.previous}"
+                                                 value="Previous" disabled="#{not letterImportController.hasPrevious}">
+                                    <f:ajax execute="@form" render="@form" />
+                                </h:commandButton>
+                                <h:commandButton class="btn btn-secondary"
+                                                 action="#{letterImportController.skipCurrent}"
+                                                 value="Skip / Next" disabled="#{not letterImportController.hasNext}">
+                                    <f:ajax execute="@form" render="@form" />
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

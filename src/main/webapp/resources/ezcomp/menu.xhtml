@@ -49,6 +49,9 @@
                                 action="#{menuController.toLetterGenerateNew()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="New Internal Memo" action="#{menuController.toLetterAddNewReceivedLetter()}"  />
                     <p:menuitem class="submenu-item" ajax="false" value="Letter Creation Registry" action="#{letterController.toAcceptCopyForwardedLettersToMe()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Import Letters from PDF"
+                                action="#{letterImportController.toLetterImport()}"
+                                rendered="#{webUserController.hasPrivilege('Import_Letters')}" />
                 </p:submenu>
 
 
