@@ -1740,6 +1740,7 @@ public class LetterController implements Serializable {
         docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setFromInstitution(webUserController.getLoggedInstitution());
         docHx.setToInsOrUser(webUserCopy);
         docHx.setComments(comments);
         docHx.setItem(minute);
@@ -1804,6 +1805,7 @@ public class LetterController implements Serializable {
         docHx.setHistoryType(HistoryType.Letter_Copy_or_Forward);
         docHx.setDocument(selected);
         docHx.setFromUser(selected.getCurrentOwner());
+        docHx.setFromInstitution(webUserController.getLoggedInstitution());
         docHx.setToInsOrUser(webUserCopy);
         docHx.setComments(comments);
         docHx.setItem(minute);
