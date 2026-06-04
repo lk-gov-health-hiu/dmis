@@ -57,6 +57,8 @@ public class LetterImportService implements Serializable {
     private LetterExtractionService letterExtractionService;
     @EJB
     private LetterImportTxBean txBean;
+    @EJB
+    private LetterImportConfig config;
 
     /**
      * Processes a batch end to end. Never propagates exceptions: failures mark
@@ -75,14 +77,22 @@ public class LetterImportService implements Serializable {
             return;
         }
         byte[] pdf = batch.getPdfBytes();
+        String effectiveModel = (model != null && !model.trim().isEmpty())
+                ? model : config.getDefaultModel();
         try {
-            List<PageRange> segments = pdfSplitService.detectSegments(pdf);
             int pageCount = countPages(pdf);
+            int maxPages = config.getMaxPages();
+            if (pageCount > maxPages) {
+                txBean.markFailed(batchId, "PDF has " + pageCount + " pages, exceeding the "
+                        + maxPages + "-page limit. Split it into smaller files.");
+                return;
+            }
+            List<PageRange> segments = pdfSplitService.detectSegments(pdf, config.getBlankThreshold());
             txBean.markProcessing(batchId, pageCount, segments.size());
 
             int index = 0;
             for (PageRange range : segments) {
-                LetterImportItem item = processSegment(batch, range, index, apiKey, model);
+                LetterImportItem item = processSegment(batch, range, index, apiKey, effectiveModel);
                 txBean.saveItem(item);
                 txBean.recordProgress(batchId,
                         item.getInputTokens() != null ? item.getInputTokens() : 0L,
@@ -108,7 +118,7 @@ public class LetterImportService implements Serializable {
 
         byte[] pdf = batch.getPdfBytes();
         try {
-            item.setPreviewImage(pdfSplitService.renderPageToPng(pdf, range.getStart()));
+            item.setPreviewImage(pdfSplitService.renderPageToPng(pdf, range.getStart(), config.getRenderDpi()));
             item.setPreviewContentType("image/png");
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Preview render failed for segment " + index, e);
