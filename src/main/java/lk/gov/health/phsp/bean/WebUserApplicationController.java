@@ -118,6 +118,7 @@ public class WebUserApplicationController {
         new PrivilegeTreeNode("Search Letter", institutionalMailManagement, Privilege.Search_Letter);
         new PrivilegeTreeNode("Add Actions", institutionalMailManagement, Privilege.Add_Actions_To_Letter);
         new PrivilegeTreeNode("Remove Actions", institutionalMailManagement, Privilege.Remove_Actions_To_Letter);
+        new PrivilegeTreeNode("Import Letters from PDF", institutionalMailManagement, Privilege.Import_Letters);
 
         //Mail Branch Mail Management
         new PrivilegeTreeNode("Add Letter", mailBranchMailManagement, Privilege.Add_Letter_Postal_Branch);
@@ -250,6 +251,7 @@ public class WebUserApplicationController {
         new PrivilegeTreeNode("Search Letter", institutionalMailManagement, Privilege.Search_Letter);
         new PrivilegeTreeNode("Add Actions", institutionalMailManagement, Privilege.Add_Actions_To_Letter);
         new PrivilegeTreeNode("Remove Actions", institutionalMailManagement, Privilege.Remove_Actions_To_Letter);
+        new PrivilegeTreeNode("Import Letters from PDF", institutionalMailManagement, Privilege.Import_Letters);
 
         //Institution Administration
         new PrivilegeTreeNode("Manage Institution Users", institutionAdministration, Privilege.Manage_Institution_Users);
