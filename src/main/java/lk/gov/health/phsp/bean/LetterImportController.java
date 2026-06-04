@@ -20,6 +20,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.ejb.LetterImportConfig;
 import lk.gov.health.phsp.ejb.LetterImportService;
 import lk.gov.health.phsp.ejb.PdfSplitService;
 import lk.gov.health.phsp.entity.Document;
@@ -52,9 +53,8 @@ public class LetterImportController implements Serializable {
     private static final Logger LOG = Logger.getLogger(LetterImportController.class.getName());
     private static final long serialVersionUID = 1L;
 
-    /** Default Claude model; overridable per user, and configurable in PR #6. */
-    private static final String DEFAULT_MODEL = "claude-sonnet-4-6";
-
+    @EJB
+    private LetterImportConfig config;
     @EJB
     private LetterImportBatchFacade batchFacade;
     @EJB
@@ -147,7 +147,7 @@ public class LetterImportController implements Serializable {
     private String resolveModel() {
         String override = claudeApiKeyController.getActiveKey() != null
                 ? claudeApiKeyController.getActiveKey().getModelOverride() : null;
-        return override != null && !override.trim().isEmpty() ? override.trim() : DEFAULT_MODEL;
+        return override != null && !override.trim().isEmpty() ? override.trim() : config.getDefaultModel();
     }
 
     /** Polled by the page while a batch is processing. */
