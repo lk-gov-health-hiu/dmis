@@ -72,8 +72,17 @@
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
-            <version>5.5.13.3</version>
+            <version>5.5.13.5</version>
             <type>jar</type>
+        </dependency>
+
+        <!-- PDFBox 2.0.x: Java 8 compatible. Used to detect blank separator
+             pages, split a multi-letter PDF into per-letter sub-PDFs, and
+             rasterize pages to PNG for the letter-import feature. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>
         </dependency>
 
         <dependency>
@@ -99,7 +108,7 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-            <version>2.7.7</version>
+            <version>5.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -166,13 +175,13 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-excelant</artifactId>
-            <version>4.1.0</version>
+            <version>5.5.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.18.0</version>
+            <version>3.20.0</version>
         </dependency>
 
         <dependency>
@@ -185,7 +194,7 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.5</version>
+            <version>1.6.0</version>
         </dependency>
 
         <dependency>
