@@ -94,37 +94,39 @@
                                     <div class="col-6">
                                         <p:panelGrid columns="2" layout="grid"
                                                      columnClasses="ui-grid-col-4,ui-grid-col-8">
-                                            <p:outputLabel value="Subject" />
-                                            <p:inputText class="form-control"
+                                            <p:outputLabel value="Subject" styleClass="fs-6" />
+                                            <p:inputText class="form-control fs-6"
                                                          value="#{letterImportController.currentItem.subject}" />
 
-                                            <p:outputLabel value="Letter Date" />
+                                            <p:outputLabel value="Letter Date" styleClass="fs-6" />
                                             <p:datePicker value="#{letterImportController.currentItem.letterDate}"
-                                                          pattern="yyyy-MM-dd" showIcon="true" />
+                                                          monthNavigator="true" yearNavigator="true"
+                                                          pattern="dd/MM/yyyy" />
 
-                                            <p:outputLabel value="Stamp / Received Date" />
+                                            <p:outputLabel value="Stamp / Received Date" styleClass="fs-6" />
                                             <p:datePicker value="#{letterImportController.currentItem.receivedDate}"
-                                                          pattern="yyyy-MM-dd" showIcon="true" />
+                                                          monthNavigator="true" yearNavigator="true"
+                                                          pattern="dd/MM/yyyy" />
 
-                                            <p:outputLabel value="From Institution" />
+                                            <p:outputLabel value="From Institution" styleClass="fs-6" />
                                             <p:autoComplete value="#{letterImportController.currentItem.resolvedInstitution}"
                                                             completeMethod="#{letterImportController.completeInstitution}"
                                                             var="ins" itemLabel="#{ins.name}" itemValue="#{ins}"
-                                                            converter="nameableConverter1"
+                                                            converter="nameableConverter"
                                                             forceSelection="true" minQueryLength="2"
                                                             delay="400" cache="false" maxResults="20"
-                                                            class="form-control" />
+                                                            class="form-control fs-6" />
 
-                                            <p:outputLabel value="Sender Name" />
-                                            <p:inputText class="form-control"
+                                            <p:outputLabel value="Sender Name" styleClass="fs-6" />
+                                            <p:inputText class="form-control fs-6"
                                                          value="#{letterImportController.currentItem.senderName}" />
 
-                                            <p:outputLabel value="Registration No" />
-                                            <p:inputText class="form-control"
+                                            <p:outputLabel value="Registration No" styleClass="fs-6" />
+                                            <p:inputText class="form-control fs-6"
                                                          value="#{letterImportController.currentItem.registrationNo}" />
 
-                                            <p:outputLabel value="Reference No" />
-                                            <p:inputText class="form-control"
+                                            <p:outputLabel value="Reference No" styleClass="fs-6" />
+                                            <p:inputText class="form-control fs-6"
                                                          value="#{letterImportController.currentItem.referenceNo}" />
                                         </p:panelGrid>
 
