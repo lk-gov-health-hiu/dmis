@@ -120,7 +120,14 @@
       "PowerShell(Get-ChildItem *)",
       "PowerShell(Test-Path *)",
       "Read(//c/Credentials/**)",
-      "PowerShell($r1 = Test-NetConnection 192.168.1.72 -Port 22 -WarningAction SilentlyContinue; $r2 = Test-NetConnection 192.168.1.72 -Port 3306 -WarningAction SilentlyContinue; \"SSH\\(22\\)  : $\\($r1.TcpTestSucceeded\\)\"; \"MySQL\\(3306\\): $\\($r2.TcpTestSucceeded\\)\")"
+      "PowerShell($r1 = Test-NetConnection 192.168.1.72 -Port 22 -WarningAction SilentlyContinue; $r2 = Test-NetConnection 192.168.1.72 -Port 3306 -WarningAction SilentlyContinue; \"SSH\\(22\\)  : $\\($r1.TcpTestSucceeded\\)\"; \"MySQL\\(3306\\): $\\($r2.TcpTestSucceeded\\)\")",
+      "Bash(systemctl list-units *)",
+      "Bash(crontab -l)",
+      "Read(//etc/**)",
+      "Read(//home/buddhika/payara5/bin/**)",
+      "Bash(java -version)",
+      "Bash(systemctl status *)",
+      "Bash(journalctl -u payara --no-pager -n 30)"
     ]
   }
 }
