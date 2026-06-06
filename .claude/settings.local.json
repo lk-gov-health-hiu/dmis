@@ -67,7 +67,9 @@
       "Bash(openssl s_client -connect nchis.health.gov.lk:8181 -servername nchis.health.gov.lk)",
       "Bash(openssl pkey *)",
       "Bash(curl -v http://nchis.health.gov.lk/.well-known/acme-challenge/testexternalcheck)",
-      "Bash(curl -v http://nchis.health.gov.lk/.well-known/acme-challenge/livetest)"
+      "Bash(curl -v http://nchis.health.gov.lk/.well-known/acme-challenge/livetest)",
+      "PowerShell(Select-String *)",
+      "Bash(scp *)"
     ]
   }
 }
