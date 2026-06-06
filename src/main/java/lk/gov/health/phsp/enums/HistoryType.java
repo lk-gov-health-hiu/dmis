@@ -29,10 +29,15 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum HistoryType {
+    From_List("From List"),
+    To_List("To List"),
+    Through_List("Through List"),
     File_Created("File Created"),
     File_Institution_Transfer("File Transfer"),
     File_Owner_Transfer("File Owner Change"),
-    Letter_Created("Letter Created"),
+    Letter_added_by_mail_branch("Letter added by Mail Branch"),
+    Letter_Created("Letter Added from Institute"),
+    Letter_Generated("Letter Generated"),
     Letter_Assigned("Letter Assigned"),
     Letter_Copy_or_Forward("Letter Copy or Forward"),
     @Deprecated

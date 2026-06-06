@@ -20,6 +20,7 @@ public enum InstitutionType {
     MOH_Office("MOH Office"),
     Clinic("Clinic"),
     OPD("OPD"),
+    MailBranch("Mail Branch"),
     @Deprecated
     Medical_Clinic("Medical Clinic"),
     @Deprecated
@@ -41,6 +42,8 @@ public enum InstitutionType {
     Partner("Partner"),
     Private_Sector_Institute("Private Sector Institute"),
     Private_Sector_Labatory("Private Sector Laboratory"),
+    School_Dental_Clinic("School Dental Clinic"),
+    Adult_Dental_Clinic("Adult Dental Clinic"),
     Other("Other"),
     @Deprecated
     Ward_Clinic("Ward Clinic");

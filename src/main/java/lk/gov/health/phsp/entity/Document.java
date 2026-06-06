@@ -39,6 +39,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.enums.DocumentGenerationType;
 import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.pojcs.Nameable;
 
@@ -71,6 +72,9 @@ public class Document implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private DocumentType documentType;
+    
+    @Enumerated(EnumType.STRING)
+    private DocumentGenerationType documentGenerationType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Document referenceDocument;
@@ -115,22 +119,22 @@ public class Document implements Serializable {
     @ManyToOne
     private WebUser currentOwner;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution createdInstitution;
 
     private boolean retired;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     @Lob
     private String retireComments;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredReversedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
@@ -467,6 +471,7 @@ public class Document implements Serializable {
     
     
     
+    
 
     public Nameable getFromInsOrUser() {
         if(this.fromInstitution!=null && this.fromWebUser!=null){
@@ -567,6 +572,14 @@ public class Document implements Serializable {
 
     public void setLetterStatus(Item letterStatus) {
         this.letterStatus = letterStatus;
+    }
+
+    public DocumentGenerationType getDocumentGenerationType() {
+        return documentGenerationType;
+    }
+
+    public void setDocumentGenerationType(DocumentGenerationType documentGenerationType) {
+        this.documentGenerationType = documentGenerationType;
     }
     
     
