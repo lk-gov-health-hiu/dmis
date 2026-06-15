@@ -56,7 +56,7 @@ public class AuthResource {
         }
 
         ApiKey key = apiKeyController.generateKey(
-                user.getName(), "API key for " + user.getName());
+                user.getName(), "API key for " + user.getName(), user);
 
         Map<String, String> data = new HashMap<>();
         data.put("apiKey", key.getKeyValue());

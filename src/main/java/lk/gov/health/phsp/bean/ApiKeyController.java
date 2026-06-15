@@ -14,6 +14,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import lk.gov.health.phsp.entity.ApiKey;
+import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.facade.ApiKeyFacade;
 
 @Named
@@ -42,10 +43,21 @@ public class ApiKeyController {
      * Creates and persists a new ApiKey with a random UUID value.
      */
     public ApiKey generateKey(String name, String description) {
+        return generateKey(name, description, null);
+    }
+
+    /**
+     * Creates and persists a new ApiKey with a random UUID value, owned by the
+     * given user. The owner is stored in {@code createdBy} so that API requests
+     * authenticated with this key can resolve an acting user even when no
+     * {@code X-Acting-User-Id} header is supplied.
+     */
+    public ApiKey generateKey(String name, String description, WebUser createdBy) {
         ApiKey key = new ApiKey();
         key.setKeyValue(UUID.randomUUID().toString());
         key.setName(name);
         key.setDescription(description);
+        key.setCreatedBy(createdBy);
         key.setCreatedAt(new Date());
         key.setRetired(false);
         apiKeyFacade.create(key);
