@@ -178,10 +178,10 @@ public class WebUserController implements Serializable {
      * Privileges
      *
      */
-    private TreeNode allPrivilegeRoot;
-    private TreeNode myPrivilegeRoot;
-    private TreeNode[] selectedNodes;
-    private TreeNode[] selectedNodeSet;
+    private TreeNode<?> allPrivilegeRoot;
+    private TreeNode<?> myPrivilegeRoot;
+    private TreeNode<?>[] selectedNodes;
+    private TreeNode<?>[] selectedNodeSet;
 
     private InstitutionType institutionType;
 
@@ -358,11 +358,11 @@ public class WebUserController implements Serializable {
         String j = "select u from WebUser u where u.retired=false";
         items = getFacade().findByJpql(j);
 
-        for (TreeNode n : getAllPrivilegeRoot().getChildren()) {
+        for (TreeNode<?>n : getAllPrivilegeRoot().getChildren()) {
             n.setSelected(false);
-            for (TreeNode n1 : n.getChildren()) {
+            for (TreeNode<?>n1 : n.getChildren()) {
                 n1.setSelected(false);
-                for (TreeNode n2 : n1.getChildren()) {
+                for (TreeNode<?>n2 : n1.getChildren()) {
                     n2.setSelected(false);
                 }
             }
@@ -500,7 +500,7 @@ public class WebUserController implements Serializable {
         return url;
     }
 
-    public void preparePrivileges(TreeNode allPrevs) {
+    public void preparePrivileges(TreeNode<?> allPrevs) {
         if (current == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
             return;
@@ -509,36 +509,36 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("No Privilege Error");
             return;
         }
-        selectedNodes = new TreeNode[0];
+        selectedNodes = new TreeNode<?>[0];
         List<UserPrivilege> userps = userPrivilegeList(current);
 
-        for (TreeNode n : allPrevs.getChildren()) {
+        for (TreeNode<?>n : allPrevs.getChildren()) {
             n.setSelected(false);
-            for (TreeNode n1 : n.getChildren()) {
+            for (TreeNode<?>n1 : n.getChildren()) {
                 n1.setSelected(false);
-                for (TreeNode n2 : n1.getChildren()) {
+                for (TreeNode<?>n2 : n1.getChildren()) {
                     n2.setSelected(false);
                 }
             }
         }
-        List<TreeNode> temSelected = new ArrayList<>();
+        List<TreeNode<?>> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
             if (wup.getPrivilege() == null) {
                 continue;
             }
-            for (TreeNode n : allPrevs.getChildren()) {
+            for (TreeNode<?>n : allPrevs.getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
 
                     temSelected.add(n);
                 }
-                for (TreeNode n1 : n.getChildren()) {
+                for (TreeNode<?>n1 : n.getChildren()) {
                     if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
                         n1.setSelected(true);
 
                         temSelected.add(n1);
                     }
-                    for (TreeNode n2 : n1.getChildren()) {
+                    for (TreeNode<?>n2 : n1.getChildren()) {
                         if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
                             n2.setSelected(true);
 
@@ -548,7 +548,7 @@ public class WebUserController implements Serializable {
                 }
             }
         }
-        selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
+        selectedNodes = temSelected.toArray(new TreeNode<?>[temSelected.size()]);
     }
 
     public String toManagePrivileges() {
@@ -557,36 +557,36 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Nothing Selected");
             return "";
         }
-        selectedNodes = new TreeNode[0];
+        selectedNodes = new TreeNode<?>[0];
         List<UserPrivilege> userps = userPrivilegeList(current);
 
-        for (TreeNode n : getAllPrivilegeRoot().getChildren()) {
+        for (TreeNode<?>n : getAllPrivilegeRoot().getChildren()) {
             n.setSelected(false);
-            for (TreeNode n1 : n.getChildren()) {
+            for (TreeNode<?>n1 : n.getChildren()) {
                 n1.setSelected(false);
-                for (TreeNode n2 : n1.getChildren()) {
+                for (TreeNode<?>n2 : n1.getChildren()) {
                     n2.setSelected(false);
                 }
             }
         }
-        List<TreeNode> temSelected = new ArrayList<>();
+        List<TreeNode<?>> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
             if (wup.getPrivilege() == null) {
                 continue;
             }
-            for (TreeNode n : getAllPrivilegeRoot().getChildren()) {
+            for (TreeNode<?>n : getAllPrivilegeRoot().getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
 
                     temSelected.add(n);
                 }
-                for (TreeNode n1 : n.getChildren()) {
+                for (TreeNode<?>n1 : n.getChildren()) {
                     if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
                         n1.setSelected(true);
 
                         temSelected.add(n1);
                     }
-                    for (TreeNode n2 : n1.getChildren()) {
+                    for (TreeNode<?>n2 : n1.getChildren()) {
                         if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
                             n2.setSelected(true);
 
@@ -596,7 +596,7 @@ public class WebUserController implements Serializable {
                 }
             }
         }
-        selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
+        selectedNodes = temSelected.toArray(new TreeNode<?>[temSelected.size()]);
         return "/webUser/privileges?faces-redirect=true";
     }
 
@@ -605,36 +605,36 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Nothing Selected");
             return "";
         }
-        selectedNodes = new TreeNode[0];
+        selectedNodes = new TreeNode<?>[0];
         List<UserPrivilege> userps = userPrivilegeList(current);
 
-        for (TreeNode n : getAllPrivilegeRoot().getChildren()) {
+        for (TreeNode<?>n : getAllPrivilegeRoot().getChildren()) {
             n.setSelected(false);
-            for (TreeNode n1 : n.getChildren()) {
+            for (TreeNode<?>n1 : n.getChildren()) {
                 n1.setSelected(false);
-                for (TreeNode n2 : n1.getChildren()) {
+                for (TreeNode<?>n2 : n1.getChildren()) {
                     n2.setSelected(false);
                 }
             }
         }
-        List<TreeNode> temSelected = new ArrayList<>();
+        List<TreeNode<?>> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
             if (wup.getPrivilege() == null) {
                 continue;
             }
-            for (TreeNode n : getAllPrivilegeRoot().getChildren()) {
+            for (TreeNode<?>n : getAllPrivilegeRoot().getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
 
                     temSelected.add(n);
                 }
-                for (TreeNode n1 : n.getChildren()) {
+                for (TreeNode<?>n1 : n.getChildren()) {
                     if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
                         n1.setSelected(true);
 
                         temSelected.add(n1);
                     }
-                    for (TreeNode n2 : n1.getChildren()) {
+                    for (TreeNode<?>n2 : n1.getChildren()) {
                         if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
                             n2.setSelected(true);
 
@@ -644,12 +644,12 @@ public class WebUserController implements Serializable {
                 }
             }
         }
-        selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
+        selectedNodes = temSelected.toArray(new TreeNode<?>[temSelected.size()]);
         userTransactionController.recordTransaction("Manage Privileges in user list By InsAdmin");
         return "/insAdmin/user_privileges?faces-redirect=true";
     }
 
-    public void prepareManagePrivileges(TreeNode privilegeRoot) {
+    public void prepareManagePrivileges(TreeNode<?> privilegeRoot) {
         if (current == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
             return;
@@ -658,36 +658,36 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("No Privilege Root");
             return;
         }
-        selectedNodes = new TreeNode[0];
+        selectedNodes = new TreeNode<?>[0];
         List<UserPrivilege> userps = userPrivilegeList(current);
 
-        for (TreeNode n : privilegeRoot.getChildren()) {
+        for (TreeNode<?>n : privilegeRoot.getChildren()) {
             n.setSelected(false);
-            for (TreeNode n1 : n.getChildren()) {
+            for (TreeNode<?>n1 : n.getChildren()) {
                 n1.setSelected(false);
-                for (TreeNode n2 : n1.getChildren()) {
+                for (TreeNode<?>n2 : n1.getChildren()) {
                     n2.setSelected(false);
                 }
             }
         }
-        List<TreeNode> temSelected = new ArrayList<>();
+        List<TreeNode<?>> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
             if (wup.getPrivilege() == null) {
                 continue;
             }
-            for (TreeNode n : privilegeRoot.getChildren()) {
+            for (TreeNode<?>n : privilegeRoot.getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
 
                     temSelected.add(n);
                 }
-                for (TreeNode n1 : n.getChildren()) {
+                for (TreeNode<?>n1 : n.getChildren()) {
                     if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
                         n1.setSelected(true);
 
                         temSelected.add(n1);
                     }
-                    for (TreeNode n2 : n1.getChildren()) {
+                    for (TreeNode<?>n2 : n1.getChildren()) {
                         if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
                             n2.setSelected(true);
 
@@ -697,7 +697,7 @@ public class WebUserController implements Serializable {
                 }
             }
         }
-        selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
+        selectedNodes = temSelected.toArray(new TreeNode<?>[temSelected.size()]);
     }
 
     public String toChangeMyDetails() {
@@ -1545,7 +1545,7 @@ public class WebUserController implements Serializable {
         List<UserPrivilege> userps = userPrivilegeList(current);
         List<Privilege> tps = new ArrayList<>();
         if (selectedNodes != null && selectedNodes.length > 0) {
-            for (TreeNode node : selectedNodes) {
+            for (TreeNode<?>node : selectedNodes) {
                 Privilege p;
                 p = ((PrivilegeTreeNode) node).getP();
                 if (p != null) {
@@ -1592,7 +1592,7 @@ public class WebUserController implements Serializable {
                 userps = userPrivilegeList(wu);
                 List<Privilege> tps = new ArrayList<>();
                 if (selectedNodeSet != null && selectedNodeSet.length > 0) {
-                    for (TreeNode node : selectedNodeSet) {
+                    for (TreeNode<?>node : selectedNodeSet) {
                         Privilege p = ((PrivilegeTreeNode) node).getP();
                         if (p != null) {
                             tps.add(p);
@@ -1624,7 +1624,7 @@ public class WebUserController implements Serializable {
         List<UserPrivilege> userps = userPrivilegeList(current);
         List<Privilege> tps = new ArrayList<>();
         if (selectedNodes != null && selectedNodes.length > 0) {
-            for (TreeNode node : selectedNodes) {
+            for (TreeNode<?>node : selectedNodes) {
                 Privilege p;
                 p = ((PrivilegeTreeNode) node).getP();
                 if (p != null) {
@@ -2110,24 +2110,24 @@ public class WebUserController implements Serializable {
         this.selectedFundComments = selectedFundComments;
     }
 
-    public TreeNode getAllPrivilegeRoot() {
+    public TreeNode<?> getAllPrivilegeRoot() {
         allPrivilegeRoot = webUserApplicationController.getAllPrivilegeRoot();
         return allPrivilegeRoot;
     }
 
-    public TreeNode[] getSelectedNodes() {
+    public TreeNode<?>[] getSelectedNodes() {
         return selectedNodes;
     }
 
-    public void setSelectedNodes(TreeNode[] selectedNodes) {
+    public void setSelectedNodes(TreeNode<?>[] selectedNodes) {
         this.selectedNodes = selectedNodes;
     }
 
-    public TreeNode getMyPrivilegeRoot() {
+    public TreeNode<?> getMyPrivilegeRoot() {
         return myPrivilegeRoot;
     }
 
-    public void setMyPrivilegeRoot(TreeNode myPrivilegeRoot) {
+    public void setMyPrivilegeRoot(TreeNode<?> myPrivilegeRoot) {
         this.myPrivilegeRoot = myPrivilegeRoot;
     }
 
@@ -2293,11 +2293,11 @@ public class WebUserController implements Serializable {
         this.selectedUsers = selectedUsers;
     }
 
-    public TreeNode[] getSelectedNodeSet() {
+    public TreeNode<?>[] getSelectedNodeSet() {
         return selectedNodeSet;
     }
 
-    public void setSelectedNodeSet(TreeNode[] selectedNodeSet) {
+    public void setSelectedNodeSet(TreeNode<?>[] selectedNodeSet) {
         this.selectedNodeSet = selectedNodeSet;
     }
 

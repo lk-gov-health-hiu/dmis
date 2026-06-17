@@ -516,7 +516,7 @@ public class DashboardController implements Serializable {
         dataSet.setBorderColor("rgb(9, 132, 227)");
         dataSet.setBorderWidth(1);
 
-        List<Number> values = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
         List<Object[]> topInstitutions = letterController.getTopInstitutionsByLetterCount(10, fd, td);
@@ -566,8 +566,8 @@ public class DashboardController implements Serializable {
         pendingDataSet.setBorderColor("rgb(253, 203, 110)");
         pendingDataSet.setBorderWidth(1);
 
-        List<Number> acceptedValues = new ArrayList<>();
-        List<Number> pendingValues = new ArrayList<>();
+        List<Object> acceptedValues = new ArrayList<>();
+        List<Object> pendingValues = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
         List<Object[]> topInstitutions = letterController.getTopInstitutionsByCopyForwards(1000, fd, td);
@@ -696,8 +696,8 @@ public class DashboardController implements Serializable {
         pendingDataSet.setBorderColor("rgb(253, 203, 110)");
         pendingDataSet.setBorderWidth(1);
 
-        List<Number> acceptedValues = new ArrayList<>();
-        List<Number> pendingValues = new ArrayList<>();
+        List<Object> acceptedValues = new ArrayList<>();
+        List<Object> pendingValues = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
         List<Object[]> topInstitutions = letterController.getTopInstitutionsCopyForwardsSentByMyInstitution(10);

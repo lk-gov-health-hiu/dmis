@@ -1,6 +1,5 @@
 package lk.gov.health.phsp.bean;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
 import java.io.IOException;
 import java.io.InputStream;
 import lk.gov.health.phsp.entity.Document;
