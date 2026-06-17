@@ -120,12 +120,15 @@ Letters reach you through one of two paths — both are actioned via the same
 | **Assigned** | `Letter_Assigned` | User-to-user within same institution | `currentOwner` is transferred to you | Letter auto-completed |
 | **Forwarded** | `Letter_Copy_or_Forward` | Institution-to-institution (or FYI) | Ownership does NOT change | Letter stays open |
 
-- **Assignment** is how HIU staff hand letters to each other. The assigned
-  person must *accept* it — this marks the letter completed (the assignor's
-  request is fulfilled).
-- **Forwarding** sends a copy to a user or institution for information or
-  action. Any user of the receiving institution can *receive* (accept) the
-  copy. The letter remains open for further forwarding or action.
+- **Assignment** is how HIU staff hand letters to each other, both when
+  initially distributing work and when passing processed letters to colleagues
+  for follow-up. The assigned person must *accept* it — this marks the letter
+  completed (the assignor's request is fulfilled). Accepting re-completes the
+  letter even if a previous assignee already completed it.
+- **Forwarding** is for sending a letter to another *institution*. Any user
+  of the receiving institution can *receive* the copy. The letter remains
+  open after receipt. Do **not** use forward for within-team handoffs —
+  assign instead.
 
 ### Accept an assignment / receive a forward
 
@@ -198,25 +201,20 @@ Bulk assign several letters at once: `POST /letters/assign` with
 
 Undo the latest assignment (restores the previous owner): `POST /letters/$LID/unassign`.
 
-### Forward or copy to a user or institution (does NOT transfer ownership)
+### Forward or copy to an institution (does NOT transfer ownership)
 
-Forwarding sends a copy for information or action — across institutions *or* to
-colleagues within the same unit. **Ownership stays with the sender.** The
-recipient must *receive* it (§4), but the letter is **not** auto-completed on
-receipt — it remains open.
+Forwarding sends a letter to another **institution**. Ownership stays with
+the sender. Any user of the receiving institution can *receive* it (§4).
 
-Provide **exactly one** of `toWebUserId` / `toInstitutionId`:
+> Do **not** use forward for handing letters to colleagues within HIU —
+> use **assign** instead. Forward is for inter-institution transfers.
+
+Provide `toInstitutionId`:
 
 ```bash
-# Forward to an institution (any user there can receive it)
 curl -s -X POST "${auth[@]}" -H "Content-Type: application/json" \
   "$API/letters/$LID/forward" \
   -d '{"toInstitutionId":53923,"comments":"For necessary action."}'
-
-# Forward to a specific user (e.g. FYI after processing)
-curl -s -X POST "${auth[@]}" -H "Content-Type: application/json" \
-  "$API/letters/$LID/forward" \
-  -d '{"toWebUserId":2017888,"comments":"FYI. Reply drafted: https://docs.google.com/..."}'
 ```
 
 ### Quick reference: assign vs forward
@@ -224,21 +222,27 @@ curl -s -X POST "${auth[@]}" -H "Content-Type: application/json" \
 | | Assign | Forward |
 |---|---|---|
 | **Transfers ownership?** | Yes | No |
-| **Typical use** | Hand off responsibility | Share information / FYI |
-| **Scope** | User-to-user (usually same institution) | User→user or user→institution |
-| **Auto-completes letter?** | Yes (on accept) | No |
+| **Typical use** | Distribute work within HIU | Send letter to another institution |
+| **Scope** | User-to-user (same institution) | User → institution |
+| **Auto-completes letter?** | Yes (on accept, re-opens on assign) | No |
 | **Bulk endpoint** | `POST /letters/assign` | Not available |
+| **Use for team handoffs?** | **Yes** — always use this | No |
 
 ## Typical flow
 
 1. `POST /auth/token` → store `Api-Key`.
 2. `GET /letters/inbox/assigned-to-me` → pick `letter.id`.
 3. `GET /letters/{id}` + `GET /letters/{id}/attachments[/{uploadId}]` → read it.
-4. **Accept the assignment**: `POST /letters/{id}/receive` (also marks the
-   letter completed — the assignor's request is fulfilled).
+4. **Accept the assignment**: `POST /letters/{id}/receive` (marks the letter
+   completed — the assignor's request is fulfilled).
 5. Record an action / minute: `POST /letters/{id}/actions`.
-6. Forward to colleagues for information: `POST /letters/{id}/forward` with
-   `toWebUserId`, or create a reply letter with `referenceDocumentId`.
+6. **Assign to the next person** for follow-up: `POST /letters/{id}/assign`
+   with `toWebUserId`. Ownership transfers, the letter is re-opened, and
+   the next person follows the same flow.
+7. (Rare) Create a formal reply letter with `referenceDocumentId`.
+
+> **Note:** Within-team handoffs always use **assign**, not forward.
+> Forwarding is for sending letters to a different institution.
 
 ## Responses & errors
 
