@@ -108,17 +108,42 @@ feature does this with Claude (see `letter-import.md`).
 ## 4. Reply to / act on a letter
 
 There is no single "reply" endpoint. Use the workflow action that matches what
-you actually want to do:
+you actually want to do.
 
-### Acknowledge / receive it
+### Two distinct delivery mechanisms
 
-Accept the most recent outstanding assignment or forward addressed to you:
+Letters reach you through one of two paths — both are actioned via the same
+`/receive` endpoint, but they have different semantics:
+
+| Mechanism | History Type | Scope | Ownership | After accept/receive |
+|---|---|---|---|---|
+| **Assigned** | `Letter_Assigned` | User-to-user within same institution | `currentOwner` is transferred to you | Letter auto-completed |
+| **Forwarded** | `Letter_Copy_or_Forward` | Institution-to-institution (or FYI) | Ownership does NOT change | Letter stays open |
+
+- **Assignment** is how HIU staff hand letters to each other. The assigned
+  person must *accept* it — this marks the letter completed (the assignor's
+  request is fulfilled).
+- **Forwarding** sends a copy to a user or institution for information or
+  action. Any user of the receiving institution can *receive* (accept) the
+  copy. The letter remains open for further forwarding or action.
+
+### Accept an assignment / receive a forward
+
+`POST /letters/{id}/receive` handles **both** cases — it accepts the most
+recent outstanding assignment **or** forward that names you as the recipient:
 
 ```bash
 curl -s -X POST "${auth[@]}" -H "Content-Type: application/json" \
   "$API/letters/$LID/receive" \
-  -d '{"comments":"Received."}'
+  -d '{"comments":"Accepted."}'
 ```
+
+- For **assignments**: the letter is marked `completed`. The action is called
+  "accepting" (you're accepting the responsibility the assignor handed you).
+- For **forwards**: the letter is **not** completed. The action is called
+  "receiving" (you're acknowledging receipt of a copy).
+
+To check what's waiting for you: use one of the inbox endpoints (see §2).
 
 ### Record an action taken (a minute / the closest thing to a reply)
 
@@ -156,7 +181,11 @@ curl -s -X POST "${auth[@]}" -H "Content-Type: application/json" \
 
 ## 5. Pass it on
 
-### Assign to another user (transfers ownership)
+### Assign to another user (within-institution, transfers ownership)
+
+Assigning hands the letter to a specific person — typically within your own
+institution. **Ownership is transferred**: the recipient becomes the new
+`currentOwner`. The recipient must *accept* the assignment (§4) to complete it.
 
 ```bash
 curl -s -X POST "${auth[@]}" -H "Content-Type: application/json" \
@@ -169,23 +198,47 @@ Bulk assign several letters at once: `POST /letters/assign` with
 
 Undo the latest assignment (restores the previous owner): `POST /letters/$LID/unassign`.
 
-### Forward or copy to a user or institution
+### Forward or copy to a user or institution (does NOT transfer ownership)
+
+Forwarding sends a copy for information or action — across institutions *or* to
+colleagues within the same unit. **Ownership stays with the sender.** The
+recipient must *receive* it (§4), but the letter is **not** auto-completed on
+receipt — it remains open.
 
 Provide **exactly one** of `toWebUserId` / `toInstitutionId`:
 
 ```bash
+# Forward to an institution (any user there can receive it)
 curl -s -X POST "${auth[@]}" -H "Content-Type: application/json" \
   "$API/letters/$LID/forward" \
   -d '{"toInstitutionId":53923,"comments":"For necessary action."}'
+
+# Forward to a specific user (e.g. FYI after processing)
+curl -s -X POST "${auth[@]}" -H "Content-Type: application/json" \
+  "$API/letters/$LID/forward" \
+  -d '{"toWebUserId":2017888,"comments":"FYI. Reply drafted: https://docs.google.com/..."}'
 ```
+
+### Quick reference: assign vs forward
+
+| | Assign | Forward |
+|---|---|---|
+| **Transfers ownership?** | Yes | No |
+| **Typical use** | Hand off responsibility | Share information / FYI |
+| **Scope** | User-to-user (usually same institution) | User→user or user→institution |
+| **Auto-completes letter?** | Yes (on accept) | No |
+| **Bulk endpoint** | `POST /letters/assign` | Not available |
 
 ## Typical flow
 
 1. `POST /auth/token` → store `Api-Key`.
 2. `GET /letters/inbox/assigned-to-me` → pick `letter.id`.
 3. `GET /letters/{id}` + `GET /letters/{id}/attachments[/{uploadId}]` → read it.
-4. Decide and act: `/receive`, `/actions`, `/complete`, `/forward`, `/assign`,
-   or create a reply letter with `referenceDocumentId`.
+4. **Accept the assignment**: `POST /letters/{id}/receive` (also marks the
+   letter completed — the assignor's request is fulfilled).
+5. Record an action / minute: `POST /letters/{id}/actions`.
+6. Forward to colleagues for information: `POST /letters/{id}/forward` with
+   `toWebUserId`, or create a reply letter with `referenceDocumentId`.
 
 ## Responses & errors
 
@@ -198,6 +251,41 @@ All JSON responses are wrapped as
 | `400` | Validation error, or the acting user could not be resolved |
 | `404` | Letter / attachment not found (or retired, or not a letter) |
 | `409` | No outstanding assignment/forward to receive or unassign |
+
+## Additional endpoints
+
+These exist in the API but are not covered in the flow above:
+
+| Method | Path | Description |
+|---|---|---|
+| `PUT` | `/letters/{id}` | Partial update of letter fields (same shape as the create DTO) |
+| `DELETE` | `/letters/{id}` | Soft-retire a letter. Accepts optional `?comments=` query param |
+| `DELETE` | `/letters/{id}/attachments/{uploadId}` | Soft-retire an attachment. Requires `X-Acting-User-Id` |
+
+### Full `GET /letters` query parameters
+
+The general search endpoint accepts these query parameters (all optional):
+
+| Parameter | Type | Description |
+|---|---|---|
+| `q` | String | Free-text search across document name/number/code |
+| `documentNumber` | String | Exact or partial document number |
+| `documentCode` | String | Filter by document code |
+| `registrationNo` | String | Filter by registration number |
+| `fromInstitution` | Long | Filter by sender institution ID |
+| `toInstitution` | Long | Filter by recipient institution ID |
+| `currentInstitution` | Long | Filter by current institution ID |
+| `currentOwner` | Long | Filter by current owner (WebUser ID) |
+| `toWebUser` | Long | Filter by recipient user ID |
+| `letterStatus` | Long | Filter by letter status item ID |
+| `documentGenerationType` | String | Filter by generation type (e.g. `LETTER`, `MAIL_BRANCH`) |
+| `completed` | Boolean | Filter by completion status |
+| `retired` | Boolean | Include/exclude retired letters (default: `false`) |
+| `fromDate` | String | Start of date range (`yyyy-MM-dd`) |
+| `toDate` | String | End of date range (`yyyy-MM-dd`) |
+| `dateField` | String | Which date field to filter on: `documentDate`, `receivedDate`, `createdAt` |
+| `size` | Integer | Page size (default 20, max 100) |
+| `page` | Integer | Page number (0-based) |
 
 ## Related docs
 
