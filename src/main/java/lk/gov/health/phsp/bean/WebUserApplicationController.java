@@ -55,12 +55,12 @@ public class WebUserApplicationController {
     private UserTransactionController userTransactionController;
     private volatile List<WebUser> items = null;
 
-    private TreeNode allPrivilegeRoot;
-    private TreeNode hospitalPrivilegeRoot;
-    private TreeNode labPrivilegeRoot;
-    private TreeNode provincialPrivilegeRoot;
-    private TreeNode regionalPrivilegeRoot;
-    private TreeNode mohPrivilegeRoot;
+    private TreeNode<Object> allPrivilegeRoot;
+    private TreeNode<Object> hospitalPrivilegeRoot;
+    private TreeNode<Object> labPrivilegeRoot;
+    private TreeNode<Object> provincialPrivilegeRoot;
+    private TreeNode<Object> regionalPrivilegeRoot;
+    private TreeNode<Object> mohPrivilegeRoot;
 
     /**
      * Creates a new instance of WebUserApplicationController
@@ -365,42 +365,42 @@ public class WebUserApplicationController {
         items = null;
     }
 
-    public TreeNode getAllPrivilegeRoot() {
+    public TreeNode<Object> getAllPrivilegeRoot() {
         if (allPrivilegeRoot == null) {
             createAllPrivilege();
         }
         return allPrivilegeRoot;
     }
 
-    public TreeNode getHospitalPrivilegeRoot() {
+    public TreeNode<Object> getHospitalPrivilegeRoot() {
         if (hospitalPrivilegeRoot == null) {
             createHospitalPrivilege();
         }
         return hospitalPrivilegeRoot;
     }
 
-    public TreeNode getLabPrivilegeRoot() {
+    public TreeNode<Object> getLabPrivilegeRoot() {
         if (labPrivilegeRoot == null) {
             createLabPrivilege();
         }
         return labPrivilegeRoot;
     }
 
-    public TreeNode getProvincialPrivilegeRoot() {
+    public TreeNode<Object> getProvincialPrivilegeRoot() {
         if (provincialPrivilegeRoot == null) {
             createProvincialPrivilege();
         }
         return provincialPrivilegeRoot;
     }
 
-    public TreeNode getRegionalPrivilegeRoot() {
+    public TreeNode<Object> getRegionalPrivilegeRoot() {
         if (regionalPrivilegeRoot == null) {
             createRegionalPrivilege();
         }
         return regionalPrivilegeRoot;
     }
 
-    public TreeNode getMohPrivilegeRoot() {
+    public TreeNode<Object> getMohPrivilegeRoot() {
         return mohPrivilegeRoot;
     }
 
