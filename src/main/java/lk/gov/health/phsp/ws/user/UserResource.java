@@ -63,26 +63,66 @@ public class UserResource {
     private UserPrivilegeFacade userPrivilegeFacade;
 
     /**
-     * GET /api/users?size=50&search=foo
+     * GET /api/users
      * Header: Api-Key: <key>
+     *
+     * Query parameters (all optional, combine as needed):
+     *   ?q=             general search (matches username or display name, partial case-insensitive)
+     *   ?search=        same as ?q= (provided for backward compatibility; ?q= takes precedence)
+     *   ?username=      partial match on username only
+     *   ?name=          partial match on display name only
+     *   ?institutionId= filter by institution
+     *   ?retired=       include retired users (default: false, i.e. exclude retired)
+     *   ?size=          max results (1–500, default: 100)
      */
     @GET
     public Response listUsers(@HeaderParam("Api-Key") String apiKey,
                               @QueryParam("size") Integer size,
-                              @QueryParam("search") String search) {
+                              @QueryParam("search") String search,
+                              @QueryParam("q") String q,
+                              @QueryParam("name") String name,
+                              @QueryParam("username") String username,
+                              @QueryParam("institutionId") Long institutionId,
+                              @QueryParam("retired") Boolean retired) {
         ApiKey key = apiKeyController.validateKey(apiKey);
         if (key == null) {
             return unauthorized();
         }
 
         int pageSize = (size != null && size > 0 && size <= 500) ? size : 100;
+        boolean includeRetired = (retired != null) ? retired : false;
 
-        String jpql = "SELECT u FROM WebUser u WHERE u.retired = false";
+        String jpql = "SELECT u FROM WebUser u WHERE 1=1";
         Map<String, Object> params = new HashMap<>();
-        if (search != null && !search.trim().isEmpty()) {
-            jpql += " AND (lower(u.name) LIKE :q OR lower(u.person.name) LIKE :q)";
-            params.put("q", "%" + search.trim().toLowerCase() + "%");
+
+        if (!includeRetired) {
+            jpql += " AND u.retired = false";
         }
+
+        // q takes precedence over search; both do the same OR match
+        String generalQuery = (q != null && !q.trim().isEmpty()) ? q.trim()
+                : (search != null && !search.trim().isEmpty()) ? search.trim() : null;
+
+        if (generalQuery != null) {
+            jpql += " AND (lower(u.name) LIKE :q OR lower(u.person.name) LIKE :q)";
+            params.put("q", "%" + generalQuery.toLowerCase() + "%");
+        }
+
+        if (username != null && !username.trim().isEmpty()) {
+            jpql += " AND lower(u.name) LIKE :username";
+            params.put("username", "%" + username.trim().toLowerCase() + "%");
+        }
+
+        if (name != null && !name.trim().isEmpty()) {
+            jpql += " AND lower(u.person.name) LIKE :name";
+            params.put("name", "%" + name.trim().toLowerCase() + "%");
+        }
+
+        if (institutionId != null) {
+            jpql += " AND u.institution.id = :institutionId";
+            params.put("institutionId", institutionId);
+        }
+
         jpql += " ORDER BY u.name";
 
         List<WebUser> users = webUserFacade.findByJpql(jpql, params, pageSize);
