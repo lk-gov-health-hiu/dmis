@@ -1651,6 +1651,7 @@ public class LetterController implements Serializable {
         selected.setCompleted(false);
         documentFacade.edit(selected);
 
+        webUser = null;
         comments = "";
 
         JsfUtil.addSuccessMessage("Letter assigned successfully");

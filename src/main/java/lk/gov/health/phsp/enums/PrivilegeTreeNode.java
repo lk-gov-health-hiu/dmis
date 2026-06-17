@@ -30,7 +30,8 @@ import org.primefaces.model.TreeNode;
  *
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-public class PrivilegeTreeNode extends DefaultTreeNode {
+@SuppressWarnings("unchecked")
+public class PrivilegeTreeNode extends DefaultTreeNode<Object> {
 
     private Privilege p;
 
