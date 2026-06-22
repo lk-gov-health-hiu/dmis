@@ -157,7 +157,10 @@ public class LetterController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to remove");
             return "";
         }
-        uploadFacade.remove(removingUpload);
+        removingUpload.setRetired(true);
+        removingUpload.setRetiredAt(new Date());
+        removingUpload.setRetirer(webUserController.getLoggedUser());
+        uploadFacade.edit(removingUpload);
         return toLetterView();
     }
 
