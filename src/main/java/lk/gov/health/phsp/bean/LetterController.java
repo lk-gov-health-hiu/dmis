@@ -2375,6 +2375,20 @@ public class LetterController implements Serializable {
                 documentHistories.addAll(additionalHistories);
             }
         }
+        // Group by recipient name so the print register clusters all rows for the same person/institution together.
+        // Java's sort is stable, so within each recipient group the original h.id order is preserved.
+        documentHistories.sort(Comparator.comparing(
+                (DocumentHistory h) -> {
+                    if (h.getToUser() != null && h.getToUser().getPerson() != null
+                            && h.getToUser().getPerson().getName() != null) {
+                        return h.getToUser().getPerson().getName();
+                    }
+                    if (h.getToInstitution() != null && h.getToInstitution().getName() != null) {
+                        return h.getToInstitution().getName();
+                    }
+                    return "";
+                },
+                String.CASE_INSENSITIVE_ORDER));
     }
 
     public void fillLetterAcceptRegister() {
