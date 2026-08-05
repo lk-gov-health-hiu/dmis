@@ -3073,6 +3073,25 @@ public class LetterController implements Serializable {
 
     }
 
+    public void receiveAllSelectedCopyForwardedLettersToMe() {
+        if (selectedHistoriesForReceive == null || selectedHistoriesForReceive.isEmpty()) {
+            JsfUtil.addErrorMessage("Please select one or more letters to receive");
+            return;
+        }
+        int processed = 0;
+        for (DocumentHistory dh : new ArrayList<>(selectedHistoriesForReceive)) {
+            if (dh == null) continue;
+            dh.setCompleted(true);
+            dh.setCompletedAt(new Date());
+            dh.setCompletedBy(webUserController.getLoggedUser());
+            saveDocumentHx(dh);
+            if (documentHistories != null) documentHistories.remove(dh);
+            processed++;
+        }
+        selectedHistoriesForReceive = new ArrayList<>();
+        JsfUtil.addSuccessMessage(processed + " letter(s) received successfully.");
+    }
+
     public void receiveLetterCopiedOrForwardedToMe() {
         if (selectedHistory == null) {
             JsfUtil.addErrorMessage("No Letter Selected");

@@ -188,13 +188,14 @@
                             <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
                                          rendered="true" rowIndexVar="n" var="c" paginator="true"
                                          rowKey="#{c.id}"
+                                         selectionMode="multiple"
                                          selection="#{letterController.selectedHistoriesForReceive}"
                                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                          rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
                                 <p:columnGroup type="header">
                                     <p:row>
-                                        <p:column selectionMode="multiple" style="width:2.5em; text-align:center;"/>
+                                        <p:column selectionBox="true" style="width:2.5em; text-align:center;"/>
                                         <p:column headerText="ID" sortBy="#{c.document.id}" filterBy="#{c.document.id}"
                                                   filterMatchMode="contains">
                                         </p:column>
@@ -244,7 +245,7 @@
                                     </p:row>
                                 </p:columnGroup>
 
-                                <p:column selectionMode="multiple" style="width:2.5em; text-align:center;"/>
+                                <p:column selectionBox="true" style="width:2.5em; text-align:center;"/>
                                 <p:column >
                                     <h:outputLabel value="#{c.document.id}"></h:outputLabel>
                                 </p:column>
