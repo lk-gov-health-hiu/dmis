@@ -1580,6 +1580,9 @@ public class LetterController implements Serializable {
     }
 
     public Document getSelected() {
+        if (selected == null) {
+            selected = new Document();
+        }
         return selected;
     }
 
