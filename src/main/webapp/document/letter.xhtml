@@ -15,15 +15,27 @@
             <ui:define name="content">
                 <h:form >
                     <div class="fw-bold w-100" >
-                        <h4 class="text-center fw-bold"> 
-                            <h:outputText value="Letter" ></h:outputText>
-                            <h:panelGroup  id="letterId" >
-                                <h:outputText value="&nbsp;-&nbsp;" rendered="#{letterController.selected.id ne null}" ></h:outputText>
-                                <h:outputText value="#{letterController.selected.id}" rendered="#{letterController.selected.id ne null}" ></h:outputText>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span></span>
+                            <h4 class="text-center fw-bold mb-0">
+                                <h:outputText value="Letter" ></h:outputText>
+                                <h:panelGroup  id="letterId" >
+                                    <h:outputText value="&nbsp;-&nbsp;" rendered="#{letterController.selected.id ne null}" ></h:outputText>
+                                    <h:outputText value="#{letterController.selected.id}" rendered="#{letterController.selected.id ne null}" ></h:outputText>
+                                </h:panelGroup>
+                            </h4>
+                            <h:panelGroup id="letterDirectionToggle" layout="block">
+                                <p:selectBooleanButton value="#{letterController.outsideLetter}"
+                                                       offLabel="Our Letter" onLabel="Outside Letter"
+                                                       offIcon="pi pi-arrow-up" onIcon="pi pi-arrow-down"
+                                                       style="width:11rem;" >
+                                    <p:ajax event="change" listener="#{letterController.toggleLetterDirection}"
+                                            process="@this" update="letterGrid" global="false" ></p:ajax>
+                                </p:selectBooleanButton>
                             </h:panelGroup>
-                        </h4>
+                        </div>
 
-                        <h:panelGrid columns="3"  class="text-left  fw-bold w-100 mx-auto" >
+                        <h:panelGrid id="letterGrid" columns="3"  class="text-left  fw-bold w-100 mx-auto" >
                             <h:outputLabel for="letterDate"  >Letter Date 
                             </h:outputLabel>
                             <h:panelGroup layout="block" class="w-50 text-left" >
@@ -39,21 +51,21 @@
 
                             <h:message class="text-danger small" for="letterDate"></h:message>
 
-                            <h:outputLabel for="receivedDate"  >Stamp Date 
+                            <h:outputLabel for="receivedDate" rendered="#{letterController.outsideLetter}" >Stamp Date
                                 <small class="px-2 text-muted">Required</small></h:outputLabel>
-                            <h:panelGroup layout="block" class="w-50 text-left" >
-                                <p:datePicker id="receivedDate"  value="#{letterController.selected.receivedDate}" 
+                            <h:panelGroup layout="block" class="w-50 text-left" rendered="#{letterController.outsideLetter}" >
+                                <p:datePicker id="receivedDate"  value="#{letterController.selected.receivedDate}"
                                               required="true" pattern="dd/MM/yyyy" requiredMessage="Need a Received Date"
                                               monthNavigator="true"
                                               yearNavigator="true">
                                     <p:ajax event="blur" process="@this" ></p:ajax>
                                 </p:datePicker>
                             </h:panelGroup>
-                            <h:message class="text-danger small" for="receivedDate"></h:message>
+                            <h:message class="text-danger small" for="receivedDate" rendered="#{letterController.outsideLetter}" ></h:message>
 
 
 
-                            <h:outputLabel for="method"  >Received method </h:outputLabel>
+                            <h:outputLabel for="method"  >#{letterController.outsideLetter ? 'Received method' : 'Sending method'} </h:outputLabel>
                             <h:panelGroup class="text-left" layout="block">
                                 <div class="row" >
                                     <div >
@@ -126,10 +138,10 @@
                             </h:panelGroup>
                             <h:message class="text-danger small" for="topic"></h:message>
 
-                            <h:outputLabel for="from"  >From 
+                            <h:outputLabel for="from"  rendered="#{letterController.outsideLetter}" >From
                             </h:outputLabel>
 
-                            <h:panelGroup layout="block" class="w-100" >
+                            <h:panelGroup layout="block" class="w-100" rendered="#{letterController.outsideLetter}" >
                                 <p:autoComplete id="from"  value="#{letterController.selected.fromInsOrUser}"
                                                 class="form-control"
                                                 completeMethod="#{letterController.completeInsOrUsersByWords}"
@@ -152,7 +164,7 @@
 
                                 </p:autoComplete>
                                 <h:panelGroup id="fromPerson" class="w-25 float-left" >
-                                    <h:inputText  a:placeholder="Enter Persons or Institution Name" 
+                                    <h:inputText  a:placeholder="Enter Persons or Institution Name"
                                                   class="form-control"
                                                   rendered="#{letterController.selected.fromInstitution.name eq 'Personal' or letterController.selected.fromInstitution.name eq 'Other' }"
                                                   value="#{letterController.selected.senderName}" ></h:inputText>
@@ -164,7 +176,45 @@
                                                ></h:commandLink>
 
                             </h:panelGroup>
-                            <p:spacer></p:spacer>
+                            <h:message class="text-danger small" for="from" rendered="#{letterController.outsideLetter}" ></h:message>
+
+                            <h:outputLabel for="to"  rendered="#{not letterController.outsideLetter}" >To
+                            </h:outputLabel>
+
+                            <h:panelGroup layout="block" class="w-100" rendered="#{not letterController.outsideLetter}" >
+                                <h:panelGroup layout="block" class="w-100 mb-1" >
+                                    <h:outputText value="From: " class="text-muted" />
+                                    <h:outputText value="#{webUserController.loggedInstitution.name}" />
+                                </h:panelGroup>
+                                <p:autoComplete id="to"  value="#{letterController.selected.toInsOrUser}"
+                                                class="form-control"
+                                                completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                var="insf"
+                                                forceSelection="true"
+                                                required="true"
+                                                requiredMessage="Need to select"
+                                                maxResults="10" inputStyle="color:red;"
+                                                itemLabel="#{insf.displayName}"
+                                                itemValue="#{insf}"
+                                                delay="500"
+                                                minQueryLength="3"
+                                                cache="false"
+                                                >
+                                    <p:ajax event="itemSelect"
+                                            listener="#{letterController.saveCurrentDocumentAjax}"
+                                            process="to"
+                                            update="letterId toPerson to"
+                                            global="false" ></p:ajax>
+
+                                </p:autoComplete>
+                                <h:panelGroup id="toPerson" class="w-25 float-left" >
+                                    <h:inputText  a:placeholder="Enter Persons or Institution Name"
+                                                  class="form-control"
+                                                  rendered="#{letterController.selected.toInstitution.name eq 'Personal' or letterController.selected.toInstitution.name eq 'Other' }"
+                                                  value="#{letterController.selected.senderName}" ></h:inputText>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <h:message class="text-danger small" for="to" rendered="#{not letterController.outsideLetter}" ></h:message>
 
                             <h:outputLabel for="comments"  >Letter Details 
                             </h:outputLabel>
