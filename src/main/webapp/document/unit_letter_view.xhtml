@@ -50,8 +50,9 @@
                                 <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                             </h:outputLabel>
 
-                            <h:outputLabel class="fs-6" value="Received Date:"></h:outputLabel>
-                            <h:outputLabel class="fs-6 fw-bold" id="rdate" value="#{letterController.selected.receivedDate}">
+                            <h:outputLabel class="fs-6" value="Received Date:" rendered="#{letterController.selected.receivedDate ne null}" ></h:outputLabel>
+                            <h:outputLabel class="fs-6 fw-bold" id="rdate" value="#{letterController.selected.receivedDate}"
+                                           rendered="#{letterController.selected.receivedDate ne null}" >
                                 <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                             </h:outputLabel>
 
@@ -71,6 +72,12 @@
                             <h:panelGroup >
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromInstitution.name}"></h:outputLabel>
                                 <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.fromWebUser.person.nameWithTitle}"></h:outputLabel>
+                            </h:panelGroup>
+
+                            <h:outputLabel class="fs-6"  value="Letter Sent to:" rendered="#{letterController.selected.toInstitution ne null}" ></h:outputLabel>
+                            <h:panelGroup rendered="#{letterController.selected.toInstitution ne null}" >
+                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.toInstitution.name}"></h:outputLabel>
+                                <h:outputLabel class="fs-6 fw-bold" value="#{letterController.selected.toWebUser.person.nameWithTitle}"></h:outputLabel>
                             </h:panelGroup>
 
                             <h:outputLabel class="fs-6"  value="Letter Details:"></h:outputLabel>

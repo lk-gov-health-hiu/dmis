@@ -93,15 +93,19 @@ public class MenuController implements Serializable {
     public String toLetterAddNewReceivedLetter() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);
-        nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
         nd.setDocumentDate(new Date());
-        nd.setReceivedDate(new Date());
         nd.setInstitution(webUserController.getLoggedInstitution());
         nd.setInstitutionUnit(webUserController.getLoggedInstitution());
         nd.setOwner(webUserController.getLoggedUser());
         nd.setCurrentInstitution(webUserController.getLoggedInstitution());
         nd.setCurrentOwner(webUserController.getLoggedUser());
-        nd.setReceivedDate(new Date());
+        if (letterController.isOutsideLetter()) {
+            nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
+            nd.setReceivedDate(new Date());
+        } else {
+            nd.setDocumentGenerationType(DocumentGenerationType.Created_by_institution);
+            nd.setFromInstitution(webUserController.getLoggedInstitution());
+        }
         letterController.setSelected(nd);
 
         letterController.setNewHx(true);

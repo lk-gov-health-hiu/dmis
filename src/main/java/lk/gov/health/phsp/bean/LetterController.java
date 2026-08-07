@@ -34,6 +34,7 @@ import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.entity.WebUser;
+import lk.gov.health.phsp.enums.DocumentGenerationType;
 import lk.gov.health.phsp.enums.DocumentType;
 import lk.gov.health.phsp.enums.HistoryType;
 import lk.gov.health.phsp.enums.SearchFilterType;
@@ -78,6 +79,10 @@ public class LetterController implements Serializable {
     private List<Nameable> fromInsOrUser;
     private List<Nameable> toInsOrUser;
     private List<Nameable> throughInsOrUser;
+
+    // Sticks for the rest of the session (unless the user toggles it again):
+    // true = recording a letter received from outside, false = recording a letter created by us.
+    private boolean outsideLetter = true;
 
     private Map<Long, Nameable> fromInsOrUserMap;
     private Map<Long, Nameable> toInsOrUserMap;
@@ -1590,6 +1595,26 @@ public class LetterController implements Serializable {
         this.selected = selected;
     }
 
+    public boolean isOutsideLetter() {
+        return outsideLetter;
+    }
+
+    public void setOutsideLetter(boolean outsideLetter) {
+        this.outsideLetter = outsideLetter;
+    }
+
+    /**
+     * Re-initializes the letter entry form to match the just-toggled
+     * Outside/Our Letter mode. Only applies while composing a new, unsaved
+     * letter - toggling while editing an existing letter has no effect on
+     * its already-saved from/to institutions.
+     */
+    public void toggleLetterDirection() {
+        if (selected == null || selected.getId() == null) {
+            menuController.toLetterAddNewReceivedLetter();
+        }
+    }
+
     protected void setEmbeddableKeys() {
     }
 
@@ -1857,6 +1882,9 @@ public class LetterController implements Serializable {
         if (selected.getId() == null) {
             newHx = true;
         }
+        if (!outsideLetter) {
+            selected.setFromInstitution(webUserController.getLoggedInstitution());
+        }
         save(selected);
         if (newHx) {
             if (selectedHistory == null) {
@@ -1866,8 +1894,14 @@ public class LetterController implements Serializable {
 
             }
             selectedHistory.setInstitution(webUserController.getLoggedInstitution());
-            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
-            selectedHistory.setToUser(selected.getToWebUser());
+            if (outsideLetter) {
+                selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+                selectedHistory.setToUser(selected.getToWebUser());
+            } else {
+                selectedHistory.setFromInstitution(webUserController.getLoggedInstitution());
+                selectedHistory.setToInstitution(selected.getToInstitution());
+                selectedHistory.setToUser(selected.getToWebUser());
+            }
             selectedHistory.setCompleted(true);
             selectedHistory.setCompletedAt(new Date());
             selectedHistory.setCompletedBy(webUserController.getLoggedUser());
@@ -2097,6 +2131,9 @@ public class LetterController implements Serializable {
         if (selected.getId() == null) {
             newHx = true;
         }
+        if (!outsideLetter) {
+            selected.setFromInstitution(webUserController.getLoggedInstitution());
+        }
         save(selected);
         if (newHx) {
             if (selectedHistory == null) {
@@ -2104,13 +2141,19 @@ public class LetterController implements Serializable {
                 selectedHistory.setHistoryType(HistoryType.Letter_Created);
                 selectedHistory.setInstitution(webUserController.getLoggedInstitution());
             }
-            selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
-
-            selectedHistory.setFromInstitution(selected.getFromInstitution());
-            selectedHistory.setFromUser(selected.getFromWebUser());
-            selectedHistory.setCompleted(false);
-            selectedHistory.setDocument(selected);
-
+            if (outsideLetter) {
+                selectedHistory.setToInstitution(webUserController.getLoggedInstitution());
+                selectedHistory.setFromInstitution(selected.getFromInstitution());
+                selectedHistory.setFromUser(selected.getFromWebUser());
+                selectedHistory.setCompleted(false);
+            } else {
+                selectedHistory.setFromInstitution(webUserController.getLoggedInstitution());
+                selectedHistory.setToInstitution(selected.getToInstitution());
+                selectedHistory.setToUser(selected.getToWebUser());
+                selectedHistory.setCompleted(true);
+                selectedHistory.setCompletedAt(new Date());
+                selectedHistory.setCompletedBy(webUserController.getLoggedUser());
+            }
             selectedHistory.setDocument(selected);
             saveDocumentHx(selectedHistory);
         }
@@ -2227,6 +2270,7 @@ public class LetterController implements Serializable {
         }
         newHx = false;
         previousLetterStatus = selected.getLetterStatus();
+        outsideLetter = selected.getDocumentGenerationType() != DocumentGenerationType.Created_by_institution;
         return "/document/letter?faces-redirect=true";
     }
 
