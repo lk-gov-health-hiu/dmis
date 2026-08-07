@@ -79,13 +79,12 @@
                                         <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
                                                      rendered="true" rowIndexVar="n" var="c" paginator="true"
                                                      rowKey="#{c.id}"
+                                                     selectionMode="multiple"
                                                      selection="#{letterController.selectedDocumentHistories}"
                                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                                      currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                                      rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
-                                            <p:column selectionMode="multiple">
-
-                                            </p:column>
+                                            <p:column selectionBox="true" style="width:2.5em; text-align:center;"/>
                                             <p:column headerText="ID" sortBy="#{c.document.id}" filterBy="#{c.document.id}"
                                                       filterMatchMode="contains">
                                                 <h:outputLabel value="#{c.document.id}"></h:outputLabel>
