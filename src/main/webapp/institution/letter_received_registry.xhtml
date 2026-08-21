@@ -11,51 +11,84 @@
 
         <ui:composition template="/template1.xhtml">
             <ui:define name="title">
-                Receive Letters Register
+                Letters Entered by the Unit
             </ui:define>
             <ui:define name="content">
                 <p:growl ></p:growl>
+                <style>
+                    /* h:selectOneRadio renders a bare &lt;table&gt;, which picks up this site's
+                       default table/td spacing (large margin + cell padding). Zero it out so the
+                       radio group's control lines up with the date pickers beside it. */
+                    .filter-date-type-radio { margin: 0; }
+                    .filter-date-type-radio td { padding: 0 16px 0 0; vertical-align: middle; }
+                </style>
                 <h:form >
                     <div class="card my-3">
                         <h5 class="card-header bg-success">
-                            <p:outputLabel class="text-white fs-5 fw-bold my-2" 
-                                           value="Receive Letters" ></p:outputLabel>
+                            <p:outputLabel class="text-white fs-5 fw-bold my-2"
+                                           value="Letters Entered by the Unit" ></p:outputLabel>
                         </h5>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col">
-                                    <h:panelGrid columns="2" >
-                                        <p:panelGrid columns="2"  class="border border-light">
-
-                                            <h:outputLabel class="fs-6" value="From:"></h:outputLabel>
-                                            <p:datePicker monthNavigator="true" yearNavigator="true" 
-                                                          class="fs-6 fw-bold"   
+                                    <div class="row g-3 align-items-start mb-3">
+                                        <div class="col-auto">
+                                            <h:outputLabel class="form-label fw-bold d-block mb-1" value="Filter By"></h:outputLabel>
+                                            <h:selectOneRadio value="#{letterController.searchFilterType}"
+                                                              layout="lineDirection"
+                                                              styleClass="filter-date-type-radio">
+                                                <f:selectItems value="#{commonController.searchFilterTypes}" var="sft"
+                                                               itemValue="#{sft}"
+                                                               itemLabel="#{sft eq 'SYSTEM_DATE' ? 'Letter Entered Date' : (sft eq 'DOCUMENT_DATE' ? 'Letter Date' : 'Stamp Date')}" />
+                                            </h:selectOneRadio>
+                                        </div>
+                                        <div class="col-auto">
+                                            <h:outputLabel class="form-label fw-bold d-block mb-1" value="From"></h:outputLabel>
+                                            <p:datePicker monthNavigator="true" yearNavigator="true"
                                                           showTime="true"
                                                           pattern="dd MMMM yyyy hh:mm a"
+                                                          inputStyle="width:200px"
                                                           value="#{letterController.fromDate}">
                                             </p:datePicker>
-                                            <h:outputLabel class="fs-6" value="To:"></h:outputLabel>
-                                            <p:datePicker class="fs-6 fw-bold"  
-                                                          monthNavigator="true" yearNavigator="true" 
+                                        </div>
+                                        <div class="col-auto">
+                                            <h:outputLabel class="form-label fw-bold d-block mb-1" value="To"></h:outputLabel>
+                                            <p:datePicker monthNavigator="true" yearNavigator="true"
                                                           showTime="true"
                                                           pattern="dd MMMM yyyy hh:mm a"
+                                                          inputStyle="width:200px"
                                                           value="#{letterController.toDate}">
                                             </p:datePicker>
-                                        </p:panelGrid>
-
-                                        <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.fillLettersReceived}"
-                                                             class="btn btn-danger form-control"></h:commandButton>
-                                            <h:commandButton value="Print"  class="btn btn-success form-control">
-                                                <p:printer target="tbl" ></p:printer>
-                                            </h:commandButton>
-                                            <h:commandButton value="Download"  class="btn btn-warning form-control">
-                                                <p:dataExporter target="tbl" type="xls" fileName="List to Receive" ></p:dataExporter>
-                                            </h:commandButton>
-
-                                        </h:panelGrid>
-
-                                    </h:panelGrid>
+                                        </div>
+                                        <div class="col-auto">
+                                            <h:outputLabel class="form-label fw-bold d-block mb-1" value="From"></h:outputLabel>
+                                            <p:autoComplete value="#{letterController.lettersEnteredFromInstitutionFilter}"
+                                                             class="form-control"
+                                                             completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                             var="insf"
+                                                             forceSelection="true"
+                                                             maxResults="10"
+                                                             itemLabel="#{insf.displayName}"
+                                                             itemValue="#{insf}"
+                                                             delay="500"
+                                                             minQueryLength="3"
+                                                             cache="false">
+                                            </p:autoComplete>
+                                        </div>
+                                        <div class="col-auto ms-md-auto">
+                                            <h:outputLabel class="form-label fw-bold d-block mb-1 invisible" value="Actions"></h:outputLabel>
+                                            <div class="d-flex gap-2">
+                                                <h:commandButton value="Process" action="#{letterController.fillLettersReceived}"
+                                                                 class="btn btn-danger"></h:commandButton>
+                                                <h:commandButton value="Print"  class="btn btn-success">
+                                                    <p:printer target="gridPrint" ></p:printer>
+                                                </h:commandButton>
+                                                <h:commandButton value="Download"  class="btn btn-warning">
+                                                    <p:dataExporter target="tbl" type="xls" fileName="List to Receive" ></p:dataExporter>
+                                                </h:commandButton>
+                                            </div>
+                                        </div>
+                                    </div>
 
 
                                     <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
@@ -102,7 +135,7 @@
                                                 <h:outputText rendered="#{c.historyType eq 'Letter_Copy_or_Forward'}" 
                                                                value="Copied or Forwarded"></h:outputText>
                                             </p:column>
-                                            <p:column headerText="Actions" >
+                                            <p:column headerText="Actions" exportable="false">
                                                 <h:commandButton value="View*" action="#{letterController.toLetterViewFromDocumentHistory()}" class="mx-2 btn btn-success" >
                                                     <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}" ></f:setPropertyActionListener>
                                                 </h:commandButton>
@@ -115,6 +148,70 @@
                                             </p:column>
                                         </p:dataTable>
                                     </h:panelGrid>
+
+                                    <!-- Print-only view: plain table, no borders/shading, sized for dot-matrix
+                                         printers. Excludes the filter toolbar and the on-screen table's chrome
+                                         (pagination, column filters, Actions). Hidden on screen. -->
+                                    <h:panelGroup layout="block" id="gridPrint" class="d-none d-print-block m-0 p-0 w-100">
+                                        <div style="font-weight:bold; color:black; font-size:12pt;">
+                                            <h:outputText value="#{webUserController.loggedUser.institution.name}" />
+                                        </div>
+                                        <div style="color:black; font-size:9pt;">
+                                            <h:outputText value="#{webUserController.loggedUser.institution.address}" />
+                                        </div>
+                                        <div style="color:black; font-size:9pt; margin-bottom:8px;">
+                                            <h:outputText value="Tel. #{webUserController.loggedUser.institution.phone}" />
+                                        </div>
+                                        <div style="font-weight:bold; color:black; font-size:10pt; margin-bottom:4px;">
+                                            <h:outputText value="Letters Entered by the Unit" />
+                                        </div>
+                                        <div style="color:black; font-size:9pt; margin-bottom:8px;">
+                                            <h:outputText value="From: " />
+                                            <h:outputText value="#{letterController.fromDate}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" />
+                                            </h:outputText>
+                                            <h:outputText value="    To: " />
+                                            <h:outputText value="#{letterController.toDate}">
+                                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" />
+                                            </h:outputText>
+                                        </div>
+                                        <table style="width:100%; border-collapse:collapse; font-size:9pt; color:black;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">No.</th>
+                                                    <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">ID</th>
+                                                    <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">Letter Date</th>
+                                                    <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">From</th>
+                                                    <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">Letter Number</th>
+                                                    <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">Topic</th>
+                                                    <th style="text-align:left; padding:2px 0 2px 0; font-weight:bold;">Comments</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <ui:repeat value="#{letterController.documentHistories}" var="c" varStatus="s">
+                                                    <tr>
+                                                        <td style="padding:2px 6px 2px 0;"><h:outputText value="#{s.index + 1}" /></td>
+                                                        <td style="padding:2px 6px 2px 0;"><h:outputText value="#{c.document.id}" /></td>
+                                                        <td style="padding:2px 6px 2px 0;">
+                                                            <h:outputText value="#{c.document.documentDate}">
+                                                                <f:convertDateTime pattern="dd MMM yyyy" />
+                                                            </h:outputText>
+                                                        </td>
+                                                        <td style="padding:2px 6px 2px 0;">
+                                                            <h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" />
+                                                            <h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInsOrUser.name}" />
+                                                        </td>
+                                                        <td style="padding:2px 6px 2px 0;"><h:outputText value="#{c.document.documentNumber}" /></td>
+                                                        <td style="padding:2px 6px 2px 0;"><h:outputText value="#{c.document.documentName}" /></td>
+                                                        <td style="padding:2px 0 2px 0;">
+                                                            <h:outputText rendered="#{c.historyType eq 'Letter_added_by_mail_branch'}" value="Added by Mail Branch" />
+                                                            <h:outputText rendered="#{c.historyType eq 'Letter_Copy_or_Forward'}" value="Copied or Forwarded" />
+                                                        </td>
+                                                    </tr>
+                                                </ui:repeat>
+                                            </tbody>
+                                        </table>
+                                    </h:panelGroup>
                                 </div>
                             </div>
                         </div>

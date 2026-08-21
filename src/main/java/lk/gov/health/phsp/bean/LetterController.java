@@ -119,6 +119,7 @@ public class LetterController implements Serializable {
     private Date fromDate;
     private Date toDate;
     private SearchFilterType searchFilterType;
+    private Nameable lettersEnteredFromInstitutionFilter;
 
     private UploadedFile file;
 
@@ -1472,24 +1473,35 @@ public class LetterController implements Serializable {
 
     public void fillLettersReceived() {
         System.out.println("fillLettersReceived");
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.SYSTEM_DATE;
+        }
+        String dateField = searchFilterType == SearchFilterType.SYSTEM_DATE
+                ? "h.createdAt"
+                : "h.document." + searchFilterType.getCode();
         Map m = new HashMap();
         String j = "select h "
                 + " from DocumentHistory h "
                 + " where h.retired<>:ret "
-                + " and h.historyType in :ht "
-                + " and (h.toUser.institution=:ti or h.toInstitution=:ti) ";
-        j += " and h.completed=:com ";
-        j += " and h.createdAt between :fd and :td ";
+                + " and h.historyType=:ht "
+                + " and h.institution=:ti "
+                + " and (h.document.documentGenerationType=:dgt or h.document.documentGenerationType is null) ";
+        if (lettersEnteredFromInstitutionFilter instanceof Institution) {
+            j += " and h.document.fromInstitution=:fi ";
+        } else if (lettersEnteredFromInstitutionFilter instanceof WebUser) {
+            j += " and h.document.fromWebUser=:fi ";
+        }
+        j += " and (" + dateField + " between :fd and :td) ";
         j += " order by h.id";
         m.put("ti", webUserController.getLoggedInstitution());
-        List<HistoryType> hxtx = new ArrayList<>();
-        hxtx.add(HistoryType.Letter_Copy_or_Forward);
-        hxtx.add(HistoryType.Letter_added_by_mail_branch);
-        m.put("ht", hxtx);
-        m.put("com", false);
+        m.put("ht", HistoryType.Letter_Created);
+        m.put("dgt", DocumentGenerationType.Received_by_institution);
         m.put("ret", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
+        if (lettersEnteredFromInstitutionFilter != null) {
+            m.put("fi", lettersEnteredFromInstitutionFilter);
+        }
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
@@ -2524,6 +2536,7 @@ public class LetterController implements Serializable {
 
     public String toReceivedLetterRegistry() {
         documentHistories = null;
+        searchFilterType = SearchFilterType.SYSTEM_DATE;
         return "/institution/letter_received_registry";
     }
 
@@ -3420,6 +3433,14 @@ public class LetterController implements Serializable {
 
     public void setSearchFilterType(SearchFilterType searchFilterType) {
         this.searchFilterType = searchFilterType;
+    }
+
+    public Nameable getLettersEnteredFromInstitutionFilter() {
+        return lettersEnteredFromInstitutionFilter;
+    }
+
+    public void setLettersEnteredFromInstitutionFilter(Nameable lettersEnteredFromInstitutionFilter) {
+        this.lettersEnteredFromInstitutionFilter = lettersEnteredFromInstitutionFilter;
     }
 
     public Nameable getWebUserCopy() {
