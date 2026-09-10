@@ -1,5 +1,14 @@
 // Important - Import all external, internal css, fonts, SCSS files to import.scss file
 
-@import url('https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/flatly/bootstrap.min.css');
-@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css");
+// Bootstrap (and its icon font) are loaded into their own CSS cascade layer.
+// Anything in a named layer automatically loses to *any* unlayered CSS,
+// regardless of selector specificity or link order - so PrimeFaces' own
+// component CSS (unlayered) always wins over Bootstrap/Bootswatch, without
+// needing !important hacks or per-widget overrides. Everything else in this
+// SCSS build (colors.scss, overrides.scss, tables.scss, utilities.scss,
+// icons.scss, and main.scss itself) stays unlayered on purpose, so our own
+// intentional PrimeFaces customizations keep overriding PrimeFaces as before.
+@layer bootstrap;
+@import url('https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/flatly/bootstrap.min.css') layer(bootstrap);
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css") layer(bootstrap);
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&display=swap');
