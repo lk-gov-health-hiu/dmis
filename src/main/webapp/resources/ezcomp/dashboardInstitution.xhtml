@@ -582,10 +582,10 @@
                                 <h4><i class="bi bi-bar-chart-fill me-2"></i>Top 10 Institutions - Copy/Forwards Sent</h4>
                             </div>
                             <div class="chart-card-body">
-                                <h:panelGroup rendered="#{not empty dashboardController.copyForwardsSentChart.data.labels}">
-                                    <p:barChart model="#{dashboardController.copyForwardsSentChart}" style="width: 100%; height: 320px;" />
+                                <h:panelGroup rendered="#{dashboardController.copyForwardsSentChartHasData}">
+                                    <p:chart value="#{dashboardController.copyForwardsSentChart}" style="width: 100%; height: 320px;" />
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{empty dashboardController.copyForwardsSentChart.data.labels}" styleClass="text-center p-5">
+                                <h:panelGroup rendered="#{not dashboardController.copyForwardsSentChartHasData}" styleClass="text-center p-5">
                                     <div style="color: #6c757d; padding: 50px;">
                                         <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
                                         <p>No copy/forward data available yet.</p>

@@ -42,19 +42,8 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.facade.DocumentFacade;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.primefaces.model.charts.ChartData;
-import org.primefaces.model.charts.axes.cartesian.CartesianScales;
-import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
-import org.primefaces.model.charts.bar.BarChartDataSet;
-import org.primefaces.model.charts.bar.BarChartModel;
-import org.primefaces.model.charts.bar.BarChartOptions;
-import org.primefaces.model.charts.optionconfig.legend.Legend;
-import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
-import org.primefaces.model.charts.line.LineChartDataSet;
-import org.primefaces.model.charts.line.LineChartModel;
-import org.primefaces.model.charts.line.LineChartOptions;
-import org.primefaces.model.charts.optionconfig.title.Title;
 
 /**
  *
@@ -129,7 +118,10 @@ public class DashboardController implements Serializable {
 
     private List<InstitutionCount> orderingCategories;
 
-    private BarChartModel copyForwardsSentChart;
+    // PrimeFaces 15's <p:chart> takes a raw Chart.js JSON string via value=
+    // rather than a typed model (org.primefaces.model.charts.* was removed).
+    private String copyForwardsSentChart;
+    private boolean copyForwardsSentChartHasData;
 
     // National dashboard fields
     // Letters added
@@ -154,10 +146,13 @@ public class DashboardController implements Serializable {
     private Long nationalAssignmentsAccepted30Days;
     private String nationalAssignedAcceptedPercentageAllTime;
     private String nationalAssignedAcceptedPercentage30Days;
-    // Charts
-    private BarChartModel nationalLettersByInstitutionChart;
-    private BarChartModel nationalCopyForwardsByInstitutionChart;
-    private LineChartModel nationalWeeklyLettersChart;
+    // Charts (raw Chart.js JSON strings, see copyForwardsSentChart above)
+    private String nationalLettersByInstitutionChart;
+    private boolean nationalLettersByInstitutionChartHasData;
+    private String nationalCopyForwardsByInstitutionChart;
+    private boolean nationalCopyForwardsByInstitutionChartHasData;
+    private String nationalWeeklyLettersChart;
+    private boolean nationalWeeklyLettersChartHasData;
     // Print report data (per institution, last 30 days)
     private List<InstitutionCount> nationalPrintLetterRows;
     private List<InstitutionCount> nationalPrintCopyForwardRows;
@@ -413,6 +408,18 @@ public class DashboardController implements Serializable {
     }
 
     public void preparePersonalDashboard() {
+        // This dashboard is included via <f:event type="preRenderView">, which
+        // fires regardless of the enclosing panel's rendered="" state - so it
+        // runs even for anonymous visitors (e.g. the public root/login URL).
+        // The counts below bind webUserController.getLoggedUser() as a query
+        // parameter; a null logged user makes that JPQL bind fail inside the
+        // EJB, which aborts the whole request transaction (intermittent 500s
+        // depending on request/transaction timing). Skip entirely when there
+        // is no logged-in user.
+        if (webUserController.getLoggedUser() == null) {
+            return;
+        }
+
         // Letters assigned to me - all pending (no date filter)
         myLettersToAcceptAll = letterController.countMyLettersToAcceptAll();
 
@@ -507,15 +514,6 @@ public class DashboardController implements Serializable {
     }
 
     private void createNationalLettersByInstitutionChart(Date fd, Date td) {
-        nationalLettersByInstitutionChart = new BarChartModel();
-        ChartData data = new ChartData();
-
-        BarChartDataSet dataSet = new BarChartDataSet();
-        dataSet.setLabel("Letters Added (Last 30 Days)");
-        dataSet.setBackgroundColor("rgba(9, 132, 227, 0.8)");
-        dataSet.setBorderColor("rgb(9, 132, 227)");
-        dataSet.setBorderWidth(1);
-
         List<Object> values = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
@@ -533,39 +531,39 @@ public class DashboardController implements Serializable {
             }
         }
 
-        dataSet.setData(values);
-        data.addChartDataSet(dataSet);
-        data.setLabels(labels);
-        nationalLettersByInstitutionChart.setData(data);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put("label", "Letters Added (Last 30 Days)");
+        dataSet.put("backgroundColor", "rgba(9, 132, 227, 0.8)");
+        dataSet.put("borderColor", "rgb(9, 132, 227)");
+        dataSet.put("borderWidth", 1);
+        dataSet.put("data", values);
 
-        BarChartOptions options = new BarChartOptions();
-        Title title = new Title();
-        title.setDisplay(true);
-        title.setText("Top 10 Institutions - Letters Added (Last 30 Days)");
-        options.setTitle(title);
-        Legend legend = new Legend();
-        legend.setDisplay(true);
-        legend.setPosition("top");
-        options.setLegend(legend);
-        nationalLettersByInstitutionChart.setOptions(options);
+        JSONObject data = new JSONObject();
+        data.put("labels", labels);
+        data.put("datasets", new JSONArray().put(dataSet));
+
+        JSONObject legend = new JSONObject();
+        legend.put("display", true);
+        legend.put("position", "top");
+        JSONObject title = new JSONObject();
+        title.put("display", true);
+        title.put("text", "Top 10 Institutions - Letters Added (Last 30 Days)");
+        JSONObject plugins = new JSONObject();
+        plugins.put("title", title);
+        plugins.put("legend", legend);
+        JSONObject options = new JSONObject();
+        options.put("plugins", plugins);
+
+        JSONObject chart = new JSONObject();
+        chart.put("type", "bar");
+        chart.put("data", data);
+        chart.put("options", options);
+
+        nationalLettersByInstitutionChart = chart.toString();
+        nationalLettersByInstitutionChartHasData = !labels.isEmpty();
     }
 
     private void createNationalCopyForwardsByInstitutionChart(Date fd, Date td) {
-        nationalCopyForwardsByInstitutionChart = new BarChartModel();
-        ChartData data = new ChartData();
-
-        BarChartDataSet acceptedDataSet = new BarChartDataSet();
-        acceptedDataSet.setLabel("Received");
-        acceptedDataSet.setBackgroundColor("rgba(0, 184, 148, 0.8)");
-        acceptedDataSet.setBorderColor("rgb(0, 184, 148)");
-        acceptedDataSet.setBorderWidth(1);
-
-        BarChartDataSet pendingDataSet = new BarChartDataSet();
-        pendingDataSet.setLabel("Pending");
-        pendingDataSet.setBackgroundColor("rgba(253, 203, 110, 0.8)");
-        pendingDataSet.setBorderColor("rgb(253, 203, 110)");
-        pendingDataSet.setBorderWidth(1);
-
         List<Object> acceptedValues = new ArrayList<>();
         List<Object> pendingValues = new ArrayList<>();
         List<String> labels = new ArrayList<>();
@@ -610,47 +608,55 @@ public class DashboardController implements Serializable {
             }
         }
 
-        acceptedDataSet.setData(acceptedValues);
-        pendingDataSet.setData(pendingValues);
-        data.addChartDataSet(acceptedDataSet);
-        data.addChartDataSet(pendingDataSet);
-        data.setLabels(labels);
-        nationalCopyForwardsByInstitutionChart.setData(data);
+        JSONObject acceptedDataSet = new JSONObject();
+        acceptedDataSet.put("label", "Received");
+        acceptedDataSet.put("backgroundColor", "rgba(0, 184, 148, 0.8)");
+        acceptedDataSet.put("borderColor", "rgb(0, 184, 148)");
+        acceptedDataSet.put("borderWidth", 1);
+        acceptedDataSet.put("data", acceptedValues);
 
-        BarChartOptions options = new BarChartOptions();
-        CartesianScales cScales = new CartesianScales();
-        CartesianLinearAxes linearAxesX = new CartesianLinearAxes();
-        linearAxesX.setStacked(true);
-        cScales.addXAxesData(linearAxesX);
-        CartesianLinearAxes linearAxesY = new CartesianLinearAxes();
-        linearAxesY.setStacked(true);
-        cScales.addYAxesData(linearAxesY);
-        options.setScales(cScales);
+        JSONObject pendingDataSet = new JSONObject();
+        pendingDataSet.put("label", "Pending");
+        pendingDataSet.put("backgroundColor", "rgba(253, 203, 110, 0.8)");
+        pendingDataSet.put("borderColor", "rgb(253, 203, 110)");
+        pendingDataSet.put("borderWidth", 1);
+        pendingDataSet.put("data", pendingValues);
 
-        Title title = new Title();
-        title.setDisplay(true);
-        title.setText("Top 10 Institutions - Copy/Forwards (Last 30 Days)");
-        options.setTitle(title);
-        Legend legend = new Legend();
-        legend.setDisplay(true);
-        legend.setPosition("top");
-        LegendLabel legendLabels = new LegendLabel();
-        legendLabels.setFontColor("#495057");
-        legend.setLabels(legendLabels);
-        options.setLegend(legend);
-        nationalCopyForwardsByInstitutionChart.setOptions(options);
+        JSONObject data = new JSONObject();
+        data.put("labels", labels);
+        data.put("datasets", new JSONArray().put(acceptedDataSet).put(pendingDataSet));
+
+        JSONObject scales = new JSONObject();
+        scales.put("x", new JSONObject().put("stacked", true));
+        scales.put("y", new JSONObject().put("stacked", true));
+
+        JSONObject title = new JSONObject();
+        title.put("display", true);
+        title.put("text", "Top 10 Institutions - Copy/Forwards (Last 30 Days)");
+        JSONObject legendLabels = new JSONObject();
+        legendLabels.put("color", "#495057");
+        JSONObject legend = new JSONObject();
+        legend.put("display", true);
+        legend.put("position", "top");
+        legend.put("labels", legendLabels);
+        JSONObject plugins = new JSONObject();
+        plugins.put("title", title);
+        plugins.put("legend", legend);
+
+        JSONObject options = new JSONObject();
+        options.put("scales", scales);
+        options.put("plugins", plugins);
+
+        JSONObject chart = new JSONObject();
+        chart.put("type", "bar");
+        chart.put("data", data);
+        chart.put("options", options);
+
+        nationalCopyForwardsByInstitutionChart = chart.toString();
+        nationalCopyForwardsByInstitutionChartHasData = !labels.isEmpty();
     }
 
     private void createNationalWeeklyLettersChart() {
-        nationalWeeklyLettersChart = new LineChartModel();
-        ChartData data = new ChartData();
-
-        LineChartDataSet dataSet = new LineChartDataSet();
-        dataSet.setLabel("Letters Added");
-        dataSet.setBackgroundColor("rgba(9, 132, 227, 0.2)");
-        dataSet.setBorderColor("rgb(9, 132, 227)");
-        dataSet.setFill(true);
-
         List<Object> values = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
@@ -663,39 +669,39 @@ public class DashboardController implements Serializable {
             }
         }
 
-        dataSet.setData(values);
-        data.addChartDataSet(dataSet);
-        data.setLabels(labels);
-        nationalWeeklyLettersChart.setData(data);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put("label", "Letters Added");
+        dataSet.put("backgroundColor", "rgba(9, 132, 227, 0.2)");
+        dataSet.put("borderColor", "rgb(9, 132, 227)");
+        dataSet.put("fill", true);
+        dataSet.put("data", values);
 
-        LineChartOptions options = new LineChartOptions();
-        Title title = new Title();
-        title.setDisplay(true);
-        title.setText("Weekly Letters Added (Last 12 Weeks)");
-        options.setTitle(title);
-        Legend legend = new Legend();
-        legend.setDisplay(true);
-        legend.setPosition("top");
-        options.setLegend(legend);
-        nationalWeeklyLettersChart.setOptions(options);
+        JSONObject data = new JSONObject();
+        data.put("labels", labels);
+        data.put("datasets", new JSONArray().put(dataSet));
+
+        JSONObject title = new JSONObject();
+        title.put("display", true);
+        title.put("text", "Weekly Letters Added (Last 12 Weeks)");
+        JSONObject legend = new JSONObject();
+        legend.put("display", true);
+        legend.put("position", "top");
+        JSONObject plugins = new JSONObject();
+        plugins.put("title", title);
+        plugins.put("legend", legend);
+        JSONObject options = new JSONObject();
+        options.put("plugins", plugins);
+
+        JSONObject chart = new JSONObject();
+        chart.put("type", "line");
+        chart.put("data", data);
+        chart.put("options", options);
+
+        nationalWeeklyLettersChart = chart.toString();
+        nationalWeeklyLettersChartHasData = !labels.isEmpty();
     }
 
     private void createCopyForwardsSentChart() {
-        copyForwardsSentChart = new BarChartModel();
-        ChartData data = new ChartData();
-
-        BarChartDataSet acceptedDataSet = new BarChartDataSet();
-        acceptedDataSet.setLabel("Accepted");
-        acceptedDataSet.setBackgroundColor("rgba(0, 184, 148, 0.8)");
-        acceptedDataSet.setBorderColor("rgb(0, 184, 148)");
-        acceptedDataSet.setBorderWidth(1);
-
-        BarChartDataSet pendingDataSet = new BarChartDataSet();
-        pendingDataSet.setLabel("Pending");
-        pendingDataSet.setBackgroundColor("rgba(253, 203, 110, 0.8)");
-        pendingDataSet.setBorderColor("rgb(253, 203, 110)");
-        pendingDataSet.setBorderWidth(1);
-
         List<Object> acceptedValues = new ArrayList<>();
         List<Object> pendingValues = new ArrayList<>();
         List<String> labels = new ArrayList<>();
@@ -718,42 +724,52 @@ public class DashboardController implements Serializable {
             }
         }
 
-        acceptedDataSet.setData(acceptedValues);
-        pendingDataSet.setData(pendingValues);
+        JSONObject acceptedDataSet = new JSONObject();
+        acceptedDataSet.put("label", "Accepted");
+        acceptedDataSet.put("backgroundColor", "rgba(0, 184, 148, 0.8)");
+        acceptedDataSet.put("borderColor", "rgb(0, 184, 148)");
+        acceptedDataSet.put("borderWidth", 1);
+        acceptedDataSet.put("data", acceptedValues);
 
-        data.addChartDataSet(acceptedDataSet);
-        data.addChartDataSet(pendingDataSet);
-        data.setLabels(labels);
+        JSONObject pendingDataSet = new JSONObject();
+        pendingDataSet.put("label", "Pending");
+        pendingDataSet.put("backgroundColor", "rgba(253, 203, 110, 0.8)");
+        pendingDataSet.put("borderColor", "rgb(253, 203, 110)");
+        pendingDataSet.put("borderWidth", 1);
+        pendingDataSet.put("data", pendingValues);
 
-        copyForwardsSentChart.setData(data);
+        JSONObject data = new JSONObject();
+        data.put("labels", labels);
+        data.put("datasets", new JSONArray().put(acceptedDataSet).put(pendingDataSet));
 
-        // Options
-        BarChartOptions options = new BarChartOptions();
+        JSONObject scales = new JSONObject();
+        scales.put("x", new JSONObject().put("stacked", true));
+        scales.put("y", new JSONObject().put("stacked", true));
 
-        CartesianScales cScales = new CartesianScales();
-        CartesianLinearAxes linearAxesX = new CartesianLinearAxes();
-        linearAxesX.setStacked(true);
-        cScales.addXAxesData(linearAxesX);
+        JSONObject title = new JSONObject();
+        title.put("display", true);
+        title.put("text", "Top 10 Institutions - Copy/Forwards Sent");
+        JSONObject legendLabels = new JSONObject();
+        legendLabels.put("color", "#495057");
+        JSONObject legend = new JSONObject();
+        legend.put("display", true);
+        legend.put("position", "top");
+        legend.put("labels", legendLabels);
+        JSONObject plugins = new JSONObject();
+        plugins.put("title", title);
+        plugins.put("legend", legend);
 
-        CartesianLinearAxes linearAxesY = new CartesianLinearAxes();
-        linearAxesY.setStacked(true);
-        cScales.addYAxesData(linearAxesY);
-        options.setScales(cScales);
+        JSONObject options = new JSONObject();
+        options.put("scales", scales);
+        options.put("plugins", plugins);
 
-        Title title = new Title();
-        title.setDisplay(true);
-        title.setText("Top 10 Institutions - Copy/Forwards Sent");
-        options.setTitle(title);
+        JSONObject chart = new JSONObject();
+        chart.put("type", "bar");
+        chart.put("data", data);
+        chart.put("options", options);
 
-        Legend legend = new Legend();
-        legend.setDisplay(true);
-        legend.setPosition("top");
-        LegendLabel legendLabels = new LegendLabel();
-        legendLabels.setFontColor("#495057");
-        legend.setLabels(legendLabels);
-        options.setLegend(legend);
-
-        copyForwardsSentChart.setOptions(options);
+        copyForwardsSentChart = chart.toString();
+        copyForwardsSentChartHasData = !labels.isEmpty();
     }
 
     public void prepareRegionalDashboard() {
@@ -1428,11 +1444,18 @@ public class DashboardController implements Serializable {
         return copyForwardsSentByMyInstitutionLast7Days;
     }
 
-    public BarChartModel getCopyForwardsSentChart() {
+    public String getCopyForwardsSentChart() {
         if (copyForwardsSentChart == null) {
             createCopyForwardsSentChart();
         }
         return copyForwardsSentChart;
+    }
+
+    public boolean isCopyForwardsSentChartHasData() {
+        if (copyForwardsSentChart == null) {
+            createCopyForwardsSentChart();
+        }
+        return copyForwardsSentChartHasData;
     }
 
     public Long getNationalLettersAllTime() {
@@ -1511,16 +1534,28 @@ public class DashboardController implements Serializable {
         return nationalAssignedAcceptedPercentage30Days;
     }
 
-    public BarChartModel getNationalLettersByInstitutionChart() {
+    public String getNationalLettersByInstitutionChart() {
         return nationalLettersByInstitutionChart;
     }
 
-    public BarChartModel getNationalCopyForwardsByInstitutionChart() {
+    public boolean isNationalLettersByInstitutionChartHasData() {
+        return nationalLettersByInstitutionChartHasData;
+    }
+
+    public String getNationalCopyForwardsByInstitutionChart() {
         return nationalCopyForwardsByInstitutionChart;
     }
 
-    public LineChartModel getNationalWeeklyLettersChart() {
+    public boolean isNationalCopyForwardsByInstitutionChartHasData() {
+        return nationalCopyForwardsByInstitutionChartHasData;
+    }
+
+    public String getNationalWeeklyLettersChart() {
         return nationalWeeklyLettersChart;
+    }
+
+    public boolean isNationalWeeklyLettersChartHasData() {
+        return nationalWeeklyLettersChartHasData;
     }
 
     public void prepareNationalPrintReport() {
