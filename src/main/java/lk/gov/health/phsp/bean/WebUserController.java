@@ -1258,11 +1258,19 @@ public class WebUserController implements Serializable {
             return "";
         }
         if (current.getId() != null) {
-            current.setLastEditBy(loggedUser);
-            current.setLastEditeAt(new Date());
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage("User Details Updated");
-            userTransactionController.recordTransaction("Save NewWebUser By InsAdmin-User Details Updated");
+            // WebUserController is @SessionScoped and "current" is shared by every tab/page
+            // the admin has open. If this "Add New User" form is submitted after "current" was
+            // repointed to an existing, already-persisted user (e.g. via a stale/back-button page,
+            // or another tab where "Edit User" was clicked in the meantime), current.getId() would
+            // be non-null here even though the admin intends to CREATE a user, not edit one.
+            // Blindly calling getFacade().edit(current) in that case silently overwrites the
+            // unrelated existing user's details (see issue #168 - accounts getting renamed/lost).
+            // Editing an existing user always goes through update(), never through this method,
+            // so treat a non-null id here as a poisoned/stale session reference and refuse to save.
+            JsfUtil.addErrorMessage("This form was reused from another tab or an old page. "
+                    + "Please reopen 'Add New User' and try again.");
+            userTransactionController.recordTransaction("Save NewWebUser By InsAdmin-Rejected stale/foreign selection");
+            prepareToAddNewUser();
             return "";
         }
         try {
@@ -1316,11 +1324,15 @@ public class WebUserController implements Serializable {
             return "";
         }
         if (getSelected().getId() != null) {
-            getSelected().setLastEditBy(loggedUser);
-            getSelected().setLastEditeAt(new Date());
-            getFacade().edit(getSelected());
-            JsfUtil.addSuccessMessage("User Details Updated");
-            return menuController.toListUsers();
+            // See saveNewWebUserByInsAdmin() for why a non-null id here means "current" is a
+            // stale/foreign reference to an already-persisted user rather than the new user this
+            // form was meant to create (issue #168). Editing an existing user always goes through
+            // update(), never through this method, so refuse to save instead of silently
+            // overwriting that unrelated account.
+            JsfUtil.addErrorMessage("This form was reused from another tab or an old page. "
+                    + "Please reopen 'Add New User' and try again.");
+            prepareToAddNewUser();
+            return "";
         }
         try {
             current.setWebUserPassword(commonController.hash(password));
