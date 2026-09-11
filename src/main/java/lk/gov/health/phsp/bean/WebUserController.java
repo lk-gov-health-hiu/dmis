@@ -1199,6 +1199,9 @@ public class WebUserController implements Serializable {
     }
 
     public WebUser getSelected() {
+        if (current == null) {
+            current = new WebUser();
+        }
         return current;
     }
 

@@ -24,7 +24,7 @@
 
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>none</param-value>
+        <param-value>saga</param-value>
     </context-param>
 
 
@@ -59,7 +59,7 @@
 
     <session-config>
         <session-timeout>
-            60
+            120
         </session-timeout>
         <!--        <cookie-config>
             <http-only>true</http-only>
