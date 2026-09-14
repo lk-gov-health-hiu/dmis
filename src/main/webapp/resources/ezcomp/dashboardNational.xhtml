@@ -314,10 +314,10 @@
                                 </h:commandLink>
                             </div>
                             <div class="chart-card-body">
-                                <h:panelGroup rendered="#{not empty dashboardController.nationalLettersByInstitutionChart.data.labels}">
-                                    <p:barChart model="#{dashboardController.nationalLettersByInstitutionChart}" style="width: 100%; height: 320px;" />
+                                <h:panelGroup rendered="#{dashboardController.nationalLettersByInstitutionChartHasData}">
+                                    <p:chart value="#{dashboardController.nationalLettersByInstitutionChart}" style="width: 100%; height: 320px;" />
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{empty dashboardController.nationalLettersByInstitutionChart.data.labels}" styleClass="text-center p-5">
+                                <h:panelGroup rendered="#{not dashboardController.nationalLettersByInstitutionChartHasData}" styleClass="text-center p-5">
                                     <div style="color: #6c757d; padding: 50px;">
                                         <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
                                         <p>No letter data available for the last 30 days.</p>
@@ -336,10 +336,10 @@
                                 </h:commandLink>
                             </div>
                             <div class="chart-card-body">
-                                <h:panelGroup rendered="#{not empty dashboardController.nationalCopyForwardsByInstitutionChart.data.labels}">
-                                    <p:barChart model="#{dashboardController.nationalCopyForwardsByInstitutionChart}" style="width: 100%; height: 320px;" />
+                                <h:panelGroup rendered="#{dashboardController.nationalCopyForwardsByInstitutionChartHasData}">
+                                    <p:chart value="#{dashboardController.nationalCopyForwardsByInstitutionChart}" style="width: 100%; height: 320px;" />
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{empty dashboardController.nationalCopyForwardsByInstitutionChart.data.labels}" styleClass="text-center p-5">
+                                <h:panelGroup rendered="#{not dashboardController.nationalCopyForwardsByInstitutionChartHasData}" styleClass="text-center p-5">
                                     <div style="color: #6c757d; padding: 50px;">
                                         <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
                                         <p>No copy/forward data available for the last 30 days.</p>
@@ -358,10 +358,10 @@
                                 <h4><i class="bi bi-graph-up me-2"></i>Weekly Letters Added (Last 12 Weeks)</h4>
                             </div>
                             <div class="chart-card-body">
-                                <h:panelGroup rendered="#{not empty dashboardController.nationalWeeklyLettersChart.data.labels}">
-                                    <p:lineChart model="#{dashboardController.nationalWeeklyLettersChart}" style="width: 100%; height: 300px;" />
+                                <h:panelGroup rendered="#{dashboardController.nationalWeeklyLettersChartHasData}">
+                                    <p:chart value="#{dashboardController.nationalWeeklyLettersChart}" style="width: 100%; height: 300px;" />
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{empty dashboardController.nationalWeeklyLettersChart.data.labels}" styleClass="text-center p-5">
+                                <h:panelGroup rendered="#{not dashboardController.nationalWeeklyLettersChartHasData}" styleClass="text-center p-5">
                                     <div style="color: #6c757d; padding: 50px;">
                                         <i class="bi bi-graph-up" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
                                         <p>No weekly data available.</p>

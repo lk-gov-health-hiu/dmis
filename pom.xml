@@ -288,12 +288,15 @@
             <version>14.0.0</version>
         </dependency>
 
-        <!-- JWT dependancy. Pin to 5.3.0; 6.x is compiled against Java 17
-             and breaks this project's Java 8 build target. -->
+        <!-- JWT dependancy. Pin to 5.3.0; 6.x+ is compiled against newer
+             Java bytecode and breaks this project's Java 11 build target.
+             (Dependabot bumped this to 7.0.0 in PR #175 despite this note;
+             reverted 2026-09-11 after mvn clean package failed to even
+             read the 7.0.0 classes under JDK 11.) -->
         <dependency>
             <groupId>io.fusionauth</groupId>
             <artifactId>fusionauth-jwt</artifactId>
-            <version>7.0.0</version>
+            <version>5.3.0</version>
         </dependency>
 
         <!-- Jackson JAX-RS JSON provider for the /api/* REST layer -->

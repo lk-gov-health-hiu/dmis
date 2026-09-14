@@ -1,9 +1,7 @@
 # Project Preferences
 
 ## Build & Run
-- The user prefers to compile and run the application themselves
-- Do not attempt to run maven compile, build, or deploy commands
-- If there are errors, the user will report them
+- Claude may compile, build, and deploy the application when asked to
 - JSF-only changes (XHTML only, no Java changes) do not require compilation
 
 ## Project Info
