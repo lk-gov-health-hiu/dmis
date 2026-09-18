@@ -3106,7 +3106,7 @@ public class LetterController implements Serializable {
 
     public String toLetterViewFromDocumentHistory() {
         System.out.println("toLetterViewFromDocumentHistory");
-        if (selectedHistory != null) {
+        if (selectedHistory == null) {
             JsfUtil.addErrorMessage("No Letter History Selected");
             return "";
         }
