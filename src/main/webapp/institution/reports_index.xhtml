@@ -41,11 +41,21 @@
                                                 </h:commandLink>
                                                 
                                                 
-                                                <h:commandLink value="Letter Copy/Forward to Unit Register" 
+                                                <h:commandLink value="Letter Copy/Forward to Unit Register"
                                                                action="#{letterController.toReportsLetterAcceptRegister()}"
                                                                class="btn btn-outline-primary w-100 btn-block my-2">
                                                 </h:commandLink>
-                                                
+
+                                                <h:commandLink value="Letters Entered by the Unit - Outside Letters"
+                                                               action="#{letterController.toReportsLettersEnteredOutside()}"
+                                                               class="btn btn-outline-primary w-100 btn-block my-2">
+                                                </h:commandLink>
+
+                                                <h:commandLink value="Letters Entered by the Unit - Our Letters"
+                                                               action="#{letterController.toReportsLettersEnteredOur()}"
+                                                               class="btn btn-outline-primary w-100 btn-block my-2">
+                                                </h:commandLink>
+
                                             </h:form>
                                         </div>
                                     </div>
