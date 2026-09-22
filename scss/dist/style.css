@@ -1,32 +1,7 @@
-@layer bootstrap;
 @import url("https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/flatly/bootstrap.min.css") layer(bootstrap);
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css") layer(bootstrap);
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&display=swap");
-.ui-inputfield {
-  display: block;
-  width: 100%;
-  padding: 0.375rem 0.75rem !important;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #212529;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-.ui-inputfield:focus {
-  color: var(--bs-blue);
-  background-color: #fff;
-  border-color: #969fa8;
-  outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(44, 62, 80, 0.25);
-}
-
+@layer bootstrap;
 .submenu a:nth-child(1) {
   color: #fff;
 }
@@ -34,151 +9,15 @@
   background-color: #2c3d4f;
 }
 .submenu ul li:hover {
-  background-color: #3e5670;
-}
-
-.ui-shadow {
-  box-shadow: none !important;
-}
-
-.ui-datepicker-calendar {
-  background-color: #fff;
-}
-.ui-datepicker-calendar tbody tr td {
-  font-weight: 700;
-}
-
-.ui-datepicker-header {
-  background-color: #15a589;
-  color: #fff;
-  font-weight: 700;
-}
-
-.ui-timepicker-div {
-  background-color: #fff;
-  padding: 8px 4px 8px 4px;
-  border: 1px solid #2c3d4f;
-}
-.ui-timepicker-div .ui_tpicker_time_input {
-  border-radius: 0.375rem;
-  padding: 2px 4px 2px 4px;
-  border: 1px solid #cecece;
-}
-.ui-timepicker-div .ui_tpicker_time_input:focus {
-  box-shadow: 0 0 0 0.25rem rgba(44, 62, 80, 0.25);
+  background-color: rgb(24.4093735055%, 33.8402678144%, 43.8259206121%);
 }
 
 .p-datepicker {
   width: 100% !important;
 }
 
-.ui-autocomplete-panel {
-  position: absolute;
-  overflow: auto;
-  background: var(--bs-blue);
-  color: #fff;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-
-.ui-autocomplete {
-  display: block !important;
-}
-.ui-autocomplete .ui-autocomplete-input {
-  display: block;
-  width: 100%;
-  padding: 0.375rem 0.75rem !important;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #212529;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-.ui-autocomplete .ui-autocomplete-input:focus {
-  color: var(--bs-blue);
-  background-color: #fff;
-  border-color: #969fa8;
-  outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(44, 62, 80, 0.25);
-}
-
-.ui-paginator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.25em;
-}
-
-.ui-chkbox-box {
-  margin-right: 8px;
-  margin-left: 8px;
-}
-
-.ui-selection-column {
-  padding: 8px;
-}
-.ui-selection-column .ui-chkbox-box {
-  margin: 0;
-}
-
-.ui-selectonemenu-items-wrapper {
-  background-color: #fff;
-  border: 1px solid;
-}
-
-.ui-columntoggler-items {
-  background-color: #fff;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.ui-timepicker {
-  background-color: #fff;
-  border: 1px solid #000;
-}
-
 .border-none {
   border-radius: 0;
-}
-
-table {
-  border-collapse: collapse;
-  margin: 25px 0;
-  font-size: 0.9em;
-  font-family: sans-serif;
-  min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-table thead tr {
-  background-color: #15a589;
-  color: #ffffff;
-  text-align: left;
-}
-table th {
-  padding: 12px 15px !important;
-}
-table td {
-  padding: 12px 15px !important;
-}
-table tbody tr {
-  border-bottom: 1px solid #dddddd;
-}
-table tbody:nth-last-of-type(even) {
-  background-color: #f3f3f3;
-}
-table tbody:last-of-type {
-  border-bottom: 2px solid #15a589;
-}
-table tbody.active-row {
-  font-weight: bold;
-  color: #15a589;
 }
 
 .ui-icon-seek-first {
@@ -272,13 +111,48 @@ body {
 }
 
 .btn-dark-success {
-  background-color: #15a589;
+  background-color: rgb(8.2796892342%, 64.8575656678%, 53.8179800222%);
 }
 
 .btn-dark-warning {
-  background-color: #e08e0b;
+  background-color: rgb(87.9021970234%, 55.6343019135%, 4.4507441531%);
 }
 
 .btn-dark-danger {
-  background-color: #e43725;
+  background-color: rgb(89.4923448832%, 21.6304055869%, 14.6253021757%);
+}
+
+@media print {
+  body {
+    background: white !important;
+    margin: 0;
+    padding: 0;
+    font-size: 9pt !important;
+  }
+  .navbar, .sidebar, .d-print-none, nav, header,
+  .ui-paginator, .ui-datatable-header {
+    display: none !important;
+  }
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .card-body {
+    padding: 0 !important;
+  }
+  table {
+    border-collapse: collapse !important;
+    font-size: 8pt !important;
+  }
+  th, td {
+    border: 1px solid #333 !important;
+    padding: 2px 4px !important;
+    background: white !important;
+    color: black !important;
+    font-size: 8pt !important;
+  }
+  th {
+    font-weight: bold !important;
+    background: #f0f0f0 !important;
+  }
 }
