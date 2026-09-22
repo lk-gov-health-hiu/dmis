@@ -8,6 +8,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.DocumentFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Calendar;
@@ -2518,7 +2519,7 @@ public class LetterController implements Serializable {
     public String toReportsLettersEnteredOur() {
         documentHistories = null;
         lettersEnteredToInstitutionFilter = null;
-        return "/institution/letters_entered_our_registry?faces-redirect=true";
+        return "/institution/letters_entered_outgoing_registry?faces-redirect=true";
     }
 
     public String toRegisterMailBranch() {
@@ -3606,6 +3607,13 @@ public class LetterController implements Serializable {
 
     public void setSearchFilterType(SearchFilterType searchFilterType) {
         this.searchFilterType = searchFilterType;
+    }
+
+    public List<SearchFilterType> getOurLetterSearchFilterTypes() {
+        // Outgoing letters are created by us, not received, so there's no
+        // stamp/received date to filter by - only when it was entered
+        // (system date) and the letter's own date (document date).
+        return Arrays.asList(SearchFilterType.SYSTEM_DATE, SearchFilterType.DOCUMENT_DATE);
     }
 
     public Nameable getLettersEnteredFromInstitutionFilter() {
