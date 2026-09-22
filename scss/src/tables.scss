@@ -1,40 +1,5 @@
-//Toto migrate to default Bootstrap styling
-//Problem - Diffcult to pass table styles to Primeface tables
-
-table {
-  border-collapse: collapse;
-  margin: 25px 0;
-  font-size: 0.9em;
-  font-family: sans-serif;
-  min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-
-  thead {
-    tr{
-      background-color: $dark-green;
-      color: #ffffff;
-      text-align: left;
-    }
-  }
-
-  th {
-    padding: 12px 15px !important;
-  }
-
-  td {
-    padding: 12px 15px !important;
-  }
-
-  tbody {
-    tr {
-      border-bottom: 1px solid #dddddd;
-    }&:nth-last-of-type(even) {
-      background-color: #f3f3f3;
-    }&:last-of-type {
-      border-bottom: 2px solid $dark-green;
-    }&.active-row {
-      font-weight: bold;
-      color: $dark-green;
-    }
-  }
-}
+// Previously had an unscoped `table { ... } th, td { ... !important }` block that
+// applied to every <table> on the site, including tables PrimeFaces itself renders
+// internally (calendar day grid, etc.) - see the h:selectOneRadio gotcha in CLAUDE.md
+// for another case of the same bleed. Removed so PrimeFaces widgets render with the
+// saga theme's own table styling instead of this site's plain-table look.

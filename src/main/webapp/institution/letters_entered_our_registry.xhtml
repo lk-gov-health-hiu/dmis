@@ -15,32 +15,21 @@
             </ui:define>
             <ui:define name="content">
                 <p:growl ></p:growl>
-                <style>
-                    /* h:selectOneRadio renders a bare &lt;table&gt;, which picks up this site's
-                       default table/td spacing (large margin + cell padding). Zero it out so the
-                       radio group's control lines up with the date pickers beside it. */
-                    .filter-date-type-radio { margin: 0; }
-                    .filter-date-type-radio td { padding: 0 16px 0 0; vertical-align: middle; }
-                </style>
                 <h:form >
-                    <div class="card my-3">
-                        <h5 class="card-header bg-success">
-                            <p:outputLabel class="text-white fs-5 fw-bold my-2"
-                                           value="Letters Entered by the Unit - Our Letters" ></p:outputLabel>
-                        </h5>
-                        <div class="card-body">
+                    <p:panel styleClass="my-3">
+                        <f:facet name="header">
+                            <h:outputText value="Letters Entered by the Unit - Our Letters" />
+                        </f:facet>
                             <div class="row">
                                 <div class="col">
                                     <div class="row g-3 align-items-start mb-3">
                                         <div class="col-auto">
                                             <h:outputLabel class="form-label fw-bold d-block mb-1" value="Filter By"></h:outputLabel>
-                                            <h:selectOneRadio value="#{letterController.searchFilterType}"
-                                                              layout="lineDirection"
-                                                              styleClass="filter-date-type-radio">
+                                            <p:selectOneMenu value="#{letterController.searchFilterType}">
                                                 <f:selectItems value="#{commonController.searchFilterTypes}" var="sft"
                                                                itemValue="#{sft}"
                                                                itemLabel="#{sft eq 'SYSTEM_DATE' ? 'Letter Entered Date' : (sft eq 'DOCUMENT_DATE' ? 'Letter Date' : 'Stamp Date')}" />
-                                            </h:selectOneRadio>
+                                            </p:selectOneMenu>
                                         </div>
                                         <div class="col-auto">
                                             <h:outputLabel class="form-label fw-bold d-block mb-1" value="From"></h:outputLabel>
@@ -63,7 +52,6 @@
                                         <div class="col-auto">
                                             <h:outputLabel class="form-label fw-bold d-block mb-1" value="To Institution/Person"></h:outputLabel>
                                             <p:autoComplete value="#{letterController.lettersEnteredToInstitutionFilter}"
-                                                             class="form-control"
                                                              completeMethod="#{letterController.completeInsOrUsersByWords}"
                                                              var="inst"
                                                              forceSelection="true"
@@ -78,20 +66,20 @@
                                         <div class="col-auto ms-md-auto">
                                             <h:outputLabel class="form-label fw-bold d-block mb-1 invisible" value="Actions"></h:outputLabel>
                                             <div class="d-flex gap-2">
-                                                <h:commandButton value="Process" action="#{letterController.fillLettersEnteredOur}"
-                                                                 class="btn btn-danger"></h:commandButton>
-                                                <h:commandButton value="Print"  class="btn btn-success">
+                                                <p:commandButton value="Process" action="#{letterController.fillLettersEnteredOur}"
+                                                                 ajax="false" styleClass="ui-button-danger"></p:commandButton>
+                                                <p:commandButton value="Print" ajax="false" styleClass="ui-button-success">
                                                     <p:printer target="gridPrint" ></p:printer>
-                                                </h:commandButton>
-                                                <h:commandButton value="Download"  class="btn btn-warning">
+                                                </p:commandButton>
+                                                <p:commandButton value="Download" ajax="false" styleClass="ui-button-warning">
                                                     <p:dataExporter target="tbl" type="xls" fileName="Letters Entered - Our Letters" ></p:dataExporter>
-                                                </h:commandButton>
+                                                </p:commandButton>
                                             </div>
                                         </div>
                                     </div>
 
 
-                                    <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
+                                    <h:panelGrid columns="1" styleClass="alignTop">
                                         <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
                                                      rendered="true" rowIndexVar="n" var="c" paginator="true"
                                                      rowKey="#{c.id}"
@@ -131,9 +119,9 @@
                                                                value="Copied or Forwarded"></h:outputText>
                                             </p:column>
                                             <p:column headerText="Actions" exportable="false">
-                                                <h:commandButton value="View*" action="#{letterController.toLetterViewFromDocumentHistory()}" class="mx-2 btn btn-success" >
+                                                <p:commandButton value="View*" action="#{letterController.toLetterViewFromDocumentHistory()}" ajax="false" styleClass="mx-2 ui-button-success" >
                                                     <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}" ></f:setPropertyActionListener>
-                                                </h:commandButton>
+                                                </p:commandButton>
                                             </p:column>
                                         </p:dataTable>
                                     </h:panelGrid>
@@ -202,8 +190,7 @@
                                     </h:panelGroup>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                    </p:panel>
 
                 </h:form>
 
