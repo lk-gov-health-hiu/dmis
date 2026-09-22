@@ -142,7 +142,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>15.0.16</version>
+            <version>14.0.0</version>
             <type>jar</type>
         </dependency>
         <dependency>
