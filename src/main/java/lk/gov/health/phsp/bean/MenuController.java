@@ -99,13 +99,11 @@ public class MenuController implements Serializable {
         nd.setOwner(webUserController.getLoggedUser());
         nd.setCurrentInstitution(webUserController.getLoggedInstitution());
         nd.setCurrentOwner(webUserController.getLoggedUser());
-        if (letterController.isOutsideLetter()) {
-            nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
-            nd.setReceivedDate(new Date());
-        } else {
-            nd.setDocumentGenerationType(DocumentGenerationType.Created_by_institution);
-            nd.setFromInstitution(webUserController.getLoggedInstitution());
-        }
+        // New letters entered here are always Outside Letters - creating and
+        // forwarding an Our Letter is handled on its own page (toOurLetterAdd).
+        letterController.setOutsideLetter(true);
+        nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
+        nd.setReceivedDate(new Date());
         letterController.setSelected(nd);
 
         letterController.setNewHx(true);
@@ -115,8 +113,25 @@ public class MenuController implements Serializable {
         letterController.setSelectedHistory(ndh);
         return "/document/letter?faces-redirect=true";
     }
-    
-    
+
+    public String toOurLetterAdd() {
+        Document nd = new Document();
+        nd.setDocumentType(DocumentType.Letter);
+        nd.setDocumentDate(new Date());
+        nd.setDocumentGenerationType(DocumentGenerationType.Created_by_institution);
+        nd.setInstitution(webUserController.getLoggedInstitution());
+        nd.setInstitutionUnit(webUserController.getLoggedInstitution());
+        nd.setOwner(webUserController.getLoggedUser());
+        nd.setCurrentInstitution(webUserController.getLoggedInstitution());
+        nd.setCurrentOwner(webUserController.getLoggedUser());
+        nd.setFromInstitution(webUserController.getLoggedInstitution());
+        letterController.setSelected(nd);
+        letterController.setOurLetterToList(null);
+        letterController.setOurLetterCopyList(null);
+        return "/document/our_letter?faces-redirect=true";
+    }
+
+
     public String toUnitLetterAdd() {
         Document nd = new Document();
         nd.setDocumentType(DocumentType.Letter);

@@ -40,6 +40,7 @@ public enum HistoryType {
     Letter_Generated("Letter Generated"),
     Letter_Assigned("Letter Assigned"),
     Letter_Copy_or_Forward("Letter Copy or Forward"),
+    Letter_Sent_To("Letter Sent To"),
     @Deprecated
     Letter_Copy_or_Forward_Accepted("Letter Copy or Forward Accepted"),
     @Deprecated
