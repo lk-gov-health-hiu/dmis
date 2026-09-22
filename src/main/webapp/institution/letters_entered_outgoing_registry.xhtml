@@ -11,14 +11,14 @@
 
         <ui:composition template="/template1.xhtml">
             <ui:define name="title">
-                Letters Entered by the Unit - Our Letters
+                Entered Outgoing Letters
             </ui:define>
             <ui:define name="content">
                 <p:growl ></p:growl>
                 <h:form >
                     <p:panel styleClass="my-3">
                         <f:facet name="header">
-                            <h:outputText value="Letters Entered by the Unit - Our Letters" />
+                            <h:outputText value="Entered Outgoing Letters" />
                         </f:facet>
                             <div class="row">
                                 <div class="col">
@@ -26,9 +26,9 @@
                                         <div class="col-auto">
                                             <h:outputLabel class="form-label fw-bold d-block mb-1" value="Filter By"></h:outputLabel>
                                             <p:selectOneMenu value="#{letterController.searchFilterType}">
-                                                <f:selectItems value="#{commonController.searchFilterTypes}" var="sft"
+                                                <f:selectItems value="#{letterController.ourLetterSearchFilterTypes}" var="sft"
                                                                itemValue="#{sft}"
-                                                               itemLabel="#{sft eq 'SYSTEM_DATE' ? 'Letter Entered Date' : (sft eq 'DOCUMENT_DATE' ? 'Letter Date' : 'Stamp Date')}" />
+                                                               itemLabel="#{sft eq 'SYSTEM_DATE' ? 'Added Date' : 'Letter Date'}" />
                                             </p:selectOneMenu>
                                         </div>
                                         <div class="col-auto">
@@ -72,7 +72,7 @@
                                                     <p:printer target="gridPrint" ></p:printer>
                                                 </p:commandButton>
                                                 <p:commandButton value="Download" ajax="false" styleClass="ui-button-warning">
-                                                    <p:dataExporter target="tbl" type="xls" fileName="Letters Entered - Our Letters" ></p:dataExporter>
+                                                    <p:dataExporter target="tbl" type="xls" fileName="Entered Outgoing Letters" ></p:dataExporter>
                                                 </p:commandButton>
                                             </div>
                                         </div>
@@ -140,7 +140,7 @@
                                             <h:outputText value="Tel. #{webUserController.loggedUser.institution.phone}" />
                                         </div>
                                         <div style="font-weight:bold; color:black; font-size:10pt; margin-bottom:4px;">
-                                            <h:outputText value="Letters Entered by the Unit - Our Letters" />
+                                            <h:outputText value="Entered Outgoing Letters" />
                                         </div>
                                         <div style="color:black; font-size:9pt; margin-bottom:8px;">
                                             <h:outputText value="From: " />
