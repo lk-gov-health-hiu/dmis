@@ -96,13 +96,15 @@ fixed code:
   Rebuild/redeploy with
   `mvn -q -DskipTests clean package` then
   `asadmin --port <admin-port> deploy --force=true --name dmis --contextroot dmis target/dmis-0.1.war`.
-- **`domain1` uses the production `jdbc/dmis` datasource.** Redeploying it and
-  then submitting forms writes real data. Get the user's go-ahead before
-  redeploying for a demo, prefer `deploy-qa` where a QA domain exists, and
-  during the demo only trigger saves the user asked for — an empty-required-
-  field submit is a safe way to show validation without writing anything.
-  Beware `p:autoComplete` `itemSelect` listeners like
-  `letterController.saveCurrentDocumentAjax` that **save on selection**.
+- **Which data you're writing to.** On the dev/test-bed host (the one with
+  the paths above) `domain1`/`jdbc/dmis` holds **test data**: creating and
+  saving records during a demo is fine. Prefix them clearly (e.g.
+  `TEST/2026/001`, "TEST letter - ...") so they're recognisable. On any
+  other host, treat `jdbc/dmis` as production: get the user's go-ahead
+  before redeploying or saving, and prefer `deploy-qa`. Either way, note that
+  `p:autoComplete` `itemSelect` listeners like
+  `letterController.saveCurrentDocumentAjax` **save on selection**, before
+  the user clicks Save.
 - **Static CSS is cached.** `resources/css/styles.min.css` is served with no
   version query string, so after redeploying a CSS change the browser keeps the
   old file — clear it (CDP `Network.clearBrowserCache`, or Ctrl+F5) before
