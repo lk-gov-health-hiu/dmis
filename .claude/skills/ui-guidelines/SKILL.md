@@ -82,6 +82,44 @@ Look at `document/letter.xhtml` for the canonical patterns:
   default silently binds to the first enum constant, which then looks like a
   populated field to the user.
 
+### Form layout pattern (labels above, full-width controls)
+
+For an entry form, use a Bootstrap `row g-3` / `col-md-*` grid for
+**arrangement only**, wrap it in PrimeFaces' built-in `ui-fluid` class so every
+PrimeFaces control fills its column, and keep Bootstrap classes
+(`form-control`, `btn-*`, `w-50` on inputs) **off** PrimeFaces components:
+
+```xhtml
+<p:card styleClass="my-form">
+    <f:facet name="title"><h:outputText value="Letter" styleClass="my-form-title"/></f:facet>
+    <p:messages globalOnly="true" closable="true"/>
+    <div class="ui-fluid">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <p:outputLabel for="letterDate" value="Letter Date"/>
+                <p:datePicker id="letterDate" .../>
+                <p:message for="letterDate" display="text"/>
+            </div>
+            ...
+        </div>
+    </div>
+    <f:facet name="footer"> <!-- buttons outside ui-fluid, or they stretch 100% -->
+        <p:commandButton styleClass="ui-button-success" .../>
+    </f:facet>
+</p:card>
+```
+
+- `p:outputLabel for=` adds the required `*` automatically — drop
+  hand-written "Required" hints.
+- Pair per-field `p:message` with `p:messages globalOnly="true"`, otherwise
+  every validation error is shown twice.
+- Put conditional columns last in a row (or inside an always-rendered
+  `h:panelGroup` column) so a hidden field doesn't leave a hole mid-row.
+- Size things in **em**, not px (team preference) — in scoped `<style>`
+  blocks and in fixes suggested in issues/PRs. Measured px values are fine
+  as evidence.
+- Worked example: `document/letter.xhtml` (PR #262).
+
 ## 3. PrimeFaces 14 gotchas beyond CLAUDE.md's list
 
 - **`p:autoComplete` binding entities** needs `var` + `itemLabel` + `itemValue`
@@ -112,6 +150,17 @@ Look at `document/letter.xhtml` for the canonical patterns:
   `p:panelGrid columns="2" class="border border-light"` nested inside an
   `h:panelGrid` in `letter_receive_register.xhtml`). Don't mix them up expecting
   identical visual output.
+- **`p:password` with `toggleMask="true"`** renders an inline wrapper
+  `span.ui-password` around the `<input>`; `styleClass` lands on the inner
+  input, so `w-100` only fills the shrink-wrapped span. Make the wrapper
+  `display:block; width:100%` (or use `ui-fluid`). See issue #261.
+- **Margins on a full-width column** (`col-12 m-1`) overflow the row — use
+  row-level gutters (`g-3`) or `mb-*` on the row instead.
+- **PrimeIcons rendering as blank boxes** means something overrode the `.pi`
+  font. `scss/src/main.scss` sets `html, body, * { font-family: ... !important }`
+  — any new global font rule needs the `.pi` exemption kept after it. Edit
+  the SCSS and rebuild with `cd scss && npm run gulp`; never hand-edit
+  `resources/css/styles.min.css`.
 - **`p:growl` placement**: every form-bearing page has a single `<p:growl />`
   near the top, outside/before the `h:form` content it reports on — put one on
   every new page rather than relying on a global one from the template.
@@ -125,6 +174,9 @@ Before considering an XHTML change done, check:
       that page's toolbar already uses `btn btn-*` for consistency (don't mix
       both conventions on the same toolbar — check what the page you copied
       from used and stay consistent within that page).
+- [ ] No Bootstrap component classes (`form-control`, `btn btn-*`) on
+      PrimeFaces controls; Bootstrap only for `row`/`col`/spacing/flex.
+- [ ] New sizes in `em`, not `px`.
 - [ ] No `h1`–`h6` tags anywhere; heading-style text is `h:outputText`/
       `p:outputLabel` with a CSS class.
 - [ ] Every ajax `update` target is a `h:panelGroup`/`p:outputPanel`/component

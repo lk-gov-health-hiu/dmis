@@ -81,8 +81,9 @@ import { test as setup } from '@playwright/test';
 
 setup('authenticate', async ({ page }) => {
   await page.goto('/index.xhtml');
-  await page.getByLabel('Username').fill(process.env.DMIS_TEST_USER!);
-  await page.getByLabel('Password').fill(process.env.DMIS_TEST_PASS!);
+  // The login inputs have placeholders but no <label>, so getByLabel won't match.
+  await page.getByPlaceholder('Username').fill(process.env.DMIS_TEST_USER!);
+  await page.getByPlaceholder('Password').fill(process.env.DMIS_TEST_PASS!);
   await page.getByRole('button', { name: 'Login' }).click();
   await page.waitForSelector('text=Document Management Information System');
   await page.context().storageState({ path: 'e2e/.auth/user.json' });
@@ -90,7 +91,14 @@ setup('authenticate', async ({ page }) => {
 ```
 
 Never hardcode real credentials in a spec — read them from environment
-variables and keep `e2e/.auth/*.json` out of git.
+variables and keep `e2e/.auth/*.json` out of git. The credentials themselves
+live **outside the project** in `~/credentials/dmis/` (mode 600); populate
+`DMIS_TEST_USER`/`DMIS_TEST_PASS` from there at run time, and never copy them
+into the repo, `.env` files under it, or command lines that end up in logs.
+
+Watch out for misleading component ids: on `document/letter.xhtml` the
+**Letter Number** input has id `title` and **Letter Title** has id `topic` —
+select by label text, not by guessing from the id.
 
 ## Waiting on PrimeFaces AJAX — do this, not `waitForTimeout`
 
