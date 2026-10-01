@@ -154,6 +154,17 @@ PrimeFaces control fills its column, and keep Bootstrap classes
   `span.ui-password` around the `<input>`; `styleClass` lands on the inner
   input, so `w-100` only fills the shrink-wrapped span. Make the wrapper
   `display:block; width:100%` (or use `ui-fluid`). See issue #261.
+- **`p:outputLabel for=` a `p:fileUpload` overwrites its button text.**
+  The upload's `label` attribute *is* the Choose button caption, and
+  `p:outputLabel` sets the target's label. Use `h:outputText` styled as a
+  label instead.
+- **Uploading before the entity exists** (e.g. scanned copies on New
+  Letter): `Upload` needs a persisted `Document`, so hold files in a
+  session-bean list in the `FileUploadEvent` listener (read the bytes
+  immediately), then persist them in the save action. Use
+  `sequential="true"` on a `multiple="true"` upload and synchronize the list.
+  Parallel uploads hit the session bean concurrently and a lazily created
+  list loses files. See `document/letter.xhtml` (PR #262).
 - **Margins on a full-width column** (`col-12 m-1`) overflow the row — use
   row-level gutters (`g-3`) or `mb-*` on the row instead.
 - **PrimeIcons rendering as blank boxes** means something overrode the `.pi`
