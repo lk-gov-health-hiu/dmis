@@ -56,33 +56,40 @@
                         flex: 1;
                         overflow-wrap: anywhere;
                     }
-                    /* Keep Save buttons in view on short screens: the footer sticks to the
-                       bottom of the window while the card body scrolls past it. */
-                    .letter-entry.ui-card .ui-card-body .ui-card-footer {
-                        position: sticky;
-                        bottom: 0;
-                        z-index: 2;
-                        background: var(--surface-a, #ffffff);
-                        border-top: 1px solid var(--surface-d, #dee2e6);
-                        margin: 0 -1em;
-                        padding: 0.75em 1em;
+                    .letter-entry .letter-entry-header {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 0.6em;
+                        text-align: center;
                     }
-                    .letter-entry .letter-entry-actions .ui-button {
-                        margin-right: 0.5em;
+                    .letter-entry .letter-entry-actions {
+                        display: flex;
+                        justify-content: center;
+                        gap: 0.5em;
                     }
                 </style>
 
                 <h:form id="letterForm" enctype="multipart/form-data">
                     <p:card styleClass="letter-entry">
                         <f:facet name="title">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h:panelGroup id="letterId">
-                                    <h:outputText value="Letter" styleClass="letter-entry-title" />
+                            <div class="letter-entry-header">
+                                <h:panelGroup id="letterId" layout="block">
+                                    <h:outputText value="#{letterController.outsideLetter ? 'Outside Letter' : 'Our Letter'}"
+                                                  styleClass="letter-entry-title" />
                                     <h:outputText value=" - #{letterController.selected.id}" styleClass="letter-entry-title"
                                                   rendered="#{letterController.selected.id ne null}" />
                                 </h:panelGroup>
-                                <p:tag value="#{letterController.outsideLetter ? 'Outside Letter' : 'Our Letter'}"
-                                       severity="#{letterController.outsideLetter ? 'info' : 'warning'}" />
+                                <div class="letter-entry-actions">
+                                    <p:commandButton id="btnSaveAdd" tabindex="10" ajax="false"
+                                                     styleClass="ui-button-success" icon="pi pi-check"
+                                                     action="#{letterController.saveAndViewReceivedLetter()}"
+                                                     value="Save &amp; View" />
+                                    <p:commandButton tabindex="10" ajax="false"
+                                                     styleClass="ui-button-warning" icon="pi pi-plus"
+                                                     action="#{letterController.saveAndNewReceivedLetter()}"
+                                                     value="Save &amp; New" />
+                                </div>
                             </div>
                         </f:facet>
 
@@ -275,19 +282,7 @@
                             </h:panelGroup>
                         </div>
 
-                        <f:facet name="footer">
-                            <div class="letter-entry-actions">
-                                <p:commandButton id="btnSaveAdd" tabindex="10" ajax="false"
-                                                 styleClass="ui-button-success" icon="pi pi-check"
-                                                 action="#{letterController.saveAndViewReceivedLetter()}"
-                                                 value="Save &amp; View" />
-                                <p:commandButton tabindex="10" ajax="false"
-                                                 styleClass="ui-button-warning" icon="pi pi-plus"
-                                                 action="#{letterController.saveAndNewReceivedLetter()}"
-                                                 value="Save &amp; New" />
-                            </div>
-                            <p:defaultCommand target="btnSaveAdd" />
-                        </f:facet>
+                        <p:defaultCommand target="btnSaveAdd" />
                     </p:card>
                 </h:form>
             </ui:define>
