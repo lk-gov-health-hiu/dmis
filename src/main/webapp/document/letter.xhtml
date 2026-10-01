@@ -56,6 +56,17 @@
                         flex: 1;
                         overflow-wrap: anywhere;
                     }
+                    /* Keep Save buttons in view on short screens: the footer sticks to the
+                       bottom of the window while the card body scrolls past it. */
+                    .letter-entry.ui-card .ui-card-body .ui-card-footer {
+                        position: sticky;
+                        bottom: 0;
+                        z-index: 2;
+                        background: var(--surface-a, #ffffff);
+                        border-top: 1px solid var(--surface-d, #dee2e6);
+                        margin: 0 -1em;
+                        padding: 0.75em 1em;
+                    }
                     .letter-entry .letter-entry-actions .ui-button {
                         margin-right: 0.5em;
                     }
