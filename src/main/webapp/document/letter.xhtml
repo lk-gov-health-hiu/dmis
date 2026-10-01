@@ -214,19 +214,6 @@
                                                      value="#{letterController.selected.comments}" />
                                 </div>
 
-                                <div class="col-md-4">
-                                    <p:outputLabel for="status" value="Status" />
-                                    <p:selectOneMenu id="status"
-                                                     value="#{letterController.selected.letterStatus}">
-                                        <f:selectItem itemLabel="Select" />
-                                        <f:selectItems value="#{itemApplicationController.letterStatuses}"
-                                                       var="s"
-                                                       itemLabel="#{s.name}"
-                                                       itemValue="#{s}" />
-                                        <p:ajax event="blur" process="@this" global="false" />
-                                    </p:selectOneMenu>
-                                    <p:message for="status" display="text" />
-                                </div>
 
                             </div>
                         </div>
