@@ -23,7 +23,8 @@
                         font-weight: 700;
                     }
                     .letter-entry label,
-                    .letter-entry .ui-outputlabel {
+                    .letter-entry .ui-outputlabel,
+                    .letter-entry .letter-entry-label {
                         display: block;
                         font-weight: 600;
                         margin-bottom: 0.3em;
@@ -38,12 +39,29 @@
                         font-size: 0.85em;
                         margin-bottom: 0.3em;
                     }
+                    .letter-entry .letter-entry-section {
+                        margin-top: 1em;
+                    }
+                    .letter-entry .ui-fileupload-content {
+                        padding: 0.75em;
+                    }
+                    .letter-entry .letter-entry-file {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+                        padding: 0.35em 0;
+                        border-bottom: 1px solid var(--surface-d, #dee2e6);
+                    }
+                    .letter-entry .letter-entry-file-name {
+                        flex: 1;
+                        overflow-wrap: anywhere;
+                    }
                     .letter-entry .letter-entry-actions .ui-button {
                         margin-right: 0.5em;
                     }
                 </style>
 
-                <h:form>
+                <h:form id="letterForm" enctype="multipart/form-data">
                     <p:card styleClass="letter-entry">
                         <f:facet name="title">
                             <div class="d-flex justify-content-between align-items-center">
@@ -216,6 +234,34 @@
 
 
                             </div>
+                        </div>
+
+                        <div class="letter-entry-section">
+                            <h:outputText value="Scanned Copy (PDF/Images)" styleClass="letter-entry-label" />
+                            <div class="text-muted letter-entry-hint">
+                                Drop files here or choose them. They are attached when the letter is saved.
+                            </div>
+                            <p:fileUpload id="scan"
+                                          mode="advanced" auto="true" multiple="true" sequential="true"
+                                          dragDropSupport="true"
+                                          listener="#{letterController.handlePendingUpload}"
+                                          process="@this" update="pendingFiles msgs" global="false"
+                                          accept=".pdf,image/*"
+                                          allowTypes="/(\.|\/)(pdf|jpe?g|png|gif|tiff?|bmp|webp)$/i"
+                                          sizeLimit="20971520"
+                                          label="Choose Files" chooseIcon="pi pi-paperclip" />
+                            <h:panelGroup id="pendingFiles" layout="block">
+                                <ui:repeat value="#{letterController.pendingUploads}" var="pu">
+                                    <div class="letter-entry-file">
+                                        <i class="pi #{pu.pdf ? 'pi-file-pdf' : 'pi-image'}" />
+                                        <h:outputText value="#{pu.fileName}" styleClass="letter-entry-file-name" />
+                                        <p:commandButton icon="pi pi-times" title="Remove"
+                                                         styleClass="rounded-button ui-button-danger ui-button-flat"
+                                                         action="#{letterController.removePendingUpload(pu)}"
+                                                         process="@this" update="@form:pendingFiles" global="false" />
+                                    </div>
+                                </ui:repeat>
+                            </h:panelGroup>
                         </div>
 
                         <f:facet name="footer">
