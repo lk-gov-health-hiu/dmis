@@ -105,6 +105,7 @@ public class MenuController implements Serializable {
         nd.setDocumentGenerationType(DocumentGenerationType.Received_by_institution);
         nd.setReceivedDate(new Date());
         letterController.setSelected(nd);
+        letterController.setPendingUploads(null);
 
         letterController.setNewHx(true);
         DocumentHistory ndh = new DocumentHistory();

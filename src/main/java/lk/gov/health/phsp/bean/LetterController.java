@@ -47,6 +47,7 @@ import lk.gov.health.phsp.pojcs.DailyCount;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Nameable;
 import org.apache.commons.io.IOUtils;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
 @Named
@@ -126,6 +127,10 @@ public class LetterController implements Serializable {
     private Nameable lettersEnteredToInstitutionFilter;
 
     private UploadedFile file;
+    // Scanned copies chosen on the New Letter page before the letter has been
+    // saved - an Upload needs a persisted Document, so these are held here and
+    // attached when Save & View / Save & New persists the letter.
+    private List<Upload> pendingUploads;
 
     private Upload removingUpload;
 
@@ -325,6 +330,42 @@ public class LetterController implements Serializable {
 
         JsfUtil.addSuccessMessage("Copy/Forward removed successfully");
         return toLetterView();
+    }
+
+    public void handlePendingUpload(FileUploadEvent event) {
+        UploadedFile f = event.getFile();
+        if (f == null) {
+            return;
+        }
+        try (InputStream input = f.getInputStream()) {
+            Upload u = new Upload();
+            u.setBaImage(IOUtils.toByteArray(input));
+            u.setFileName(f.getFileName());
+            u.setFileType(f.getContentType());
+            // Several files can arrive as concurrent requests on this session bean.
+            synchronized (this) {
+                getPendingUploads().add(u);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(LetterController.class.getName()).log(Level.SEVERE, null, ex);
+            JsfUtil.addErrorMessage("Could not read " + f.getFileName());
+        }
+    }
+
+    public synchronized void removePendingUpload(Upload u) {
+        getPendingUploads().remove(u);
+    }
+
+    private void savePendingUploads() {
+        if (pendingUploads == null || selected == null || selected.getId() == null) {
+            return;
+        }
+        for (Upload u : pendingUploads) {
+            u.setDocument(selected);
+            u.setInstitution(webUserController.getLoggedInstitution());
+            save(u);
+        }
+        pendingUploads = null;
     }
 
     public String uploadLetterImageOrPdf() {
@@ -1985,6 +2026,7 @@ public class LetterController implements Serializable {
             selected.setFromInstitution(webUserController.getLoggedInstitution());
         }
         save(selected);
+        savePendingUploads();
         if (newHx) {
             if (selectedHistory == null) {
                 selectedHistory = new DocumentHistory();
@@ -2234,6 +2276,7 @@ public class LetterController implements Serializable {
             selected.setFromInstitution(webUserController.getLoggedInstitution());
         }
         save(selected);
+        savePendingUploads();
         if (newHx) {
             if (selectedHistory == null) {
                 selectedHistory = new DocumentHistory();
@@ -2441,6 +2484,7 @@ public class LetterController implements Serializable {
                 return "";
             }
         }
+        pendingUploads = null;
         newHx = false;
         previousLetterStatus = selected.getLetterStatus();
         outsideLetter = selected.getDocumentGenerationType() != DocumentGenerationType.Created_by_institution;
@@ -3670,6 +3714,17 @@ public class LetterController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public synchronized List<Upload> getPendingUploads() {
+        if (pendingUploads == null) {
+            pendingUploads = new ArrayList<>();
+        }
+        return pendingUploads;
+    }
+
+    public void setPendingUploads(List<Upload> pendingUploads) {
+        this.pendingUploads = pendingUploads;
     }
 
     public List<Upload> getSelectedUploads() {

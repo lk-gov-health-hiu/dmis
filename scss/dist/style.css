@@ -106,6 +106,10 @@ html, body, * {
   font-family: "Noto Sans JP", sans-serif !important;
 }
 
+.pi {
+  font-family: "primeicons" !important;
+}
+
 body {
   background-color: #f5f5f5;
 }
