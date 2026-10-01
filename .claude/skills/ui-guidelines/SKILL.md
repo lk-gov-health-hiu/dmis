@@ -120,8 +120,11 @@ PrimeFaces control fills its column, and keep Bootstrap classes
   as evidence.
 - **Keep Save visible without scrolling.** On long entry forms, users report
   bottom-placed buttons as missing ("I can't see the save buttons"). The
-  preferred DMIS placement (user decision, PR #262) is the page title and
-  the action buttons centred at the top of the card. Check fit at the user's
+  preferred DMIS placement (user decision, PR #262) is **one header row**:
+  the title on the left at normal font size, and the action buttons centred
+  on that same row. Use `display:grid; grid-template-columns: 1fr auto 1fr`
+  so the buttons stay centred whatever the title width. Reset the card
+  title area to `font-size: 1em`, because Saga makes `.ui-card-title` large. Check fit at the user's
   real window height (e.g. ~976px), not just a full-page screenshot, which
   hides fold problems.
 - Let the page title say what kind of record it is (e.g. "Outside Letter")
