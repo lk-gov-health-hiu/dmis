@@ -118,6 +118,13 @@ PrimeFaces control fills its column, and keep Bootstrap classes
 - Size things in **em**, not px (team preference) — in scoped `<style>`
   blocks and in fixes suggested in issues/PRs. Measured px values are fine
   as evidence.
+- **Long forms: make the action bar sticky** so Save never falls below the
+  fold, which users report as "I can't see the save buttons". On a `p:card`,
+  sticky works on the footer because its parent `.ui-card-body` is tall:
+  `.my-form.ui-card .ui-card-body .ui-card-footer { position: sticky; bottom: 0; background: var(--surface-a); z-index: 2; }`.
+  The selector needs that specificity, or the Saga theme's card padding wins.
+  Check at the user's real window height (e.g. ~976px), not just a tall
+  full-page screenshot, which hides fold problems.
 - Worked example: `document/letter.xhtml` (PR #262).
 
 ## 3. PrimeFaces 14 gotchas beyond CLAUDE.md's list
