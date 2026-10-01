@@ -30,6 +30,10 @@ already deleted on GitHub. This alone is always safe to run.
 
 ## Step 2 — Make Sure master Is Current
 
+Note which branch the user is on first (`git branch --show-current`) — the
+checkout below moves them off it, and that branch may itself be deleted later
+in this run. Say so in the final report.
+
 ```bash
 git checkout master
 git merge --ff-only origin/master
@@ -54,6 +58,11 @@ git branch --merged master --format='%(refname:short)' | grep -vx 'master'
 ```
 
 Any branch in this list is safe to delete locally with `git branch -d`.
+
+The `--merged` ancestry check is authoritative: a branch whose every commit is
+already in `master` cannot lose work, even if it never had a PR (e.g. leftover
+`worktree-agent-*` branches from subagent runs). The gh lookup in B below is
+only for branches **not** in this list.
 
 ### B. Not merged locally — check PR status via gh
 
@@ -82,9 +91,53 @@ origin (e.g. local amends/rebases after the PR was opened):
 git log origin/<branch>..<branch> --oneline 2>/dev/null
 ```
 
+If `origin/<branch>` no longer exists (the usual case after Step 1's prune of a
+merged PR), that command errors out and prints nothing — which is *not* proof
+of safety. Fall back to comparing against master instead:
+
+```bash
+git log origin/master..<branch> --oneline
+```
+
 - Empty output → safe to delete.
 - Non-empty output → **skip and warn the user**; these commits exist only
   locally and deleting the branch would lose them permanently.
+
+### Worktrees hold branches
+
+`git branch -d` refuses to delete a branch that is checked out in a worktree,
+and subagent runs leave many of these under `.claude/worktrees/`. Check:
+
+```bash
+git worktree list
+for wt in $(git worktree list --porcelain | sed -n 's|^worktree ||p' | grep worktrees/); do
+  echo "$wt: $(git -C "$wt" status --porcelain | wc -l) uncommitted"
+done
+```
+
+Only a worktree with **zero** uncommitted changes whose branch is merged is a
+candidate. Ask the user before removing worktrees, then for each one:
+`git worktree remove <path>` → `git branch -d <branch>`, and finish with
+`git worktree prune`.
+
+### One-pass classification
+
+This loop produces the whole picture in a single table (merged? / held by a
+worktree? / remote gone? / local-only commits / PR state):
+
+```bash
+merged=$(git branch --merged master --format='%(refname:short)' | grep -vx master)
+wt=$(git worktree list --porcelain | sed -n 's|^branch refs/heads/||p')
+for b in $(git branch --format='%(refname:short)' | grep -vx master); do
+  m=no; echo "$merged" | grep -qx "$b" && m=yes
+  w=no; echo "$wt" | grep -qx "$b" && w=yes
+  if git rev-parse -q --verify "origin/$b" >/dev/null; then r=yes; lo=$(git log --oneline origin/$b..$b | wc -l)
+  else r=gone; lo=$(git log --oneline origin/master..$b | wc -l); fi
+  pr=$(gh pr list --repo lk-gov-health-hiu/dmis --head "$b" --state all \
+       --json number,state,baseRefName --jq '.[0] | "#\(.number) \(.state) ->\(.baseRefName)"')
+  echo "$b | merged=$m | worktree=$w | remote=$r | localOnly=$lo | ${pr:-noPR}"
+done
+```
 
 ## Step 5 — Delete Local Branches
 

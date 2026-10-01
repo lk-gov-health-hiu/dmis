@@ -40,6 +40,15 @@ that can be pasted straight into the GitHub issue or PR.
   those, a plain "here's it working" capture is enough; skip the
   before/after framing in that case (see Non-goals).
 
+### Hand-off mode — the user drives the demo
+
+The user may prefer to demonstrate the fix themselves ("deploy the latest app
+and open it in Playwright"). Then this skill's job is: confirm/redeploy the
+build (section 1), open a **headed** browser on their display already logged
+in, keep it controllable for follow-up requests (section 2a), and keep running
+notes of anything worth filing (UI defects, skill gaps) instead of capturing
+before/after evidence yourself.
+
 ## Non-goals
 
 - **Does not write or edit application code.** By the time this skill
@@ -73,6 +82,33 @@ fixed code:
 - Confirm the target Payara 5 `domain1` instance and the `jdbc/dmis`
   datasource are up (e.g. `asadmin list-applications`) and note the base
   URL/context root you'll navigate to.
+- **Host specifics (this dev server):** `mvn` and `asadmin` are not on PATH —
+  use `~/apache-maven-3.6.3/bin/mvn` and `~/payara5/bin/asadmin` (a
+  `~/payara6` also exists; don't use it). Several domains run here, so
+  `domain1`'s admin port is **not** 4848 — a bare `asadmin list-applications`
+  fails with "Remote server does not listen for requests on [localhost:4848]".
+  Read the real port from
+  `grep admin-listener ~/payara5/glassfish/domains/domain1/config/domain.xml`
+  and pass `--port <it>`. The app itself is on `http-listener-1`
+  (`http://localhost:8083/dmis/`).
+- Stale-WAR check, concretely:
+  `ls -l --time-style=full-iso target/*.war` vs `git log -1 --format=%ci`.
+  Rebuild/redeploy with
+  `mvn -q -DskipTests clean package` then
+  `asadmin --port <admin-port> deploy --force=true --name dmis --contextroot dmis target/dmis-0.1.war`.
+- **Which data you're writing to.** On the dev/test-bed host (the one with
+  the paths above) `domain1`/`jdbc/dmis` holds **test data**: creating and
+  saving records during a demo is fine. Prefix them clearly (e.g.
+  `TEST/2026/001`, "TEST letter - ...") so they're recognisable. On any
+  other host, treat `jdbc/dmis` as production: get the user's go-ahead
+  before redeploying or saving, and prefer `deploy-qa`. Either way, note that
+  `p:autoComplete` `itemSelect` listeners like
+  `letterController.saveCurrentDocumentAjax` **save on selection**, before
+  the user clicks Save.
+- **Static CSS is cached.** `resources/css/styles.min.css` is served with no
+  version query string, so after redeploying a CSS change the browser keeps the
+  old file — clear it (CDP `Network.clearBrowserCache`, or Ctrl+F5) before
+  judging the result.
 
 If deployment is ambiguous (uncommitted changes, unclear which WAR is
 live), stop and ask rather than guessing — capturing evidence against the
@@ -89,6 +125,63 @@ Use the `claude-in-chrome` skill's own tooling conventions — don't bypass
 it with raw `computer` clicking when `find`/`form_input` can target an
 element more reliably (PrimeFaces widgets often need a specific selector,
 not just visible text, because of generated `id`s like `j_idt42`).
+
+### 2a. Playwright alternative (no Chrome extension, or the user asked for Playwright)
+
+Playwright is not a project dependency. Install it in the scratchpad (never in
+the repo) and use the system Chrome so no browser download is needed:
+
+```bash
+cd <scratchpad> && npm init -y && npm i -D playwright
+```
+
+`npx playwright open --channel chrome <url>` gives a headed window + Inspector,
+but it **cannot be scripted afterwards**. To hand the user a window you can
+keep driving, launch it yourself with a CDP port and keep the process alive
+(run in background, `DISPLAY=:1.0` on this host):
+
+```js
+const b = await chromium.launch({ channel: 'chrome', headless: false,
+                                  args: ['--remote-debugging-port=9333'] });
+const p = await (await b.newContext({ viewport: null })).newPage();
+// ...log in (see Credentials below)...
+await new Promise(r => b.on('disconnected', r));   // stay open until the user closes it
+```
+
+Each later step is a short script that attaches to the same window — the user
+stays logged in and sees every action:
+
+```js
+const b = await chromium.connectOverCDP('http://localhost:9333');
+const p = b.contexts()[0].pages()[0];
+// ...act, screenshot, measure...
+await b.close();   // over CDP this only disconnects; the window stays open
+```
+
+`curl -s localhost:9333/json/list` shows what page the window is on.
+
+**Credentials:** never put a password in the repo, a script, or a command
+line. App logins live outside the project in `~/credentials/dmis/` (mode 600);
+scripts read the file at runtime. Login form selectors:
+`input[id$="username"]`, `input[id$="password"]`, `.login-btn`; success
+lands on `/dmis/app/index.xhtml`. After a redeploy the session is gone —
+re-login when the login inputs reappear.
+
+**Menubar navigation:** hover `.ui-menuitem-text` (e.g. `Letter`), then click
+`.ui-menuitem-link` (e.g. `New Letter`); menu items are `ajax="false"`, so
+wait for `networkidle`.
+
+**Measure, don't just screenshot.** `gh` can't upload images, so text
+evidence travels further. Bounding-box widths turn "looks uneven" into a
+table a reviewer can check, and computed `::before` font/content exposes
+missing icon fonts:
+
+```js
+await p.evaluate(() => [...document.querySelectorAll(
+  '.ui-inputfield, .ui-selectonemenu, .ui-calendar, .ui-autocomplete')]
+  .filter(e => e.offsetParent)
+  .map(e => e.id.split(':').pop() + '=' + Math.round(e.getBoundingClientRect().width)));
+```
 
 ## 3. Reproduce the "before" state (if not already on record)
 
