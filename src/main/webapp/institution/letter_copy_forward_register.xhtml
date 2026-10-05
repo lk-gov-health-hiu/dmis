@@ -143,116 +143,48 @@
                             </p:columnGroup>
                         </p:dataTable>
 
-                        <h:panelGroup layout="block"
-                                      id="gridPrint"
-                                      styleClass="d-none d-print-block">
-
-                            <!-- Print-specific styles. Placed here so p:printer copies them into the popup's body.
-                                 Rules scoped to .ptbl/.phdr/.psub classes are safe on-screen (elements are inside d-none).
-                                 Body/page rules are wrapped in @media print so they never affect the screen view. -->
-                            <style type="text/css">
-                                /* Dot-matrix impact printers render thin/light strokes poorly, so print text
-                                   is kept bold and sized up throughout for legibility. */
-                                table.ptbl { width: 100%; border-collapse: collapse; font-size: 9pt; font-weight: bold; font-family: 'Courier New', Courier, monospace; }
-                                table.ptbl th { border: 1px solid #000; padding: 2px 3px; font-weight: bold; text-align: left; background: #fff; white-space: nowrap; }
-                                table.ptbl td { border: 1px solid #000; padding: 2px 3px; vertical-align: top; word-break: break-word; }
-                                .phdr { font-size: 15pt; font-weight: 900; font-family: 'Courier New', Courier, monospace; letter-spacing: 0.5px; text-transform: uppercase; }
-                                .psub { font-size: 9.5pt; font-weight: bold; font-family: 'Courier New', Courier, monospace; }
-                                .pmeta, .pftr { font-size: 9.5pt; font-weight: bold; font-family: 'Courier New', Courier, monospace; }
-                                .pinst { font-size: 12pt; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3px; }
-                                .pmeta { margin-bottom: 4px; }
-                                .pftr { margin-top: 5px; }
-                                @media print {
-                                    @page { size: A4 landscape; margin: 0.8cm 0.6cm; }
-                                    body { font-family: 'Courier New', Courier, monospace; font-size: 9.5pt; font-weight: bold; color: #000; background: #fff; margin: 0; }
-                                }
-                            </style>
-
-                            <!-- Institution header -->
-                            <div class="phdr"><h:outputText value="#{webUserController.loggedUser.institution.name}"/></div>
-                            <div class="psub">
-                                <h:outputText value="#{webUserController.loggedUser.institution.address}"/>
-                                <h:outputText value=" | Tel: #{webUserController.loggedUser.institution.phone}"/>
-                            </div>
-
-                            <!-- Report title and date range -->
-                            <div class="pmeta">
-                                <h:outputText value="Letter Copy / Forward Register"/>
-                                <h:panelGroup rendered="#{letterController.webUserCopy ne null}">
-                                    <h:outputText styleClass="pinst" value=" — #{letterController.webUserCopy.displayName}"/>
-                                </h:panelGroup>
-                                <h:outputText value=" | From: "/>
-                                <h:outputText value="#{letterController.fromDate}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
-                                </h:outputText>
-                                <h:outputText value=" — To: "/>
-                                <h:outputText value="#{letterController.toDate}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
-                                </h:outputText>
-                            </div>
-
-                            <!-- Compact plain HTML table — no PrimeFaces chrome, renders tightly for impact printers -->
-                            <table class="ptbl">
+                        <!-- Printed register: plain monospace table for dot-matrix printers (scss/src/print.scss).
+                             Hidden on screen; p:printer prints only this panel. -->
+                        <h:panelGroup layout="block" id="gridPrint" styleClass="print-doc d-none d-print-block">
+                            <ui:include src="/WEB-INF/includes/print_header.xhtml">
+                                <ui:param name="title" value="Letter Copy/Forward by Unit Register" />
+                                <ui:param name="fromDate" value="#{letterController.fromDate}" />
+                                <ui:param name="toDate" value="#{letterController.toDate}" />
+                                <ui:param name="filterText" value="#{empty letterController.webUserCopy ? '' : 'Sent To: ' += letterController.webUserCopy.name}" />
+                            </ui:include>
+                            <table class="pd-table">
                                 <thead>
                                     <tr>
-                                        <th style="width:3%">#</th>
-                                        <th style="width:6%">ID</th>
-                                        <th style="width:8%">Stamp Dt</th>
-                                        <th style="width:15%">From</th>
-                                        <th style="width:13%">Letter No.</th>
-                                        <ui:fragment rendered="#{letterController.webUserCopy eq null}">
-                                            <th style="width:14%">Fwd / Copied To</th>
-                                        </ui:fragment>
+                                        <th style="width:3%">No.</th>
+                                        <th style="width:7%">ID</th>
+                                        <th style="width:9%">Stamp Date</th>
+                                        <th style="width:18%">From</th>
+                                        <th style="width:12%">Letter No.</th>
+                                        <ui:fragment rendered="#{letterController.webUserCopy eq null}"><th style="width:16%">Copied/Forwarded To</th></ui:fragment>
                                         <th>Topic</th>
-                                        <th style="width:8%">Sign</th>
+                                        <th style="width:10%" class="pd-sign-cell">Received Sign</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <ui:repeat value="#{letterController.documentHistories}" var="c" varStatus="vs">
+                                    <ui:repeat value="#{letterController.documentHistories}" var="c" varStatus="s">
                                         <tr>
-                                            <td style="text-align:center"><h:outputText value="#{vs.index + 1}"/></td>
-                                            <td style="text-align:center"><h:outputText value="#{c.document.id}"/></td>
-                                            <td>
-                                                <h:outputText value="#{c.document.receivedDate}">
-                                                    <f:convertDateTime pattern="dd/MM/yy"/>
-                                                </h:outputText>
-                                            </td>
-                                            <td>
-                                                <h:outputText value="#{c.document.senderName}" rendered="#{c.document.fromInstitution.name eq 'Personal'}"/>
-                                                <h:outputText value="#{c.document.fromInstitution.name}" rendered="#{c.document.fromInstitution.name ne 'Personal'}"/>
-                                                <h:outputText value=" #{c.document.fromWebUser.person.nameWithTitle}"/>
-                                            </td>
-                                            <td><h:outputText value="#{c.document.documentNumber}"/></td>
-                                            <ui:fragment rendered="#{letterController.webUserCopy eq null}">
-                                                <td>
-                                                    <h:outputText value="#{c.toUser.person.name}"/>
-                                                    <h:outputText value="#{c.toInstitution.name}"/>
-                                                </td>
-                                            </ui:fragment>
-                                            <td><h:outputText value="#{c.document.documentName}"/></td>
-                                            <td></td>
+                                            <td><h:outputText value="#{s.index + 1}" /></td>
+                                            <td><h:outputText value="#{c.document.id}" /></td>
+                                            <td><h:outputText value="#{c.document.receivedDate}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" /><h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInstitution.name}" /><h:outputText value=" #{c.document.fromWebUser.person.nameWithTitle}" rendered="#{c.document.fromWebUser ne null}" /></td>
+                                            <td><h:outputText value="#{c.document.documentNumber}" /></td>
+                                            <ui:fragment rendered="#{letterController.webUserCopy eq null}"><td><h:outputText value="#{c.toUser.person.name}" /><h:outputText value=" #{c.toInstitution.name}" /></td></ui:fragment>
+                                            <td><h:outputText value="#{c.document.documentName}" /></td>
+                                            <td class="pd-sign-cell"></td>
                                         </tr>
                                     </ui:repeat>
                                 </tbody>
                             </table>
-
-                            <!-- Footer: count + generated-by + signature row -->
-                            <div class="pftr">
-                                <h:outputText value="Total: #{fn:length(letterController.documentHistories)} letters  |  Generated by #{webUserController.loggedUser.person.nameWithTitle}, #{webUserController.loggedUser.institution.name}  on "/>
-                                <h:outputText value="#{session.lastAccessedTime}">
-                                    <f:convertDateTime pattern="dd MMMM yyyy HH:mm"/>
-                                </h:outputText>
-                            </div>
-                            <table style="width:100%; margin-top:8px; border:none; font-size:8.5pt; font-family:'Courier New',Courier,monospace;">
-                                <tr>
-                                    <td style="border:none; width:34%">Received By: _____________________</td>
-                                    <td style="border:none; width:33%">Received On: ____________________</td>
-                                    <td style="border:none; width:33%">Signature: ______________________</td>
-                                </tr>
-                            </table>
-
+                            <ui:include src="/WEB-INF/includes/print_footer.xhtml">
+                                <ui:param name="count" value="#{empty letterController.documentHistories ? 0 : letterController.documentHistories.size()}" />
+                                <ui:param name="signatures" value="#{true}" />
+                            </ui:include>
                         </h:panelGroup>
-
                     </p:card>
                 </h:form>
             </ui:define>

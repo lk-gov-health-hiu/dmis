@@ -130,68 +130,45 @@
                             </p:column>
                         </p:dataTable>
 
-                        <!-- Print-only view: plain table, no borders/shading, sized for dot-matrix
-                             printers. Excludes the filter toolbar and the on-screen table's chrome
-                             (pagination, column filters, Actions). Hidden on screen. -->
-                        <h:panelGroup layout="block" id="gridPrint" class="d-none d-print-block m-0 p-0 w-100">
-                            <div style="font-weight:bold; color:black; font-size:12pt;">
-                                <h:outputText value="#{webUserController.loggedUser.institution.name}" />
-                            </div>
-                            <div style="color:black; font-size:9pt;">
-                                <h:outputText value="#{webUserController.loggedUser.institution.address}" />
-                            </div>
-                            <div style="color:black; font-size:9pt; margin-bottom:8px;">
-                                <h:outputText value="Tel. #{webUserController.loggedUser.institution.phone}" />
-                            </div>
-                            <div style="font-weight:bold; color:black; font-size:10pt; margin-bottom:4px;">
-                                <h:outputText value="Letters Entered by the Unit - Outside Letters" />
-                            </div>
-                            <div style="color:black; font-size:9pt; margin-bottom:8px;">
-                                <h:outputText value="From: " />
-                                <h:outputText value="#{letterController.fromDate}">
-                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" />
-                                </h:outputText>
-                                <h:outputText value="    To: " />
-                                <h:outputText value="#{letterController.toDate}">
-                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" />
-                                </h:outputText>
-                            </div>
-                            <table style="width:100%; border-collapse:collapse; font-size:9pt; color:black;">
+                        <!-- Printed register: plain monospace table for dot-matrix printers (scss/src/print.scss).
+                             Hidden on screen; p:printer prints only this panel. -->
+                        <h:panelGroup layout="block" id="gridPrint" styleClass="print-doc d-none d-print-block">
+                            <ui:include src="/WEB-INF/includes/print_header.xhtml">
+                                <ui:param name="title" value="Letters Entered by the Unit - Outside Letters" />
+                                <ui:param name="fromDate" value="#{letterController.fromDate}" />
+                                <ui:param name="toDate" value="#{letterController.toDate}" />
+                                <ui:param name="filterText" value="#{'Date filter: ' += (letterController.searchFilterType eq 'DOCUMENT_DATE' ? 'Letter Date' : (letterController.searchFilterType eq 'RECEIVED_DATE' ? 'Stamp Date' : 'Letter Entered Date')) += (empty letterController.lettersEnteredFromInstitutionFilter ? '' : '  |  From: ' += letterController.lettersEnteredFromInstitutionFilter.displayName)}" />
+                            </ui:include>
+                            <table class="pd-table">
                                 <thead>
                                     <tr>
-                                        <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">No.</th>
-                                        <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">ID</th>
-                                        <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">Letter Date</th>
-                                        <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">From</th>
-                                        <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">Letter Number</th>
-                                        <th style="text-align:left; padding:2px 6px 2px 0; font-weight:bold;">Topic</th>
-                                        <th style="text-align:left; padding:2px 0 2px 0; font-weight:bold;">Comments</th>
+                                        <th style="width:3%">No.</th>
+                                        <th style="width:7%">ID</th>
+                                        <th style="width:9%">Letter Date</th>
+                                        <th style="width:20%">From</th>
+                                        <th style="width:13%">Letter No.</th>
+                                        <th>Topic</th>
+                                        <th style="width:12%">Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <ui:repeat value="#{letterController.documentHistories}" var="c" varStatus="s">
                                         <tr>
-                                            <td style="padding:2px 6px 2px 0;"><h:outputText value="#{s.index + 1}" /></td>
-                                            <td style="padding:2px 6px 2px 0;"><h:outputText value="#{c.document.id}" /></td>
-                                            <td style="padding:2px 6px 2px 0;">
-                                                <h:outputText value="#{c.document.documentDate}">
-                                                    <f:convertDateTime pattern="dd MMM yyyy" />
-                                                </h:outputText>
-                                            </td>
-                                            <td style="padding:2px 6px 2px 0;">
-                                                <h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" />
-                                                <h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInsOrUser.name}" />
-                                            </td>
-                                            <td style="padding:2px 6px 2px 0;"><h:outputText value="#{c.document.documentNumber}" /></td>
-                                            <td style="padding:2px 6px 2px 0;"><h:outputText value="#{c.document.documentName}" /></td>
-                                            <td style="padding:2px 0 2px 0;">
-                                                <h:outputText rendered="#{c.historyType eq 'Letter_added_by_mail_branch'}" value="Added by Mail Branch" />
-                                                <h:outputText rendered="#{c.historyType eq 'Letter_Copy_or_Forward'}" value="Copied or Forwarded" />
-                                            </td>
+                                            <td><h:outputText value="#{s.index + 1}" /></td>
+                                            <td><h:outputText value="#{c.document.id}" /></td>
+                                            <td><h:outputText value="#{c.document.documentDate}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" /><h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInsOrUser.name}" /></td>
+                                            <td><h:outputText value="#{c.document.documentNumber}" /></td>
+                                            <td><h:outputText value="#{c.document.documentName}" /></td>
+                                            <td><h:outputText rendered="#{c.historyType eq 'Letter_added_by_mail_branch'}" value="Added by Mail Branch" /><h:outputText rendered="#{c.historyType eq 'Letter_Copy_or_Forward'}" value="Copied or Forwarded" /></td>
                                         </tr>
                                     </ui:repeat>
                                 </tbody>
                             </table>
+                            <ui:include src="/WEB-INF/includes/print_footer.xhtml">
+                                <ui:param name="count" value="#{empty letterController.documentHistories ? 0 : letterController.documentHistories.size()}" />
+                                <ui:param name="signatures" value="#{false}" />
+                            </ui:include>
                         </h:panelGroup>
                     </p:card>
                 </h:form>

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!--
+    Print header for a dot-matrix register/report (see scss/src/print.scss).
+    Params:
+      title      report title (required)
+      fromDate   optional; when set with toDate, prints the period
+      toDate     optional
+      filterText optional extra line, e.g. "Filter: Letter Date | From: X"
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <div class="pd-head">
+        <div class="pd-inst"><h:outputText value="#{webUserController.loggedUser.institution.name}" /></div>
+        <div class="pd-addr">
+            <h:outputText value="#{webUserController.loggedUser.institution.address}" />
+            <h:outputText value="  Tel: #{webUserController.loggedUser.institution.phone}"
+                          rendered="#{not empty webUserController.loggedUser.institution.phone}" />
+        </div>
+        <div class="pd-title"><h:outputText value="#{title}" /></div>
+        <div class="pd-meta">
+            <span>
+                <ui:fragment rendered="#{fromDate ne null and toDate ne null}">
+                    <h:outputText value="Period: " />
+                    <h:outputText value="#{fromDate}"><f:convertDateTime pattern="dd/MM/yyyy hh:mm a" /></h:outputText>
+                    <h:outputText value=" to " />
+                    <h:outputText value="#{toDate}"><f:convertDateTime pattern="dd/MM/yyyy hh:mm a" /></h:outputText>
+                </ui:fragment>
+                <h:outputText value="#{(fromDate ne null and toDate ne null) ? '  |  ' : ''}#{filterText}"
+                              rendered="#{not empty filterText}" />
+            </span>
+            <span>
+                <h:outputText value="Printed: " />
+                <h:outputText value="#{session.lastAccessedTime}"><f:convertDateTime pattern="dd/MM/yyyy hh:mm a" /></h:outputText>
+            </span>
+        </div>
+    </div>
+</ui:composition>

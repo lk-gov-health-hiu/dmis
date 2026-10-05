@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!--
+    Print footer for a dot-matrix register/report (see scss/src/print.scss).
+    Params:
+      count       number of rows printed (required)
+      itemName    noun for the count, default "letters"
+      signatures  true to print the Prepared / Checked / Received signature row
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <div class="pd-foot">
+        <span><h:outputText value="Total: #{count} #{empty itemName ? 'letters' : itemName}" /></span>
+        <span><h:outputText value="Printed by #{webUserController.loggedUser.person.nameWithTitle}" /></span>
+        <span>-- End of report --</span>
+    </div>
+    <ui:fragment rendered="#{signatures}">
+        <div class="pd-signatures">
+            <div>Prepared by</div>
+            <div>Checked by</div>
+            <div>Received by</div>
+            <div>Date</div>
+        </div>
+    </ui:fragment>
+</ui:composition>
