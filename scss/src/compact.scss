@@ -1,0 +1,77 @@
+// Compact density for the whole app. DMIS is a data-entry/reporting app, not a
+// website: the saga theme's 1rem paddings everywhere waste screen space.
+// Saga sizes in rem, so a smaller root font scales every PrimeFaces widget
+// (and Bootstrap's rem spacing) together; the rules below then trim the
+// theme's largest paddings. `html body` outranks saga's `body ...` selectors.
+
+html {
+    font-size: 14px;
+}
+
+html body {
+    // Inputs, dropdowns, autocompletes
+    .ui-inputfield {
+        padding: 0.35rem 0.5rem;
+    }
+    .ui-selectonemenu .ui-selectonemenu-label {
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
+    }
+    .ui-autocomplete .ui-autocomplete-multiple-container {
+        padding: 0.15rem 0.5rem;
+    }
+
+    // Buttons
+    .ui-button.ui-button-text-only .ui-button-text {
+        padding: 0.35rem 0.75rem;
+    }
+    .ui-button.ui-button-text-icon-left .ui-button-text {
+        padding: 0.35rem 0.75rem 0.35rem 2rem;
+    }
+    .ui-button.ui-button-text-icon-right .ui-button-text {
+        padding: 0.35rem 2rem 0.35rem 0.75rem;
+    }
+    .ui-button.ui-button-icon-only .ui-button-text {
+        padding: 0.35rem;
+    }
+
+    // Cards
+    .ui-card {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .ui-card .ui-card-body {
+        padding: 0.6rem 0.75rem;
+    }
+    .ui-card .ui-card-title {
+        margin-bottom: 0.25rem;
+    }
+    .ui-card .ui-card-content {
+        padding: 0.4rem 0;
+    }
+
+    // Data tables
+    .ui-datatable thead > tr > th,
+    .ui-datatable tfoot > tr > td,
+    .ui-datatable .ui-datatable-data > tr > td {
+        padding: 0.35rem 0.5rem;
+    }
+    .ui-datatable .ui-datatable-header {
+        padding: 0.4rem 0.5rem;
+    }
+    .ui-datatable .ui-paginator {
+        padding: 0.25rem;
+    }
+    .ui-datatable .ui-column-filter {
+        margin-top: 0.25rem;
+    }
+
+    // Menubar and messages
+    .ui-menu.ui-menubar {
+        padding: 0.25rem;
+    }
+    .ui-messages > div {
+        padding: 0.6rem 0.75rem;
+        margin: 0.4rem 0;
+    }
+}

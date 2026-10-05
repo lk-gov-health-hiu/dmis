@@ -102,6 +102,67 @@
   height: 1.25rem;
 }
 
+html {
+  font-size: 14px;
+}
+
+html body .ui-inputfield {
+  padding: 0.35rem 0.5rem;
+}
+html body .ui-selectonemenu .ui-selectonemenu-label {
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+html body .ui-autocomplete .ui-autocomplete-multiple-container {
+  padding: 0.15rem 0.5rem;
+}
+html body .ui-button.ui-button-text-only .ui-button-text {
+  padding: 0.35rem 0.75rem;
+}
+html body .ui-button.ui-button-text-icon-left .ui-button-text {
+  padding: 0.35rem 0.75rem 0.35rem 2rem;
+}
+html body .ui-button.ui-button-text-icon-right .ui-button-text {
+  padding: 0.35rem 2rem 0.35rem 0.75rem;
+}
+html body .ui-button.ui-button-icon-only .ui-button-text {
+  padding: 0.35rem;
+}
+html body .ui-card {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+html body .ui-card .ui-card-body {
+  padding: 0.6rem 0.75rem;
+}
+html body .ui-card .ui-card-title {
+  margin-bottom: 0.25rem;
+}
+html body .ui-card .ui-card-content {
+  padding: 0.4rem 0;
+}
+html body .ui-datatable thead > tr > th,
+html body .ui-datatable tfoot > tr > td,
+html body .ui-datatable .ui-datatable-data > tr > td {
+  padding: 0.35rem 0.5rem;
+}
+html body .ui-datatable .ui-datatable-header {
+  padding: 0.4rem 0.5rem;
+}
+html body .ui-datatable .ui-paginator {
+  padding: 0.25rem;
+}
+html body .ui-datatable .ui-column-filter {
+  margin-top: 0.25rem;
+}
+html body .ui-menu.ui-menubar {
+  padding: 0.25rem;
+}
+html body .ui-messages > div {
+  padding: 0.6rem 0.75rem;
+  margin: 0.4rem 0;
+}
+
 html, body, * {
   font-family: "Noto Sans JP", sans-serif !important;
 }
