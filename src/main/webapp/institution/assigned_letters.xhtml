@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                Assigned Letters
+            </ui:define>
+            <ui:define name="content">
+                <p:growl />
+                <h:form id="reportForm">
+                    <p:card styleClass="report-card">
+                        <f:facet name="title">
+                            <div class="report-card-header">
+                                <h:outputText value="Assigned Letters" styleClass="report-card-title" />
+                                <div class="report-card-actions">
+                                    <p:commandButton value="Process" icon="pi pi-search" ajax="false"
+                                                     styleClass="ui-button-warning"
+                                                     action="#{letterController.fillAssignedLetters()}" />
+                                    <p:commandButton value="Print" icon="pi pi-print" type="button"
+                                                     styleClass="ui-button-info">
+                                        <p:printer target="gridPrint" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Download" icon="pi pi-file-excel" ajax="false"
+                                                     styleClass="ui-button-success">
+                                        <p:dataExporter target="tbl" type="xls" fileName="Assigned Letters" />
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <div class="ui-fluid report-filters">
+                            <div class="row g-2">
+                                <div class="col-md-2">
+                                    <p:outputLabel for="filterBy" value="Filter By" />
+                                    <p:selectOneMenu id="filterBy" value="#{letterController.searchFilterType}">
+                                        <f:selectItems value="#{commonController.searchFilterTypes}" var="sft"
+                                                       itemValue="#{sft}"
+                                                       itemLabel="#{sft eq 'SYSTEM_DATE' ? 'Assigned Date' : (sft eq 'DOCUMENT_DATE' ? 'Letter Date' : 'Stamp Date')}" />
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="col-md-2">
+                                    <p:outputLabel for="fromDate" value="From Date" />
+                                    <p:datePicker id="fromDate" showTime="true" hourFormat="12"
+                                                  showButtonBar="true" panelStyleClass="report-datepicker"
+                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                  value="#{letterController.fromDate}" />
+                                </div>
+                                <div class="col-md-2">
+                                    <p:outputLabel for="toDate" value="To Date" />
+                                    <p:datePicker id="toDate" showTime="true" hourFormat="12"
+                                                  showButtonBar="true" panelStyleClass="report-datepicker"
+                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                  value="#{letterController.toDate}" />
+                                </div>
+                                <div class="col-md-2">
+                                    <p:outputLabel for="assignedTo" value="Assigned To" />
+                                    <p:selectOneMenu id="assignedTo" value="#{letterController.assignedLettersUserFilter}">
+                                        <f:selectItem itemLabel="Any staff member" />
+                                        <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
+                                                       itemLabel="#{u.person.name}" itemValue="#{u}" />
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="col-md-2">
+                                    <p:outputLabel for="status" value="Status" />
+                                    <p:selectOneMenu id="status" value="#{letterController.assignedLettersStatusFilter}">
+                                        <f:selectItem itemLabel="All" itemValue="" />
+                                        <f:selectItem itemLabel="Accepted" itemValue="ACCEPTED" />
+                                        <f:selectItem itemLabel="Not yet accepted" itemValue="PENDING" />
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="col-md-2">
+                                    <p:outputLabel for="searchText" value="Search" />
+                                    <p:inputText id="searchText" value="#{letterController.assignedLettersSearchText}"
+                                                 placeholder="ID, number or title" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="report-bulkbar">
+                            <h:outputText value="Reassign selected to" styleClass="report-bulkbar-label" />
+                            <p:selectOneMenu id="reassignTo" value="#{letterController.reassignTo}" style="min-width:16em">
+                                <f:selectItem itemLabel="Select" />
+                                <f:selectItems value="#{webUserController.usersForMyInstitute}" var="u"
+                                               itemLabel="#{u.person.name}" itemValue="#{u}" />
+                            </p:selectOneMenu>
+                            <p:inputText id="reassignComments" value="#{letterController.reassignComments}"
+                                         placeholder="Comment (optional)" style="min-width:20em" />
+                            <p:commandButton value="Reassign" icon="pi pi-user-edit" ajax="false"
+                                             styleClass="ui-button-warning"
+                                             action="#{letterController.reassignSelectedLetters()}" />
+                        </div>
+
+                        <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
+                                     styleClass="report-table"
+                                     var="c" rowKey="#{c.id}" paginator="true"
+                                     selectionMode="multiple"
+                                     selection="#{letterController.selectedDocumentHistories}"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10"
+                                     emptyMessage="No assignments. Set the filters and click Process.">
+                            <p:column selectionBox="true" style="width:2.5em; text-align:center;" />
+                            <p:column headerText="ID"
+                                      sortBy="#{c.document.id}" filterBy="#{c.document.id}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.id}" />
+                            </p:column>
+                            <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}">
+                                <h:outputText value="#{c.document.documentDate}"><f:convertDateTime pattern="dd MMM yyyy" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="From"
+                                      sortBy="#{c.document.fromInsOrUser.name}" filterBy="#{c.document.fromInsOrUser.name}" filterMatchMode="contains">
+                                <h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" /><h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInsOrUser.name}" />
+                            </p:column>
+                            <p:column headerText="Letter Number"
+                                      sortBy="#{c.document.documentNumber}" filterBy="#{c.document.documentNumber}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.documentNumber}" />
+                            </p:column>
+                            <p:column headerText="Topic"
+                                      sortBy="#{c.document.documentName}" filterBy="#{c.document.documentName}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.documentName}" />
+                            </p:column>
+                            <p:column headerText="Assigned By"
+                                      sortBy="#{c.createdBy.person.name}" filterBy="#{c.createdBy.person.name}" filterMatchMode="contains">
+                                <h:outputText value="#{c.createdBy.person.name}" />
+                            </p:column>
+                            <p:column headerText="Previous Holder"
+                                      sortBy="#{c.fromUser.person.name}" filterBy="#{c.fromUser.person.name}" filterMatchMode="contains">
+                                <h:outputText value="#{c.fromUser.person.name}" />
+                            </p:column>
+                            <p:column headerText="Assigned To"
+                                      sortBy="#{c.toUser.person.name}" filterBy="#{c.toUser.person.name}" filterMatchMode="contains">
+                                <h:outputText value="#{c.toUser.person.name}" />
+                            </p:column>
+                            <p:column headerText="Assigned At" sortBy="#{c.createdAt}">
+                                <h:outputText value="#{c.createdAt}"><f:convertDateTime pattern="dd MMM yyyy hh:mm a" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="Comments"
+                                      sortBy="#{c.comments}" filterBy="#{c.comments}" filterMatchMode="contains">
+                                <h:outputText value="#{c.comments}" />
+                            </p:column>
+                            <p:column headerText="Status" sortBy="#{c.completed}">
+                                <h:outputText value="#{c.completed ? 'Accepted' : 'Not yet accepted'}" />
+                            </p:column>
+                            <p:column headerText="Actions" exportable="false" style="width:7em">
+                                <div class="report-row-actions">
+                                    <p:commandButton value="View" icon="pi pi-eye" ajax="false" styleClass="ui-button-info"
+                                                     action="#{letterController.toLetterView()}">
+                                        <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" />
+                                    </p:commandButton>
+                                </div>
+                            </p:column>
+                        </p:dataTable>
+
+                        <!-- Printed register: plain monospace table for dot-matrix printers (scss/src/print.scss).
+                             Hidden on screen; p:printer prints only this panel. -->
+                        <h:panelGroup layout="block" id="gridPrint" styleClass="print-doc d-none d-print-block">
+                            <ui:include src="/WEB-INF/includes/print_header.xhtml">
+                                <ui:param name="title" value="Assigned Letters" />
+                                <ui:param name="fromDate" value="#{letterController.fromDate}" />
+                                <ui:param name="toDate" value="#{letterController.toDate}" />
+                                <ui:param name="filterText" value="#{'Date filter: ' += (letterController.searchFilterType eq 'DOCUMENT_DATE' ? 'Letter Date' : (letterController.searchFilterType eq 'RECEIVED_DATE' ? 'Stamp Date' : 'Assigned Date')) += (empty letterController.assignedLettersUserFilter ? '' : '  |  Assigned to: ' += letterController.assignedLettersUserFilter.person.name) += (letterController.assignedLettersStatusFilter eq 'ACCEPTED' ? '  |  Accepted only' : (letterController.assignedLettersStatusFilter eq 'PENDING' ? '  |  Not yet accepted only' : ''))}" />
+                            </ui:include>
+                            <table class="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:3%">No.</th>
+                                        <th style="width:7%">ID</th>
+                                        <th style="width:9%">Letter Date</th>
+                                        <th style="width:15%">From</th>
+                                        <th style="width:10%">Letter No.</th>
+                                        <th>Topic</th>
+                                        <th style="width:13%">Assigned To</th>
+                                        <th style="width:9%">Assigned On</th>
+                                        <th style="width:8%">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ui:repeat value="#{letterController.documentHistories}" var="c" varStatus="s">
+                                        <tr>
+                                            <td><h:outputText value="#{s.index + 1}" /></td>
+                                            <td><h:outputText value="#{c.document.id}" /></td>
+                                            <td><h:outputText value="#{c.document.documentDate}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" /><h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInsOrUser.name}" /></td>
+                                            <td><h:outputText value="#{c.document.documentNumber}" /></td>
+                                            <td><h:outputText value="#{c.document.documentName}" /></td>
+                                            <td><h:outputText value="#{c.toUser.person.name}" /></td>
+                                            <td><h:outputText value="#{c.createdAt}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText value="#{c.completed ? 'Accepted' : 'Pending'}" /></td>
+                                        </tr>
+                                    </ui:repeat>
+                                </tbody>
+                            </table>
+                            <ui:include src="/WEB-INF/includes/print_footer.xhtml">
+                                <ui:param name="count" value="#{empty letterController.documentHistories ? 0 : letterController.documentHistories.size()}" />
+                                <ui:param name="signatures" value="#{false}" />
+                            </ui:include>
+                        </h:panelGroup>
+                    </p:card>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
