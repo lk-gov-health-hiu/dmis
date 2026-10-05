@@ -242,14 +242,7 @@ public class MenuController implements Serializable {
     }
 
     public String toReportsIndex() {
-        switch (webUserController.getLoggedUser().getWebUserRoleLevel()) {
-            case National:
-                return "/national/reports_index?faces-redirect=true";
-            case Institutional:
-                return "/institution/reports_index?faces-redirect=true";
-            default:
-                return "";
-        }
+        return "/reports_index?faces-redirect=true";
     }
 
     public String toSearch() {
