@@ -129,6 +129,8 @@ public class MenuController implements Serializable {
         letterController.setSelected(nd);
         letterController.setOurLetterToList(null);
         letterController.setOurLetterCopyList(null);
+        letterController.setOurLetterToFavouritesOnly(false);
+        letterController.setOurLetterCopyFavouritesOnly(false);
         letterController.setPendingUploads(null);
         return "/document/our_letter?faces-redirect=true";
     }

@@ -83,6 +83,8 @@ public class LetterController implements Serializable {
     private List<Nameable> throughInsOrUser;
     private List<Nameable> ourLetterToList;
     private List<Nameable> ourLetterCopyList;
+    private boolean ourLetterToFavouritesOnly;
+    private boolean ourLetterCopyFavouritesOnly;
 
     // Sticks for the rest of the session (unless the user toggles it again):
     // true = recording a letter received from outside, false = recording a letter created by us.
@@ -111,6 +113,8 @@ public class LetterController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     WebUserApplicationController webUserApplicationController;
+    @Inject
+    FavouriteInstitutionController favouriteInstitutionController;
 
     private Institution institution;
 
@@ -197,6 +201,46 @@ public class LetterController implements Serializable {
         save(selected);
     }
 
+    private static boolean institutionMatchesWords(Institution i, String[] words) {
+        for (String word : words) {
+            word = word.trim().toLowerCase();
+            boolean thisWordMatch = (i.getName() != null && i.getName().toLowerCase().contains(word))
+                    || (i.getSname() != null && i.getSname().toLowerCase().contains(word))
+                    || (i.getTname() != null && i.getTname().toLowerCase().contains(word));
+            if (!thisWordMatch) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Our Letter "To": all institutions and persons, or only the logged
+     * institution's favourites when the star toggle is on.
+     */
+    public List<Nameable> completeOurLetterTo(String nameQry) {
+        return ourLetterToFavouritesOnly ? completeFavouriteInstitutionsByWords(nameQry) : completeInsOrUsersByWords(nameQry);
+    }
+
+    /** Our Letter "Copy": same as {@link #completeOurLetterTo(String)}, own toggle. */
+    public List<Nameable> completeOurLetterCopy(String nameQry) {
+        return ourLetterCopyFavouritesOnly ? completeFavouriteInstitutionsByWords(nameQry) : completeInsOrUsersByWords(nameQry);
+    }
+
+    private List<Nameable> completeFavouriteInstitutionsByWords(String nameQry) {
+        List<Nameable> res = new ArrayList<>();
+        if (nameQry == null || nameQry.trim().isEmpty()) {
+            return res;
+        }
+        String words[] = nameQry.trim().split("\\s+");
+        for (Institution i : favouriteInstitutionController.findFavourites(webUserController.getLoggedInstitution())) {
+            if (institutionMatchesWords(i, words)) {
+                res.add(i);
+            }
+        }
+        return res;
+    }
+
     public List<Nameable> completeInsOrUsersByWords(String nameQry) {
         List<Nameable> resIns = new ArrayList<>();
         if (nameQry == null) {
@@ -210,26 +254,7 @@ public class LetterController implements Serializable {
         String words[] = nameQry.split("\\s+");
 
         for (Institution i : allIns) {
-            boolean allWordsMatch = true;
-
-            for (String word : words) {
-                boolean thisWordMatch;
-                word = word.trim().toLowerCase();
-                if (i.getName() != null && i.getName().toLowerCase().contains(word)) {
-                    thisWordMatch = true;
-                } else if (i.getSname() != null && i.getSname().toLowerCase().contains(word)) {
-                    thisWordMatch = true;
-                } else if (i.getTname() != null && i.getTname().toLowerCase().contains(word)) {
-                    thisWordMatch = true;
-                } else {
-                    thisWordMatch = false;
-                }
-                if (thisWordMatch == false) {
-                    allWordsMatch = false;
-                }
-            }
-
-            if (allWordsMatch) {
+            if (institutionMatchesWords(i, words)) {
                 resIns.add(i);
             }
         }
@@ -3920,6 +3945,22 @@ public class LetterController implements Serializable {
             ourLetterToList = new ArrayList<>();
         }
         return ourLetterToList;
+    }
+
+    public boolean isOurLetterToFavouritesOnly() {
+        return ourLetterToFavouritesOnly;
+    }
+
+    public void setOurLetterToFavouritesOnly(boolean ourLetterToFavouritesOnly) {
+        this.ourLetterToFavouritesOnly = ourLetterToFavouritesOnly;
+    }
+
+    public boolean isOurLetterCopyFavouritesOnly() {
+        return ourLetterCopyFavouritesOnly;
+    }
+
+    public void setOurLetterCopyFavouritesOnly(boolean ourLetterCopyFavouritesOnly) {
+        this.ourLetterCopyFavouritesOnly = ourLetterCopyFavouritesOnly;
     }
 
     public void setOurLetterToList(List<Nameable> ourLetterToList) {

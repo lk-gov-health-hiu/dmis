@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <style>
+                    .favourite-institutions .favourite-add {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+                    }
+                    .favourite-institutions .favourite-add .ui-autocomplete {
+                        flex: 1;
+                    }
+                    .favourite-institutions .favourite-add .ui-autocomplete input {
+                        width: 100%;
+                    }
+                </style>
+                <h:form id="favForm" class="favourite-institutions">
+                    <p:panel>
+                        <f:facet name="header">
+                            <h:outputText value="Favourite Institutions — #{webUserController.loggedInstitution.name}" />
+                        </f:facet>
+
+                        <p:growl id="growl" showDetail="false" />
+
+                        <h:outputText class="text-muted d-block mb-2"
+                                      value="Starred institutions can be picked quickly in the To and Copy fields of a New Our Letter by switching on the star." />
+
+                        <h:panelGroup layout="block" class="favourite-add mb-3">
+                            <p:autoComplete id="institutionToAdd"
+                                            value="#{favouriteInstitutionController.institutionToAdd}"
+                                            completeMethod="#{institutionController.completeInstitutions}"
+                                            var="ins"
+                                            itemLabel="#{ins.name}"
+                                            itemValue="#{ins}"
+                                            forceSelection="true"
+                                            minQueryLength="3"
+                                            delay="500"
+                                            maxResults="15"
+                                            placeholder="Type at least 3 letters of the institution" />
+                            <p:commandButton id="btnAdd" value="Add" icon="pi pi-star"
+                                             class="ui-button-success"
+                                             action="#{favouriteInstitutionController.add()}"
+                                             process="@this institutionToAdd"
+                                             update="growl institutionToAdd tblFavourites" />
+                        </h:panelGroup>
+
+                        <p:dataTable id="tblFavourites"
+                                     value="#{favouriteInstitutionController.items}"
+                                     var="f"
+                                     rowKey="#{f.id}"
+                                     emptyMessage="No favourite institutions yet.">
+                            <p:column headerText="Institution">
+                                <h:outputText value="#{f.favourite.name}" />
+                            </p:column>
+                            <p:column headerText="Added By" style="width: 14em;">
+                                <h:outputText value="#{f.createdBy.name}" />
+                            </p:column>
+                            <p:column headerText="Added On" style="width: 9em;">
+                                <h:outputText value="#{f.createdAt}">
+                                    <f:convertDateTime pattern="dd MMM yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column style="width: 7em; text-align: center;">
+                                <p:commandButton value="Remove" icon="pi pi-trash"
+                                                 class="ui-button-danger ui-button-flat"
+                                                 action="#{favouriteInstitutionController.remove(f)}"
+                                                 process="@this"
+                                                 update=":favForm:growl :favForm:tblFavourites" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

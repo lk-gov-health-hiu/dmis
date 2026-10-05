@@ -25,6 +25,7 @@
                     <p:menuitem class="submenu-item" ajax="false" value="Search Letters" action="#{menuController.toLetterSearch()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Search Letters by Date" action="#{menuController.toLetterSearchByDate()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Assign Multiple Letters" action="#{letterController.toAssignMultipleLetters()}" />
+                    <p:menuitem class="submenu-item" ajax="false" value="Favourite Institutions" action="#{favouriteInstitutionController.toManageFavouriteInstitutions()}" />
                     <p:menuitem class="submenu-item" ajax="false" value="Import Letters from PDF"
                                 action="#{letterImportController.toLetterImport()}"
                                 rendered="#{webUserController.hasPrivilege('Import_Letters')}" />

@@ -14,39 +14,24 @@
       <div class="container-fluid ">
         <div class="row">
           <div class="col-12 p-2">
-            <p:messages></p:messages>
+            <p:messages />
           </div>
         </div>
         <div class="row">
           <div class="col-sm-12 col-md-3">
 
-            <div class="card border border-light">
-              <div class="card-header bg-white fw-bold text-secondary fs-5 my-2">
-                <h:outputLabel value="Institution Administration"></h:outputLabel>
-              </div>
-              <div class="card-body container-fluid">
-                <div class="row">
-                  <div class="col-12 p-2">
-                    <h:form>
-                      <h:commandLink value="Add New User" action="#{menuController.toAddNewUser()}"
-                        class="btn btn-outline-primary btn-lg btn-block w-100">
-                      </h:commandLink>
-                    </h:form>
-                  </div>
+            <p:panel header="Institution Administration">
+              <h:form>
+                <div class="d-flex flex-column gap-2">
+                  <p:commandButton value="Add New User" ajax="false" class="ui-button-outlined w-100"
+                    action="#{menuController.toAddNewUser()}" />
+                  <p:commandButton value="View Users" ajax="false" class="ui-button-outlined w-100"
+                    action="#{menuController.toListUsers()}" />
+                  <p:commandButton value="Favourite Institutions" ajax="false" class="ui-button-outlined w-100"
+                    action="#{favouriteInstitutionController.toManageFavouriteInstitutions()}" />
                 </div>
-
-                <div class="row">
-                  <div class="col-12 p-2">
-                    <h:form>
-                      <h:commandLink value="View Users" action="#{menuController.toListUsers()}"
-                        class="btn btn-outline-primary btn-lg btn-block w-100">
-                      </h:commandLink>
-                    </h:form>
-                  </div>
-                </div>
-
-              </div>
-            </div>
+              </h:form>
+            </p:panel>
           </div>
           <div class="col-sm-12 col-md-8">
             <ui:insert name="admin">

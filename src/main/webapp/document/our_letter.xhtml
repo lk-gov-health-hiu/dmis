@@ -70,6 +70,31 @@
                     .letter-entry .ui-autocomplete-input-token input {
                         width: 100%;
                     }
+                    /* Star toggle sits beside the To/Copy autocomplete: off = all, on = favourites only. */
+                    .letter-entry .letter-entry-recipients {
+                        display: flex;
+                        align-items: flex-start;
+                        gap: 0.5em;
+                    }
+                    .letter-entry .letter-entry-recipients .ui-autocomplete {
+                        flex: 1;
+                    }
+                    .letter-entry .letter-entry-recipients .ui-selectbooleanbutton {
+                        flex: none;
+                        width: 2.6em;
+                        height: 2.4em;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0;
+                    }
+                    .letter-entry .letter-entry-recipients .ui-selectbooleanbutton .ui-button-icon-left {
+                        position: static;
+                        margin: 0;
+                    }
+                    .letter-entry .letter-entry-recipients .ui-selectbooleanbutton .ui-button-text {
+                        display: none;
+                    }
                     /* Title left, buttons centred on the same row: the equal 1fr side
                        columns keep the buttons centred whatever the title length. */
                     .letter-entry .letter-entry-header {
@@ -135,20 +160,6 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <p:outputLabel for="status" value="Status" />
-                                    <p:selectOneMenu id="status"
-                                                     value="#{letterController.selected.letterStatus}">
-                                        <f:selectItem itemLabel="Select" />
-                                        <f:selectItems value="#{itemApplicationController.letterStatuses}"
-                                                       var="s"
-                                                       itemLabel="#{s.name}"
-                                                       itemValue="#{s}" />
-                                        <p:ajax event="blur" process="@this" global="false" />
-                                    </p:selectOneMenu>
-                                    <p:message for="status" display="text" />
-                                </div>
-
-                                <div class="col-md-4">
                                     <p:outputLabel for="method" value="Sending Method" />
                                     <p:selectOneMenu id="method" value="#{letterController.selected.receivedAs}">
                                         <p:ajax event="change" process="@this" update="regNo" global="false" />
@@ -191,8 +202,12 @@
                                     <div class="text-muted letter-entry-hint">
                                         <h:outputText value="From: #{webUserController.loggedInstitution.name}" />
                                     </div>
+                                    <div class="text-muted letter-entry-hint">
+                                        <h:outputText value="You can add more than one — type and select each recipient in turn." />
+                                    </div>
+                                    <div class="letter-entry-recipients">
                                     <p:autoComplete id="to" value="#{letterController.ourLetterToList}"
-                                                    completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                    completeMethod="#{letterController.completeOurLetterTo}"
                                                     var="insf" multiple="true"
                                                     forceSelection="true"
                                                     required="true"
@@ -205,13 +220,25 @@
                                                     delay="500"
                                                     minQueryLength="3"
                                                     cache="false" />
+                                    <p:selectBooleanButton id="toFavOnly"
+                                                    value="#{letterController.ourLetterToFavouritesOnly}"
+                                                    onLabel="" offLabel=""
+                                                    onIcon="pi pi-star-fill" offIcon="pi pi-star"
+                                                    title="Show favourite institutions only (off = all)">
+                                        <p:ajax process="@this" global="false" />
+                                    </p:selectBooleanButton>
+                                    </div>
                                     <p:message for="to" display="text" />
                                 </div>
 
                                 <div class="col-12">
                                     <p:outputLabel for="copy" value="Copy" />
+                                    <div class="text-muted letter-entry-hint">
+                                        <h:outputText value="You can add more than one — type and select each recipient in turn." />
+                                    </div>
+                                    <div class="letter-entry-recipients">
                                     <p:autoComplete id="copy" value="#{letterController.ourLetterCopyList}"
-                                                    completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                    completeMethod="#{letterController.completeOurLetterCopy}"
                                                     var="insf" multiple="true"
                                                     forceSelection="true"
                                                     placeholder="Type at least 3 letters of the institution or person"
@@ -222,6 +249,14 @@
                                                     delay="500"
                                                     minQueryLength="3"
                                                     cache="false" />
+                                    <p:selectBooleanButton id="copyFavOnly"
+                                                    value="#{letterController.ourLetterCopyFavouritesOnly}"
+                                                    onLabel="" offLabel=""
+                                                    onIcon="pi pi-star-fill" offIcon="pi pi-star"
+                                                    title="Show favourite institutions only (off = all)">
+                                        <p:ajax process="@this" global="false" />
+                                    </p:selectBooleanButton>
+                                    </div>
                                     <p:message for="copy" display="text" />
                                 </div>
 
