@@ -15,6 +15,7 @@
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
+                padding: 16px;
             }
             .login-card {
                 background: white;
@@ -35,21 +36,63 @@
                 text-align: center;
                 font-weight: bold;
                 font-size: 18px;
-                margin-bottom: 25px;
+                margin-bottom: 20px;
             }
-            .login-btn {
+            .login-field {
+                margin-bottom: 16px;
+            }
+            .login-field label {
+                display: block;
+                font-size: 14px;
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 6px;
+            }
+            /* Make every control exactly the card's inner width */
+            .login-card .ui-inputtext,
+            .login-card .ui-password {
                 width: 100%;
-                padding: 12px;
+            }
+            .login-card .ui-password input {
+                width: 100%;
+            }
+            .login-card .ui-messages {
+                margin: 0 0 16px 0;
+            }
+            /* Icon beside a plain list of messages, compact */
+            .login-card .ui-messages > div {
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                margin: 0;
+                padding: 10px 12px;
+            }
+            .login-card .ui-messages > div > span[class$="-icon"] {
+                flex-shrink: 0;
+                margin: 0;
+            }
+            .login-card .ui-messages ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 1.5;
+            }
+            .login-card .login-btn.ui-button {
+                width: 100%;
+                padding: 6px 0;
+                margin-top: 4px;
                 background: #2c3e50;
+                border-color: #2c3e50;
                 color: white;
-                border: none;
-                border-radius: 4px;
                 font-size: 16px;
                 font-weight: bold;
-                cursor: pointer;
             }
-            .login-btn:hover {
+            .login-card .login-btn.ui-button:hover,
+            .login-card .login-btn.ui-button:focus {
                 background: #1a252f;
+                border-color: #1a252f;
             }
             .login-footer {
                 text-align: center;
@@ -62,40 +105,43 @@
         <div class="login-container">
             <div class="login-card">
                 <div class="login-logo">
-                    <h:graphicImage library="image" name="login.png" />
+                    <h:graphicImage library="image" name="login.png" alt="Emblem of Sri Lanka" />
                 </div>
                 <div class="login-title">
                     Document Management Information System
                 </div>
-                <h:form>
-                    <div class="row">
-                        <div class="col-12 m-1">
-                            <p:inputText id="username" value="#{webUserController.userName}"
-                                         placeholder="Username" required="true"
-                                         requiredMessage="Username is required." autocomplete="off" />
-                        </div>
+                <h:form id="loginForm">
+                    <p:messages id="loginMessages" />
+
+                    <div class="login-field">
+                        <h:outputLabel for="username" value="Username" />
+                        <p:inputText id="username" value="#{webUserController.userName}"
+                                     placeholder="Enter your username" required="true"
+                                     requiredMessage="Username is required."
+                                     autocomplete="username" />
                     </div>
-                    <div class="row">
-                        <div class="col-12 m-1">
-                            <p:password id="password" value="#{webUserController.password}"
-                                           placeholder="Password" required="true"
-                                           toggleMask="true" feedback="false"
-                                           requiredMessage="Password is required." autocomplete="off" styleClass="w-100" />
-                        </div>
+                    <div class="login-field">
+                        <h:outputLabel for="password" value="Password" />
+                        <p:password id="password" value="#{webUserController.password}"
+                                    placeholder="Enter your password" required="true"
+                                    toggleMask="true" feedback="false"
+                                    requiredMessage="Password is required."
+                                    autocomplete="current-password" />
                     </div>
-                    <div class="row">
-                        <div class="col-12 m-1" >
-                            <h:commandButton value="Login" styleClass="login-btn"
-                                             action="#{webUserController.loginNew()}" />
-                        </div>
-                    </div>
+
+                    <p:commandButton value="Login" ajax="false"
+                                     styleClass="login-btn"
+                                     action="#{webUserController.loginNew()}" />
+
+                    <!-- Focuses the first invalid field, or Username on first load -->
+                    <p:focus />
+
                     <div class="login-footer">
                         © Health Information Unit, Ministry of Health
                         <h:outputText value="#{session.lastAccessedTime}">
                             <f:convertDateTime pattern="yyyy" type="date" />
                         </h:outputText>
                     </div>
-                    <p:messages />
                 </h:form>
             </div>
         </div>
