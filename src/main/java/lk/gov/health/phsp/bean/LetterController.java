@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -125,6 +126,12 @@ public class LetterController implements Serializable {
     private SearchFilterType searchFilterType;
     private Nameable lettersEnteredFromInstitutionFilter;
     private Nameable lettersEnteredToInstitutionFilter;
+    // Assigned Letters page filters and reassign form
+    private WebUser assignedLettersUserFilter;
+    private String assignedLettersStatusFilter;
+    private String assignedLettersSearchText;
+    private WebUser reassignTo;
+    private String reassignComments;
 
     private UploadedFile file;
     // Scanned copies chosen on the New Letter page before the letter has been
@@ -1860,6 +1867,110 @@ public class LetterController implements Serializable {
         return toAssignMultipleLetters();
     }
 
+    /**
+     * Every assignment made by the logged institution - one row per
+     * Letter_Assigned history, so a reassigned letter shows its whole trail.
+     */
+    public void fillAssignedLetters() {
+        if (searchFilterType == null) {
+            searchFilterType = SearchFilterType.SYSTEM_DATE;
+        }
+        String dateField = searchFilterType == SearchFilterType.SYSTEM_DATE
+                ? "h.createdAt"
+                : "h.document." + searchFilterType.getCode();
+        Map m = new HashMap();
+        String j = "select h "
+                + " from DocumentHistory h "
+                + " where h.retired=false "
+                + " and h.historyType=:ht "
+                + " and h.institution=:ins "
+                + " and (" + dateField + " between :fd and :td) ";
+        if (assignedLettersUserFilter != null) {
+            j += " and h.toUser=:tu ";
+            m.put("tu", assignedLettersUserFilter);
+        }
+        if ("ACCEPTED".equals(assignedLettersStatusFilter)) {
+            j += " and h.completed=true ";
+        } else if ("PENDING".equals(assignedLettersStatusFilter)) {
+            j += " and h.completed=false ";
+        }
+        String term = assignedLettersSearchText == null ? "" : assignedLettersSearchText.trim().toLowerCase();
+        if (!term.isEmpty()) {
+            j += " and (lower(h.document.documentNumber) like :st "
+                    + " or lower(h.document.documentName) like :st ";
+            m.put("st", "%" + term + "%");
+            try {
+                m.put("sid", Long.valueOf(term));
+                j += " or h.document.id=:sid ";
+            } catch (NumberFormatException e) {
+                // not a letter ID - match number/title only
+            }
+            j += ") ";
+        }
+        j += " order by h.id";
+        m.put("ht", HistoryType.Letter_Assigned);
+        m.put("ins", webUserController.getLoggedInstitution());
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        documentHistories = documentHxFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        selectedDocumentHistories = null;
+    }
+
+    public String reassignSelectedLetters() {
+        if (reassignTo == null) {
+            JsfUtil.addErrorMessage("Select a user to reassign to");
+            return "";
+        }
+        if (selectedDocumentHistories == null || selectedDocumentHistories.isEmpty()) {
+            JsfUtil.addErrorMessage("Select letters");
+            return "";
+        }
+
+        // Several rows can belong to the same letter - reassign each letter once.
+        Map<Long, Document> letters = new LinkedHashMap<>();
+        for (DocumentHistory h : selectedDocumentHistories) {
+            if (h.getDocument() != null) {
+                letters.putIfAbsent(h.getDocument().getId(), h.getDocument());
+            }
+        }
+
+        int reassigned = 0;
+        int skipped = 0;
+        for (Document d : letters.values()) {
+            if (reassignTo.equals(d.getCurrentOwner())) {
+                skipped++;
+                continue;
+            }
+            DocumentHistory docHx = new DocumentHistory();
+            docHx.setHistoryType(HistoryType.Letter_Assigned);
+            docHx.setDocument(d);
+            docHx.setFromUser(d.getCurrentOwner());
+            docHx.setToUser(reassignTo);
+            docHx.setComments(reassignComments);
+            docHx.setInstitution(webUserController.getLoggedInstitution());
+            saveDocumentHx(docHx);
+
+            d.setCurrentOwner(reassignTo);
+            d.setCompleted(false);
+            documentFacade.edit(d);
+            reassigned++;
+        }
+
+        String msg = reassigned + (reassigned == 1 ? " letter" : " letters") + " reassigned";
+        if (skipped > 0) {
+            msg += ", " + skipped + " skipped (already assigned to this person)";
+        }
+        if (reassigned > 0) {
+            JsfUtil.addSuccessMessage(msg);
+        } else {
+            JsfUtil.addErrorMessage(msg);
+        }
+        reassignTo = null;
+        reassignComments = null;
+        fillAssignedLetters();
+        return "";
+    }
+
     public String forwardOrCopyTo() {
         if (webUserCopy == null) {
             JsfUtil.addErrorMessage("Select a user to transfer ownership");
@@ -2587,6 +2698,13 @@ public class LetterController implements Serializable {
     public String toAssignMultipleLetters() {
         items = null;
         return "/institution/assign_multiple_letters?faces-redirect=true";
+    }
+
+    public String toAssignedLetters() {
+        documentHistories = null;
+        selectedDocumentHistories = null;
+        searchFilterType = SearchFilterType.SYSTEM_DATE;
+        return "/institution/assigned_letters?faces-redirect=true";
     }
 
     public void fillForwardCopyActions() {
@@ -3677,6 +3795,46 @@ public class LetterController implements Serializable {
 
     public void setLettersEnteredToInstitutionFilter(Nameable lettersEnteredToInstitutionFilter) {
         this.lettersEnteredToInstitutionFilter = lettersEnteredToInstitutionFilter;
+    }
+
+    public WebUser getAssignedLettersUserFilter() {
+        return assignedLettersUserFilter;
+    }
+
+    public void setAssignedLettersUserFilter(WebUser assignedLettersUserFilter) {
+        this.assignedLettersUserFilter = assignedLettersUserFilter;
+    }
+
+    public String getAssignedLettersStatusFilter() {
+        return assignedLettersStatusFilter;
+    }
+
+    public void setAssignedLettersStatusFilter(String assignedLettersStatusFilter) {
+        this.assignedLettersStatusFilter = assignedLettersStatusFilter;
+    }
+
+    public String getAssignedLettersSearchText() {
+        return assignedLettersSearchText;
+    }
+
+    public void setAssignedLettersSearchText(String assignedLettersSearchText) {
+        this.assignedLettersSearchText = assignedLettersSearchText;
+    }
+
+    public WebUser getReassignTo() {
+        return reassignTo;
+    }
+
+    public void setReassignTo(WebUser reassignTo) {
+        this.reassignTo = reassignTo;
+    }
+
+    public String getReassignComments() {
+        return reassignComments;
+    }
+
+    public void setReassignComments(String reassignComments) {
+        this.reassignComments = reassignComments;
     }
 
     public Nameable getWebUserCopy() {
