@@ -1843,6 +1843,7 @@ public class LetterController implements Serializable {
             DocumentHistory docHx = new DocumentHistory();
             docHx.setHistoryType(HistoryType.Letter_Assigned);
             docHx.setDocument(lds.getDocument());
+            docHx.setFromUser(lds.getDocument().getCurrentOwner());
             docHx.setToUser(webUser);
             docHx.setItem(minute);
             docHx.setInstitution(webUserController.getLoggedInstitution());
