@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <!-- Common reports index for all users. National statistics are shown to
+             national-level users only, as they expose counts for every institution. -->
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="title">
+                Reports
+            </ui:define>
+            <ui:define name="content">
+                <p:messages globalOnly="true" closable="true" />
+                <h:form id="reportsIndex">
+                    <div class="row g-2 ui-fluid">
+                        <div class="col-md-4">
+                            <p:card styleClass="report-card">
+                                <f:facet name="title">
+                                    <h:outputText value="Letters" styleClass="report-card-title" />
+                                </f:facet>
+                                <div class="d-grid gap-2">
+                                    <p:commandButton value="Letters Entered by the Unit" ajax="false"
+                                                     styleClass="ui-button-outlined"
+                                                     action="#{letterController.toReportsLetterReceived()}" />
+                                    <p:commandButton value="Letter Copy/Forward by Unit Register" ajax="false"
+                                                     styleClass="ui-button-outlined"
+                                                     action="#{letterController.toReportsLetterCopyForwardActions()}" />
+                                    <p:commandButton value="Letter Copy/Forward to Unit Register" ajax="false"
+                                                     styleClass="ui-button-outlined"
+                                                     action="#{letterController.toReportsLetterAcceptRegister()}" />
+                                    <p:commandButton value="Letters Entered by the Unit - Outside Letters" ajax="false"
+                                                     styleClass="ui-button-outlined"
+                                                     action="#{letterController.toReportsLettersEnteredOutside()}" />
+                                    <p:commandButton value="Entered Outgoing Letters" ajax="false"
+                                                     styleClass="ui-button-outlined"
+                                                     action="#{letterController.toReportsLettersEnteredOur()}" />
+                                </div>
+                            </p:card>
+                        </div>
+                        <h:panelGroup layout="block" styleClass="col-md-4"
+                                      rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'National'}">
+                            <p:card styleClass="report-card">
+                                <f:facet name="title">
+                                    <h:outputText value="National Statistics" styleClass="report-card-title" />
+                                </f:facet>
+                                <div class="d-grid gap-2">
+                                    <p:commandButton value="Counts by Institution" ajax="false"
+                                                     styleClass="ui-button-outlined"
+                                                     action="#{letterController.toReportsInstitutionCountsLetters}" />
+                                    <p:commandButton value="Counts by Day" ajax="false"
+                                                     styleClass="ui-button-outlined"
+                                                     action="#{letterController.toReportsDailyCountsLetters}" />
+                                </div>
+                            </p:card>
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
