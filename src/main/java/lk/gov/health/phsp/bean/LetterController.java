@@ -2552,7 +2552,8 @@ public class LetterController implements Serializable {
 
     public String toReportsLetterReceived() {
         documentHistories = null;
-        return "/institution/letter_received_registry";
+        lettersEnteredFromInstitutionFilter = null;
+        return "/institution/letter_received_registry?faces-redirect=true";
     }
 
     public String toReportsLettersEnteredOutside() {
