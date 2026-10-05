@@ -2338,6 +2338,7 @@ public class LetterController implements Serializable {
         selected.setDocumentGenerationType(DocumentGenerationType.Created_by_institution);
         selected.setFromInstitution(loggedInstitution);
         save(selected);
+        savePendingUploads();
 
         DocumentHistory createdHx = new DocumentHistory();
         createdHx.setHistoryType(HistoryType.Letter_Created);

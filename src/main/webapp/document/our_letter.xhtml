@@ -5,189 +5,278 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
       >
     <h:body>
         <ui:composition template="/template1.xhtml">
             <ui:define name="title" >
-                Our Letter
+                New Our Letter
             </ui:define>
             <ui:define name="content">
-                <h:form >
-                    <div class="fw-bold w-100" >
-                        <h4 class="text-center fw-bold mb-0">
-                            <h:outputText value="Our Letter" ></h:outputText>
-                            <h:panelGroup  id="letterId" >
-                                <h:outputText value="&nbsp;-&nbsp;" rendered="#{letterController.selected.id ne null}" ></h:outputText>
-                                <h:outputText value="#{letterController.selected.id}" rendered="#{letterController.selected.id ne null}" ></h:outputText>
-                            </h:panelGroup>
-                        </h4>
+                <style>
+                    .letter-entry {
+                        max-width: 60em;
+                        margin: 1em auto;
+                    }
+                    .letter-entry.ui-card .ui-card-title {
+                        font-size: 1em;
+                    }
+                    .letter-entry-title {
+                        font-weight: 600;
+                    }
+                    .letter-entry label,
+                    .letter-entry .ui-outputlabel,
+                    .letter-entry .letter-entry-label {
+                        display: block;
+                        font-weight: 600;
+                        margin-bottom: 0.3em;
+                    }
+                    .letter-entry .ui-message {
+                        margin: 0.25em 0 0 0;
+                    }
+                    .letter-entry .ui-message:empty {
+                        display: none;
+                    }
+                    .letter-entry .letter-entry-hint {
+                        font-size: 0.85em;
+                        margin-bottom: 0.3em;
+                    }
+                    .letter-entry .letter-entry-section {
+                        margin-top: 1em;
+                    }
+                    .letter-entry .ui-fileupload-content {
+                        padding: 0.75em;
+                    }
+                    .letter-entry .letter-entry-file {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5em;
+                        padding: 0.35em 0;
+                        border-bottom: 1px solid var(--surface-d, #dee2e6);
+                    }
+                    .letter-entry .letter-entry-file-name {
+                        flex: 1;
+                        overflow-wrap: anywhere;
+                    }
+                    /* Multi-select To/Copy: let the type-in token take the rest of the
+                       row so the placeholder isn't clipped. */
+                    .letter-entry .ui-autocomplete-multiple-container {
+                        display: flex;
+                        flex-wrap: wrap;
+                    }
+                    .letter-entry .ui-autocomplete-input-token {
+                        flex: 1;
+                        min-width: 12em;
+                    }
+                    .letter-entry .ui-autocomplete-input-token input {
+                        width: 100%;
+                    }
+                    /* Title left, buttons centred on the same row: the equal 1fr side
+                       columns keep the buttons centred whatever the title length. */
+                    .letter-entry .letter-entry-header {
+                        display: grid;
+                        grid-template-columns: 1fr auto 1fr;
+                        align-items: center;
+                        gap: 0.6em;
+                    }
+                    .letter-entry .letter-entry-actions {
+                        display: flex;
+                        justify-content: center;
+                        gap: 0.5em;
+                    }
+                </style>
 
-                        <h:panelGrid id="letterGrid" columns="3"  class="text-left  fw-bold w-100 mx-auto" >
-                            <h:outputLabel for="letterDate"  >Letter Date
-                            </h:outputLabel>
-                            <h:panelGroup layout="block" class="w-50 text-left" >
-                                <p:datePicker id="letterDate"
-                                              value="#{letterController.selected.documentDate}"
-                                              monthNavigator="true"
-                                              yearNavigator="true"
-                                              class="w-50"
-                                              required="false" pattern="dd/MM/yyyy">
-                                    <p:ajax event="blur" process="@this" ></p:ajax>
-                                </p:datePicker>
-                            </h:panelGroup>
-                            <h:message class="text-danger small" for="letterDate"></h:message>
-
-                            <h:outputLabel for="method"  >Sending method </h:outputLabel>
-                            <h:panelGroup class="text-left" layout="block">
-                                <div class="row" >
-                                    <div >
-                                        <p:selectOneMenu id="method"  value="#{letterController.selected.receivedAs}"
-                                                         class="form-control"
-                                                         >
-                                            <f:ajax execute="method" render="regNo" event="change" ></f:ajax>
-                                            <f:selectItem itemLabel="Select" ></f:selectItem>
-                                            <f:selectItems value="#{itemApplicationController.letterReceiveCategories}"
-                                                           var="i"
-                                                           itemLabel="#{i.name}"
-                                                           itemValue="#{i}" ></f:selectItems>
-                                        </p:selectOneMenu>
-                                    </div>
-                                    <div  >
-                                        <h:panelGroup id="regNo" >
-                                            <h:inputText  a:placeholder="Enter Registration No."
-                                                          class="form-control"
-                                                          rendered="#{letterController.selected.receivedAs.code eq 'letter_receive_category_registered_post' or letterController.selected.receivedAs.code eq 'speed_post'}"
-                                                          value="#{letterController.selected.registrationNo}" >
-                                                <p:ajax event="blur" process="@this" ></p:ajax>
-                                            </h:inputText>
-                                        </h:panelGroup>
-                                    </div>
+                <h:form id="letterForm" enctype="multipart/form-data">
+                    <p:card styleClass="letter-entry">
+                        <f:facet name="title">
+                            <div class="letter-entry-header">
+                                <h:panelGroup id="letterId" layout="block">
+                                    <h:outputText value="#{letterController.selected.id eq null ? 'New ' : ''}Our Letter" styleClass="letter-entry-title" />
+                                    <h:outputText value=" - #{letterController.selected.id}" styleClass="letter-entry-title"
+                                                  rendered="#{letterController.selected.id ne null}" />
+                                </h:panelGroup>
+                                <div class="letter-entry-actions">
+                                    <p:commandButton id="btnSaveAdd" tabindex="10" ajax="false"
+                                                     styleClass="ui-button-success" icon="pi pi-check"
+                                                     action="#{letterController.saveAndViewOurLetter()}"
+                                                     value="Save &amp; View" />
+                                    <p:commandButton tabindex="10" ajax="false"
+                                                     styleClass="ui-button-warning" icon="pi pi-plus"
+                                                     action="#{letterController.saveAndNewOurLetter()}"
+                                                     value="Save &amp; New" />
                                 </div>
+                            </div>
+                        </f:facet>
+
+                        <p:messages id="msgs" closable="true" globalOnly="true" />
+
+                        <div class="ui-fluid">
+                            <div class="row g-3">
+
+                                <div class="col-md-4">
+                                    <p:outputLabel for="letterDate" value="Letter Date" />
+                                    <p:datePicker id="letterDate"
+                                                  value="#{letterController.selected.documentDate}"
+                                                  monthNavigator="true"
+                                                  yearNavigator="true"
+                                                  required="false" pattern="dd/MM/yyyy">
+                                        <p:ajax event="blur" process="@this" global="false" />
+                                    </p:datePicker>
+                                    <p:message for="letterDate" display="text" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <p:outputLabel for="title" value="Letter Number" />
+                                    <p:inputText id="title"
+                                                 autocomplete="off"
+                                                 value="#{letterController.selected.documentNumber}">
+                                        <p:ajax event="blur" process="@this" global="false" />
+                                    </p:inputText>
+                                    <p:message for="title" display="text" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <p:outputLabel for="status" value="Status" />
+                                    <p:selectOneMenu id="status"
+                                                     value="#{letterController.selected.letterStatus}">
+                                        <f:selectItem itemLabel="Select" />
+                                        <f:selectItems value="#{itemApplicationController.letterStatuses}"
+                                                       var="s"
+                                                       itemLabel="#{s.name}"
+                                                       itemValue="#{s}" />
+                                        <p:ajax event="blur" process="@this" global="false" />
+                                    </p:selectOneMenu>
+                                    <p:message for="status" display="text" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <p:outputLabel for="method" value="Sending Method" />
+                                    <p:selectOneMenu id="method" value="#{letterController.selected.receivedAs}">
+                                        <p:ajax event="change" process="@this" update="regNo" global="false" />
+                                        <f:selectItem itemLabel="Select" />
+                                        <f:selectItems value="#{itemApplicationController.letterReceiveCategories}"
+                                                       var="i"
+                                                       itemLabel="#{i.name}"
+                                                       itemValue="#{i}" />
+                                    </p:selectOneMenu>
+                                    <p:message for="method" display="text" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <p:outputLabel for="lang" value="Language" />
+                                    <p:selectOneMenu id="lang"
+                                                     value="#{letterController.selected.documentLanguage}">
+                                        <f:selectItem itemLabel="Select" />
+                                        <f:selectItems value="#{itemApplicationController.documentLanguages}"
+                                                       var="d"
+                                                       itemLabel="#{d.name}"
+                                                       itemValue="#{d}" />
+                                        <p:ajax event="blur" process="@this" global="false" />
+                                    </p:selectOneMenu>
+                                    <p:message for="lang" display="text" />
+                                </div>
+
+                                <h:panelGroup id="regNo" layout="block" class="col-md-4">
+                                    <h:panelGroup rendered="#{letterController.selected.receivedAs.code eq 'letter_receive_category_registered_post' or letterController.selected.receivedAs.code eq 'speed_post'}">
+                                        <p:outputLabel for="registrationNo" value="Registration No." />
+                                        <p:inputText id="registrationNo"
+                                                     placeholder="Enter Registration No."
+                                                     value="#{letterController.selected.registrationNo}">
+                                            <p:ajax event="blur" process="@this" global="false" />
+                                        </p:inputText>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+
+                                <div class="col-12">
+                                    <p:outputLabel for="to" value="To" />
+                                    <div class="text-muted letter-entry-hint">
+                                        <h:outputText value="From: #{webUserController.loggedInstitution.name}" />
+                                    </div>
+                                    <p:autoComplete id="to" value="#{letterController.ourLetterToList}"
+                                                    completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                    var="insf" multiple="true"
+                                                    forceSelection="true"
+                                                    required="true"
+                                                    requiredMessage="Select at least one institution/person to send this letter To"
+                                                    placeholder="Type at least 3 letters of the institution or person"
+                                                    maxResults="10"
+                                                    itemLabel="#{insf.displayName}"
+                                                    itemValue="#{insf}"
+                                                    converter="nameableConverter"
+                                                    delay="500"
+                                                    minQueryLength="3"
+                                                    cache="false" />
+                                    <p:message for="to" display="text" />
+                                </div>
+
+                                <div class="col-12">
+                                    <p:outputLabel for="copy" value="Copy" />
+                                    <p:autoComplete id="copy" value="#{letterController.ourLetterCopyList}"
+                                                    completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                    var="insf" multiple="true"
+                                                    forceSelection="true"
+                                                    placeholder="Type at least 3 letters of the institution or person"
+                                                    maxResults="10"
+                                                    itemLabel="#{insf.displayName}"
+                                                    itemValue="#{insf}"
+                                                    converter="nameableConverter"
+                                                    delay="500"
+                                                    minQueryLength="3"
+                                                    cache="false" />
+                                    <p:message for="copy" display="text" />
+                                </div>
+
+                                <div class="col-12">
+                                    <p:outputLabel for="topic" value="Letter Title" />
+                                    <p:inputTextarea id="topic"
+                                                     rows="2"
+                                                     maxlength="255"
+                                                     autoResize="true"
+                                                     value="#{letterController.selected.documentName}"
+                                                     required="true" requiredMessage="Need a Title">
+                                        <p:ajax event="blur" process="@this" global="false" />
+                                    </p:inputTextarea>
+                                    <p:message for="topic" display="text" />
+                                </div>
+
+                                <div class="col-12">
+                                    <p:outputLabel for="comments" value="Letter Details" />
+                                    <p:inputTextarea id="comments" rows="3" autoResize="true"
+                                                     value="#{letterController.selected.comments}" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="letter-entry-section">
+                            <h:outputText value="Scanned Copy (PDF/Images)" styleClass="letter-entry-label" />
+                            <div class="text-muted letter-entry-hint">
+                                Drop files here or choose them. They are attached when the letter is saved.
+                            </div>
+                            <p:fileUpload id="scan"
+                                          mode="advanced" auto="true" multiple="true" sequential="true"
+                                          dragDropSupport="true"
+                                          listener="#{letterController.handlePendingUpload}"
+                                          process="@this" update="pendingFiles msgs" global="false"
+                                          accept=".pdf,image/*"
+                                          allowTypes="/(\.|\/)(pdf|jpe?g|png|gif|tiff?|bmp|webp)$/i"
+                                          sizeLimit="20971520"
+                                          label="Choose Files" chooseIcon="pi pi-paperclip" />
+                            <h:panelGroup id="pendingFiles" layout="block">
+                                <ui:repeat value="#{letterController.pendingUploads}" var="pu">
+                                    <div class="letter-entry-file">
+                                        <i class="pi #{pu.pdf ? 'pi-file-pdf' : 'pi-image'}" />
+                                        <h:outputText value="#{pu.fileName}" styleClass="letter-entry-file-name" />
+                                        <p:commandButton icon="pi pi-times" title="Remove"
+                                                         styleClass="rounded-button ui-button-danger ui-button-flat"
+                                                         action="#{letterController.removePendingUpload(pu)}"
+                                                         process="@this" update="@form:pendingFiles" global="false" />
+                                    </div>
+                                </ui:repeat>
                             </h:panelGroup>
-                            <h:message class="text-danger small" for="method"></h:message>
+                        </div>
 
-                            <h:outputLabel for="lang"  >Language </h:outputLabel>
-                            <h:panelGroup layout="block" class="w-50"  >
-                                <p:selectOneMenu id="lang"
-                                                 value="#{letterController.selected.documentLanguage}"
-                                                 class="form-control"
-                                                 >
-                                    <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{itemApplicationController.documentLanguages}"
-                                                   var="d"
-                                                   itemLabel="#{d.name}"
-                                                   itemValue="#{d}" ></f:selectItems>
-                                    <p:ajax event="blur" process="@this" ></p:ajax>
-                                </p:selectOneMenu>
-                            </h:panelGroup>
-                            <h:message class="text-danger small" for="lang"></h:message>
-
-                            <h:outputLabel for="title"  >Letter Number </h:outputLabel>
-                            <h:panelGroup layout="block" class="w-75" >
-                                <p:inputText id="title"
-                                             autocomplete="off"
-                                             value="#{letterController.selected.documentNumber}" class="form-control"
-                                             >
-                                    <p:ajax event="blur"
-                                            process="@this"
-                                            global="false" ></p:ajax>
-                                </p:inputText>
-                            </h:panelGroup>
-                            <h:message class="text-danger small" for="title"></h:message>
-
-                            <h:outputLabel for="topic"  >Letter Title
-                                <small class="px-2 text-muted">Required</small></h:outputLabel>
-                            <h:panelGroup layout="block" class="w-100" >
-                                <p:inputTextarea id="topic"
-                                                 a:maxlength="255"
-                                                 value="#{letterController.selected.documentName}" class="form-control"
-                                                 required="true" requiredMessage="Need a Title">
-                                    <p:ajax event="blur"
-                                            process="@this"
-                                            global="false" ></p:ajax>
-                                </p:inputTextarea>
-                            </h:panelGroup>
-                            <h:message class="text-danger small" for="topic"></h:message>
-
-                            <h:outputLabel for="to"  >To
-                                <small class="px-2 text-muted">Required</small></h:outputLabel>
-                            <h:panelGroup layout="block" class="w-100" >
-                                <p:autoComplete id="to"  value="#{letterController.ourLetterToList}"
-                                                class="form-control"
-                                                completeMethod="#{letterController.completeInsOrUsersByWords}"
-                                                var="insf" multiple="true"
-                                                forceSelection="true"
-                                                maxResults="10"
-                                                itemLabel="#{insf.displayName}"
-                                                itemValue="#{insf}"
-                                                converter="nameableConverter"
-                                                delay="500"
-                                                minQueryLength="3"
-                                                cache="false"
-                                                >
-                                </p:autoComplete>
-                            </h:panelGroup>
-                            <h:message class="text-danger small" for="to"></h:message>
-
-                            <h:outputLabel for="copy"  >Copy
-                            </h:outputLabel>
-                            <h:panelGroup layout="block" class="w-100" >
-                                <p:autoComplete id="copy"  value="#{letterController.ourLetterCopyList}"
-                                                class="form-control"
-                                                completeMethod="#{letterController.completeInsOrUsersByWords}"
-                                                var="insf" multiple="true"
-                                                forceSelection="true"
-                                                maxResults="10"
-                                                itemLabel="#{insf.displayName}"
-                                                itemValue="#{insf}"
-                                                converter="nameableConverter"
-                                                delay="500"
-                                                minQueryLength="3"
-                                                cache="false"
-                                                >
-                                </p:autoComplete>
-                            </h:panelGroup>
-                            <p:spacer></p:spacer>
-
-                            <h:outputLabel for="comments"  >Letter Details
-                            </h:outputLabel>
-                            <h:inputTextarea id="comments"  value="#{letterController.selected.comments}" class="form-control"
-                                             >
-                            </h:inputTextarea>
-                            <p:spacer></p:spacer>
-
-                            <h:outputLabel for="status"  >Status </h:outputLabel>
-                            <h:panelGroup layout="block" class="w-50"  >
-                                <p:selectOneMenu id="status"
-                                                 value="#{letterController.selected.letterStatus}"
-                                                 class="form-control"
-                                                 >
-                                    <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{itemApplicationController.letterStatuses}"
-                                                   var="s"
-                                                   itemLabel="#{s.name}"
-                                                   itemValue="#{s}" ></f:selectItems>
-                                    <p:ajax event="blur" process="@this" ></p:ajax>
-                                </p:selectOneMenu>
-                            </h:panelGroup>
-                            <h:message class="text-danger small" for="status"></h:message>
-
-                            <f:facet name="footer" class="m-2 p-2" >
-                                <h:commandButton id="btnSaveAdd" tabindex="10" class="ui-button-success fw-bold m-2 "
-                                                 action="#{letterController.saveAndViewOurLetter()}" value="SAVE &amp; View">
-                                </h:commandButton>
-                                <h:commandButton rendered="true" tabindex="10" class="ui-button-warning fw-bold m-2 "
-                                                 action="#{letterController.saveAndNewOurLetter()}" value="SAVE &amp; New">
-                                </h:commandButton>
-                                <p:messages class="m-1 col"></p:messages>
-                                <p:defaultCommand target="btnSaveAdd" />
-                            </f:facet>
-
-                        </h:panelGrid>
-
-                    </div>
-
+                        <p:defaultCommand target="btnSaveAdd" />
+                    </p:card>
                 </h:form>
             </ui:define>
         </ui:composition>
