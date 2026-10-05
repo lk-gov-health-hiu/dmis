@@ -163,6 +163,66 @@ html body .ui-messages > div {
   margin: 0.4rem 0;
 }
 
+.report-card.ui-card .ui-card-title {
+  font-size: 1em;
+}
+
+.report-card-title {
+  font-weight: 600;
+}
+
+.report-card .report-card-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.report-card .report-card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.report-card .report-filters label,
+.report-card .report-filters .ui-outputlabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3em;
+}
+
+.report-card .report-table {
+  margin-top: 0.5em;
+}
+
+.report-datepicker .ui-timepicker {
+  border-top: 1px solid var(--surface-d, #dee2e6);
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+}
+
+.report-datepicker .ui-timepicker > div > span {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--text-color, #212529);
+}
+
+.report-datepicker .ui-picker-up,
+.report-datepicker .ui-picker-down {
+  border-radius: 50%;
+}
+
+.report-datepicker .ui-picker-up:hover,
+.report-datepicker .ui-picker-down:hover {
+  background: var(--surface-c, #e9ecef);
+}
+
+.report-datepicker .ui-picker-up .ui-icon,
+.report-datepicker .ui-picker-down .ui-icon {
+  transform: scale(0.7);
+  opacity: 0.6;
+}
+
 html, body, * {
   font-family: "Noto Sans JP", sans-serif !important;
 }
