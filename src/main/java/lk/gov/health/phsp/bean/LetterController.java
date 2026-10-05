@@ -2338,6 +2338,7 @@ public class LetterController implements Serializable {
         selected.setDocumentGenerationType(DocumentGenerationType.Created_by_institution);
         selected.setFromInstitution(loggedInstitution);
         save(selected);
+        savePendingUploads();
 
         DocumentHistory createdHx = new DocumentHistory();
         createdHx.setHistoryType(HistoryType.Letter_Created);
@@ -2551,7 +2552,8 @@ public class LetterController implements Serializable {
 
     public String toReportsLetterReceived() {
         documentHistories = null;
-        return "/institution/letter_received_registry";
+        lettersEnteredFromInstitutionFilter = null;
+        return "/institution/letter_received_registry?faces-redirect=true";
     }
 
     public String toReportsLettersEnteredOutside() {

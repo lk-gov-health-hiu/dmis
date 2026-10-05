@@ -102,6 +102,262 @@
   height: 1.25rem;
 }
 
+html {
+  font-size: 14px;
+}
+
+html body .ui-inputfield {
+  padding: 0.35rem 0.5rem;
+}
+html body .ui-selectonemenu .ui-selectonemenu-label {
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+html body .ui-autocomplete .ui-autocomplete-multiple-container {
+  padding: 0.15rem 0.5rem;
+}
+html body .ui-button.ui-button-text-only .ui-button-text {
+  padding: 0.35rem 0.75rem;
+}
+html body .ui-button.ui-button-text-icon-left .ui-button-text {
+  padding: 0.35rem 0.75rem 0.35rem 2rem;
+}
+html body .ui-button.ui-button-text-icon-right .ui-button-text {
+  padding: 0.35rem 2rem 0.35rem 0.75rem;
+}
+html body .ui-button.ui-button-icon-only .ui-button-text {
+  padding: 0.35rem;
+}
+html body .ui-card {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+html body .ui-card .ui-card-body {
+  padding: 0.6rem 0.75rem;
+}
+html body .ui-card .ui-card-title {
+  margin-bottom: 0.25rem;
+}
+html body .ui-card .ui-card-content {
+  padding: 0.4rem 0;
+}
+html body .ui-datatable thead > tr > th,
+html body .ui-datatable tfoot > tr > td,
+html body .ui-datatable .ui-datatable-data > tr > td {
+  padding: 0.35rem 0.5rem;
+}
+html body .ui-datatable .ui-datatable-header {
+  padding: 0.4rem 0.5rem;
+}
+html body .ui-datatable .ui-paginator {
+  padding: 0.25rem;
+}
+html body .ui-datatable .ui-column-filter {
+  margin-top: 0.25rem;
+}
+html body .ui-menu.ui-menubar {
+  padding: 0.25rem;
+}
+html body .ui-messages > div {
+  padding: 0.6rem 0.75rem;
+  margin: 0.4rem 0;
+}
+
+.report-card.ui-card .ui-card-title {
+  font-size: 1em;
+}
+
+.report-card-title {
+  font-weight: 600;
+}
+
+.report-card .report-card-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.report-card .report-card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.report-card .report-filters label,
+.report-card .report-filters .ui-outputlabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3em;
+}
+
+.report-card .report-table {
+  margin-top: 0.5em;
+}
+
+.report-datepicker .ui-timepicker {
+  border-top: 1px solid var(--surface-d, #dee2e6);
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+}
+
+.report-datepicker .ui-timepicker > div > span {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--text-color, #212529);
+}
+
+.report-datepicker .ui-picker-up,
+.report-datepicker .ui-picker-down {
+  border-radius: 50%;
+}
+
+.report-datepicker .ui-picker-up:hover,
+.report-datepicker .ui-picker-down:hover {
+  background: var(--surface-c, #e9ecef);
+}
+
+.report-datepicker .ui-picker-up .ui-icon,
+.report-datepicker .ui-picker-down .ui-icon {
+  transform: scale(0.7);
+  opacity: 0.6;
+}
+
+.report-card .report-bulkbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.5em;
+  padding: 0.4em 0.5em;
+  background: var(--surface-b, #f8f9fa);
+  border: 1px solid var(--surface-d, #dee2e6);
+  border-radius: 4px;
+}
+
+.report-card .report-bulkbar .report-bulkbar-label {
+  font-weight: 600;
+}
+
+.report-card .report-bulkbar .report-bulkbar-count {
+  margin-left: auto;
+}
+
+.report-card .report-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+}
+
+@page dmis-report {
+  size: A4 landscape;
+  margin: 8mm 10mm;
+}
+.print-doc {
+  page: dmis-report;
+}
+
+.print-doc,
+.print-doc * {
+  font-family: "Courier New", Courier, monospace !important;
+  font-weight: bold !important;
+  color: #000 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+.print-doc {
+  font-size: 10pt !important;
+  line-height: 1.25;
+}
+.print-doc .pd-head {
+  border-bottom: 2px solid #000;
+  padding-bottom: 3pt;
+  margin-bottom: 4pt;
+}
+.print-doc .pd-inst {
+  font-size: 13pt !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5pt;
+}
+.print-doc .pd-addr {
+  font-size: 9pt !important;
+}
+.print-doc .pd-title {
+  font-size: 12pt !important;
+  text-transform: uppercase;
+  margin-top: 4pt;
+}
+.print-doc .pd-meta {
+  font-size: 9pt !important;
+  margin-top: 2pt;
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+}
+.print-doc table.pd-table {
+  width: 100%;
+  border-collapse: collapse !important;
+  margin: 0 !important;
+  font-size: 9pt !important;
+}
+.print-doc table.pd-table thead {
+  display: table-header-group;
+}
+.print-doc table.pd-table tr {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.print-doc table.pd-table th,
+.print-doc table.pd-table td {
+  border: none !important;
+  padding: 1.5pt 4pt 1.5pt 0 !important;
+  font-size: 9pt !important;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.print-doc table.pd-table thead th {
+  border-top: 1px solid #000 !important;
+  border-bottom: 1px solid #000 !important;
+  white-space: nowrap;
+}
+.print-doc table.pd-table tbody td {
+  border-bottom: 1px dotted #000 !important;
+}
+.print-doc table.pd-table .pd-num {
+  text-align: right;
+  padding-right: 6pt !important;
+}
+.print-doc table.pd-table .pd-sign-cell {
+  min-width: 7em;
+}
+.print-doc table.pd-table tfoot td {
+  border-top: 1px solid #000 !important;
+  border-bottom: none !important;
+}
+.print-doc .pd-foot {
+  margin-top: 4pt;
+  font-size: 9pt !important;
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+}
+.print-doc .pd-signatures {
+  margin-top: 18pt;
+  display: flex;
+  justify-content: space-between;
+  gap: 2em;
+  font-size: 9pt !important;
+}
+.print-doc .pd-signatures > div {
+  flex: 1;
+  border-top: 1px dotted #000;
+  padding-top: 2pt;
+  text-align: center;
+}
+
 html, body, * {
   font-family: "Noto Sans JP", sans-serif !important;
 }

@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
-      xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions" >
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
     <h:body>
         <ui:composition template="/template1.xhtml">
@@ -12,479 +12,180 @@
                 Accept Copied/Forwarded Letters
             </ui:define>
             <ui:define name="content">
-
-                <style>
-                    .acf-container {
-                        padding: 1.5rem;
-                        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
-                        min-height: calc(100vh - 150px);
-                    }
-                    .acf-card {
-                        background: #ffffff;
-                        border-radius: 16px;
-                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-                        overflow: hidden;
-                        margin-bottom: 1.5rem;
-                    }
-                    .acf-card-header {
-                        padding: 1rem 1.5rem;
-                        color: #fff;
-                        font-weight: 600;
-                        font-size: 1.05rem;
-                        background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
-                        display: flex;
-                        align-items: center;
-                        gap: 0.6rem;
-                    }
-                    .acf-card-header.success {
-                        background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
-                    }
-                    .acf-card-body {
-                        padding: 1.25rem 1.5rem;
-                    }
-                    .acf-btn {
-                        padding: 0.55rem 1.1rem;
-                        border-radius: 10px;
-                        font-weight: 600;
-                        font-size: 0.9rem;
-                        border: none;
-                        color: #fff;
-                        transition: all 0.25s ease;
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 0.4rem;
-                    }
-                    .acf-btn:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                        color: #fff;
-                    }
-                    .acf-btn-primary { background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%); }
-                    .acf-btn-success { background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); }
-                    .acf-btn-info    { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); }
-                    .acf-btn-warn    { background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 100%); color:#3a2c00; }
-                    .acf-btn-warn:hover { color:#3a2c00; }
-                    .acf-btn-danger  { background: linear-gradient(135deg, #ff7675 0%, #d63031 100%); }
-                    .acf-btn-outline {
-                        background: transparent;
-                        border: 2px solid #dee2e6;
-                        color: #495057;
-                    }
-                    .acf-btn-outline:hover {
-                        background: #f8f9fa;
-                        border-color: #adb5bd;
-                        color: #212529;
-                    }
-                    .acf-btn-sm {
-                        padding: 0.35rem 0.75rem;
-                        font-size: 0.8rem;
-                        border-radius: 8px;
-                    }
-                    .acf-table-wrap .ui-datatable {
-                        border: none;
-                    }
-                    .acf-table-wrap .ui-datatable-header {
-                        background: transparent;
-                        border: none;
-                        padding: 0.5rem 0;
-                    }
-                    .acf-table-wrap .ui-datatable thead th {
-                        background: #f1f5f9 !important;
-                        color: #1a3a6b !important;
-                        font-weight: 700;
-                        border-bottom: 2px solid #cbd5e0;
-                    }
-                    .acf-table-wrap .ui-datatable tbody tr:nth-child(even) td {
-                        background: #fafbfc;
-                    }
-                    .acf-table-wrap .ui-datatable tbody tr:hover td {
-                        background: #eef4fb !important;
-                    }
-                    .acf-toolbar {
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 0.5rem;
-                        align-items: center;
-                        padding: 0.75rem 1.25rem;
-                        background: #f8fafc;
-                        border-bottom: 1px solid #e2e8f0;
-                    }
-                    .acf-counter {
-                        font-size: 0.85rem;
-                        color: #475569;
-                        margin-left: auto;
-                    }
-                    .acf-counter strong { color: #0984e3; }
-                </style>
-
-                <div class="acf-container">
-
-                    <h:form>
-
-                        <div class="acf-card">
-                            <div class="acf-card-header">
-                                <i class="bi bi-funnel-fill"></i>
-                                <span>Filter Pending Copy / Forward Letters</span>
-                            </div>
-                            <div class="acf-card-body">
-                                <div class="row g-3 align-items-end">
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-bold mb-1">
-                                            <i class="bi bi-calendar-event me-1"></i>From Date
-                                        </label>
-                                        <p:datePicker value="#{letterController.fromDate}" pattern="dd MMMM yyyy hh:mm" showTime="true" styleClass="w-100"/>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-bold mb-1">
-                                            <i class="bi bi-calendar-check me-1"></i>To Date
-                                        </label>
-                                        <p:datePicker value="#{letterController.toDate}" pattern="dd MMMM yyyy hh:mm" showTime="true" styleClass="w-100"/>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-bold mb-1">
-                                            <i class="bi bi-person-lines-fill me-1"></i>From (Sender — optional)
-                                        </label>
-                                        <p:autoComplete id="from" value="#{letterController.webUserCopy}"
-                                                        styleClass="w-100"
-                                                        completeMethod="#{letterController.completeInsOrUsersByWords}"
-                                                        var="insf"
-                                                        forceSelection="true"
-                                                        maxResults="10"
-                                                        itemLabel="#{insf.displayName}"
-                                                        itemValue="#{insf}"/>
-                                    </div>
+                <p:growl />
+                <h:form id="reportForm">
+                    <p:card styleClass="report-card">
+                        <f:facet name="title">
+                            <div class="report-card-header">
+                                <h:outputText value="Accept Copied/Forwarded Letters" styleClass="report-card-title" />
+                                <div class="report-card-actions">
+                                    <p:commandButton value="Process" icon="pi pi-search" ajax="false"
+                                                     styleClass="ui-button-warning"
+                                                     action="#{letterController.fillForwardCopyLettersToReceive}" />
+                                    <p:commandButton value="Print" icon="pi pi-print" type="button"
+                                                     styleClass="ui-button-info">
+                                        <p:printer target="gridPrint" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Download" icon="pi pi-file-excel" ajax="false"
+                                                     styleClass="ui-button-success">
+                                        <p:dataExporter target="tbl" type="xls" fileName="Copied or Forwarded Letters - To Receive" />
+                                    </p:commandButton>
                                 </div>
-                                <div class="d-flex flex-wrap gap-2 mt-3 pt-3 border-top">
-                                    <h:commandButton value="Process" styleClass="acf-btn acf-btn-primary"
-                                                     action="#{letterController.fillForwardCopyLettersToReceive}"/>
-                                    <h:commandButton value="Print" styleClass="acf-btn acf-btn-outline">
-                                        <p:printer target="gridPrint"/>
-                                    </h:commandButton>
-                                    <h:commandButton value="Download" styleClass="acf-btn acf-btn-outline">
-                                        <p:dataExporter target="tbl" type="xlsx"
-                                                        fileName="forward copy action list"/>
-                                    </h:commandButton>
+                            </div>
+                        </f:facet>
+
+                        <div class="ui-fluid report-filters">
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <p:outputLabel for="fromDate" value="From Date" />
+                                    <p:datePicker id="fromDate" showTime="true" hourFormat="12"
+                                                  showButtonBar="true" panelStyleClass="report-datepicker"
+                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                  value="#{letterController.fromDate}" />
+                                </div>
+                                <div class="col-md-4">
+                                    <p:outputLabel for="toDate" value="To Date" />
+                                    <p:datePicker id="toDate" showTime="true" hourFormat="12"
+                                                  showButtonBar="true" panelStyleClass="report-datepicker"
+                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                  value="#{letterController.toDate}" />
+                                </div>
+                                <div class="col-md-4">
+                                    <p:outputLabel for="sender" value="From (Sender)" />
+                                    <p:autoComplete id="sender" value="#{letterController.webUserCopy}"
+                                                    completeMethod="#{letterController.completeInsOrUsersByWords}"
+                                                    var="insf"
+                                                    forceSelection="true"
+                                                    placeholder="Any sender"
+                                                    maxResults="10"
+                                                    itemLabel="#{insf.displayName}"
+                                                    itemValue="#{insf}" />
                                 </div>
                             </div>
                         </div>
 
-
-
-
-                        <div class="acf-card acf-table-wrap">
-                            <div class="acf-card-header success">
-                                <i class="bi bi-inbox-fill"></i>
-                                <span>Pending Copy / Forward Letters</span>
-                            </div>
-                            <div class="acf-toolbar">
-                                <h:commandButton value="Receive Selected"
-                                                 title="Mark all selected rows as received"
-                                                 styleClass="acf-btn acf-btn-success"
-                                                 action="#{letterController.receiveAllSelectedHistoriesForCopyForward}"/>
-                                <span class="acf-counter">
-                                    Total: <strong>#{fn:length(letterController.documentHistories)}</strong>
-                                </span>
-                            </div>
-                            <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
-                                         rendered="true" rowIndexVar="n" var="c" paginator="true"
-                                         rowKey="#{c.id}"
-                                         selectionMode="multiple"
-                                         selection="#{letterController.selectedHistoriesForReceive}"
-                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                         rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
-                                <p:columnGroup type="header">
-                                    <p:row>
-                                        <p:column selectionBox="true" style="width:2.5em; text-align:center;"/>
-                                        <p:column headerText="ID" sortBy="#{c.document.id}" filterBy="#{c.document.id}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-                                        <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-                                        <p:column headerText="Send Date" sortBy="#{c.createdAt}" 
-                                                  filterBy="#{c.createdAt}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-                                        <p:column headerText="From"
-                                                  sortBy="#{c.document.fromInstitution.name}" 
-                                                  filterBy="#{c.document.fromInstitution.name}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-                                        <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
-                                                  filterBy="#{c.document.documentNumber}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-                                        <p:column headerText="Topic" sortBy="#{c.document.documentName}" 
-                                                  filterBy="#{c.document.documentName}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-                                        <p:column headerText="Copied/Forwarded From"
-                                                  rendered="#{letterController.webUserCopy eq null}"
-                                                  sortBy="#{c.fromInsOrUser.insName}"
-                                                  filterBy="#{c.fromInsOrUser.insName}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-
-                                        <p:column headerText="Copied/Forwarded To"
-                                                  sortBy="#{c.toInstitution.name}"
-                                                  filterBy="#{c.toInstitution.name}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-
-                                        <p:column headerText="Minute" sortBy="#{c.item.name}"
-                                                  filterBy="#{c.item.name}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-                                        <p:column headerText="Comments" sortBy="#{c.comments}" 
-                                                  filterBy="#{c.comments}"
-                                                  filterMatchMode="contains">
-                                        </p:column>
-                                        <p:column headerText="Actions" >
-                                        </p:column>
-                                    </p:row>
-                                </p:columnGroup>
-
-                                <p:column selectionBox="true" style="width:2.5em; text-align:center;"/>
-                                <p:column >
-                                    <h:outputLabel value="#{c.document.id}"></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
-                                          filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.document.documentDate}">
-                                        <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Sent Date" sortBy="#{c.createdAt}" 
-                                          filterBy="#{c.createdAt}"
-                                          filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.createdAt}">
-                                        <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                </p:column>
-                                <p:column >
-                                    <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
-                                        <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{c.document.fromInstitution.name ne 'Personal'}" >
-                                        <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
-                                    </h:panelGroup>
-                                    <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
-                                          filterBy="#{c.document.documentNumber}"
-                                          filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.document.documentNumber }"></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Topic" sortBy="#{c.document.documentName}" 
-                                          filterBy="#{c.document.documentName}"
-                                          filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Copied/Forwarded From"
-                                          rendered="#{letterController.webUserCopy eq null}"
-                                          sortBy="#{c.fromInsOrUser.insName}"
-                                          filterBy="#{c.fromInsOrUser.insName}"
-                                          filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.fromInsOrUser.insName}"></h:outputLabel>
-                                </p:column>
-
-                                <p:column headerText="Copied/Forwarded To"
-                                          sortBy="#{c.toInstitution.name}"
-                                          filterBy="#{c.toInstitution.name}"
-                                          filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.toInstitution.name}"></h:outputLabel>
-                                    <h:outputLabel rendered="#{c.toInstitution eq null and c.toUser ne null}"
-                                                   value="#{c.toUser.institution.name}"></h:outputLabel>
-                                </p:column>
-                                
-                                <p:column headerText="Minute" sortBy="#{c.item.name}" 
-                                          filterBy="#{c.item.name}"
-                                          filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.item.name}"></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Comments" sortBy="#{c.comments}" 
-                                          filterBy="#{c.comments}"
-                                          filterMatchMode="contains">
-                                    <h:outputLabel value="#{c.comments}"></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Actions" >
-                                    <div class="d-flex flex-wrap gap-2">
-                                        <h:commandButton value="Receive and View"
-                                                         title="Mark this copy/forward as received and open the letter"
-                                                         action="#{letterController.acceptAndViewSelectedHistoryForCopyForward()}"
-                                                         styleClass="acf-btn acf-btn-success acf-btn-sm">
-                                            <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}"/>
-                                        </h:commandButton>
-                                        <h:commandButton value="Receive"
-                                                         title="Mark as received without opening the letter"
-                                                         styleClass="acf-btn acf-btn-outline acf-btn-sm"
-                                                         action="#{letterController.acceptSelectedHistoryForCopyForward}">
-                                            <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}"/>
-                                        </h:commandButton>
-                                    </div>
-                                </p:column>
-                                <p:columnGroup type="footer">
-                                    <p:row>
-                                        <p:column
-                                            colspan="11" rendered="#{letterController.webUserCopy ne null}"
-                                            >
-                                            <h:outputText value="Report generated by #{webUserController.loggedUser.person.nameWithTitle} of #{webUserController.loggedUser.institution.name}" ></h:outputText>
-                                            <h:outputText value="#{session.lastAccessedTime}">
-                                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm a"  />
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column
-                                            colspan="12" rendered="#{letterController.webUserCopy eq null}"
-                                            >
-                                            <h:outputText value="Report generated by #{webUserController.loggedUser.person.nameWithTitle} of #{webUserController.loggedUser.institution.name}" ></h:outputText>
-                                            <h:outputText value="#{session.lastAccessedTime}">
-                                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm a"  />
-                                            </h:outputText>
-
-                                        </p:column>
-
-                                    </p:row>
-                                </p:columnGroup>
-                            </p:dataTable>
+                        <div class="report-bulkbar">
+                            <p:commandButton value="Receive Selected" icon="pi pi-check-square" ajax="false"
+                                             styleClass="ui-button-success" title="Mark all selected rows as received"
+                                             action="#{letterController.receiveAllSelectedHistoriesForCopyForward}" />
+                            <h:outputText styleClass="report-bulkbar-count"
+                                          value="Total: #{empty letterController.documentHistories ? 0 : letterController.documentHistories.size()}" />
                         </div>
 
+                        <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
+                                     styleClass="report-table"
+                                     var="c" rowKey="#{c.id}" paginator="true"
+                                     selectionMode="multiple"
+                                     selection="#{letterController.selectedHistoriesForReceive}"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10"
+                                     emptyMessage="No letters. Select the dates and click Process.">
+                            <p:column selectionBox="true" style="width:2.5em; text-align:center;" />
+                            <p:column headerText="ID"
+                                      sortBy="#{c.document.id}" filterBy="#{c.document.id}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.id}" />
+                            </p:column>
+                            <p:column headerText="Letter Date"
+                                      sortBy="#{c.document.documentDate}">
+                                <h:outputText value="#{c.document.documentDate}"><f:convertDateTime pattern="dd MMM yyyy" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="Sent Date"
+                                      sortBy="#{c.createdAt}">
+                                <h:outputText value="#{c.createdAt}"><f:convertDateTime pattern="dd MMM yyyy" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="From"
+                                      sortBy="#{c.document.fromInstitution.name}" filterBy="#{c.document.fromInstitution.name}" filterMatchMode="contains">
+                                <h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" /><h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInstitution.name}" /><h:outputText rendered="#{c.document.fromWebUser.person ne null}" value=" (#{c.document.fromWebUser.person.nameWithTitle})" />
+                            </p:column>
+                            <p:column headerText="Letter Number"
+                                      sortBy="#{c.document.documentNumber}" filterBy="#{c.document.documentNumber}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.documentNumber}" />
+                            </p:column>
+                            <p:column headerText="Topic"
+                                      sortBy="#{c.document.documentName}" filterBy="#{c.document.documentName}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.documentName}" />
+                            </p:column>
+                            <p:column headerText="Copied/Forwarded From"
+                                      rendered="#{letterController.webUserCopy eq null}"
+                                      sortBy="#{c.fromInsOrUser.insName}" filterBy="#{c.fromInsOrUser.insName}" filterMatchMode="contains">
+                                <h:outputText value="#{c.fromInsOrUser.insName}" />
+                            </p:column>
+                            <p:column headerText="Copied/Forwarded To"
+                                      sortBy="#{c.toInstitution.name}" filterBy="#{c.toInstitution.name}" filterMatchMode="contains">
+                                <h:outputText value="#{c.toInstitution.name}" /><h:outputText rendered="#{c.toInstitution eq null and c.toUser ne null}" value="#{c.toUser.institution.name}" />
+                            </p:column>
+                            <p:column headerText="Minute"
+                                      sortBy="#{c.item.name}" filterBy="#{c.item.name}" filterMatchMode="contains">
+                                <h:outputText value="#{c.item.name}" />
+                            </p:column>
+                            <p:column headerText="Comments"
+                                      sortBy="#{c.comments}" filterBy="#{c.comments}" filterMatchMode="contains">
+                                <h:outputText value="#{c.comments}" />
+                            </p:column>
+                            <p:column headerText="Actions" exportable="false" style="width:15em">
+                                <div class="report-row-actions">
+                                    <p:commandButton value="Receive &amp; View" icon="pi pi-eye" ajax="false" styleClass="ui-button-success" title="Mark this copy/forward as received and open the letter"
+                                                     action="#{letterController.acceptAndViewSelectedHistoryForCopyForward()}">
+                                        <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Receive" icon="pi pi-check" ajax="false" styleClass="ui-button-outlined" title="Mark as received without opening the letter"
+                                                     action="#{letterController.acceptSelectedHistoryForCopyForward}">
+                                        <f:setPropertyActionListener target="#{letterController.selectedHistory}" value="#{c}" />
+                                    </p:commandButton>
+                                </div>
+                            </p:column>
+                        </p:dataTable>
 
-                        <h:panelGrid columns="1"
-                                     styleClass="alignTop" 
-                                     id="gridPrint" 
-                                     class="d-none d-print-block m-0 p-0 W-100" >
-
-                            <h:panelGrid columns="3" class="d-none d-print-block m-0 p-0 W-100" >
-                                <h:outputText class="h5" value="#{webUserController.loggedUser.institution.name}" ></h:outputText>
-                                <h:outputText class="h6" value="#{webUserController.loggedUser.institution.address}" ></h:outputText>
-                                <h:outputText class="h6" value="Tel. #{webUserController.loggedUser.institution.phone}" ></h:outputText>
-                            </h:panelGrid>
-
-                            <h:panelGrid columns="9" class="d-none d-print-block m-0 p-0 W-100"  rendered="#{letterController.webUserCopy ne null}">
-                                <h:outputText class="font-weight-bold h5" value="#{letterController.webUserCopy.name}" ></h:outputText>
-                                <p:spacer></p:spacer>
-                                <h:outputText class="h6" value="From" ></h:outputText>
-                                <h:outputText class="h6" value="&nbsp;:&nbsp;" ></h:outputText>
-                                <h:outputText class="h6" value="#{letterController.fromDate}" >
-                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
-                                </h:outputText>
-
-                                <p:spacer></p:spacer>
-
-                                <h:outputText class="h6" value="To" ></h:outputText>
-                                <h:outputText class="h6" value="&nbsp;:&nbsp;" ></h:outputText>
-                                <h:outputText class="h6" value="#{letterController.toDate}" >
-                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
-                                </h:outputText>
-                            </h:panelGrid>
-
-
-
-                            <p:dataTable reflow="false" id="tblPrint" value="#{letterController.documentHistories}"
-                                         rendered="true" rowIndexVar="n" var="c" paginator="false" class=" m-0 p-0  W-100"
-                                         rowKey="#{c.id}"
-                                         >
-                                <p:column headerText="ID" style="width: 6em;">
-                                    <f:facet name="header" >
-                                        <h:outputText value="ID" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-                                    <h:outputLabel value="#{c.document.id}"></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Letter Date"  style="width: 7em;">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Letter Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-                                    <f:facet name="footer" >
-                                        <h:outputText value="Received on"  ></h:outputText>
-                                    </f:facet>                                 
-
-                                    <h:outputLabel value="#{c.document.documentDate}">
-                                        <f:convertDateTime pattern="dd MM yy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Stamp Date"   style="width: 7em;">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Stamp Date" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-
-                                    <h:outputLabel value="#{c.document.receivedDate}">
-                                        <f:convertDateTime pattern="dd MM yy" ></f:convertDateTime>
-                                    </h:outputLabel>
-                                </p:column>
-                                <p:column headerText="From"   style="width: 8em; overflow: hidden;">
-                                    <f:facet name="header" >
-                                        <h:outputText value="From" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-                                    <f:facet name="footer" >
-                                        <h:outputText value="Received By"  ></h:outputText>
-                                    </f:facet> 
-
-                                    <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
-                                        <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{c.document.fromInstitution.name ne 'Personal'}" >
-                                        <h:outputLabel value="#{c.document.fromInstitution.name}"></h:outputLabel>
-                                    </h:panelGroup>
-                                    <h:outputLabel value="#{c.document.fromWebUser.person.nameWithTitle}"></h:outputLabel>
-
-                                </p:column>
-                                <p:column headerText="Letter Number"   style="width: 8em; overflow: hidden;">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Letter Number" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-                                    <h:outputLabel value="#{c.document.documentNumber }"></h:outputLabel>
-                                </p:column>
-
-                                <p:column headerText="Copied/Forwarded To"
-                                          rendered="#{letterController.webUserCopy eq null}"
-                                          style="width: 8em; overflow: hidden;">
-                                    <f:facet name="header" >
-                                        <h:outputText value="Copied / Forwarded To" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-                                    <f:facet name="footer" >
-                                        <h:outputText value="Signature"  ></h:outputText>
-                                    </f:facet>  
-                                    <h:outputLabel value="#{c.toUser.person.name}"></h:outputLabel>
-                                    <h:outputLabel value="#{c.toInstitution.name}"></h:outputLabel>
-                                </p:column>
-                                <p:column headerText="Topic"   >
-                                    <f:facet name="header" >
-                                        <h:outputText value="Topic" style="font-weight: bold; color: black;" class="fw-bold" ></h:outputText>
-                                    </f:facet>
-
-                                    <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
-                                </p:column>
-
-                                <f:facet name="footer">
-                                    <h:panelGrid  columns="12"  class="d-none d-print-block m-0 p-0 W-100"  >
-                                        <h:outputText value="Total Number of Letters : " ></h:outputText>
-                                        <h:outputText value="#{fn:length(letterController.documentHistories)}" ></h:outputText>
-                                        <p:spacer ></p:spacer>
-                                        <h:outputText value="Received By : " ></h:outputText>
-                                        <h:outputText value="_________________" ></h:outputText>
-                                        <p:spacer ></p:spacer>
-                                        <h:outputText value="Received On : " ></h:outputText>
-                                        <h:outputText value="_________________" ></h:outputText>
-                                        <p:spacer ></p:spacer>
-                                        <h:outputText value="Signature :" ></h:outputText>
-                                        <h:outputText value="_________________" ></h:outputText>
-                                    </h:panelGrid>
-
-                                </f:facet>
-
-
-
-                            </p:dataTable>
-
-
-
-                        </h:panelGrid>
-
-                    </h:form>
-                </div>
+                        <!-- Printed register: plain monospace table for dot-matrix printers (scss/src/print.scss).
+                             Hidden on screen; p:printer prints only this panel. -->
+                        <h:panelGroup layout="block" id="gridPrint" styleClass="print-doc d-none d-print-block">
+                            <ui:include src="/WEB-INF/includes/print_header.xhtml">
+                                <ui:param name="title" value="Accept Copied/Forwarded Letters" />
+                                <ui:param name="fromDate" value="#{letterController.fromDate}" />
+                                <ui:param name="toDate" value="#{letterController.toDate}" />
+                                <ui:param name="filterText" value="#{empty letterController.webUserCopy ? '' : 'From: ' += letterController.webUserCopy.displayName}" />
+                            </ui:include>
+                            <table class="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:3%">No.</th>
+                                        <th style="width:7%">ID</th>
+                                        <th style="width:9%">Letter Date</th>
+                                        <th style="width:9%">Sent Date</th>
+                                        <th style="width:18%">From</th>
+                                        <th style="width:12%">Letter Number</th>
+                                        <th>Topic</th>
+                                        <ui:fragment rendered="#{letterController.webUserCopy eq null}"><th style="width:14%">Copied/Forwarded From</th></ui:fragment>
+                                        <th style="width:15%">Copied/Forwarded To</th>
+                                        <th style="width:10%" class="pd-sign-cell">Received Sign</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ui:repeat value="#{letterController.documentHistories}" var="c" varStatus="s">
+                                        <tr>
+                                            <td><h:outputText value="#{s.index + 1}" /></td>
+                                            <td><h:outputText value="#{c.document.id}" /></td>
+                                            <td><h:outputText value="#{c.document.documentDate}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText value="#{c.createdAt}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" /><h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInstitution.name}" /><h:outputText rendered="#{c.document.fromWebUser.person ne null}" value=" (#{c.document.fromWebUser.person.nameWithTitle})" /></td>
+                                            <td><h:outputText value="#{c.document.documentNumber}" /></td>
+                                            <td><h:outputText value="#{c.document.documentName}" /></td>
+                                            <ui:fragment rendered="#{letterController.webUserCopy eq null}"><td><h:outputText value="#{c.fromInsOrUser.insName}" /></td></ui:fragment>
+                                            <td><h:outputText value="#{c.toInstitution.name}" /><h:outputText rendered="#{c.toInstitution eq null and c.toUser ne null}" value="#{c.toUser.institution.name}" /></td>
+                                            <td class="pd-sign-cell"></td>
+                                        </tr>
+                                    </ui:repeat>
+                                </tbody>
+                            </table>
+                            <ui:include src="/WEB-INF/includes/print_footer.xhtml">
+                                <ui:param name="count" value="#{empty letterController.documentHistories ? 0 : letterController.documentHistories.size()}" />
+                                <ui:param name="signatures" value="#{true}" />
+                            </ui:include>
+                        </h:panelGroup>
+                    </p:card>
+                </h:form>
             </ui:define>
         </ui:composition>
     </h:body>
-
 </html>

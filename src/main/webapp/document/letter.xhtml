@@ -10,7 +10,7 @@
     <h:body>
         <ui:composition template="/template1.xhtml">
             <ui:define name="title" >
-                Letter
+                #{letterController.selected.id eq null ? 'New ' : ''}#{letterController.outsideLetter ? 'Outside Letter' : 'Our Letter'}
             </ui:define>
             <ui:define name="content">
                 <style>
@@ -78,7 +78,7 @@
                         <f:facet name="title">
                             <div class="letter-entry-header">
                                 <h:panelGroup id="letterId" layout="block">
-                                    <h:outputText value="#{letterController.outsideLetter ? 'Outside Letter' : 'Our Letter'}"
+                                    <h:outputText value="#{letterController.selected.id eq null ? 'New ' : ''}#{letterController.outsideLetter ? 'Outside Letter' : 'Our Letter'}"
                                                   styleClass="letter-entry-title" />
                                     <h:outputText value=" - #{letterController.selected.id}" styleClass="letter-entry-title"
                                                   rendered="#{letterController.selected.id ne null}" />

@@ -1,0 +1,127 @@
+// Printed registers/reports (p:printer target="gridPrint"), tuned for dot-matrix
+// impact printers. Markup: WEB-INF/includes/print_header.xhtml + a
+// table.pd-table + WEB-INF/includes/print_footer.xhtml inside
+// <h:panelGroup id="gridPrint" layout="block" styleClass="print-doc d-none d-print-block">.
+//
+// p:printer copies every page stylesheet into its print iframe, so these rules
+// apply there. They must beat the older blanket `@media print { th, td {...
+// !important} }` rules in main.scss (grey header shading, 8pt text), hence
+// `.print-doc`-scoped selectors with !important.
+//
+// Dot-matrix rules of thumb: one monospace face, bold everywhere (thin strokes
+// fade on impact printers), pure black, no fills or shading, few rules (each
+// ruled line is an extra pass of the head), nothing smaller than 9pt.
+
+@page dmis-report {
+    size: A4 landscape;
+    margin: 8mm 10mm;
+}
+
+.print-doc {
+    page: dmis-report;
+}
+
+.print-doc,
+.print-doc * {
+    font-family: "Courier New", Courier, monospace !important;
+    font-weight: bold !important;
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+.print-doc {
+    font-size: 10pt !important;
+    line-height: 1.25;
+
+    .pd-head {
+        border-bottom: 2px solid #000;
+        padding-bottom: 3pt;
+        margin-bottom: 4pt;
+    }
+    .pd-inst {
+        font-size: 13pt !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5pt;
+    }
+    .pd-addr {
+        font-size: 9pt !important;
+    }
+    .pd-title {
+        font-size: 12pt !important;
+        text-transform: uppercase;
+        margin-top: 4pt;
+    }
+    .pd-meta {
+        font-size: 9pt !important;
+        margin-top: 2pt;
+        display: flex;
+        justify-content: space-between;
+        gap: 1em;
+    }
+
+    // Header row repeats on every printed page; rows never split across pages.
+    table.pd-table {
+        width: 100%;
+        border-collapse: collapse !important;
+        margin: 0 !important;
+        font-size: 9pt !important;
+    }
+    table.pd-table thead {
+        display: table-header-group;
+    }
+    table.pd-table tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    table.pd-table th,
+    table.pd-table td {
+        border: none !important;
+        padding: 1.5pt 4pt 1.5pt 0 !important;
+        font-size: 9pt !important;
+        text-align: left;
+        vertical-align: top;
+        overflow-wrap: anywhere;
+    }
+    table.pd-table thead th {
+        border-top: 1px solid #000 !important;
+        border-bottom: 1px solid #000 !important;
+        white-space: nowrap;
+    }
+    table.pd-table tbody td {
+        border-bottom: 1px dotted #000 !important;
+    }
+    table.pd-table .pd-num {
+        text-align: right;
+        padding-right: 6pt !important;
+    }
+    table.pd-table .pd-sign-cell {
+        min-width: 7em;
+    }
+    table.pd-table tfoot td {
+        border-top: 1px solid #000 !important;
+        border-bottom: none !important;
+    }
+
+    .pd-foot {
+        margin-top: 4pt;
+        font-size: 9pt !important;
+        display: flex;
+        justify-content: space-between;
+        gap: 1em;
+    }
+    .pd-signatures {
+        margin-top: 18pt;
+        display: flex;
+        justify-content: space-between;
+        gap: 2em;
+        font-size: 9pt !important;
+    }
+    .pd-signatures > div {
+        flex: 1;
+        border-top: 1px dotted #000;
+        padding-top: 2pt;
+        text-align: center;
+    }
+}

@@ -26,7 +26,7 @@ naming, and print behavior consistent across the app.
 
 | Page shape | Copy this file |
 |---|---|
-| Filterable report/register with a `p:dataTable`, Process/Print/Download toolbar, and a hidden print panel | `institution/letters_entered_outside_registry.xhtml` |
+| Filterable report/register with a `p:dataTable`, Process/Print/Download toolbar, and a hidden print panel | `institution/letter_received_registry.xhtml` (see "Report page layout" below) |
 | Same, but the table also drives row actions (accept/assign/view) tied to `DocumentHistory` state | `institution/letter_receive_register.xhtml` |
 | Single-entity edit form with an ajax-toggled layout (fields appear/disappear based on a flag) | `document/letter.xhtml` |
 | Simple list-only screen using the generic `institution/reports_index.xhtml` layout wrapper | anything under `institution/` with `<ui:composition template="/institution/reports_index.xhtml">` |
@@ -131,6 +131,29 @@ PrimeFaces control fills its column, and keep Bootstrap classes
   rather than adding a separate badge.
 - Worked example: `document/letter.xhtml` (PR #262).
 
+### Report page layout
+
+All institution reports linked from `institution/reports_index.xhtml` share one
+shape. Copy `institution/letter_received_registry.xhtml`:
+
+- `template1.xhtml` directly. **No side panel.** The old `reports_index`
+  sidebar template is gone from linked reports. Open each report with
+  `?faces-redirect=true`, or the address bar keeps showing `reports_index.xhtml`.
+- `p:card styleClass="report-card"`. The title facet holds
+  `.report-card-header`: the name on the left, then Process (`ui-button-warning`,
+  `pi-search`), Print (`ui-button-info`, `type="button"` + `p:printer`) and
+  Download (`ui-button-success`, `p:dataExporter`) centred.
+- Filters in `div.ui-fluid.report-filters > div.row.g-2`, labels above.
+  A date-type choice is a `p:selectOneMenu` "Filter By" (never radios). Add it
+  only when the controller query actually reads `searchFilterType`.
+- Date range: `p:datePicker showTime="true" hourFormat="12"
+  showButtonBar="true" panelStyleClass="report-datepicker"
+  pattern="dd MMMM yyyy hh:mm a"`. Without `hourFormat="12"` the `hh:mm a`
+  pattern shows "12:00" with no AM/PM.
+- Shared CSS lives in `scss/src/reports.scss`, not in per-page `<style>` blocks.
+- App-wide density comes from `scss/src/compact.scss` (14px root, trimmed saga
+  paddings). Don't re-add `my-3`/`g-3`/large paddings on top of it.
+
 ## 3. PrimeFaces 14 gotchas beyond CLAUDE.md's list
 
 - **`p:autoComplete` binding entities** needs `var` + `itemLabel` + `itemValue`
@@ -186,6 +209,15 @@ PrimeFaces control fills its column, and keep Bootstrap classes
 - **`p:growl` placement**: every form-bearing page has a single `<p:growl />`
   near the top, outside/before the `h:form` content it reports on — put one on
   every new page rather than relying on a global one from the template.
+
+- **`p:calendar` is broken with an explicit `pattern`.** Its `calendar.js`
+  `configureLocale()` copies the locale's `dateFormat: "mm/dd/yy"` over the
+  server pattern. The popup then opens on a misparsed date (e.g. May 2032),
+  has no time picker, and writes `05/01/2032`, which fails conversion.
+  `showTime` isn't a `p:calendar` attribute in PF14. Use `p:datePicker`.
+- **Footer `p:columnGroup` columns render only their `footer` facet or
+  `footerText`.** Plain child components inside the `p:column` are silently
+  dropped, leaving an empty grey band. Wrap them in `<f:facet name="footer">`.
 
 ## 4. Pre-submit checklist
 
