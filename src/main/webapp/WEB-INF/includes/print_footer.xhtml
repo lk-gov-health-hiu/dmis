@@ -10,7 +10,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html">
     <div class="pd-foot">
-        <span><h:outputText value="Total: #{count} #{empty itemName ? 'letters' : itemName}" /></span>
+        <span><h:outputText value="Total: #{count} #{empty itemName ? (count eq 1 ? 'letter' : 'letters') : itemName}" /></span>
         <span><h:outputText value="Printed by #{webUserController.loggedUser.person.nameWithTitle}" /></span>
         <span>-- End of report --</span>
     </div>
