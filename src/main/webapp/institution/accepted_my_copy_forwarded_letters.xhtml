@@ -4,136 +4,156 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+      xmlns:p="http://primefaces.org/ui">
 
     <h:body>
-
         <ui:composition template="/template1.xhtml">
             <ui:define name="title">
-                Received Letters
+                My Received Copied or Forwarded Letters
             </ui:define>
             <ui:define name="content">
-                <p:growl ></p:growl>
-                <h:form >
-                    <div class="card my-3">
-                        <h5 class="card-header bg-success">
-                            <p:outputLabel class="text-white fs-5 fw-bold my-2" 
-                                           value="My Received Copied or Forwarded Letters" ></p:outputLabel>
-                        </h5>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <h:panelGrid columns="2" >
-                                        <p:panelGrid columns="2"  class="border border-light">
+                <p:growl />
+                <h:form id="reportForm">
+                    <p:card styleClass="report-card">
+                        <f:facet name="title">
+                            <div class="report-card-header">
+                                <h:outputText value="My Received Copied or Forwarded Letters" styleClass="report-card-title" />
+                                <div class="report-card-actions">
+                                    <p:commandButton value="Process" icon="pi pi-search" ajax="false"
+                                                     styleClass="ui-button-warning"
+                                                     action="#{letterController.fillMyReceivedLetters()}" />
+                                    <p:commandButton value="Print" icon="pi pi-print" type="button"
+                                                     styleClass="ui-button-info">
+                                        <p:printer target="gridPrint" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Download" icon="pi pi-file-excel" ajax="false"
+                                                     styleClass="ui-button-success">
+                                        <p:dataExporter target="tbl" type="xls" fileName="My Received Copied or Forwarded Letters" />
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </f:facet>
 
-                                            <h:outputLabel class="fs-6" value="From:"></h:outputLabel>
-                                            <p:datePicker monthNavigator="true" yearNavigator="true" 
-                                                          class="fs-6 fw-bold"   
-                                                          showTime="true"
-                                                          pattern="dd MMMM yyyy hh:mm a"
-                                                          value="#{letterController.fromDate}">
-                                            </p:datePicker>
-                                            <h:outputLabel class="fs-6" value="To:"></h:outputLabel>
-                                            <p:datePicker class="fs-6 fw-bold"  
-                                                          monthNavigator="true" yearNavigator="true" 
-                                                          showTime="true"
-                                                          pattern="dd MMMM yyyy hh:mm a"
-                                                          value="#{letterController.toDate}">
-                                            </p:datePicker>
-                                        </p:panelGrid>
-
-                                        <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.fillMyReceivedLetters()}" class="btn btn-danger form-control"></h:commandButton>
-                                            <h:commandButton value="Print"  class="btn btn-success form-control">
-                                                <p:printer target="tbl" ></p:printer>
-                                            </h:commandButton>
-                                            <h:commandButton value="Download"  class="btn btn-warning form-control">
-                                                <p:dataExporter target="tbl" type="xls" fileName="My Received Copied or Forwarded Letters" ></p:dataExporter>
-                                            </h:commandButton>
-
-                                        </h:panelGrid>
-
-                                    </h:panelGrid>
-
-
-                                    <h:panelGrid columns="1" styleClass="alignTop" class="shadow bg-white rounded">
-                                        <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
-                                                     rendered="true" rowIndexVar="n" var="c" paginator="true"
-                                                     rowKey="#{c.id}"
-                                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10">
-                                            <p:column headerText="ID" sortBy="#{c.document.id}" filterBy="#{c.document.id}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.document.id}"></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Letter Date" sortBy="#{c.document.documentDate}" filterBy="#{c.document.documentDate}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.document.documentDate}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Stamped Date" sortBy="#{c.document.receivedDate}" 
-                                                      filterBy="#{c.document.receivedDate}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.document.receivedDate}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Assigned Date" sortBy="#{c.createdAt}" 
-                                                      filterBy="#{c.createdAt}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.createdAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Accepted Date" sortBy="#{c.completedAt}" 
-                                                      filterBy="#{c.completedAt}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.completedAt}">
-                                                    <f:convertDateTime pattern="dd MMMM yyyyy hh:mm a" ></f:convertDateTime>
-                                                </h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="From" sortBy="#{c.document.fromInsOrUser.name}" filterBy="#{c.fromInsOrUser.name}"
-                                                      filterMatchMode="contains">
-                                                <h:panelGroup rendered="#{c.document.fromInstitution.name eq 'Personal'}" >
-                                                    <h:outputLabel value="#{c.document.senderName}"></h:outputLabel>
-                                                </h:panelGroup>
-                                                <h:panelGroup rendered="#{c.document.fromInstitution.name ne 'Personal'}" >
-                                                    <h:outputLabel value="#{c.document.fromInsOrUser.name}"></h:outputLabel>
-                                                </h:panelGroup>
-                                            </p:column>
-                                            <p:column headerText="Letter Number" sortBy="#{c.document.documentNumber}" 
-                                                      filterBy="#{c.document.documentNumber}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.document.documentNumber }"></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Topic" sortBy="#{c.document.documentName}" 
-                                                      filterBy="#{c.document.documentName}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.document.documentName}"></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Comments" sortBy="#{c.comments}" 
-                                                      filterBy="#{c.comments}"
-                                                      filterMatchMode="contains">
-                                                <h:outputLabel value="#{c.comments}"></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Actions" >
-                                                <h:commandButton value="View" action="#{letterController.toLetterView()}" class="mx-2 btn btn-success" >
-                                                    <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" ></f:setPropertyActionListener>
-                                                </h:commandButton>
-                                            </p:column>
-                                        </p:dataTable>
-                                    </h:panelGrid>
+                        <div class="ui-fluid report-filters">
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <p:outputLabel for="fromDate" value="From Date" />
+                                    <p:datePicker id="fromDate" showTime="true" hourFormat="12"
+                                                  showButtonBar="true" panelStyleClass="report-datepicker"
+                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                  value="#{letterController.fromDate}" />
+                                </div>
+                                <div class="col-md-4">
+                                    <p:outputLabel for="toDate" value="To Date" />
+                                    <p:datePicker id="toDate" showTime="true" hourFormat="12"
+                                                  showButtonBar="true" panelStyleClass="report-datepicker"
+                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                  value="#{letterController.toDate}" />
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                        <p:dataTable reflow="false" id="tbl" value="#{letterController.documentHistories}"
+                                     styleClass="report-table"
+                                     var="c" rowKey="#{c.id}" paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="10,25,100,{ShowAll|'All'}" rows="10"
+                                     emptyMessage="No letters. Select the dates and click Process.">
+                            <p:column headerText="ID"
+                                      sortBy="#{c.document.id}" filterBy="#{c.document.id}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.id}" />
+                            </p:column>
+                            <p:column headerText="Letter Date"
+                                      sortBy="#{c.document.documentDate}">
+                                <h:outputText value="#{c.document.documentDate}"><f:convertDateTime pattern="dd MMM yyyy" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="Stamp Date"
+                                      sortBy="#{c.document.receivedDate}">
+                                <h:outputText value="#{c.document.receivedDate}"><f:convertDateTime pattern="dd MMM yyyy" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="Sent Date"
+                                      sortBy="#{c.createdAt}">
+                                <h:outputText value="#{c.createdAt}"><f:convertDateTime pattern="dd MMM yyyy hh:mm a" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="Accepted Date"
+                                      sortBy="#{c.completedAt}">
+                                <h:outputText value="#{c.completedAt}"><f:convertDateTime pattern="dd MMM yyyy hh:mm a" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="From"
+                                      sortBy="#{c.document.fromInsOrUser.name}" filterBy="#{c.document.fromInsOrUser.name}" filterMatchMode="contains">
+                                <h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" /><h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInsOrUser.name}" />
+                            </p:column>
+                            <p:column headerText="Letter Number"
+                                      sortBy="#{c.document.documentNumber}" filterBy="#{c.document.documentNumber}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.documentNumber}" />
+                            </p:column>
+                            <p:column headerText="Topic"
+                                      sortBy="#{c.document.documentName}" filterBy="#{c.document.documentName}" filterMatchMode="contains">
+                                <h:outputText value="#{c.document.documentName}" />
+                            </p:column>
+                            <p:column headerText="Comments"
+                                      sortBy="#{c.comments}" filterBy="#{c.comments}" filterMatchMode="contains">
+                                <h:outputText value="#{c.comments}" />
+                            </p:column>
+                            <p:column headerText="Actions" exportable="false" style="width:7em">
+                                <div class="report-row-actions">
+                                    <p:commandButton value="View" icon="pi pi-eye" ajax="false" styleClass="ui-button-info"
+                                                     action="#{letterController.toLetterView()}">
+                                        <f:setPropertyActionListener target="#{letterController.selected}" value="#{c.document}" />
+                                    </p:commandButton>
+                                </div>
+                            </p:column>
+                        </p:dataTable>
+
+                        <!-- Printed register: plain monospace table for dot-matrix printers (scss/src/print.scss).
+                             Hidden on screen; p:printer prints only this panel. -->
+                        <h:panelGroup layout="block" id="gridPrint" styleClass="print-doc d-none d-print-block">
+                            <ui:include src="/WEB-INF/includes/print_header.xhtml">
+                                <ui:param name="title" value="My Received Copied or Forwarded Letters" />
+                                <ui:param name="fromDate" value="#{letterController.fromDate}" />
+                                <ui:param name="toDate" value="#{letterController.toDate}" />
+                                <ui:param name="filterText" value="" />
+                            </ui:include>
+                            <table class="pd-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:3%">No.</th>
+                                        <th style="width:7%">ID</th>
+                                        <th style="width:9%">Letter Date</th>
+                                        <th style="width:9%">Stamp Date</th>
+                                        <th style="width:9%">Sent Date</th>
+                                        <th style="width:9%">Accepted Date</th>
+                                        <th style="width:18%">From</th>
+                                        <th style="width:12%">Letter Number</th>
+                                        <th>Topic</th>
+                                        <th style="width:14%">Comments</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ui:repeat value="#{letterController.documentHistories}" var="c" varStatus="s">
+                                        <tr>
+                                            <td><h:outputText value="#{s.index + 1}" /></td>
+                                            <td><h:outputText value="#{c.document.id}" /></td>
+                                            <td><h:outputText value="#{c.document.documentDate}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText value="#{c.document.receivedDate}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText value="#{c.createdAt}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText value="#{c.completedAt}"><f:convertDateTime pattern="dd/MM/yyyy" /></h:outputText></td>
+                                            <td><h:outputText rendered="#{c.document.fromInstitution.name eq 'Personal'}" value="#{c.document.senderName}" /><h:outputText rendered="#{c.document.fromInstitution.name ne 'Personal'}" value="#{c.document.fromInsOrUser.name}" /></td>
+                                            <td><h:outputText value="#{c.document.documentNumber}" /></td>
+                                            <td><h:outputText value="#{c.document.documentName}" /></td>
+                                            <td><h:outputText value="#{c.comments}" /></td>
+                                        </tr>
+                                    </ui:repeat>
+                                </tbody>
+                            </table>
+                            <ui:include src="/WEB-INF/includes/print_footer.xhtml">
+                                <ui:param name="count" value="#{empty letterController.documentHistories ? 0 : letterController.documentHistories.size()}" />
+                                <ui:param name="signatures" value="#{false}" />
+                            </ui:include>
+                        </h:panelGroup>
+                    </p:card>
                 </h:form>
-
-
             </ui:define>
         </ui:composition>
     </h:body>

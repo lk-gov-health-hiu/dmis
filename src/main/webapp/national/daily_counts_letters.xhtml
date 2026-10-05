@@ -4,94 +4,103 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+      xmlns:p="http://primefaces.org/ui">
 
     <h:body>
-
-        <ui:composition template="/institution/reports_index.xhtml">
+        <ui:composition template="/template1.xhtml">
             <ui:define name="title">
                 Daily Counts - Letters
             </ui:define>
-            <ui:define name="reports">
-                <p:growl ></p:growl>
-                <h:form >
-                    <div class="card my-3">
-                        <h5 class="card-header bg-success">
-                            <p:outputLabel class="text-white fs-5 fw-bold my-2" value="Daily Counts - Letters" ></p:outputLabel>
-                        </h5>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <h:panelGrid columns="2" >
-                                        <p:panelGrid columns="2"  class="border border-light">
+            <ui:define name="content">
+                <p:growl />
+                <h:form id="reportForm">
+                    <p:card styleClass="report-card">
+                        <f:facet name="title">
+                            <div class="report-card-header">
+                                <h:outputText value="Daily Counts - Letters" styleClass="report-card-title" />
+                                <div class="report-card-actions">
+                                    <p:commandButton value="Process" icon="pi pi-search" ajax="false"
+                                                     styleClass="ui-button-warning"
+                                                     action="#{letterController.processDailyCounts()}" />
+                                    <p:commandButton value="Print" icon="pi pi-print" type="button"
+                                                     styleClass="ui-button-info">
+                                        <p:printer target="gridPrint" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Download" icon="pi pi-file-excel" ajax="false"
+                                                     styleClass="ui-button-success">
+                                        <p:dataExporter target="tbl" type="xls" fileName="Count of Letters by Day" />
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </f:facet>
 
-                                            <h:outputLabel class="fs-6" value="From:"></h:outputLabel>
-                                            <p:datePicker monthNavigator="true" yearNavigator="true" 
-                                                          class="fs-6 fw-bold"   
-                                                          showTime="true"
-                                                          pattern="dd MMMM yyyy hh:mm a"
-                                                          value="#{letterController.fromDate}">
-                                            </p:datePicker>
-                                            <h:outputLabel class="fs-6" value="To:"></h:outputLabel>
-                                            <p:datePicker class="fs-6 fw-bold"  
-                                                          monthNavigator="true" yearNavigator="true" 
-                                                          showTime="true"
-                                                          pattern="dd MMMM yyyy hh:mm a"
-                                                          value="#{letterController.toDate}">
-                                            </p:datePicker>
-                                        </p:panelGrid>
-
-                                        <h:panelGrid columns="1" >
-                                            <h:commandButton value="Process" action="#{letterController.processDailyCounts()}" class="btn btn-danger form-control"></h:commandButton>
-                                             <h:commandButton value="Print"  class="btn btn-success form-control">
-                                                <p:printer target="tbl" ></p:printer>
-                                            </h:commandButton>
-                                            <h:commandButton value="Download"  class="btn btn-warning form-control">
-                                                <p:dataExporter target="tbl" type="xls" fileName="Count of Letters by Day" ></p:dataExporter>
-                                            </h:commandButton>
-                                           
-                                        </h:panelGrid>
-
-                                    </h:panelGrid>
-
-
-
-
-                                    <p:dataTable value="#{letterController.dailyCounts}"
-                                                 var="h" 
-                                                 rowKey="#{h.date}"
-                                                 id="tbl"
-                                                 style="width: 100%;"
-                                                 rows="10"
-                                                 paginator="true"
-                                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                                 rowsPerPageTemplate="5,10,{ShowAll|'All'}"
-                                                 >
-
-
-                                        <p:column headerText="Date">
-                                            <h:outputText value="#{h.date}" >
-                                                <f:convertDateTime pattern="MMMM dd yyyy" ></f:convertDateTime>
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Count">
-                                            <h:outputText value="#{h.dailyCount}" >
-                                            </h:outputText>
-                                        </p:column>
-                                        
-                                    </p:dataTable>
+                        <div class="ui-fluid report-filters">
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <p:outputLabel for="fromDate" value="From Date" />
+                                    <p:datePicker id="fromDate" showTime="true" hourFormat="12"
+                                                  showButtonBar="true" panelStyleClass="report-datepicker"
+                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                  value="#{letterController.fromDate}" />
+                                </div>
+                                <div class="col-md-4">
+                                    <p:outputLabel for="toDate" value="To Date" />
+                                    <p:datePicker id="toDate" showTime="true" hourFormat="12"
+                                                  showButtonBar="true" panelStyleClass="report-datepicker"
+                                                  pattern="dd MMMM yyyy hh:mm a"
+                                                  value="#{letterController.toDate}" />
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                  
+                        <p:dataTable value="#{letterController.dailyCounts}" var="h" rowKey="#{h.date}" id="tbl"
+                                     styleClass="report-table"
+                                     rows="25" paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="25,100,{ShowAll|'All'}">
+                            <p:column headerText="Date" sortBy="#{h.date}">
+                                <h:outputText value="#{h.date}"><f:convertDateTime pattern="dd MMMM yyyy" /></h:outputText>
+                            </p:column>
+                            <p:column headerText="Count" sortBy="#{h.dailyCount}" style="width:10em; text-align:right">
+                                <h:outputText value="#{h.dailyCount}" />
+                            </p:column>
+                        </p:dataTable>
 
+                        <!-- Printed report: plain monospace table for dot-matrix printers (scss/src/print.scss).
+                             Hidden on screen; p:printer prints only this panel. -->
+                        <h:panelGroup layout="block" id="gridPrint" styleClass="print-doc d-none d-print-block">
+                            <ui:include src="/WEB-INF/includes/print_header.xhtml">
+                                <ui:param name="title" value="Daily Counts - Letters" />
+                                <ui:param name="fromDate" value="#{letterController.fromDate}" />
+                                <ui:param name="toDate" value="#{letterController.toDate}" />
+                            </ui:include>
+                            <table class="pd-table" style="width:auto; min-width:60%">
+                                <thead>
+                                    <tr>
+                                        <th style="width:3em">No.</th>
+                                        <th>Date</th>
+                                        <th class="pd-num" style="width:8em">Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ui:repeat value="#{letterController.dailyCounts}" var="h" varStatus="s">
+                                        <tr>
+                                            <td><h:outputText value="#{s.index + 1}" /></td>
+                                            <td><h:outputText value="#{h.date}"><f:convertDateTime pattern="dd MMMM yyyy" /></h:outputText></td>
+                                            <td class="pd-num"><h:outputText value="#{h.dailyCount}" /></td>
+                                        </tr>
+                                    </ui:repeat>
+                                </tbody>
+                            </table>
+                            <ui:include src="/WEB-INF/includes/print_footer.xhtml">
+                                <ui:param name="count" value="#{empty letterController.dailyCounts ? 0 : letterController.dailyCounts.size()}" />
+                                <ui:param name="itemName" value="days" />
+                                <ui:param name="signatures" value="#{false}" />
+                            </ui:include>
+                        </h:panelGroup>
+                    </p:card>
                 </h:form>
-
-
             </ui:define>
         </ui:composition>
     </h:body>

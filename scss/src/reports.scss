@@ -65,3 +65,31 @@
     transform: scale(0.7);
     opacity: 0.6;
 }
+
+// Bulk actions on selected rows (Accept Selected, Assign to ...), between the
+// filters and the table.
+.report-card .report-bulkbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+    margin-top: 0.5em;
+    padding: 0.4em 0.5em;
+    background: var(--surface-b, #f8f9fa);
+    border: 1px solid var(--surface-d, #dee2e6);
+    border-radius: 4px;
+}
+
+.report-card .report-bulkbar .report-bulkbar-label {
+    font-weight: 600;
+}
+
+.report-card .report-bulkbar .report-bulkbar-count {
+    margin-left: auto;
+}
+
+.report-card .report-row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35em;
+}
