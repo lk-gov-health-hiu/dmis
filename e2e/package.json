@@ -1,0 +1,14 @@
+{
+  "name": "dmis-e2e",
+  "private": true,
+  "description": "Playwright browser tooling for DMIS: e2e tests and the record-issues session recorder",
+  "scripts": {
+    "test": "playwright test",
+    "record": "node record-issues.mjs",
+    "record:smoke": "node record-issues.mjs --smoke"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "typescript": "^7.0.2"
+  }
+}
